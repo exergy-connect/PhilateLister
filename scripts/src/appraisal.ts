@@ -11,7 +11,9 @@ import {
   type GenerateContentResponse,
   ThinkingLevel,
 } from '@google/genai';
-import { repoRoot } from './paths.js';
+
+/** Repository root: GitHub Actions and `node scripts/dist/appraisal.cjs` use repo cwd; `npm run appraisal` uses `cd ..` first. */
+const repoRoot = process.cwd();
 
 const CONSOLIDATED_SCHEMA_PATH = join(repoRoot, 'xframe', 'output', 'consolidated.schema.json');
 const PROMPTS_DIR = join(repoRoot, 'prompts');
@@ -272,7 +274,7 @@ async function runAppraisal(imagePath: string, commitMessage: string | undefined
 
 const { imagePath, commitMessage } = parseArgs();
 if (!imagePath) {
-  console.error('Usage: node appraisal.js <image_path> [--commit-message TEXT]');
+  console.error('Usage: node appraisal.cjs <image_path> [--commit-message TEXT]');
   process.exit(1);
 }
 

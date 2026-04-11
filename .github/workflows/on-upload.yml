@@ -19,13 +19,17 @@ jobs:
         with:
           ref: ${{ github.sha }}
 
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+
       - name: Show commit message (metadata from index.html)
         env:
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
           printf '%s\n' "$COMMIT_MESSAGE" | head -n 12
 
-      # dist/appraisal.js is the esbuild bundle (committed by scripts-build); no npm install here.
+      # dist/appraisal.cjs is the esbuild bundle (committed by scripts-build); no npm install here.
       - name: Run Gemini appraisal on new images
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -55,7 +59,7 @@ jobs:
             exit 1
           fi
           echo "Appraising: $f"
-          node scripts/dist/appraisal.js "$f"
+          node scripts/dist/appraisal.cjs "$f"
 
       - name: Commit listings
         run: |

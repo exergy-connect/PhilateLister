@@ -166,6 +166,46 @@
       #status.ok {
         color: var(--ok);
       }
+      .listing-section {
+        margin-top: 1.75rem;
+        padding: 1.25rem 1.35rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: 0 1px 2px rgba(28, 27, 24, 0.06);
+      }
+      .listing-section[hidden] {
+        display: none !important;
+      }
+      .listing-heading {
+        font-size: 1.05rem;
+        font-weight: 600;
+        margin: 0 0 0.5rem;
+        letter-spacing: 0.02em;
+      }
+      .listing-wait {
+        margin: 0 0 0.75rem;
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+      .listing-text {
+        margin: 0;
+        padding: 1rem;
+        max-height: min(50vh, 28rem);
+        overflow: auto;
+        font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
+        font-size: 0.82rem;
+        line-height: 1.45;
+        white-space: pre-wrap;
+        word-break: break-word;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        color: var(--ink);
+      }
+      .listing-text[hidden] {
+        display: none !important;
+      }
       footer {
         margin-top: 2rem;
         font-size: 0.75rem;
@@ -213,6 +253,7 @@
               <label for="prompt-select">Prompt template</label>
               <select id="prompt-select" name="prompt">
                 <option value="stamp_listing" selected>stamp_listing — eBay listing</option>
+                <option value="jay_smith_listing">jay_smith_listing — dealer price-list style</option>
               </select>
               <p class="hint">Matches <code>prompts/&lt;name&gt;.json</code> on the branch that runs Actions. Add options here when you add new prompt files.</p>
             </div>
@@ -228,6 +269,18 @@
           </form>
         </div>
       </div>
+
+      <section
+        id="listing-section"
+        class="listing-section"
+        hidden
+        aria-labelledby="listing-heading"
+        aria-busy="false"
+      >
+        <h2 id="listing-heading" class="listing-heading">Generated listing</h2>
+        <p id="listing-wait" class="listing-wait"></p>
+        <pre id="listing-text" class="listing-text" hidden></pre>
+      </section>
 
       <footer>
         <p>Copyright (C) 2026 Exergy ∞ LLC</p>
@@ -448,6 +501,105 @@
         return `${COMMIT_PREFIX}: ${imageBasename}\n\n${JSON.stringify(meta)}`;
       }
 
+      /** Same stem as appraisal.py: listings/<stem>.txt for uploads/<basename>. */
+      function listingRelPathFromImageBasename(basename) {
+        const dot = basename.lastIndexOf(".");
+        const stem = dot >= 1 ? basename.slice(0, dot) : basename;
+        return `listings/${stem}.txt`;
+      }
+
+      function decodeGitHubContentBase64(b64) {
+        const clean = String(b64).replace(/\s/g, "");
+        const binary = atob(clean);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        return new TextDecoder("utf-8").decode(bytes);
+      }
+
+      /**
+       * @returns {Promise<string | null>} file UTF-8 text, or null if missing (404).
+       */
+      async function fetchRepoFileUtf8(path, token) {
+        const { owner, repo, branch } = repoTargetSnapshot();
+        const encodedPath = path
+          .split("/")
+          .filter(Boolean)
+          .map((seg) => encodeURIComponent(seg))
+          .join("/");
+        const url = `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${encodedPath}?ref=${encodeURIComponent(branch)}`;
+        const res = await fetch(url, {
+          headers: {
+            Accept: "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (res.status === 404) return null;
+        const body = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          throw new Error(body.message || res.statusText || `HTTP ${res.status}`);
+        }
+        if (Array.isArray(body) || body.type !== "file" || typeof body.content !== "string") {
+          return null;
+        }
+        return decodeGitHubContentBase64(body.content);
+      }
+
+      function formatMmSs(ms) {
+        const s = Math.floor(ms / 1000);
+        const m = Math.floor(s / 60);
+        const rs = s % 60;
+        return `${m}:${String(rs).padStart(2, "0")}`;
+      }
+
+      let listingPollGeneration = 0;
+
+      /**
+       * Polls branch until listings/*.txt exists or timeout. New calls bump generation so stale polls stop updating UI.
+       */
+      async function waitForListingOnBranch(listingPath, token, options) {
+        const intervalMs = options && options.intervalMs != null ? options.intervalMs : 4000;
+        const maxWaitMs = options && options.maxWaitMs != null ? options.maxWaitMs : 360000;
+        const gen = ++listingPollGeneration;
+        const section = document.getElementById("listing-section");
+        const waitEl = document.getElementById("listing-wait");
+        const textEl = document.getElementById("listing-text");
+        section.hidden = false;
+        section.setAttribute("aria-busy", "true");
+        textEl.hidden = true;
+        textEl.textContent = "";
+        waitEl.textContent = "";
+
+        const start = Date.now();
+        while (Date.now() - start < maxWaitMs) {
+          if (gen !== listingPollGeneration) return;
+          waitEl.textContent = `Waiting for Actions to write ${listingPath} on ${PHILATELISTER.branch}… (${formatMmSs(Date.now() - start)} elapsed)`;
+          try {
+            const text = await fetchRepoFileUtf8(listingPath, token);
+            if (gen !== listingPollGeneration) return;
+            if (text !== null) {
+              waitEl.textContent = "";
+              textEl.textContent = text;
+              textEl.hidden = false;
+              section.setAttribute("aria-busy", "false");
+              statusEl.textContent += ` Listing ready after ${formatMmSs(Date.now() - start)}.`;
+              return;
+            }
+          } catch (pollErr) {
+            if (gen !== listingPollGeneration) return;
+            waitEl.textContent = `Could not read ${listingPath}: ${pollErr instanceof Error ? pollErr.message : String(pollErr)}`;
+            section.setAttribute("aria-busy", "false");
+            statusEl.textContent += " Polling GitHub failed (see listing panel).";
+            return;
+          }
+          await new Promise((r) => setTimeout(r, intervalMs));
+        }
+        if (gen !== listingPollGeneration) return;
+        waitEl.textContent = `No listing found after ${formatMmSs(maxWaitMs)}. Expected \`${listingPath}\` on branch \`${PHILATELISTER.branch}\`. Check the Actions run for this push.`;
+        section.setAttribute("aria-busy", "false");
+        statusEl.textContent += " Timed out waiting for listing (see panel below).";
+      }
+
       async function putFile(path, contentBase64, message, token) {
         const url = `https://api.github.com/repos/${encodeURIComponent(PHILATELISTER.owner)}/${encodeURIComponent(PHILATELISTER.repo)}/contents/${encodeURIComponent(path)}`;
         const res = await fetch(url, {
@@ -520,9 +672,11 @@
           const message = buildCommitMessage(priceVal, notesVal, basename, promptId);
           await putFile(path, base64, message, token);
           statusEl.className = "ok";
-          statusEl.textContent = `Uploaded ${path}. Your workflow should run on this push.`;
+          statusEl.textContent = `Uploaded ${path}. Waiting for listing on branch ${PHILATELISTER.branch}…`;
           form.reset();
           setStampPreview(null);
+          const listingPath = listingRelPathFromImageBasename(basename);
+          waitForListingOnBranch(listingPath, token);
         } catch (err) {
           statusEl.className = "error";
           statusEl.textContent = err instanceof Error ? err.message : String(err);

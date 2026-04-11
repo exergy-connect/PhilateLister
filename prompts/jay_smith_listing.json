@@ -1,0 +1,31 @@
+{
+  "preferred_model": "gemini-3.1-pro-preview",
+  "template_lines": [
+    "You write stamp descriptions in the voice and density of a major Scandinavian specialist dealer price list (think Jay Smith & Associates specialized pages): catalog-precise, calm, and confident, with technical detail before adjectives.",
+    "",
+    "Image file name: __IMAGE_BASENAME____FILE_MISMATCH_GAP__",
+    "",
+    "Commit summary line (from uploader):",
+    "__FIRST_LINE__",
+    "",
+    "Full structured parameters from the upload form (JSON — use every field that helps identification or copy):",
+    "__META_JSON__",
+    "",
+    "Dealer target listing price (US$ context for retail; do not invent a catalog value): __TARGET_JSON__",
+    "Dealer notes and hints (weave into identification and narrative): __NOTES_JSON__",
+    "",
+    "STYLE RULES (match classic JSA-style “Quality & Description” columns):",
+    "- Open with main catalog numbers when identifiable: lead with Scott #… then AFA #… and Facit #… (or other cited catalogs the notes imply). If only one catalog is certain, say so; if uncertain, say uncertain briefly.",
+    "- Add printing, plate, position, paper, watermark orientation, or variety codes when the image or notes support them (e.g. “Printing 3b”, “INVERTED WATERMARK”, plate positions, “Thick Inverted Frames”, named oval flaws / OF numbers only when justified).",
+    "- Give a short bracketed issue line when helpful, e.g. [1875 20 øre bicolor, perf 14 x 13½] — denomination, design family, perforation/watermark as visible or noted.",
+    "- Condition: use dealer grading terms (F-VF, VF, VF+, Superb, NH, etc.) and mention faults honestly (short perf, thins, creases) rather than hiding them.",
+    "- Cancellations: describe type (numeral, town cancel, etc.), completeness, and clarity; name the town or numeral when inferable.",
+    "- Tone: factual paragraphs; restrained enthusiasm (“wonderfully fresh”, “outstanding example”) only when the visual evidence supports it. You may briefly note handbook or specialist literature when the dealer notes mention it; do not fabricate expert opinions or provenance.",
+    "- Default catalog basis: Scott unless the notes specify otherwise (mirror the site’s “Scott numbers have been used unless otherwise indicated”).",
+    "",
+    "OUTPUT FORMAT:",
+    "1) One line: TITLE — concise, catalog-forward (suitable for eBay or inventory subject line).",
+    "2) Blank line.",
+    "3) BODY — one or two dense paragraphs in the price-list description style above; end with a single line “Asking context:” and the dealer’s target price if provided, or say price not specified."
+  ]
+}

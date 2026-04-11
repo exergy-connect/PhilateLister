@@ -1,0 +1,69 @@
+{
+  "country": [
+    {
+      "country_id": "se",
+      "display_name": "Sweden"
+    }
+  ],
+  "catalog_system": [
+    {
+      "catalog_system_id": "scott",
+      "name": "Scott Standard Postage Stamp Catalogue",
+      "abbreviation": "Sc."
+    }
+  ],
+  "issue_series": [
+    {
+      "series_id": "se_official_1874",
+      "country_id": "se",
+      "name": "Official Stamps",
+      "year_from": 1874
+    }
+  ],
+  "stamp": [
+    {
+      "stamp_id": "stamp_2026-04-11_14-52-09-566_Sample_stamp_efcc0577",
+      "country_id": "se",
+      "issue_series_id": "se_official_1874",
+      "title": "Sweden 12 öre Official Stamp",
+      "summary": "12 öre blue official stamp, postmarked Åsbo.",
+      "issue_year": 1874,
+      "condition_quality": "used",
+      "image_basename": "stamp_2026-04-11_14-52-09-566_Sample_stamp_efcc0577.png"
+    }
+  ],
+  "stamp_catalog_number": [
+    {
+      "catalog_line_id": "cat_line_se_o6",
+      "stamp_id": "stamp_2026-04-11_14-52-09-566_Sample_stamp_efcc0577",
+      "catalog_system_id": "scott",
+      "catalog_number": "O6"
+    }
+  ],
+  "thematic_tag": [
+    {
+      "tag_id": "official",
+      "name": "Official Mail",
+      "description": "Stamps issued specifically for use by government departments."
+    },
+    {
+      "tag_id": "heraldry",
+      "name": "Heraldry",
+      "description": "Coats of arms, crests, and national heraldic symbols."
+    }
+  ],
+  "stamp_thematic_tag": [
+    {
+      "thematic_link_id": "tag_link_official",
+      "stamp_id": "stamp_2026-04-11_14-52-09-566_Sample_stamp_efcc0577",
+      "tag_id": "official",
+      "role": "primary"
+    },
+    {
+      "thematic_link_id": "tag_link_heraldry",
+      "stamp_id": "stamp_2026-04-11_14-52-09-566_Sample_stamp_efcc0577",
+      "tag_id": "heraldry",
+      "role": "secondary"
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "country": [
+    {
+      "country_id": "se",
+      "display_name": "Sweden"
+    }
+  ],
+  "catalog_system": [
+    {
+      "catalog_system_id": "scott",
+      "name": "Scott Standard Postage Stamp Catalogue",
+      "abbreviation": "Sc."
+    }
+  ],
+  "stamp": [
+    {
+      "stamp_id": "stamp_2026-04-11_14-46-32-170_Sample_stamp_626690a5",
+      "country_id": "se",
+      "title": "Sweden 12 Öre Blue Official",
+      "summary": "Used Swedish official stamp (Tjenstefrimärke) featuring the national coat of arms. Clear circular date stamp from ÅSBO dated 18 November 1878.",
+      "issue_year": 1874,
+      "condition_quality": "used",
+      "image_basename": "stamp_2026-04-11_14-46-32-170_Sample_stamp_626690a5.png"
+    }
+  ],
+  "stamp_catalog_number": [
+    {
+      "catalog_line_id": "cat_line_01",
+      "stamp_id": "stamp_2026-04-11_14-46-32-170_Sample_stamp_626690a5",
+      "catalog_system_id": "scott",
+      "catalog_number": "O6"
+    }
+  ],
+  "thematic_tag": [
+    {
+      "tag_id": "type-official",
+      "name": "Official Stamp",
+      "description": "Stamps intended for use by government agencies and departments."
+    },
+    {
+      "tag_id": "design-coat-of-arms",
+      "name": "Coat of Arms",
+      "description": "Stamps featuring heraldic coats of arms."
+    }
+  ],
+  "stamp_thematic_tag": [
+    {
+      "thematic_link_id": "tag_link_01",
+      "stamp_id": "stamp_2026-04-11_14-46-32-170_Sample_stamp_626690a5",
+      "tag_id": "type-official",
+      "role": "primary"
+    },
+    {
+      "thematic_link_id": "tag_link_02",
+      "stamp_id": "stamp_2026-04-11_14-46-32-170_Sample_stamp_626690a5",
+      "tag_id": "design-coat-of-arms",
+      "role": "secondary"
+    }
+  ]
+}

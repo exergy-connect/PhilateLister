@@ -1,0 +1,168 @@
+{
+  "version": 1,
+  "timestamp": "2026-04-11T19:41:16Z",
+  "model": {
+    "name": "PhilateLister stamp catalog",
+    "version": "26.04.11.1",
+    "author": "Exergy ∞ LLC",
+    "description": "Dealer and collector catalog for stamps: issuing country, catalog numbers across systems, issue series, year of issue, condition, centering, perforation, and thematic tags.",
+    "include_x_fields": true,
+    "max_name_underscores": 2,
+    "exclude": null
+  },
+  "data": {
+    "change": {
+      "000000000001": {
+        "id": 1,
+        "timestamp": "2026-04-11T19:41:16+00:00",
+        "author": "jbemmel",
+        "note": "CI consolidate after model/data change (f6d7c8a47496c7005984185018d6201277434951)",
+        "git_commit_hash": "f6d7c8a47496c7005984185018d6201277434951"
+      }
+    },
+    "catalog_system": {
+      "michel": {
+        "catalog_system_id": "michel",
+        "name": "Michel Deutschland-Spezial",
+        "abbreviation": "Mi.",
+        "notes": "Example European specialized catalog.",
+        "c": 1,
+        "v": 1
+      },
+      "scott": {
+        "catalog_system_id": "scott",
+        "name": "Scott Standard Postage Stamp Catalogue",
+        "abbreviation": "Sc.",
+        "notes": "US-oriented numbering.",
+        "c": 1,
+        "v": 1
+      },
+      "facit": {
+        "catalog_system_id": "facit",
+        "name": "Facit Nordic Countries",
+        "abbreviation": "Facit",
+        "notes": "Scandinavian specialized.",
+        "c": 1,
+        "v": 1
+      }
+    },
+    "country": {
+      "dk": {
+        "country_id": "dk",
+        "display_name": "Denmark",
+        "notes": "Kingdom of Denmark; includes historical issues.",
+        "c": 1,
+        "v": 1
+      },
+      "se": {
+        "country_id": "se",
+        "display_name": "Sweden",
+        "notes": "",
+        "c": 1,
+        "v": 1
+      }
+    },
+    "issue_series": {
+      "dk-bicolors-classic": {
+        "series_id": "dk-bicolors-classic",
+        "country_id": "dk",
+        "name": "Denmark classic bicolors",
+        "description": "Perforated bicolor definitives and numeral designs, late 19th century.",
+        "year_from": 1870,
+        "year_to": 1905,
+        "c": 1,
+        "v": 1
+      }
+    },
+    "listing": {
+      "lst-001": {
+        "listing_id": "lst-001",
+        "stamp_id": "stamp_2026-04-11_example_001",
+        "target_price": 44,
+        "listing_currency": "USD",
+        "c": 1,
+        "v": 1
+      }
+    },
+    "stamp": {
+      "stamp_2026-04-11_example_001": {
+        "stamp_id": "stamp_2026-04-11_example_001",
+        "country_id": "dk",
+        "issue_series_id": "dk-bicolors-classic",
+        "title": "Denmark 20 øre bicolor used",
+        "summary": "VF used, numeral cancel; printing variety per dealer notes.",
+        "issue_year": 1895,
+        "condition_quality": "used",
+        "centering_grade": "fine",
+        "perforation": "Perforated 13",
+        "image_basename": "stamp_2026-04-11_example_001.jpg",
+        "freeform_keywords": [
+          "Facit",
+          "numeral",
+          "cancel"
+        ],
+        "c": 1,
+        "v": 1
+      }
+    },
+    "stamp_catalog_number": {
+      "scn-001": {
+        "catalog_line_id": "scn-001",
+        "stamp_id": "stamp_2026-04-11_example_001",
+        "catalog_system_id": "facit",
+        "catalog_number": "DK 45",
+        "supplement_notes": "Illustrative Facit-style id; replace with real number.",
+        "c": 1,
+        "v": 1
+      },
+      "scn-002": {
+        "catalog_line_id": "scn-002",
+        "stamp_id": "stamp_2026-04-11_example_001",
+        "catalog_system_id": "michel",
+        "catalog_number": "28y",
+        "supplement_notes": "Illustrative Michel number.",
+        "c": 1,
+        "v": 1
+      }
+    },
+    "stamp_thematic_tag": {
+      "stt-001": {
+        "thematic_link_id": "stt-001",
+        "stamp_id": "stamp_2026-04-11_example_001",
+        "tag_id": "denmark-arms",
+        "role": "primary",
+        "confidence": 0.88,
+        "notes": "Arms and numeral design family.",
+        "c": 1,
+        "v": 1
+      },
+      "stt-002": {
+        "thematic_link_id": "stt-002",
+        "stamp_id": "stamp_2026-04-11_example_001",
+        "tag_id": "topical-ships",
+        "role": "secondary",
+        "confidence": 0.25,
+        "notes": "Only if design includes a ship motif; verify visually.",
+        "c": 1,
+        "v": 1
+      }
+    },
+    "thematic_tag": {
+      "topical-ships": {
+        "tag_id": "topical-ships",
+        "name": "Ships (topical)",
+        "description": "Maritime themes on stamp designs.",
+        "sort_order": 20,
+        "c": 1,
+        "v": 1
+      },
+      "denmark-arms": {
+        "tag_id": "denmark-arms",
+        "name": "Denmark coat of arms",
+        "description": "National arms, crowns, and related heraldic designs on Danish issues.",
+        "c": 1,
+        "v": 1
+      }
+    }
+  }
+}

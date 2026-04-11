@@ -1,0 +1,465 @@
+{
+  "$schema": "https://json-schema.org/draft-2020-12/schema",
+  "title": "Consolidated Data Model",
+  "description": "Consolidated entity schemas from data model files",
+  "$defs": {
+    "catalog_system": {
+      "type": "object",
+      "properties": {
+        "catalog_system_id": {
+          "type": "string",
+          "description": "Stable slug for this catalog (e.g. scott, michel, facit, sg)."
+        },
+        "name": {
+          "type": "string",
+          "description": "Full name of the catalog or reference work."
+        },
+        "abbreviation": {
+          "type": "string",
+          "description": "Short label shown in UI or listings (e.g. Mi., Sc., SG)."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Edition notes, regional scope, or usage caveats."
+        }
+      },
+      "description": "Reference system used for catalog numbers on individual stamps; one row per system you track.",
+      "required": [
+        "catalog_system_id",
+        "name"
+      ],
+      "x-primaryKey": "catalog_system_id"
+    },
+    "country": {
+      "type": "object",
+      "properties": {
+        "country_id": {
+          "type": "string",
+          "description": "Stable identifier; prefer ISO 3166-1 alpha-2 when practical, otherwise a short mnemonic slug (e.g. dk, ddr)."
+        },
+        "display_name": {
+          "type": "string",
+          "description": "Human-readable country or postal administration name."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Optional clarifications (colonies, period splits, obsolete administrations)."
+        }
+      },
+      "description": "Normalized territory for cataloging, filtering, and joins; identifiers should remain stable across inventory and listings.",
+      "required": [
+        "country_id",
+        "display_name"
+      ],
+      "x-primaryKey": "country_id"
+    },
+    "issue_series": {
+      "type": "object",
+      "properties": {
+        "series_id": {
+          "type": "string",
+          "description": "Stable unique id for this series within the catalog."
+        },
+        "country_id": {
+          "type": "string",
+          "description": "Primary issuing country or administration for this series.",
+          "x-foreignKeys": [
+            {
+              "entity": "country"
+            }
+          ]
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name of the set or series (e.g. 1875 bicolors, Europa 1980)."
+        },
+        "description": {
+          "type": "string",
+          "description": "Scope, catalog cross-references, or how stamps are grouped in this series."
+        },
+        "year_from": {
+          "type": "integer",
+          "description": "First year of issue represented in this series, if applicable."
+        },
+        "year_to": {
+          "type": "integer",
+          "description": "Last year of issue for multi-year series; omit for single-year or ongoing."
+        },
+        "parent_series_id": {
+          "type": "string",
+          "description": "Optional parent series for nested grouping (e.g. country definitives under a broad program).",
+          "x-foreignKeys": [
+            {
+              "entity": "issue_series"
+            }
+          ]
+        }
+      },
+      "description": "Groups stamps into sets, definitive series, commemoratives, or specialized series for browsing and pricing context.",
+      "required": [
+        "series_id",
+        "country_id",
+        "name"
+      ],
+      "x-primaryKey": "series_id"
+    },
+    "listing": {
+      "type": "object",
+      "properties": {
+        "listing_id": {
+          "type": "string",
+          "description": "Surrogate primary key for this listing row."
+        },
+        "stamp_id": {
+          "type": "string",
+          "description": "Stamp this listing prices.",
+          "x-foreignKeys": [
+            {
+              "entity": "stamp"
+            }
+          ]
+        },
+        "target_price": {
+          "type": "number",
+          "description": "Guide or asking price as a decimal in listing_currency."
+        },
+        "listing_currency": {
+          "type": "string",
+          "description": "ISO 4217 currency code for target_price (e.g. USD, EUR, DKK)."
+        }
+      },
+      "description": "Separate from philatelic attributes on stamp; omit when no price is tracked or use multiple rows for history or multi-channel asks.",
+      "required": [
+        "listing_id",
+        "stamp_id",
+        "target_price",
+        "listing_currency"
+      ],
+      "x-primaryKey": "listing_id"
+    },
+    "stamp": {
+      "type": "object",
+      "properties": {
+        "stamp_id": {
+          "type": "string",
+          "description": "Unique id (SKU, upload basename, or UUID)."
+        },
+        "country_id": {
+          "type": "string",
+          "description": "Issuing country or postal administration.",
+          "x-foreignKeys": [
+            {
+              "entity": "country"
+            }
+          ]
+        },
+        "issue_series_id": {
+          "type": "string",
+          "description": "Stamp set or series this item belongs to, when known.",
+          "x-foreignKeys": [
+            {
+              "entity": "issue_series"
+            }
+          ]
+        },
+        "title": {
+          "type": "string",
+          "description": "Short title or working label (often aligned with listing title)."
+        },
+        "summary": {
+          "type": "string",
+          "description": "Identification notes, variety callouts, or catalog commentary."
+        },
+        "issue_year": {
+          "type": "integer",
+          "description": "Primary year of issue for this stamp or single-stamp lot."
+        },
+        "issue_year_to": {
+          "type": "integer",
+          "description": "End year for multi-year issues or sets represented by one row."
+        },
+        "condition_quality": {
+          "type": "string",
+          "description": "Overall condition or gum state for mint/used grading.",
+          "enum": [
+            "mint_never_hinged",
+            "mint_hinged",
+            "mint_no_gum",
+            "mint_disturbed_gum",
+            "used",
+            "used_on_paper",
+            "on_cover",
+            "faulty",
+            "unknown"
+          ]
+        },
+        "centering_grade": {
+          "type": "string",
+          "description": "Centering and margin balance for perforated issues, using the ladder common on eBay and in US expertizing (PSE, Philatelic Foundation): Gem/Superb through Fine/VF/XF slash grades (e.g. VF/XF, F-VF), then VG/Good/Average/Poor. MNH/NH/LH describe gum, not centering—use condition_quality for those.",
+          "enum": [
+            "gem",
+            "superb",
+            "xf_superb",
+            "xf",
+            "vf_xf",
+            "vf",
+            "f_vf",
+            "fine",
+            "vg_f",
+            "vg",
+            "good_vg",
+            "good",
+            "average",
+            "below_average",
+            "poor",
+            "faulty",
+            "not_applicable",
+            "unknown"
+          ]
+        },
+        "perforation": {
+          "type": "string",
+          "description": "Perforation description (e.g. perf 11½, comb 13¾, imperforate, roulette)."
+        },
+        "image_basename": {
+          "type": "string",
+          "description": "Image file name in uploads/ or media store."
+        },
+        "freeform_keywords": {
+          "type": "array",
+          "description": "Ad-hoc keywords not yet mapped to thematic_tag.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Core record: country of issue, year, physical attributes (perforation, centering), condition, optional series membership; catalog numbers, thematic tags, and optional pricing (listing entity) use child rows.",
+      "required": [
+        "stamp_id"
+      ],
+      "x-primaryKey": "stamp_id"
+    },
+    "stamp_catalog_number": {
+      "type": "object",
+      "properties": {
+        "catalog_line_id": {
+          "type": "string",
+          "description": "Surrogate primary key for this catalog line."
+        },
+        "stamp_id": {
+          "type": "string",
+          "description": "Stamp this number refers to.",
+          "x-foreignKeys": [
+            {
+              "entity": "stamp"
+            }
+          ]
+        },
+        "catalog_system_id": {
+          "type": "string",
+          "description": "Which catalog system the number belongs to.",
+          "x-foreignKeys": [
+            {
+              "entity": "catalog_system"
+            }
+          ]
+        },
+        "catalog_number": {
+          "type": "string",
+          "description": "Number as printed in the catalog (e.g. 85a, 123 II, 4y)."
+        },
+        "supplement_notes": {
+          "type": "string",
+          "description": "Specialized catalog notes, plate blocks, or variety suffixes."
+        }
+      },
+      "description": "Stores Scott, Michel, Facit, etc. numbers per stamp; a stamp may have multiple rows for different systems or supplements.",
+      "required": [
+        "catalog_line_id",
+        "stamp_id",
+        "catalog_system_id",
+        "catalog_number"
+      ],
+      "x-primaryKey": "catalog_line_id"
+    },
+    "stamp_thematic_tag": {
+      "type": "object",
+      "properties": {
+        "thematic_link_id": {
+          "type": "string",
+          "description": "Surrogate primary key for this assignment."
+        },
+        "stamp_id": {
+          "type": "string",
+          "description": "Stamp receiving the thematic tag.",
+          "x-foreignKeys": [
+            {
+              "entity": "stamp"
+            }
+          ]
+        },
+        "tag_id": {
+          "type": "string",
+          "description": "Thematic tag applied.",
+          "x-foreignKeys": [
+            {
+              "entity": "thematic_tag"
+            }
+          ]
+        },
+        "role": {
+          "type": "string",
+          "description": "How this tag relates to other tags on the same stamp.",
+          "enum": [
+            "primary",
+            "secondary",
+            "minor",
+            "archival"
+          ]
+        },
+        "confidence": {
+          "type": "number",
+          "description": "Optional model or human confidence 0.0–1.0 for ML-assisted tagging."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Rationale or caveats for this thematic assignment."
+        }
+      },
+      "description": "Many-to-many link; supports primary vs secondary topical roles and free-text rationale.",
+      "required": [
+        "thematic_link_id",
+        "stamp_id",
+        "tag_id"
+      ],
+      "x-primaryKey": "thematic_link_id"
+    },
+    "thematic_tag": {
+      "type": "object",
+      "properties": {
+        "tag_id": {
+          "type": "string",
+          "description": "Stable slug for the tag (e.g. topical-ships, royalty-crowns)."
+        },
+        "name": {
+          "type": "string",
+          "description": "Short label shown in filters and listings."
+        },
+        "description": {
+          "type": "string",
+          "description": "What designs or subjects belong under this tag."
+        },
+        "parent_tag_id": {
+          "type": "string",
+          "description": "Optional parent tag for subtopics.",
+          "x-foreignKeys": [
+            {
+              "entity": "thematic_tag"
+            }
+          ]
+        },
+        "sort_order": {
+          "type": "integer",
+          "description": "Optional ordering among siblings."
+        }
+      },
+      "description": "Normalized tags for ships, royalty, Olympics, etc.; optional parent builds a shallow hierarchy.",
+      "required": [
+        "tag_id",
+        "name",
+        "description"
+      ],
+      "x-primaryKey": "tag_id"
+    },
+    "change": {
+      "type": "object",
+      "description": "Change log entry describing a versioned modification to the consolidated data model or data.",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique change identifier (monotonically increasing)"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp of the change"
+        },
+        "author": {
+          "type": "string",
+          "description": "Author of the change"
+        },
+        "note": {
+          "type": "string",
+          "description": "Optional note describing the change"
+        },
+        "git_commit_hash": {
+          "type": "string",
+          "description": "Git commit hash corresponding to this change"
+        }
+      },
+      "required": [
+        "id",
+        "timestamp"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "type": "object",
+  "properties": {
+    "catalog_system": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/catalog_system"
+      }
+    },
+    "country": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/country"
+      }
+    },
+    "issue_series": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/issue_series"
+      }
+    },
+    "listing": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/listing"
+      }
+    },
+    "stamp": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/stamp"
+      }
+    },
+    "stamp_catalog_number": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/stamp_catalog_number"
+      }
+    },
+    "stamp_thematic_tag": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/stamp_thematic_tag"
+      }
+    },
+    "thematic_tag": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/thematic_tag"
+      }
+    },
+    "change": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/change"
+      }
+    }
+  },
+  "additionalProperties": false
+}

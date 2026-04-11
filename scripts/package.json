@@ -1,0 +1,20 @@
+{
+  "name": "philatelister-scripts",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc --noEmit && node esbuild.config.mjs",
+    "appraisal": "node dist/appraisal.js"
+  },
+  "dependencies": {
+    "@google/genai": "^1.49.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.0",
+    "esbuild": "^0.27.0",
+    "typescript": "^5.9.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -673,7 +673,7 @@
         return `${COMMIT_PREFIX}: ${imageBasename}\n\n${JSON.stringify(meta)}`;
       }
 
-      /** Same stem as appraisal.py: listings/<stem>.txt for uploads/<basename>. */
+      /** Same stem as scripts appraisal: listings/<stem>.txt (or .json for xframe) for uploads/<basename>. */
       function listingRelPathFromImageBasename(basename) {
         const dot = basename.lastIndexOf(".");
         const stem = dot >= 1 ? basename.slice(0, dot) : basename;

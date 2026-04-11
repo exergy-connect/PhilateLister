@@ -1,0 +1,49 @@
+# Typecheck + esbuild bundle/minify scripts; commit scripts/dist/ for upload CI (no npm on upload).
+name: Build appraisal scripts
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "scripts/package.json"
+      - "scripts/package-lock.json"
+      - "scripts/tsconfig.json"
+      - "scripts/esbuild.config.mjs"
+      - "scripts/src/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: scripts-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: scripts/package-lock.json
+
+      - name: Install and build
+        working-directory: scripts
+        run: npm ci && npm run build
+
+      - name: Commit scripts/dist if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/dist/
+          if git diff --staged --quiet; then
+            echo "No changes to compiled appraisal scripts."
+          else
+            git commit -m "scripts: rebuild appraisal dist (CI)"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi

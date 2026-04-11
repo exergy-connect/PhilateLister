@@ -1,0 +1,19 @@
+# Runs when the dashboard (or any client) adds files under uploads/ via the GitHub API.
+name: Stamp upload
+
+on:
+  push:
+    paths:
+      - "uploads/**"
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Placeholder — add vision + archive (e.g. process_upload.py)
+        env:
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        run: |
+          echo "Upload received. First lines of commit message (JSON metadata after blank line from index.html):"
+          printf '%s\n' "$COMMIT_MESSAGE" | head -n 12

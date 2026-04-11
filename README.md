@@ -24,10 +24,16 @@ PhilateLister is a digital assistant designed specifically for stamp dealers. If
 
 3. **Review** — Check the description for accuracy and modify as desired, then click to upload to eBay for listing.
 
+## Technical design
+
+Dual-entry flows (GitHub Pages dashboard vs. Issues), Actions triggers, PAT constraints, and the `/archive` JSON layout are documented in [design.md](design.md).
+
 ---
 
 > *Spend less time typing at your desk and more time enjoying your hobby.*
 
 ## License
 
-This project is licensed under the Apache License 2.0 — see [LICENSE](LICENSE) for details.
+Copyright (C) 2026 Exergy ∞ LLC.
+
+This project is licensed under the Apache License 2.0 — see [LICENSE](LICENSE) and [NOTICE](NOTICE) for details.

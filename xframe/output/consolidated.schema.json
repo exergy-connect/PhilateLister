@@ -167,10 +167,14 @@
         },
         "issue_year": {
           "type": "integer",
+          "minimum": 1801,
+          "maximum": 2099,
           "description": "Primary year of issue for this stamp or single-stamp lot."
         },
         "issue_year_to": {
           "type": "integer",
+          "minimum": 1801,
+          "maximum": 2099,
           "description": "End year for multi-year issues or sets represented by one row."
         },
         "condition_quality": {
@@ -230,7 +234,13 @@
       },
       "description": "Core record: country of issue, year, physical attributes (perforation, centering), condition, optional series membership; catalog numbers, thematic tags, and optional pricing (listing entity) use child rows.",
       "required": [
-        "stamp_id"
+        "stamp_id",
+        "country_id",
+        "summary",
+        "issue_year",
+        "condition_quality",
+        "centering_grade",
+        "perforation"
       ],
       "x-primaryKey": "stamp_id"
     },

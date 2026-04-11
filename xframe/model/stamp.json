@@ -1,6 +1,6 @@
 {
   "name": "PhilateLister stamp catalog",
-  "version": "26.04.11.1",
+  "version": "26.04.11.2",
   "author": "Exergy ∞ LLC",
   "description": "Entity shard: catalog row for a single stamp or lot line.",
   "source": "PhilateLister",
@@ -25,15 +25,12 @@
             "primitive": "string",
             "foreignKeys": [{ "entity": "country" }]
           },
-          "required": false
+          "required": true
         },
         {
           "name": "issue_series_id",
           "description": "Stamp set or series this item belongs to, when known.",
-          "type": {
-            "primitive": "string",
-            "foreignKeys": [{ "entity": "issue_series" }]
-          },
+          "type": { "entity": "issue_series" },
           "required": false
         },
         {
@@ -46,18 +43,18 @@
           "name": "summary",
           "description": "Identification notes, variety callouts, or catalog commentary.",
           "type": { "primitive": "string" },
-          "required": false
+          "required": true
         },
         {
           "name": "issue_year",
           "description": "Primary year of issue for this stamp or single-stamp lot.",
-          "type": { "primitive": "integer" },
-          "required": false
+          "type": { "primitive": "year" },
+          "required": true
         },
         {
           "name": "issue_year_to",
           "description": "End year for multi-year issues or sets represented by one row.",
-          "type": { "primitive": "integer" },
+          "type": { "primitive": "year" },
           "required": false
         },
         {
@@ -77,7 +74,7 @@
               "unknown"
             ]
           },
-          "required": false
+          "required": true
         },
         {
           "name": "centering_grade",
@@ -105,13 +102,13 @@
               "unknown"
             ]
           },
-          "required": false
+          "required": true
         },
         {
           "name": "perforation",
           "description": "Perforation description (e.g. perf 11½, comb 13¾, imperforate, roulette).",
           "type": { "primitive": "string" },
-          "required": false
+          "required": true
         },
         {
           "name": "image_basename",

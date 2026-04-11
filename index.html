@@ -578,11 +578,6 @@
         setStampPreview(stampFileInput.files && stampFileInput.files[0] ? stampFileInput.files[0] : null);
       });
 
-      /** Drop preview after listing poll ends; skip if a newer upload started another poll. */
-      function clearStampPreviewIfListingPollCurrent(gen) {
-        if (gen === listingPollGeneration) setStampPreview(null);
-      }
-
       let tokenTxtFetchAttempted = false;
       async function ensureTokenFromTokenTxt() {
         if (tokenTxtFetchAttempted || PHILATELISTER.token) return;
@@ -768,7 +763,6 @@
               textEl.hidden = false;
               section.setAttribute("aria-busy", "false");
               statusEl.textContent += ` Listing ready after ${formatMmSs(Date.now() - start)}.`;
-              clearStampPreviewIfListingPollCurrent(gen);
               return;
             }
           } catch (pollErr) {
@@ -776,7 +770,6 @@
             waitEl.textContent = `Could not read ${listingPath}: ${pollErr instanceof Error ? pollErr.message : String(pollErr)}`;
             section.setAttribute("aria-busy", "false");
             statusEl.textContent += " Polling GitHub failed (see listing panel).";
-            clearStampPreviewIfListingPollCurrent(gen);
             return;
           }
           await new Promise((r) => setTimeout(r, intervalMs));
@@ -785,7 +778,6 @@
         waitEl.textContent = `No listing found after ${formatMmSs(maxWaitMs)}. Expected \`${listingPath}\` on branch \`${PHILATELISTER.branch}\`. Check the Actions run for this push.`;
         section.setAttribute("aria-busy", "false");
         statusEl.textContent += " Timed out waiting for listing (see panel below).";
-        clearStampPreviewIfListingPollCurrent(gen);
       }
 
       async function putFile(path, contentBase64, message, token) {

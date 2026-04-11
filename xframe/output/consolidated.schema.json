@@ -155,12 +155,7 @@
         },
         "issue_series_id": {
           "type": "string",
-          "description": "Stamp set or series this item belongs to, when known.",
-          "x-foreignKeys": [
-            {
-              "entity": "issue_series"
-            }
-          ]
+          "description": "Stamp set or series this item belongs to, when known."
         },
         "title": {
           "type": "string",

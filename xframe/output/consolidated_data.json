@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "timestamp": "2026-04-11T19:41:16Z",
+  "version": 2,
+  "timestamp": "2026-04-11T20:04:40Z",
   "model": {
     "name": "PhilateLister stamp catalog",
     "version": "26.04.11.1",
@@ -18,6 +18,12 @@
         "author": "jbemmel",
         "note": "CI consolidate after model/data change (f6d7c8a47496c7005984185018d6201277434951)",
         "git_commit_hash": "f6d7c8a47496c7005984185018d6201277434951"
+      },
+      "000000000002": {
+        "id": 2,
+        "timestamp": "2026-04-11T15:04:40-05:00",
+        "author": "root",
+        "note": "(no change) stamp issue_series_id type.entity"
       }
     },
     "catalog_system": {

@@ -870,7 +870,6 @@
           await putFile(path, base64, message, token);
           statusEl.className = "ok";
           statusEl.textContent = `Uploaded ${path}. Waiting for listing on branch ${PHILATELISTER.branch}…`;
-          form.reset();
           const listingPath = listingRelPathFromImageBasename(basename, promptId);
           waitForListingOnBranch(listingPath, token);
         } catch (err) {

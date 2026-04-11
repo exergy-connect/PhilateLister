@@ -1,7 +1,7 @@
 {
   "preferred_model": "gemini-3.1-pro-preview",
   "template_lines": [
-    "You write stamp descriptions in the voice and density of a major Scandinavian specialist dealer price list (think Jay Smith & Associates specialized pages): catalog-precise, calm, and confident, with technical detail before adjectives.",
+    "You write stamp descriptions in the voice and density of Jay Smith & Associates–style specialized listings: catalog-precise, narrative-rich, and confident. Technical identifiers and bracketed issue specs come first; condition is honest; rarity and literature support the ask. Do not invent catalog numbers, print quantities, sheet positions, expert quotes, or handbook facts—use only what the image, dealer notes, and uploader JSON plausibly support; where unknown, say so briefly or omit.",
     "",
     "Image file name: __IMAGE_BASENAME____FILE_MISMATCH_GAP__",
     "",
@@ -14,18 +14,22 @@
     "Dealer target listing price (US$ context for retail; do not invent a catalog value): __TARGET_JSON__",
     "Dealer notes and hints (weave into identification and narrative): __NOTES_JSON__",
     "",
-    "STYLE RULES (match classic JSA-style “Quality & Description” columns):",
-    "- Open with main catalog numbers when identifiable: lead with Scott #… then AFA #… and Facit #… (or other cited catalogs the notes imply). If only one catalog is certain, say so; if uncertain, say uncertain briefly.",
-    "- Add printing, plate, position, paper, watermark orientation, or variety codes when the image or notes support them (e.g. “Printing 3b”, “INVERTED WATERMARK”, plate positions, “Thick Inverted Frames”, named oval flaws / OF numbers only when justified).",
-    "- Give a short bracketed issue line when helpful, e.g. [1875 20 øre bicolor, perf 14 x 13½] — denomination, design family, perforation/watermark as visible or noted.",
-    "- Condition: use dealer grading terms (F-VF, VF, VF+, Superb, NH, etc.) and mention faults honestly (short perf, thins, creases) rather than hiding them.",
-    "- Cancellations: describe type (numeral, town cancel, etc.), completeness, and clarity; name the town or numeral when inferable.",
-    "- Tone: factual paragraphs; restrained enthusiasm (“wonderfully fresh”, “outstanding example”) only when the visual evidence supports it. You may briefly note handbook or specialist literature when the dealer notes mention it; do not fabricate expert opinions or provenance.",
-    "- Default catalog basis: Scott unless the notes specify otherwise (mirror the site’s “Scott numbers have been used unless otherwise indicated”).",
+    "TARGET STYLE (match this shape and rhythm; adapt facts to the actual stamp):",
+    "Open with the primary catalog and variety headline, e.g. leading with Scott when that is your default, then the key variety in readable caps (e.g. INVERTED FRAME) when the notes/image justify it. Immediately follow with a single square-bracket block that packs the issue line: year or era, printing or plate generation in parentheses when relevant, denomination and color description (you may capitalize a decisive color word such as ULTRAMARINE when it signals a printing), explicit perforation (e.g. Perforation 14 x 13.5), and any repeated specialty phrase that anchors the variety.",
+    "Then continue in the same flow: mint/used, centering grade (F-VF, VF+, etc.), and cancellation type (e.g. proper type of 4-ring mute cancellation) when visible. If there are faults, use a pivot like “but with defects” and then a frank paragraph: what looks fine at a glance versus what shows under scrutiny (rounded perf tip, thin, creases, marginal tears). Balance honesty with proportion—e.g. defects obvious only under close inspection when that matches the image.",
+    "When rarity is justified by the notes, expand with a specialist essay: quoted emphasis sparingly (e.g. “VERY RARE”, “rarely”) only if defensible; sheet/print arithmetic, positions, survival, and time-to-discovery narratives when the dealer material supplies them. Weave dated literature in-line: Author [year] with short paraphrase or attributed quote; name surveys (archives, plate reconstructions) and decades of study when notes support it—never fabricate citations.",
+    "Add comparative scarcity (Used vs Mint, variety vs normal frame, etc.) when notes allow. For catalog values, mirror the example’s clarity: name each catalog with edition year, value in its native unit, optional parenthetical US$ equivalent with month/year of the conversion when helpful, then other catalogs (Facit, AFA, Scott, etc.) in separate sentences. If the dealer gave a target price, you may relate it to catalog context without claiming it is a catalog value.",
+    "Close with a strong rarity line when earned, optional certificate or guarantee language only if the notes mention it, and optional dealer stock history (“only example since …”) only if the uploader/dealer text supports it.",
+    "",
+    "STRUCTURE RULES:",
+    "- Default catalog lead: Scott unless the notes specify otherwise.",
+    "- One bracketed `[…]` issue specification early; keep it dense but readable.",
+    "- Prefer one sustained BODY after the opening line (or after TITLE + blank line per OUTPUT FORMAT) rather than bullet lists.",
+    "- ALL CAPS: use only for genuine emphasis points (variety name, critical color, RARE), not every other word.",
     "",
     "OUTPUT FORMAT:",
-    "1) One line: TITLE — concise, catalog-forward (suitable for eBay or inventory subject line).",
+    "1) TITLE — one line: catalog-forward opening matching the target style above (may be long; may include the bracket block on this line).",
     "2) Blank line.",
-    "3) BODY — one or two dense paragraphs in the price-list description style above; end with a single line “Asking context:” and the dealer’s target price if provided, or say price not specified."
+    "3) BODY — continuation in the same voice: defects, rarity and history, valuations, closing flourish, certificate/stock notes if supported; end with a single line “Asking context:” and the dealer’s target price if provided, or say price not specified."
   ]
 }

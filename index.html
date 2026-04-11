@@ -168,14 +168,52 @@
       /**
        * Set owner, repo, and branch for the repository that receives uploads.
        * Optional: set token for trusted/private hosting only (never commit a real token).
+       * Same-origin token.txt (gitignored) is loaded when served over http(s), not file://.
        * Push to uploads/ can trigger Actions with paths: ['uploads/**'].
        */
+      const PLACEHOLDER_OWNER = "YOUR_GITHUB_USER_OR_ORG";
+
       const PHILATELISTER = {
         owner: "exergy-connect",
         repo: "PhilateLister",
         branch: "main",
         token: "",
       };
+
+      function applyConfigFromEnvironment() {
+        if (typeof window === "undefined" || !window.location) return;
+
+        const sp = new URLSearchParams(window.location.search);
+        const qOwner = sp.get("owner");
+        const qRepo = sp.get("repo");
+        const qBranch = sp.get("branch");
+        if (qOwner) PHILATELISTER.owner = qOwner;
+        if (qRepo) PHILATELISTER.repo = qRepo;
+        if (qBranch) PHILATELISTER.branch = qBranch;
+
+        const hostMatch = /^([^.]+)\.github\.io$/i.exec(window.location.hostname || "");
+        if (hostMatch) {
+          const ownerFromHost = hostMatch[1];
+          const parts = window.location.pathname.replace(/^\/+|\/+$/g, "").split("/");
+          const first = parts[0];
+          const repoFromPath =
+            first && !/^index\.html$/i.test(first) ? first.replace(/\.html$/i, "") : "";
+
+          const ownerUnset =
+            !String(PHILATELISTER.owner).trim() || PHILATELISTER.owner === PLACEHOLDER_OWNER;
+          if (ownerUnset) PHILATELISTER.owner = ownerFromHost;
+
+          if (!String(PHILATELISTER.repo).trim() && repoFromPath) {
+            PHILATELISTER.repo = repoFromPath;
+          }
+        }
+
+        if (!String(PHILATELISTER.branch).trim()) {
+          PHILATELISTER.branch = "main";
+        }
+      }
+
+      applyConfigFromEnvironment();
 
       const COMMIT_PREFIX = "PhilateLister upload";
 
@@ -185,9 +223,42 @@
       const tokenInput = document.getElementById("github-token");
       const tokenField = document.getElementById("token-field");
 
-      if (PHILATELISTER.token) {
-        tokenField.hidden = true;
-        tokenInput.removeAttribute("required");
+      function syncTokenFieldVisibility() {
+        if (PHILATELISTER.token) {
+          tokenField.hidden = true;
+          tokenInput.removeAttribute("required");
+        } else {
+          tokenField.hidden = false;
+        }
+      }
+
+      syncTokenFieldVisibility();
+
+      let tokenTxtFetchAttempted = false;
+      async function ensureTokenFromTokenTxt() {
+        if (tokenTxtFetchAttempted || PHILATELISTER.token) return;
+        tokenTxtFetchAttempted = true;
+        if (typeof fetch === "undefined" || window.location.protocol === "file:") return;
+        try {
+          const r = await fetch("token.txt", { cache: "no-store" });
+          if (!r.ok) return;
+          const t = (await r.text()).trim();
+          if (t) {
+            PHILATELISTER.token = t;
+            syncTokenFieldVisibility();
+          }
+        } catch (_) {
+          /* no token.txt */
+        }
+      }
+
+      function repoTargetValid() {
+        const owner = String(PHILATELISTER.owner).trim();
+        const repo = String(PHILATELISTER.repo).trim();
+        const branch = String(PHILATELISTER.branch).trim();
+        return Boolean(
+          owner && owner !== PLACEHOLDER_OWNER && repo && branch
+        );
       }
 
       function fileToBase64(file) {
@@ -259,20 +330,21 @@
         statusEl.textContent = "";
         statusEl.className = "";
 
+        applyConfigFromEnvironment();
+        await ensureTokenFromTokenTxt();
+
         const token = PHILATELISTER.token || tokenInput.value.trim();
         if (!token) {
           statusEl.className = "error";
-          statusEl.textContent = "Add a GitHub token or set PHILATELISTER.token for this deploy.";
+          statusEl.textContent =
+            "Add a GitHub token in the field above, put it in same-origin token.txt (when using a local server), or set PHILATELISTER.token for a private deploy.";
           return;
         }
 
-        if (
-          PHILATELISTER.owner === "YOUR_GITHUB_USER_OR_ORG" ||
-          !PHILATELISTER.repo ||
-          !PHILATELISTER.branch
-        ) {
+        if (!repoTargetValid()) {
           statusEl.className = "error";
-          statusEl.textContent = "Edit PHILATELISTER.owner, .repo, and .branch in index.html.";
+          statusEl.textContent =
+            "Set the upload repository: edit PHILATELISTER.owner / .repo / .branch in index.html, open this page from https://YOUR_ORG.github.io/REPO/ (values are filled automatically), or append ?owner=ORG&repo=REPO&branch=main to the URL.";
           return;
         }
 

@@ -276,8 +276,8 @@
               <label for="token-password">Token password</label>
               <input id="token-password" type="password" autocomplete="off" placeholder="ASCII password for embedded encrypted token" />
               <p class="hint">
-                Decrypts the <code>philatelister-token-cipher</code> value in the page. ASCII characters only. Not saved. Leave blank when using the raw token field or
-                <code>token.txt</code>.
+                Decrypts the <code>philatelister-token-cipher</code> value in the page. ASCII only; use <code>?token_password=…</code> (URL-encoded) if you prefer — that
+                ends up in browser history and logs, so treat links as sensitive. Not saved. Leave blank when using the raw token field or <code>token.txt</code>.
               </p>
             </div>
 
@@ -332,7 +332,7 @@
        * Optional: set token for trusted/private hosting only (never commit a real token).
        * Same-origin token.txt (gitignored) is loaded when served over http(s), not file://.
        * Optional: <meta name="philatelister-token-cipher" content="base64..."> with AES-256-GCM
-       *   (see HTML comment before script); user enters ASCII password in #token-password.
+       *   (see HTML comment before script); password: #token-password or ?token_password= (ASCII, URL-encoded).
        * Push to uploads/ can trigger Actions with paths: ['uploads/**'].
        */
       const PLACEHOLDER_OWNER = "YOUR_GITHUB_USER_OR_ORG";
@@ -342,6 +342,8 @@
         repo: "",
         branch: "",
         token: "",
+        /** Decrypted from ?token_password= on each applyConfigFromEnvironment(); insecure in history/referrers. */
+        tokenPasswordFromUrl: "",
       };
 
       function applyPhilatelisterRepoFromMeta() {
@@ -379,6 +381,10 @@
         if (qOwner) PHILATELISTER.owner = qOwner;
         if (qRepo) PHILATELISTER.repo = qRepo;
         if (qBranch) PHILATELISTER.branch = qBranch;
+
+        PHILATELISTER.tokenPasswordFromUrl = "";
+        const qTokPw = (sp.get("token_password") ?? "").trim();
+        if (qTokPw) PHILATELISTER.tokenPasswordFromUrl = qTokPw;
 
         const hostMatch = /^([^.]+)\.github\.io$/i.exec(window.location.hostname || "");
         if (hostMatch) {
@@ -443,6 +449,18 @@
       }
 
       syncTokenFieldVisibility();
+
+      function syncTokenPasswordFromUrlIntoField() {
+        const v = String(PHILATELISTER.tokenPasswordFromUrl || "").trim();
+        if (v) tokenPasswordInput.value = v;
+      }
+      syncTokenPasswordFromUrlIntoField();
+
+      function effectiveTokenPassword() {
+        const typed = tokenPasswordInput.value.trim();
+        const fromUrl = String(PHILATELISTER.tokenPasswordFromUrl || "").trim();
+        return typed || fromUrl;
+      }
 
       function base64ToBytes(b64) {
         const clean = String(b64).replace(/\s/g, "");
@@ -524,7 +542,7 @@
 
         const cipherB64 = getEmbeddedCipherB64();
         if (cipherB64) {
-          return decryptEmbeddedTokenCipher(cipherB64, tokenPasswordInput.value);
+          return decryptEmbeddedTokenCipher(cipherB64, effectiveTokenPassword());
         }
 
         return tokenInput.value.trim();
@@ -780,6 +798,7 @@
         applyConfigFromEnvironment();
         await ensureTokenFromTokenTxt();
         syncTokenFieldVisibility();
+        syncTokenPasswordFromUrlIntoField();
 
         let token;
         try {
@@ -792,7 +811,7 @@
         if (!token) {
           statusEl.className = "error";
           statusEl.textContent =
-            "Add a GitHub token, an encrypted token (password + philatelister-token-cipher), same-origin token.txt, or set PHILATELISTER.token for a private deploy.";
+            "Add a GitHub token, an encrypted token (password or ?token_password= plus philatelister-token-cipher), same-origin token.txt, or set PHILATELISTER.token for a private deploy.";
           return;
         }
 

@@ -3,6 +3,9 @@ name: Stamp upload
 
 on:
   push:
+    branches:
+      - stamp-data
+      - main
     paths:
       - "uploads/**"
 
@@ -14,6 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
 
       - name: Show commit message (metadata from index.html)
         env:
@@ -58,5 +63,5 @@ jobs:
             echo "No listing files to commit."
           else
             git commit -m "listings: Gemini text for latest upload(s)"
-            git push
+            git push origin "HEAD:${GITHUB_REF_NAME}"
           fi

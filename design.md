@@ -45,6 +45,12 @@ async function uploadToArchive() {
 
 The reference form is [`index.html`](index.html) at the repo root: it uploads to `uploads/stamp_<YYYY-MM-DD_hh-mm-ss-mmm>_<sanitized-original-stem>_<id>.<ext>` and uses a commit message `PhilateLister upload: <basename>` plus JSON (`file`, `targetPrice`, `notes`) so Actions can parse a single push. Workflow: [`.github/workflows/on-upload.yml`](.github/workflows/on-upload.yml) (path filter `uploads/**`).
 
+### GitHub Pages rebuilds
+
+If **GitHub Pages** builds from the same branch the upload API commits to (often `main`), **every stamp upload triggers a full Pages rebuild** because each upload creates a new commit on that branch.
+
+**Mitigation:** commit uploads (and listing outputs) to a **separate branch**—this repo defaults to **`stamp-data`** via `<meta name="philatelister-branch" content="stamp-data">`—while Pages keeps building from **`main`** (site + `index.html` only). One-time setup: run [`scripts/bootstrap-stamp-data-branch.sh`](scripts/bootstrap-stamp-data-branch.sh) (or create `stamp-data` from `main` and push). The PAT must allow writes on that branch. Until `stamp-data` exists, switch the meta back to `main` or create the branch first.
+
 ## Issue tracker fallback
 
 For dealers who dislike forms: *“Open a new issue and drag your photo in.”* A workflow can listen for `issues: opened`, read the attachment, run vision + text generation, and **post the eBay draft as a comment** on the same issue.

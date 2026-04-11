@@ -4,9 +4,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="copyright" content="Copyright (C) 2026 Exergy ∞ LLC" />
-    <!-- Upload API target: owner/repo (edit when you fork). Branch defaults to main. -->
+    <!-- Upload API: owner/repo. Branch = where files are committed (use stamp-data, not your Pages branch, to avoid a site rebuild every upload). -->
     <meta name="philatelister-repo" content="exergy-connect/PhilateLister" />
-    <meta name="philatelister-branch" content="main" />
+    <meta name="philatelister-branch" content="stamp-data" />
     <title>PhilateLister — upload a stamp</title>
     <style>
       :root {
@@ -298,7 +298,7 @@
         }
 
         if (!String(PHILATELISTER.branch).trim()) {
-          PHILATELISTER.branch = "main";
+          PHILATELISTER.branch = "stamp-data";
         }
       }
 
@@ -486,7 +486,7 @@
             "Upload target is incomplete or still set to the template owner. " +
             `Resolved: owner=${JSON.stringify(snap.owner)} repo=${JSON.stringify(snap.repo)} branch=${JSON.stringify(snap.branch)}. ` +
             "Fix: set <meta name=\"philatelister-repo\" content=\"OWNER/REPO\"> and <meta name=\"philatelister-branch\" content=\"main\"> in the page <head>, " +
-            "or open from https://YOUR_ORG.github.io/REPO/, or use ?owner=ORG&repo=REPO&branch=main (no empty values).";
+            "or open from https://YOUR_ORG.github.io/REPO/, or use ?owner=ORG&repo=REPO&branch=stamp-data (no empty values).";
           return;
         }
 

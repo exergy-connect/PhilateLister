@@ -1,0 +1,50 @@
+# Regenerate xframe/output when model or sample data changes (keeps consolidated.schema.json
+# in-repo for prompts/appraisal and downstream tooling).
+name: xFrame consolidate
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "xframe/model/**"
+      - "xframe/data/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: xframe-consolidate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  consolidate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Run xFrame consolidator
+        uses: exergy-connect/xFrame.ai@main
+        with:
+          working-dir: xframe
+          note: "CI consolidate after model/data change (${{ github.sha }})"
+
+      - name: Commit consolidated JSON
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # xframe/output/ is gitignored; -f stages schema + data for the repo without .gitignore exceptions.
+          git add -f xframe/output/consolidated.schema.json xframe/output/consolidated_data.json
+          if git diff --staged --quiet; then
+            echo "No changes to consolidated schema or data."
+          else
+            git commit -m "xframe: refresh consolidated schema and data (CI)"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi

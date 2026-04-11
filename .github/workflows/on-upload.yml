@@ -45,8 +45,7 @@ jobs:
             exit 0
           fi
           set -euo pipefail
-          # Shallow checkout often omits the parent, so git diff-tree lists nothing.
-          # Use push payload paths (added/modified across commits in this push).
+          # Resolve image paths: push payload, then PhilateLister commit message, then git.
           mapfile -t files < <(python3 <<'PY'
           import json, os, re
 
@@ -61,6 +60,35 @@ jobs:
                   paths.extend(hc.get("added") or [])
                   paths.extend(hc.get("modified") or [])
 
+          def from_commit_message(msg: str) -> list[str]:
+              out: list[str] = []
+              msg = (msg or "").strip()
+              if not msg:
+                  return out
+              first = msg.split("\n", 1)[0].strip()
+              m = re.match(r"PhilateLister upload:\s*(.+)$", first)
+              if m:
+                  name = m.group(1).strip()
+                  if name:
+                      out.append(
+                          name if name.startswith("uploads/") else f"uploads/{name}"
+                      )
+              if "\n\n" in msg:
+                  try:
+                      meta = json.loads(msg.split("\n\n", 1)[1].strip())
+                      f = meta.get("file")
+                      if isinstance(f, str) and f.strip():
+                          f = f.strip()
+                          cand = f if f.startswith("uploads/") else f"uploads/{f}"
+                          if cand not in out:
+                              out.append(cand)
+                  except json.JSONDecodeError:
+                      pass
+              return out
+
+          if not paths:
+              paths.extend(from_commit_message(os.environ.get("COMMIT_MESSAGE", "")))
+
           pat = re.compile(r"^uploads/.*\.(jpe?g|png|webp|gif)$", re.I)
           seen: set[str] = set()
           for p in paths:
@@ -71,6 +99,9 @@ jobs:
           )
           if [ "${#files[@]}" -eq 0 ]; then
             mapfile -t files < <(git show --pretty=format: --name-only "${GITHUB_SHA}" 2>/dev/null | grep -iE '^uploads/.*\.(jpe?g|png|webp|gif)$' || true)
+          fi
+          if [ "${#files[@]}" -eq 0 ]; then
+            mapfile -t files < <(git diff --name-only HEAD~1 HEAD 2>/dev/null | grep -iE '^uploads/.*\.(jpe?g|png|webp|gif)$' || true)
           fi
           if [ "${#files[@]}" -eq 0 ]; then
             echo "No image files in this commit under uploads/."

@@ -51,6 +51,8 @@ If **GitHub Pages** builds from the same branch the upload API commits to (often
 
 **Mitigation:** commit uploads (and listing outputs) to a **separate branch**—this repo defaults to **`stamp-data`** via `<meta name="philatelister-branch" content="stamp-data">`—while Pages keeps building from **`main`** (site + `index.html` only). One-time setup: create `stamp-data` from `main` and push (e.g. `git branch stamp-data origin/main && git push -u origin stamp-data`). The PAT must allow writes on that branch. Until `stamp-data` exists, switch the meta back to `main` or create the branch first.
 
+**Workflows on `stamp-data`:** GitHub runs the workflow file **from the commit you push** on `stamp-data`, not automatically from `main`. After you change [`.github/workflows/on-upload.yml`](.github/workflows/on-upload.yml) on `main`, **merge `main` into `stamp-data`** (or rebase) and push so uploads use the updated job. Otherwise you may still see old steps (e.g. `git diff-tree` only) and missed image detection.
+
 ## Issue tracker fallback
 
 For dealers who dislike forms: *“Open a new issue and drag your photo in.”* A workflow can listen for `issues: opened`, read the attachment, run vision + text generation, and **post the eBay draft as a comment** on the same issue.

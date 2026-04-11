@@ -43,7 +43,7 @@ async function uploadToArchive() {
 
 (`TOKEN` here stands in for however you inject the PAT at build or deploy time—never commit a real token.)
 
-The reference form is [`index.html`](index.html) at the repo root: it uploads to `uploads/stamp_<timestamp>_<id>.<ext>` and puts `targetPrice` and `notes` in the commit message as JSON after the line `PhilateLister upload`, so Actions can parse a single push. Workflow: [`.github/workflows/on-upload.yml`](.github/workflows/on-upload.yml) (path filter `uploads/**`).
+The reference form is [`index.html`](index.html) at the repo root: it uploads to `uploads/stamp_<YYYY-MM-DD_hh-mm-ss-mmm>_<sanitized-original-stem>_<id>.<ext>` and uses a commit message `PhilateLister upload: <basename>` plus JSON (`file`, `targetPrice`, `notes`) so Actions can parse a single push. Workflow: [`.github/workflows/on-upload.yml`](.github/workflows/on-upload.yml) (path filter `uploads/**`).
 
 ## Issue tracker fallback
 

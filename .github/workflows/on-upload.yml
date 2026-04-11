@@ -6,14 +6,57 @@ on:
     paths:
       - "uploads/**"
 
+permissions:
+  contents: write
+
 jobs:
   ingest:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - name: Placeholder — add vision + archive (e.g. process_upload.py)
+
+      - name: Show commit message (metadata from index.html)
         env:
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
-          echo "Upload received. First lines of commit message (JSON metadata after blank line from index.html):"
           printf '%s\n' "$COMMIT_MESSAGE" | head -n 12
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Gemini appraisal on new images
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        run: |
+          if [ -z "${GEMINI_API_KEY}" ]; then
+            echo "Skipping appraisal: add repository secret GEMINI_API_KEY."
+            exit 0
+          fi
+          set -euo pipefail
+          mapfile -t files < <(git diff-tree --no-commit-id --name-only -r "${GITHUB_SHA}" | grep -iE '^uploads/.*\.(jpe?g|png|webp|gif)$' || true)
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "No image files in this commit under uploads/."
+            exit 0
+          fi
+          for f in "${files[@]}"; do
+            if [ -f "$f" ]; then
+              python scripts/appraisal.py "$f"
+            fi
+          done
+
+      - name: Commit listings
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add listings/
+          if git diff --staged --quiet; then
+            echo "No listing files to commit."
+          else
+            git commit -m "listings: Gemini text for latest upload(s)"
+            git push
+          fi

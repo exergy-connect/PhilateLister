@@ -3,6 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="copyright" content="Copyright (C) 2026 Exergy ∞ LLC" />
+    <!-- Upload API target: owner/repo (edit when you fork). Branch defaults to main. -->
+    <meta name="philatelister-repo" content="exergy-connect/PhilateLister" />
+    <meta name="philatelister-branch" content="main" />
     <title>PhilateLister — upload a stamp</title>
     <style>
       :root {
@@ -29,9 +33,56 @@
         line-height: 1.5;
       }
       main {
-        max-width: 32rem;
+        max-width: 52rem;
         margin: 0 auto;
         padding: 2rem 1.25rem 3rem;
+      }
+      .upload-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+        gap: 1.35rem;
+        align-items: start;
+      }
+      @media (max-width: 720px) {
+        .upload-layout {
+          grid-template-columns: 1fr;
+        }
+      }
+      .preview-panel {
+        position: sticky;
+        top: 1rem;
+      }
+      .preview-frame {
+        background: #1c1b18;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        min-height: 14rem;
+        aspect-ratio: 4 / 5;
+        max-height: min(70vh, 28rem);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        box-shadow: 0 1px 2px rgba(28, 27, 24, 0.08);
+      }
+      .preview-frame img {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        display: block;
+      }
+      #preview-placeholder {
+        margin: 0;
+        padding: 1.25rem;
+        text-align: center;
+        font-size: 0.9rem;
+        color: #a39e94;
+        line-height: 1.45;
+      }
+      .form-panel form {
+        margin: 0;
       }
       h1 {
         font-size: 1.5rem;
@@ -129,44 +180,59 @@
       <h1>PhilateLister</h1>
       <p class="tagline">Front photo, optional notes, target price — one upload to <code>uploads/</code> to trigger your workflow.</p>
 
-      <form id="upload-form" novalidate>
-        <div class="field">
-          <label for="stamp-file">Stamp image (front) <span aria-hidden="true">*</span></label>
-          <input id="stamp-file" name="stamp" type="file" accept="image/*" required />
-          <p class="hint">One clear photo per submission. Prefer dark background and good light.</p>
-        </div>
+      <div class="upload-layout">
+        <aside class="preview-panel" aria-label="Selected stamp preview">
+          <p class="hint" style="margin: 0 0 0.5rem; font-weight: 600; color: var(--ink)">Preview</p>
+          <div class="preview-frame">
+            <img id="stamp-preview" alt="Selected stamp image" hidden />
+            <p id="preview-placeholder">Choose an image to see it here.</p>
+          </div>
+        </aside>
 
-        <div class="field">
-          <label for="target-price">Target listing price</label>
-          <input id="target-price" name="price" type="number" min="0" step="0.01" placeholder="e.g. 24.99" />
-        </div>
+        <div class="form-panel">
+          <form id="upload-form" novalidate>
+            <div class="field">
+              <label for="stamp-file">Stamp image (front) <span aria-hidden="true">*</span></label>
+              <input id="stamp-file" name="stamp" type="file" accept="image/*" required />
+              <p class="hint">One clear photo per submission. Prefer dark background and good light.</p>
+            </div>
 
-        <div class="field">
-          <label for="notes">Optional notes</label>
-          <textarea id="notes" name="notes" placeholder="Variety hints, catalog numbers, condition…"></textarea>
-        </div>
+            <div class="field">
+              <label for="target-price">Target listing price</label>
+              <input id="target-price" name="price" type="number" min="0" step="0.01" placeholder="e.g. 24.99" />
+            </div>
 
-        <div class="field" id="token-field">
-          <label for="github-token">GitHub fine-grained token</label>
-          <input id="github-token" type="password" autocomplete="off" placeholder="Contents: write on this repo only" />
-          <p class="hint">Not saved in the browser. Leave blank if you configured <code>PHILATELISTER.token</code> in this file for a private deploy.</p>
-        </div>
+            <div class="field">
+              <label for="notes">Optional notes</label>
+              <textarea id="notes" name="notes" placeholder="Variety hints, catalog numbers, condition…"></textarea>
+            </div>
 
-        <button type="submit" id="submit-btn">Upload to GitHub</button>
-        <div id="status" role="status" aria-live="polite"></div>
-      </form>
+            <div class="field" id="token-field">
+              <label for="github-token">GitHub fine-grained token</label>
+              <input id="github-token" type="password" autocomplete="off" placeholder="Contents: write on this repo only" />
+              <p class="hint">Not saved in the browser. Leave blank if you configured <code>PHILATELISTER.token</code> in this file for a private deploy.</p>
+            </div>
+
+            <button type="submit" id="submit-btn">Upload to GitHub</button>
+            <div id="status" role="status" aria-live="polite"></div>
+          </form>
+        </div>
+      </div>
 
       <footer>
         <p>Copyright (C) 2026 Exergy ∞ LLC</p>
         <p>
-          Configure repository under <code>PHILATELISTER</code> in the script. See <a href="design.md">design.md</a> for PAT scope and security.
+          Set upload target in the <code>&lt;head&gt;</code>: <code>philatelister-repo</code> (owner/repo) and <code>philatelister-branch</code>. See <a href="design.md">design.md</a> for PAT scope and security.
         </p>
       </footer>
     </main>
 
     <script>
       /**
-       * Set owner, repo, and branch for the repository that receives uploads.
+       * PhilateLister — Copyright (C) 2026 Exergy ∞ LLC
+       *
+       * Repo target: <meta name="philatelister-repo" content="owner/repo"> and
+       * <meta name="philatelister-branch"> in <head>, then URL / github.io overrides.
        * Optional: set token for trusted/private hosting only (never commit a real token).
        * Same-origin token.txt (gitignored) is loaded when served over http(s), not file://.
        * Push to uploads/ can trigger Actions with paths: ['uploads/**'].
@@ -174,19 +240,44 @@
       const PLACEHOLDER_OWNER = "YOUR_GITHUB_USER_OR_ORG";
 
       const PHILATELISTER = {
-        owner: "exergy-connect",
-        repo: "PhilateLister",
-        branch: "main",
+        owner: "",
+        repo: "",
+        branch: "",
         token: "",
       };
+
+      function applyPhilatelisterRepoFromMeta() {
+        const repoMeta = document.querySelector('meta[name="philatelister-repo"]');
+        if (repoMeta && repoMeta.content) {
+          const raw = repoMeta.content.trim();
+          const slash = raw.indexOf("/");
+          if (slash > 0) {
+            const o = raw.slice(0, slash).trim();
+            const r = raw
+              .slice(slash + 1)
+              .replace(/^\/+|\/+$/g, "")
+              .trim();
+            if (o && r) {
+              PHILATELISTER.owner = o;
+              PHILATELISTER.repo = r;
+            }
+          }
+        }
+        const branchMeta = document.querySelector('meta[name="philatelister-branch"]');
+        if (branchMeta && branchMeta.content.trim()) {
+          PHILATELISTER.branch = branchMeta.content.trim();
+        }
+      }
 
       function applyConfigFromEnvironment() {
         if (typeof window === "undefined" || !window.location) return;
 
+        applyPhilatelisterRepoFromMeta();
+
         const sp = new URLSearchParams(window.location.search);
-        const qOwner = sp.get("owner");
-        const qRepo = sp.get("repo");
-        const qBranch = sp.get("branch");
+        const qOwner = (sp.get("owner") ?? "").trim();
+        const qRepo = (sp.get("repo") ?? "").trim();
+        const qBranch = (sp.get("branch") ?? "").trim();
         if (qOwner) PHILATELISTER.owner = qOwner;
         if (qRepo) PHILATELISTER.repo = qRepo;
         if (qBranch) PHILATELISTER.branch = qBranch;
@@ -234,6 +325,32 @@
 
       syncTokenFieldVisibility();
 
+      const stampFileInput = document.getElementById("stamp-file");
+      const stampPreview = document.getElementById("stamp-preview");
+      const previewPlaceholder = document.getElementById("preview-placeholder");
+      let previewObjectUrl = null;
+
+      function setStampPreview(file) {
+        if (previewObjectUrl) {
+          URL.revokeObjectURL(previewObjectUrl);
+          previewObjectUrl = null;
+        }
+        if (!file || !String(file.type || "").startsWith("image/")) {
+          stampPreview.hidden = true;
+          stampPreview.removeAttribute("src");
+          previewPlaceholder.hidden = false;
+          return;
+        }
+        previewObjectUrl = URL.createObjectURL(file);
+        stampPreview.src = previewObjectUrl;
+        stampPreview.hidden = false;
+        previewPlaceholder.hidden = true;
+      }
+
+      stampFileInput.addEventListener("change", () => {
+        setStampPreview(stampFileInput.files && stampFileInput.files[0] ? stampFileInput.files[0] : null);
+      });
+
       let tokenTxtFetchAttempted = false;
       async function ensureTokenFromTokenTxt() {
         if (tokenTxtFetchAttempted || PHILATELISTER.token) return;
@@ -252,10 +369,16 @@
         }
       }
 
+      function repoTargetSnapshot() {
+        return {
+          owner: String(PHILATELISTER.owner).trim(),
+          repo: String(PHILATELISTER.repo).trim(),
+          branch: String(PHILATELISTER.branch).trim(),
+        };
+      }
+
       function repoTargetValid() {
-        const owner = String(PHILATELISTER.owner).trim();
-        const repo = String(PHILATELISTER.repo).trim();
-        const branch = String(PHILATELISTER.branch).trim();
+        const { owner, repo, branch } = repoTargetSnapshot();
         return Boolean(
           owner && owner !== PLACEHOLDER_OWNER && repo && branch
         );
@@ -282,22 +405,39 @@
         return ext || "jpg";
       }
 
-      function uploadPath(originalName) {
-        const ext = safeExtension(originalName);
-        const id =
-          typeof crypto !== "undefined" && crypto.randomUUID
-            ? crypto.randomUUID().replace(/-/g, "").slice(0, 12)
-            : String(Math.random()).slice(2, 14);
-        return `uploads/stamp_${Date.now()}_${id}.${ext}`;
+      function sanitizeFileStem(originalName) {
+        const base = originalName.replace(/^.*[/\\]/, "");
+        const dot = base.lastIndexOf(".");
+        const stem = (dot >= 0 ? base.slice(0, dot) : base)
+          .replace(/[^a-zA-Z0-9._-]+/g, "-")
+          .replace(/^-+|-+$/g, "")
+          .slice(0, 60);
+        return stem || "image";
       }
 
-      function buildCommitMessage(price, notes) {
+      /** @returns {{ path: string, basename: string }} */
+      function uploadPath(originalName) {
+        const ext = safeExtension(originalName);
+        const stem = sanitizeFileStem(originalName);
+        const d = new Date();
+        const pad = (n, w = 2) => String(n).padStart(w, "0");
+        const stamp = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}_${pad(d.getHours())}-${pad(d.getMinutes())}-${pad(d.getSeconds())}-${pad(d.getMilliseconds(), 3)}`;
+        const id =
+          typeof crypto !== "undefined" && crypto.randomUUID
+            ? crypto.randomUUID().replace(/-/g, "").slice(0, 8)
+            : String(Math.random()).slice(2, 10);
+        const basename = `stamp_${stamp}_${stem}_${id}.${ext}`;
+        return { path: `uploads/${basename}`, basename };
+      }
+
+      function buildCommitMessage(price, notes, imageBasename) {
         const meta = {
           v: 1,
+          file: imageBasename,
           targetPrice: price === "" || price == null ? null : String(price),
           notes: notes.trim() || null,
         };
-        return `${COMMIT_PREFIX}\n\n${JSON.stringify(meta)}`;
+        return `${COMMIT_PREFIX}: ${imageBasename}\n\n${JSON.stringify(meta)}`;
       }
 
       async function putFile(path, contentBase64, message, token) {
@@ -342,14 +482,17 @@
         }
 
         if (!repoTargetValid()) {
+          const snap = repoTargetSnapshot();
           statusEl.className = "error";
           statusEl.textContent =
-            "Set the upload repository: edit PHILATELISTER.owner / .repo / .branch in index.html, open this page from https://YOUR_ORG.github.io/REPO/ (values are filled automatically), or append ?owner=ORG&repo=REPO&branch=main to the URL.";
+            "Upload target is incomplete or still set to the template owner. " +
+            `Resolved: owner=${JSON.stringify(snap.owner)} repo=${JSON.stringify(snap.repo)} branch=${JSON.stringify(snap.branch)}. ` +
+            "Fix: set <meta name=\"philatelister-repo\" content=\"OWNER/REPO\"> and <meta name=\"philatelister-branch\" content=\"main\"> in the page <head>, " +
+            "or open from https://YOUR_ORG.github.io/REPO/, or use ?owner=ORG&repo=REPO&branch=main (no empty values).";
           return;
         }
 
-        const fileInput = document.getElementById("stamp-file");
-        const file = fileInput.files && fileInput.files[0];
+        const file = stampFileInput.files && stampFileInput.files[0];
         if (!file) {
           statusEl.className = "error";
           statusEl.textContent = "Choose a stamp image.";
@@ -364,12 +507,13 @@
 
         try {
           const base64 = await fileToBase64(file);
-          const path = uploadPath(file.name);
-          const message = buildCommitMessage(priceVal, notesVal);
+          const { path, basename } = uploadPath(file.name);
+          const message = buildCommitMessage(priceVal, notesVal, basename);
           await putFile(path, base64, message, token);
           statusEl.className = "ok";
           statusEl.textContent = `Uploaded ${path}. Your workflow should run on this push.`;
           form.reset();
+          setStampPreview(null);
         } catch (err) {
           statusEl.className = "error";
           statusEl.textContent = err instanceof Error ? err.message : String(err);

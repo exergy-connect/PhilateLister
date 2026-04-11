@@ -4,9 +4,11 @@
 from __future__ import annotations
 
 import argparse
+import functools
 import json
 import mimetypes
 import os
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -14,7 +16,51 @@ from typing import Any
 from google import genai
 from google.genai import types
 
-DEFAULT_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3-flash")
+_REPO_ROOT = Path(__file__).resolve().parent.parent
+# Basename for prompts/<id>.json only (no path segments).
+_PROMPT_ID_RE = re.compile(r"^[a-zA-Z0-9][a-zA-Z0-9_-]{0,62}$")
+
+
+def prompt_id_from_meta(meta: dict[str, Any]) -> str:
+    raw = str(meta.get("prompt") or "").strip()
+    if not raw:
+        return "stamp_listing"
+    if not _PROMPT_ID_RE.fullmatch(raw):
+        raise ValueError(f"Invalid prompt id in commit metadata: {raw!r}")
+    return raw
+
+
+@functools.lru_cache(maxsize=16)
+def _load_prompt_pack(prompt_basename: str) -> tuple[str, str]:
+    """Return (preferred_model, template) from prompts/<basename>.json."""
+    if not _PROMPT_ID_RE.fullmatch(prompt_basename):
+        raise ValueError(f"Invalid prompt id: {prompt_basename!r}")
+    path = _REPO_ROOT / "prompts" / f"{prompt_basename}.json"
+    if not path.is_file():
+        raise FileNotFoundError(f"Missing prompt template: {path}")
+    data = json.loads(path.read_text(encoding="utf-8"))
+    model = str(data.get("preferred_model") or "gemini-3-flash-preview").strip()
+    if "template_lines" in data:
+        lines = data["template_lines"]
+        if not isinstance(lines, list):
+            raise TypeError("template_lines must be a JSON array of strings")
+        template = "\n".join(str(line) for line in lines)
+    elif "template" in data:
+        template = str(data["template"])
+    else:
+        raise KeyError(f"{path} needs template_lines or template")
+    return model, template
+
+
+def generate_config_for_model(model: str) -> types.GenerateContentConfig | None:
+    """thinking_level applies to Gemini 3.x; 2.5 models reject it."""
+    if "gemini-3" not in model.lower():
+        return None
+    return types.GenerateContentConfig(
+        thinking_config=types.ThinkingConfig(
+            thinking_level=types.ThinkingLevel.HIGH
+        )
+    )
 
 
 def parse_philatelister_commit(message: str | None) -> dict[str, Any]:
@@ -35,41 +81,37 @@ def parse_philatelister_commit(message: str | None) -> dict[str, Any]:
     return out
 
 
+def _file_mismatch_gap(image_basename: str, meta: dict[str, Any]) -> str:
+    """Blank line vs. note when commit metadata file field does not match this image."""
+    file_meta = meta.get("file")
+    if file_meta and file_meta != image_basename:
+        return (
+            "\nNote: Commit metadata file field is "
+            f"{file_meta!r} but this run is for {image_basename!r}; "
+            "still apply target price and notes if they are relevant.\n"
+        )
+    return "\n"
+
+
 def build_gemini_prompt(image_basename: str, parsed: dict[str, Any]) -> str:
     meta = parsed.get("meta") or {}
+    prompt_id = prompt_id_from_meta(meta)
+    _, template = _load_prompt_pack(prompt_id)
     first_line = parsed.get("first_line") or ""
     meta_json = json.dumps(meta, indent=2, ensure_ascii=False)
-
     target = meta.get("targetPrice")
     notes = meta.get("notes")
-    file_meta = meta.get("file")
+    gap = _file_mismatch_gap(image_basename, meta)
+    first_display = first_line if first_line else "(none)"
 
-    mismatch = ""
-    if file_meta and file_meta != image_basename:
-        mismatch = (
-            f"\nNote: Commit metadata file field is {file_meta!r} but this run is for "
-            f"{image_basename!r}; still apply target price and notes if they are relevant.\n"
-        )
-
-    return f"""You are helping a stamp dealer prepare an eBay listing for this upload.
-
-Image file name: {image_basename}
-{mismatch}
-Commit summary line (from uploader):
-{first_line if first_line else "(none)"}
-
-Full structured parameters from the upload form (JSON — use every field that helps identification or listing copy):
-{meta_json}
-
-Dealer target listing price (use as pricing context; do not invent a Scott value): {json.dumps(target)}
-Dealer notes and hints (incorporate into identification and description): {json.dumps(notes)}
-
-From the stamp image, identify the issue where possible. Provide:
-- A concise eBay title
-- Scott or main catalog number when you can justify it, or say when uncertain
-- A condition report visible from the image
-- Details on the cancel, if any, such as city name or date of cancellation
-- Listing body text that respects the dealer's notes and is consistent with their target price band (polite, professional tone)"""
+    text = template
+    text = text.replace("__IMAGE_BASENAME__", image_basename)
+    text = text.replace("__FILE_MISMATCH_GAP__", gap)
+    text = text.replace("__FIRST_LINE__", first_display)
+    text = text.replace("__META_JSON__", meta_json)
+    text = text.replace("__TARGET_JSON__", json.dumps(target))
+    text = text.replace("__NOTES_JSON__", json.dumps(notes))
+    return text
 
 
 def _guess_mime(path: Path) -> str:
@@ -114,24 +156,32 @@ def run_appraisal(image_path: str, commit_message: str | None = None) -> None:
         sys.exit(1)
 
     parsed = parse_philatelister_commit(commit_message)
-    prompt = build_gemini_prompt(path.name, parsed)
+    try:
+        prompt = build_gemini_prompt(path.name, parsed)
+    except (ValueError, FileNotFoundError, KeyError, TypeError) as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        sys.exit(1)
 
     client = genai.Client(api_key=api_key)
     img_bytes = path.read_bytes()
     mime = _guess_mime(path)
 
-    response = client.models.generate_content(
-        model=DEFAULT_MODEL,
-        contents=[
+    meta = parsed.get("meta") or {}
+    prompt_id = prompt_id_from_meta(meta)
+    preferred_model, _ = _load_prompt_pack(prompt_id)
+    model = (os.environ.get("GEMINI_MODEL") or "").strip() or preferred_model
+    gen_cfg = generate_config_for_model(model)
+    gen_kwargs: dict[str, Any] = {
+        "model": model,
+        "contents": [
             types.Part.from_bytes(data=img_bytes, mime_type=mime),
             prompt,
         ],
-        config=types.GenerateContentConfig(
-            thinking_config=types.ThinkingConfig(
-                thinking_level=types.ThinkingLevel.HIGH
-            )
-        ),
-    )
+    }
+    if gen_cfg is not None:
+        gen_kwargs["config"] = gen_cfg
+
+    response = client.models.generate_content(**gen_kwargs)
 
     text = _response_text(response)
     if not text.strip():

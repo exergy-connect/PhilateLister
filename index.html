@@ -121,6 +121,7 @@
       input[type="file"],
       input[type="number"],
       input[type="password"],
+      select,
       textarea {
         width: 100%;
         font: inherit;
@@ -206,6 +207,14 @@
             <div class="field">
               <label for="notes">Optional notes</label>
               <textarea id="notes" name="notes" placeholder="Variety hints, catalog numbers, condition…"></textarea>
+            </div>
+
+            <div class="field">
+              <label for="prompt-select">Prompt template</label>
+              <select id="prompt-select" name="prompt">
+                <option value="stamp_listing" selected>stamp_listing — eBay listing</option>
+              </select>
+              <p class="hint">Matches <code>prompts/&lt;name&gt;.json</code> on the branch that runs Actions. Add options here when you add new prompt files.</p>
             </div>
 
             <div class="field" id="token-field">
@@ -428,10 +437,11 @@
         return { path: `uploads/${basename}`, basename };
       }
 
-      function buildCommitMessage(price, notes, imageBasename) {
+      function buildCommitMessage(price, notes, imageBasename, promptId) {
         const meta = {
           v: 1,
           file: imageBasename,
+          prompt: promptId || "stamp_listing",
           targetPrice: price === "" || price == null ? null : String(price),
           notes: notes.trim() || null,
         };
@@ -499,6 +509,7 @@
 
         const priceVal = document.getElementById("target-price").value.trim();
         const notesVal = document.getElementById("notes").value;
+        const promptId = document.getElementById("prompt-select").value.trim() || "stamp_listing";
 
         submitBtn.disabled = true;
         statusEl.textContent = "Uploading…";
@@ -506,7 +517,7 @@
         try {
           const base64 = await fileToBase64(file);
           const { path, basename } = uploadPath(file.name);
-          const message = buildCommitMessage(priceVal, notesVal, basename);
+          const message = buildCommitMessage(priceVal, notesVal, basename, promptId);
           await putFile(path, base64, message, token);
           statusEl.className = "ok";
           statusEl.textContent = `Uploaded ${path}. Your workflow should run on this push.`;

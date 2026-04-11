@@ -673,11 +673,12 @@
         return `${COMMIT_PREFIX}: ${imageBasename}\n\n${JSON.stringify(meta)}`;
       }
 
-      /** Same stem as scripts appraisal: listings/<stem>.txt (or .json for xframe) for uploads/<basename>. */
-      function listingRelPathFromImageBasename(basename) {
+      /** Same stem as scripts appraisal: listings/<stem>.txt or .json when prompt is xframe. */
+      function listingRelPathFromImageBasename(basename, promptId) {
         const dot = basename.lastIndexOf(".");
         const stem = dot >= 1 ? basename.slice(0, dot) : basename;
-        return `listings/${stem}.txt`;
+        const ext = promptId === "xframe" ? "json" : "txt";
+        return `listings/${stem}.${ext}`;
       }
 
       function decodeGitHubContentBase64(b64) {
@@ -727,7 +728,7 @@
       let listingPollGeneration = 0;
 
       /**
-       * Polls branch until listings/*.txt exists or timeout. New calls bump generation so stale polls stop updating UI.
+       * Polls branch until the listing file exists or timeout. New calls bump generation so stale polls stop updating UI.
        */
       async function waitForListingOnBranch(listingPath, token, options) {
         const intervalMs = options && options.intervalMs != null ? options.intervalMs : 4000;
@@ -755,7 +756,15 @@
             if (gen !== listingPollGeneration) return;
             if (text !== null) {
               waitEl.textContent = "";
-              textEl.textContent = text;
+              if (listingPath.endsWith(".json")) {
+                try {
+                  textEl.textContent = JSON.stringify(JSON.parse(text), null, 2);
+                } catch {
+                  textEl.textContent = text;
+                }
+              } else {
+                textEl.textContent = text;
+              }
               textEl.hidden = false;
               section.setAttribute("aria-busy", "false");
               statusEl.textContent += ` Listing ready after ${formatMmSs(Date.now() - start)}.`;
@@ -862,7 +871,7 @@
           statusEl.className = "ok";
           statusEl.textContent = `Uploaded ${path}. Waiting for listing on branch ${PHILATELISTER.branch}…`;
           form.reset();
-          const listingPath = listingRelPathFromImageBasename(basename);
+          const listingPath = listingRelPathFromImageBasename(basename, promptId);
           waitForListingOnBranch(listingPath, token);
         } catch (err) {
           statusEl.className = "error";

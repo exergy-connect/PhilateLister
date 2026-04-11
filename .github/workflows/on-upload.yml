@@ -4,7 +4,7 @@ name: Stamp upload
 on:
   push:
     branches:
-      - stamp-data
+      - main
     paths:
       - "uploads/**"
 

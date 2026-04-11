@@ -4,9 +4,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="copyright" content="Copyright (C) 2026 Exergy ∞ LLC" />
-    <!-- Upload API: owner/repo. Branch = where files are committed (use stamp-data, not your Pages branch, to avoid a site rebuild every upload). -->
+    <!-- Upload API: owner/repo. Branch = where files are committed (default main; same branch as GitHub Pages). -->
     <meta name="philatelister-repo" content="exergy-connect/PhilateLister" />
-    <meta name="philatelister-branch" content="stamp-data" />
+    <meta name="philatelister-branch" content="main" />
     <!-- Optional: AES-256-GCM blob, base64(salt16 || iv12 || ciphertext+tag). Decrypt with ASCII token password field below. Generate: see HTML comment before </body>. -->
     <meta name="philatelister-token-cipher" content="71I16BcF1Yr5kVUaQ6zLW4YtVefnR/Ea57dn/4KLaoyKFTq00tSzKKhVrdcce3kf7g+uiqPborNY3iG3FfVu507BcEPpjyqA+TYedxp78noxIcW/tUd0U/adwAEJfDQF6jWQb7FwMlfko3zrHBAT550jc+cCXiBAWZoYgnd2TqBbdCijF+OLXbU=" />
     <title>PhilateLister — upload a stamp</title>
@@ -407,7 +407,7 @@
         }
 
         if (!String(PHILATELISTER.branch).trim()) {
-          PHILATELISTER.branch = "stamp-data";
+          PHILATELISTER.branch = "main";
         }
       }
 
@@ -835,7 +835,7 @@
             "Upload target is incomplete or still set to the template owner. " +
             `Resolved: owner=${JSON.stringify(snap.owner)} repo=${JSON.stringify(snap.repo)} branch=${JSON.stringify(snap.branch)}. ` +
             "Fix: set <meta name=\"philatelister-repo\" content=\"OWNER/REPO\"> and <meta name=\"philatelister-branch\" content=\"main\"> in the page <head>, " +
-            "or open from https://YOUR_ORG.github.io/REPO/, or use ?owner=ORG&repo=REPO&branch=stamp-data (no empty values).";
+            "or open from https://YOUR_ORG.github.io/REPO/, or use ?owner=ORG&repo=REPO&branch=main (no empty values).";
           return;
         }
 

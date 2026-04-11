@@ -1,0 +1,44 @@
+{
+  "name": "PhilateLister stamp catalog",
+  "version": "26.04.11.1",
+  "author": "Exergy ∞ LLC",
+  "description": "Entity shard: optional sales listing / asking price for a stamp.",
+  "source": "PhilateLister",
+  "entities": [
+    {
+      "name": "listing",
+      "brief": "Optional marketplace or guide pricing for a catalog stamp.",
+      "description": "Separate from philatelic attributes on stamp; omit when no price is tracked or use multiple rows for history or multi-channel asks.",
+      "primary_key": "listing_id",
+      "fields": [
+        {
+          "name": "listing_id",
+          "description": "Surrogate primary key for this listing row.",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "stamp_id",
+          "description": "Stamp this listing prices.",
+          "type": {
+            "primitive": "string",
+            "foreignKeys": [{ "entity": "stamp" }]
+          },
+          "required": true
+        },
+        {
+          "name": "target_price",
+          "description": "Guide or asking price as a decimal in listing_currency.",
+          "type": { "primitive": "number" },
+          "required": true
+        },
+        {
+          "name": "listing_currency",
+          "description": "ISO 4217 currency code for target_price (e.g. USD, EUR, DKK).",
+          "type": { "primitive": "string" },
+          "required": true
+        }
+      ]
+    }
+  ]
+}

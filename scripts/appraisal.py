@@ -17,6 +17,7 @@ from google import genai
 from google.genai import types
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent
+_CONSOLIDATED_SCHEMA_PATH = _REPO_ROOT / "xframe" / "output" / "consolidated.schema.json"
 # Basename for prompts/<id>.json only (no path segments).
 _PROMPT_ID_RE = re.compile(r"^[a-zA-Z0-9][a-zA-Z0-9_-]{0,62}$")
 
@@ -93,6 +94,20 @@ def _file_mismatch_gap(image_basename: str, meta: dict[str, Any]) -> str:
     return "\n"
 
 
+def _consolidated_schema_json_for_prompt() -> str:
+    """Pretty-printed consolidated.schema.json for xFrame catalog prompts."""
+    if not _CONSOLIDATED_SCHEMA_PATH.is_file():
+        raise FileNotFoundError(
+            f"Missing {_CONSOLIDATED_SCHEMA_PATH}; run the TypeScript xFrame consolidator "
+            f"with --working-dir pointing at this repo's xframe/ directory first."
+        )
+    raw = _CONSOLIDATED_SCHEMA_PATH.read_text(encoding="utf-8")
+    try:
+        return json.dumps(json.loads(raw), indent=2, ensure_ascii=False)
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"Invalid JSON in {_CONSOLIDATED_SCHEMA_PATH}: {exc}") from exc
+
+
 def build_gemini_prompt(image_basename: str, parsed: dict[str, Any]) -> str:
     meta = parsed.get("meta") or {}
     prompt_id = prompt_id_from_meta(meta)
@@ -103,14 +118,18 @@ def build_gemini_prompt(image_basename: str, parsed: dict[str, Any]) -> str:
     notes = meta.get("notes")
     gap = _file_mismatch_gap(image_basename, meta)
     first_display = first_line if first_line else "(none)"
+    stamp_suggested_id = Path(image_basename).stem
 
     text = template
+    if "__CONSOLIDATED_SCHEMA_JSON__" in text:
+        text = text.replace("__CONSOLIDATED_SCHEMA_JSON__", _consolidated_schema_json_for_prompt())
     text = text.replace("__IMAGE_BASENAME__", image_basename)
     text = text.replace("__FILE_MISMATCH_GAP__", gap)
     text = text.replace("__FIRST_LINE__", first_display)
     text = text.replace("__META_JSON__", meta_json)
     text = text.replace("__TARGET_JSON__", json.dumps(target))
     text = text.replace("__NOTES_JSON__", json.dumps(notes))
+    text = text.replace("__STAMP_SUGGESTED_ID__", stamp_suggested_id)
     return text
 
 
@@ -126,6 +145,19 @@ def _guess_mime(path: Path) -> str:
         ".webp": "image/webp",
         ".gif": "image/gif",
     }.get(ext, "image/jpeg")
+
+
+def _strip_markdown_json_fence(text: str) -> str:
+    """Remove optional ``` / ```json fences from model output."""
+    t = text.strip()
+    if not t.startswith("```"):
+        return t
+    lines = t.split("\n")
+    if lines and lines[0].startswith("```"):
+        lines = lines[1:]
+    if lines and lines[-1].strip() == "```":
+        lines = lines[:-1]
+    return "\n".join(lines).strip()
 
 
 def _response_text(response) -> str:
@@ -191,9 +223,25 @@ def run_appraisal(image_path: str, commit_message: str | None = None) -> None:
     base_name = path.stem
     listings = Path("listings")
     listings.mkdir(parents=True, exist_ok=True)
-    out_path = listings / f"{base_name}.txt"
-    out_path.write_text(text, encoding="utf-8")
-    print(f"Listing created: {out_path}")
+    if prompt_id == "xframe":
+        body = _strip_markdown_json_fence(text)
+        try:
+            parsed_json = json.loads(body)
+        except json.JSONDecodeError as exc:
+            print(f"Warning: model output is not valid JSON ({exc}); writing raw text.", file=sys.stderr)
+            out_path = listings / f"{base_name}.json"
+            out_path.write_text(body, encoding="utf-8")
+        else:
+            out_path = listings / f"{base_name}.json"
+            out_path.write_text(
+                json.dumps(parsed_json, indent=2, ensure_ascii=False) + "\n",
+                encoding="utf-8",
+            )
+        print(f"xFrame catalog JSON written: {out_path}")
+    else:
+        out_path = listings / f"{base_name}.txt"
+        out_path.write_text(text, encoding="utf-8")
+        print(f"Listing created: {out_path}")
 
 
 def main() -> None:

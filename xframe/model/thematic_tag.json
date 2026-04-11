@@ -1,0 +1,50 @@
+{
+  "name": "PhilateLister stamp catalog",
+  "version": "26.04.11.1",
+  "author": "Exergy ∞ LLC",
+  "description": "Entity shard: thematic or topical classification tag.",
+  "source": "PhilateLister",
+  "entities": [
+    {
+      "name": "thematic_tag",
+      "brief": "Controlled topical or thematic label.",
+      "description": "Normalized tags for ships, royalty, Olympics, etc.; optional parent builds a shallow hierarchy.",
+      "primary_key": "tag_id",
+      "fields": [
+        {
+          "name": "tag_id",
+          "description": "Stable slug for the tag (e.g. topical-ships, royalty-crowns).",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "name",
+          "description": "Short label shown in filters and listings.",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "description",
+          "description": "What designs or subjects belong under this tag.",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "parent_tag_id",
+          "description": "Optional parent tag for subtopics.",
+          "type": {
+            "primitive": "string",
+            "foreignKeys": [{ "entity": "thematic_tag" }]
+          },
+          "required": false
+        },
+        {
+          "name": "sort_order",
+          "description": "Optional ordering among siblings.",
+          "type": { "primitive": "integer" },
+          "required": false
+        }
+      ]
+    }
+  ]
+}

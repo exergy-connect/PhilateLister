@@ -1,0 +1,53 @@
+{
+  "name": "PhilateLister stamp catalog",
+  "version": "26.04.11.1",
+  "author": "Exergy ∞ LLC",
+  "description": "Entity shard: catalog number assignment per stamp and catalog system.",
+  "source": "PhilateLister",
+  "entities": [
+    {
+      "name": "stamp_catalog_number",
+      "brief": "One catalog listing reference for a stamp.",
+      "description": "Stores Scott, Michel, Facit, etc. numbers per stamp; a stamp may have multiple rows for different systems or supplements.",
+      "primary_key": "catalog_line_id",
+      "fields": [
+        {
+          "name": "catalog_line_id",
+          "description": "Surrogate primary key for this catalog line.",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "stamp_id",
+          "description": "Stamp this number refers to.",
+          "type": {
+            "primitive": "string",
+            "foreignKeys": [{ "entity": "stamp" }]
+          },
+          "required": true
+        },
+        {
+          "name": "catalog_system_id",
+          "description": "Which catalog system the number belongs to.",
+          "type": {
+            "primitive": "string",
+            "foreignKeys": [{ "entity": "catalog_system" }]
+          },
+          "required": true
+        },
+        {
+          "name": "catalog_number",
+          "description": "Number as printed in the catalog (e.g. 85a, 123 II, 4y).",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "supplement_notes",
+          "description": "Specialized catalog notes, plate blocks, or variety suffixes.",
+          "type": { "primitive": "string" },
+          "required": false
+        }
+      ]
+    }
+  ]
+}

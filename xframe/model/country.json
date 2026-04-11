@@ -1,0 +1,36 @@
+{
+  "name": "PhilateLister stamp catalog",
+  "version": "26.04.11.1",
+  "author": "Exergy ∞ LLC",
+  "description": "Entity shard: issuing country or postal administration.",
+  "source": "PhilateLister",
+  "entities": [
+    {
+      "name": "country",
+      "brief": "Issuing country or postal administration.",
+      "description": "Normalized territory for cataloging, filtering, and joins; identifiers should remain stable across inventory and listings.",
+      "source": "ISO 3166, catalog handbooks, or internal slugs",
+      "primary_key": "country_id",
+      "fields": [
+        {
+          "name": "country_id",
+          "description": "Stable identifier; prefer ISO 3166-1 alpha-2 when practical, otherwise a short mnemonic slug (e.g. dk, ddr).",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "display_name",
+          "description": "Human-readable country or postal administration name.",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "notes",
+          "description": "Optional clarifications (colonies, period splits, obsolete administrations).",
+          "type": { "primitive": "string" },
+          "required": false
+        }
+      ]
+    }
+  ]
+}

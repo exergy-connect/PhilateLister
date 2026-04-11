@@ -1,0 +1,8 @@
+{
+  "name": "PhilateLister stamp catalog",
+  "version": "26.04.11.1",
+  "author": "Exergy ∞ LLC",
+  "description": "Dealer and collector catalog for stamps: issuing country, catalog numbers across systems, issue series, year of issue, condition, centering, perforation, and thematic tags.",
+  "source": "PhilateLister / manual curation",
+  "entities": []
+}

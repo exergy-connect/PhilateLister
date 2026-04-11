@@ -1,0 +1,114 @@
+{
+  "country": [
+    {
+      "country_id": "dk",
+      "display_name": "Denmark",
+      "notes": "Kingdom of Denmark; includes historical issues."
+    },
+    {
+      "country_id": "se",
+      "display_name": "Sweden",
+      "notes": ""
+    }
+  ],
+  "catalog_system": [
+    {
+      "catalog_system_id": "michel",
+      "name": "Michel Deutschland-Spezial",
+      "abbreviation": "Mi.",
+      "notes": "Example European specialized catalog."
+    },
+    {
+      "catalog_system_id": "scott",
+      "name": "Scott Standard Postage Stamp Catalogue",
+      "abbreviation": "Sc.",
+      "notes": "US-oriented numbering."
+    },
+    {
+      "catalog_system_id": "facit",
+      "name": "Facit Nordic Countries",
+      "abbreviation": "Facit",
+      "notes": "Scandinavian specialized."
+    }
+  ],
+  "issue_series": [
+    {
+      "series_id": "dk-bicolors-classic",
+      "country_id": "dk",
+      "name": "Denmark classic bicolors",
+      "description": "Perforated bicolor definitives and numeral designs, late 19th century.",
+      "year_from": 1870,
+      "year_to": 1905
+    }
+  ],
+  "thematic_tag": [
+    {
+      "tag_id": "topical-ships",
+      "name": "Ships (topical)",
+      "description": "Maritime themes on stamp designs.",
+      "sort_order": 20
+    },
+    {
+      "tag_id": "denmark-arms",
+      "name": "Denmark coat of arms",
+      "description": "National arms, crowns, and related heraldic designs on Danish issues."
+    }
+  ],
+  "stamp": [
+    {
+      "stamp_id": "stamp_2026-04-11_example_001",
+      "country_id": "dk",
+      "issue_series_id": "dk-bicolors-classic",
+      "title": "Denmark 20 øre bicolor used",
+      "summary": "VF used, numeral cancel; printing variety per dealer notes.",
+      "issue_year": 1895,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "perforation": "Perforated 13",
+      "image_basename": "stamp_2026-04-11_example_001.jpg",
+      "freeform_keywords": ["Facit", "numeral", "cancel"]
+    }
+  ],
+  "listing": [
+    {
+      "listing_id": "lst-001",
+      "stamp_id": "stamp_2026-04-11_example_001",
+      "target_price": 44.0,
+      "listing_currency": "USD"
+    }
+  ],
+  "stamp_catalog_number": [
+    {
+      "catalog_line_id": "scn-001",
+      "stamp_id": "stamp_2026-04-11_example_001",
+      "catalog_system_id": "facit",
+      "catalog_number": "DK 45",
+      "supplement_notes": "Illustrative Facit-style id; replace with real number."
+    },
+    {
+      "catalog_line_id": "scn-002",
+      "stamp_id": "stamp_2026-04-11_example_001",
+      "catalog_system_id": "michel",
+      "catalog_number": "28y",
+      "supplement_notes": "Illustrative Michel number."
+    }
+  ],
+  "stamp_thematic_tag": [
+    {
+      "thematic_link_id": "stt-001",
+      "stamp_id": "stamp_2026-04-11_example_001",
+      "tag_id": "denmark-arms",
+      "role": "primary",
+      "confidence": 0.88,
+      "notes": "Arms and numeral design family."
+    },
+    {
+      "thematic_link_id": "stt-002",
+      "stamp_id": "stamp_2026-04-11_example_001",
+      "tag_id": "topical-ships",
+      "role": "secondary",
+      "confidence": 0.25,
+      "notes": "Only if design includes a ship motif; verify visually."
+    }
+  ]
+}

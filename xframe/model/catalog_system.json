@@ -1,0 +1,41 @@
+{
+  "name": "PhilateLister stamp catalog",
+  "version": "26.04.11.1",
+  "author": "Exergy ∞ LLC",
+  "description": "Entity shard: major stamp catalog or numbering system.",
+  "source": "PhilateLister",
+  "entities": [
+    {
+      "name": "catalog_system",
+      "brief": "A published or customary numbering system (Scott, Michel, etc.).",
+      "description": "Reference system used for catalog numbers on individual stamps; one row per system you track.",
+      "primary_key": "catalog_system_id",
+      "fields": [
+        {
+          "name": "catalog_system_id",
+          "description": "Stable slug for this catalog (e.g. scott, michel, facit, sg).",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "name",
+          "description": "Full name of the catalog or reference work.",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "abbreviation",
+          "description": "Short label shown in UI or listings (e.g. Mi., Sc., SG).",
+          "type": { "primitive": "string" },
+          "required": false
+        },
+        {
+          "name": "notes",
+          "description": "Edition notes, regional scope, or usage caveats.",
+          "type": { "primitive": "string" },
+          "required": false
+        }
+      ]
+    }
+  ]
+}

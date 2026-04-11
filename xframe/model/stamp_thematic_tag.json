@@ -1,0 +1,62 @@
+{
+  "name": "PhilateLister stamp catalog",
+  "version": "26.04.11.1",
+  "author": "Exergy ∞ LLC",
+  "description": "Entity shard: links stamps to thematic tags.",
+  "source": "PhilateLister",
+  "entities": [
+    {
+      "name": "stamp_thematic_tag",
+      "brief": "Assignment of a thematic tag to a stamp.",
+      "description": "Many-to-many link; supports primary vs secondary topical roles and free-text rationale.",
+      "primary_key": "thematic_link_id",
+      "fields": [
+        {
+          "name": "thematic_link_id",
+          "description": "Surrogate primary key for this assignment.",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "stamp_id",
+          "description": "Stamp receiving the thematic tag.",
+          "type": {
+            "primitive": "string",
+            "foreignKeys": [{ "entity": "stamp" }]
+          },
+          "required": true
+        },
+        {
+          "name": "tag_id",
+          "description": "Thematic tag applied.",
+          "type": {
+            "primitive": "string",
+            "foreignKeys": [{ "entity": "thematic_tag" }]
+          },
+          "required": true
+        },
+        {
+          "name": "role",
+          "description": "How this tag relates to other tags on the same stamp.",
+          "type": {
+            "primitive": "string",
+            "enum": ["primary", "secondary", "minor", "archival"]
+          },
+          "required": false
+        },
+        {
+          "name": "confidence",
+          "description": "Optional model or human confidence 0.0–1.0 for ML-assisted tagging.",
+          "type": { "primitive": "number" },
+          "required": false
+        },
+        {
+          "name": "notes",
+          "description": "Rationale or caveats for this thematic assignment.",
+          "type": { "primitive": "string" },
+          "required": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "name": "PhilateLister stamp catalog",
+  "version": "26.04.11.1",
+  "author": "Exergy ∞ LLC",
+  "description": "Entity shard: catalog row for a single stamp or lot line.",
+  "source": "PhilateLister",
+  "allow_unlimited_fields": true,
+  "entities": [
+    {
+      "name": "stamp",
+      "brief": "One inventory or catalog item for a stamp.",
+      "description": "Core record: country of issue, year, physical attributes (perforation, centering), condition, optional series membership; catalog numbers, thematic tags, and optional pricing (listing entity) use child rows.",
+      "primary_key": "stamp_id",
+      "fields": [
+        {
+          "name": "stamp_id",
+          "description": "Unique id (SKU, upload basename, or UUID).",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "country_id",
+          "description": "Issuing country or postal administration.",
+          "type": {
+            "primitive": "string",
+            "foreignKeys": [{ "entity": "country" }]
+          },
+          "required": false
+        },
+        {
+          "name": "issue_series_id",
+          "description": "Stamp set or series this item belongs to, when known.",
+          "type": {
+            "primitive": "string",
+            "foreignKeys": [{ "entity": "issue_series" }]
+          },
+          "required": false
+        },
+        {
+          "name": "title",
+          "description": "Short title or working label (often aligned with listing title).",
+          "type": { "primitive": "string" },
+          "required": false
+        },
+        {
+          "name": "summary",
+          "description": "Identification notes, variety callouts, or catalog commentary.",
+          "type": { "primitive": "string" },
+          "required": false
+        },
+        {
+          "name": "issue_year",
+          "description": "Primary year of issue for this stamp or single-stamp lot.",
+          "type": { "primitive": "integer" },
+          "required": false
+        },
+        {
+          "name": "issue_year_to",
+          "description": "End year for multi-year issues or sets represented by one row.",
+          "type": { "primitive": "integer" },
+          "required": false
+        },
+        {
+          "name": "condition_quality",
+          "description": "Overall condition or gum state for mint/used grading.",
+          "type": {
+            "primitive": "string",
+            "enum": [
+              "mint_never_hinged",
+              "mint_hinged",
+              "mint_no_gum",
+              "mint_disturbed_gum",
+              "used",
+              "used_on_paper",
+              "on_cover",
+              "faulty",
+              "unknown"
+            ]
+          },
+          "required": false
+        },
+        {
+          "name": "centering_grade",
+          "description": "Centering and margin balance for perforated issues, using the ladder common on eBay and in US expertizing (PSE, Philatelic Foundation): Gem/Superb through Fine/VF/XF slash grades (e.g. VF/XF, F-VF), then VG/Good/Average/Poor. MNH/NH/LH describe gum, not centering—use condition_quality for those.",
+          "type": {
+            "primitive": "string",
+            "enum": [
+              "gem",
+              "superb",
+              "xf_superb",
+              "xf",
+              "vf_xf",
+              "vf",
+              "f_vf",
+              "fine",
+              "vg_f",
+              "vg",
+              "good_vg",
+              "good",
+              "average",
+              "below_average",
+              "poor",
+              "faulty",
+              "not_applicable",
+              "unknown"
+            ]
+          },
+          "required": false
+        },
+        {
+          "name": "perforation",
+          "description": "Perforation description (e.g. perf 11½, comb 13¾, imperforate, roulette).",
+          "type": { "primitive": "string" },
+          "required": false
+        },
+        {
+          "name": "image_basename",
+          "description": "Image file name in uploads/ or media store.",
+          "type": { "primitive": "string" },
+          "required": false
+        },
+        {
+          "name": "freeform_keywords",
+          "description": "Ad-hoc keywords not yet mapped to thematic_tag.",
+          "type": {
+            "array": {
+              "primitive": "string",
+              "min": 0,
+              "max": 64
+            }
+          },
+          "required": false
+        }
+      ]
+    }
+  ]
+}

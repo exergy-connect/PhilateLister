@@ -1,0 +1,65 @@
+{
+  "name": "PhilateLister stamp catalog",
+  "version": "26.04.11.1",
+  "author": "Exergy ∞ LLC",
+  "description": "Entity shard: stamp set, series, or definitive issue grouping.",
+  "source": "PhilateLister",
+  "entities": [
+    {
+      "name": "issue_series",
+      "brief": "Named set or series an issue belongs to.",
+      "description": "Groups stamps into sets, definitive series, commemoratives, or specialized series for browsing and pricing context.",
+      "primary_key": "series_id",
+      "fields": [
+        {
+          "name": "series_id",
+          "description": "Stable unique id for this series within the catalog.",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "country_id",
+          "description": "Primary issuing country or administration for this series.",
+          "type": {
+            "primitive": "string",
+            "foreignKeys": [{ "entity": "country" }]
+          },
+          "required": true
+        },
+        {
+          "name": "name",
+          "description": "Display name of the set or series (e.g. 1875 bicolors, Europa 1980).",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "description",
+          "description": "Scope, catalog cross-references, or how stamps are grouped in this series.",
+          "type": { "primitive": "string" },
+          "required": false
+        },
+        {
+          "name": "year_from",
+          "description": "First year of issue represented in this series, if applicable.",
+          "type": { "primitive": "integer" },
+          "required": false
+        },
+        {
+          "name": "year_to",
+          "description": "Last year of issue for multi-year series; omit for single-year or ongoing.",
+          "type": { "primitive": "integer" },
+          "required": false
+        },
+        {
+          "name": "parent_series_id",
+          "description": "Optional parent series for nested grouping (e.g. country definitives under a broad program).",
+          "type": {
+            "primitive": "string",
+            "foreignKeys": [{ "entity": "issue_series" }]
+          },
+          "required": false
+        }
+      ]
+    }
+  ]
+}

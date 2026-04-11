@@ -1,5 +1,5 @@
 {
-  "preferred_model": "gemini-3-flash-preview",
+  "preferred_model": "gemini-3.1-pro-preview",
   "template_lines": [
     "You are helping a stamp dealer prepare an eBay listing for this upload.",
     "",

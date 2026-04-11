@@ -183,6 +183,7 @@
         position: sticky;
         top: 1rem;
         min-width: 0;
+        overflow: visible;
       }
       .listing-section[hidden] {
         display: none !important;
@@ -198,21 +199,23 @@
         font-size: 0.9rem;
         color: var(--muted);
       }
+      /* Do not mix overflow-x: hidden with overflow-y: visible — spec forces y to auto (scrollbar). */
       .listing-text {
         margin: 0;
         padding: 1rem;
         max-height: none;
-        overflow: visible;
-        overflow-x: hidden;
         font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
         font-size: 0.82rem;
         line-height: 1.45;
         white-space: pre-wrap;
         word-break: break-word;
+        overflow-wrap: anywhere;
         background: #fff;
         border: 1px solid var(--border);
         border-radius: 6px;
         color: var(--ink);
+        /* UA stylesheet often sets pre { overflow: auto } */
+        overflow: visible !important;
       }
       .listing-text[hidden] {
         display: none !important;

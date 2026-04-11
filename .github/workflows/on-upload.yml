@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - stamp-data
-      - main
     paths:
       - "uploads/**"
 
@@ -19,6 +18,7 @@ jobs:
       - uses: actions/checkout@v6
         with:
           ref: ${{ github.sha }}
+          fetch-depth: 2
 
       - name: Show commit message (metadata from index.html)
         env:
@@ -37,17 +37,46 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          COMMITS_JSON: ${{ toJson(github.event.commits) }}
+          HEAD_COMMIT_JSON: ${{ toJson(github.event.head_commit) }}
         run: |
           if [ -z "${GEMINI_API_KEY}" ]; then
             echo "Skipping appraisal: add repository secret GEMINI_API_KEY."
             exit 0
           fi
           set -euo pipefail
-          mapfile -t files < <(git diff-tree --no-commit-id --name-only -r "${GITHUB_SHA}" | grep -iE '^uploads/.*\.(jpe?g|png|webp|gif)$' || true)
+          # Shallow checkout often omits the parent, so git diff-tree lists nothing.
+          # Use push payload paths (added/modified across commits in this push).
+          mapfile -t files < <(python3 <<'PY'
+          import json, os, re
+
+          commits = json.loads(os.environ.get("COMMITS_JSON", "[]") or "[]")
+          paths: list[str] = []
+          for c in commits:
+              paths.extend(c.get("added") or [])
+              paths.extend(c.get("modified") or [])
+          if not paths:
+              hc = json.loads(os.environ.get("HEAD_COMMIT_JSON", "null") or "null")
+              if isinstance(hc, dict):
+                  paths.extend(hc.get("added") or [])
+                  paths.extend(hc.get("modified") or [])
+
+          pat = re.compile(r"^uploads/.*\.(jpe?g|png|webp|gif)$", re.I)
+          seen: set[str] = set()
+          for p in paths:
+              if p and pat.match(p) and p not in seen:
+                  seen.add(p)
+                  print(p)
+          PY
+          )
+          if [ "${#files[@]}" -eq 0 ]; then
+            mapfile -t files < <(git show --pretty=format: --name-only "${GITHUB_SHA}" 2>/dev/null | grep -iE '^uploads/.*\.(jpe?g|png|webp|gif)$' || true)
+          fi
           if [ "${#files[@]}" -eq 0 ]; then
             echo "No image files in this commit under uploads/."
             exit 0
           fi
+          echo "Appraising: ${files[*]}"
           for f in "${files[@]}"; do
             if [ -f "$f" ]; then
               python scripts/appraisal.py "$f"

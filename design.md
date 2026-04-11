@@ -49,7 +49,7 @@ The reference form is [`index.html`](index.html) at the repo root: it uploads to
 
 If **GitHub Pages** builds from the same branch the upload API commits to (often `main`), **every stamp upload triggers a full Pages rebuild** because each upload creates a new commit on that branch.
 
-**Mitigation:** commit uploads (and listing outputs) to a **separate branch**—this repo defaults to **`stamp-data`** via `<meta name="philatelister-branch" content="stamp-data">`—while Pages keeps building from **`main`** (site + `index.html` only). One-time setup: run [`scripts/bootstrap-stamp-data-branch.sh`](scripts/bootstrap-stamp-data-branch.sh) (or create `stamp-data` from `main` and push). The PAT must allow writes on that branch. Until `stamp-data` exists, switch the meta back to `main` or create the branch first.
+**Mitigation:** commit uploads (and listing outputs) to a **separate branch**—this repo defaults to **`stamp-data`** via `<meta name="philatelister-branch" content="stamp-data">`—while Pages keeps building from **`main`** (site + `index.html` only). One-time setup: create `stamp-data` from `main` and push (e.g. `git branch stamp-data origin/main && git push -u origin stamp-data`). The PAT must allow writes on that branch. Until `stamp-data` exists, switch the meta back to `main` or create the branch first.
 
 ## Issue tracker fallback
 

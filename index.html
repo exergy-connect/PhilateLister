@@ -7,6 +7,8 @@
     <!-- Upload API: owner/repo. Branch = where files are committed (use stamp-data, not your Pages branch, to avoid a site rebuild every upload). -->
     <meta name="philatelister-repo" content="exergy-connect/PhilateLister" />
     <meta name="philatelister-branch" content="stamp-data" />
+    <!-- Optional: AES-256-GCM blob, base64(salt16 || iv12 || ciphertext+tag). Decrypt with ASCII token password field below. Generate: see HTML comment before </body>. -->
+    <meta name="philatelister-token-cipher" content="71I16BcF1Yr5kVUaQ6zLW4YtVefnR/Ea57dn/4KLaoyKFTq00tSzKKhVrdcce3kf7g+uiqPborNY3iG3FfVu507BcEPpjyqA+TYedxp78noxIcW/tUd0U/adwAEJfDQF6jWQb7FwMlfko3zrHBAT550jc+cCXiBAWZoYgnd2TqBbdCijF+OLXbU=" />
     <title>PhilateLister — upload a stamp</title>
     <style>
       :root {
@@ -258,10 +260,22 @@
               <p class="hint">Matches <code>prompts/&lt;name&gt;.json</code> on the branch that runs Actions. Add options here when you add new prompt files.</p>
             </div>
 
+            <div class="field" id="token-password-field" hidden>
+              <label for="token-password">Token password</label>
+              <input id="token-password" type="password" autocomplete="off" placeholder="ASCII password for embedded encrypted token" />
+              <p class="hint">
+                Decrypts the <code>philatelister-token-cipher</code> value in the page. ASCII characters only. Not saved. Leave blank when using the raw token field or
+                <code>token.txt</code>.
+              </p>
+            </div>
+
             <div class="field" id="token-field">
               <label for="github-token">GitHub fine-grained token</label>
               <input id="github-token" type="password" autocomplete="off" placeholder="Contents: write on this repo only" />
-              <p class="hint">Not saved in the browser. Leave blank if you configured <code>PHILATELISTER.token</code> in this file for a private deploy.</p>
+              <p class="hint">
+                Not saved in the browser. Hidden when an embedded cipher is set. Leave blank if you use an encrypted token, <code>token.txt</code>, or
+                <code>PHILATELISTER.token</code> for a private deploy.
+              </p>
             </div>
 
             <button type="submit" id="submit-btn">Upload to GitHub</button>
@@ -287,6 +301,16 @@
       </footer>
     </main>
 
+    <!--
+      Encrypted token blob for meta philatelister-token-cipher (single-line base64, no spaces):
+      Layout: 16-byte salt | 12-byte IV | AES-256-GCM ciphertext and 16-byte tag (Web Crypto compatible).
+
+      Generate with Node.js (matches in-page decryption). Single-quote the -e script so bash will not expand ! inside if(!pw||!pt). Example (one line):
+      node -e 'const c=require("crypto");const pw=process.argv[1],pt=process.argv[2];if(!pw||!pt){console.error("Usage: node ... <ascii-password> <token>");process.exit(1);}const salt=c.randomBytes(16),iv=c.randomBytes(12);const key=c.pbkdf2Sync(pw,salt,100000,32,"sha256");const cp=c.createCipheriv("aes-256-gcm",key,iv);const enc=Buffer.concat([cp.update(pt,"utf8"),cp.final()]);const tag=cp.getAuthTag();console.log(Buffer.concat([salt,iv,enc,tag]).toString("base64"));' "YOUR_ASCII_PASSWORD" "github_pat_...."
+
+      Paste the printed base64 into: <meta name="philatelister-token-cipher" content="...">
+    -->
+
     <script>
       /**
        * PhilateLister — Copyright (C) 2026 Exergy ∞ LLC
@@ -295,6 +319,8 @@
        * <meta name="philatelister-branch"> in <head>, then URL / github.io overrides.
        * Optional: set token for trusted/private hosting only (never commit a real token).
        * Same-origin token.txt (gitignored) is loaded when served over http(s), not file://.
+       * Optional: <meta name="philatelister-token-cipher" content="base64..."> with AES-256-GCM
+       *   (see HTML comment before script); user enters ASCII password in #token-password.
        * Push to uploads/ can trigger Actions with paths: ['uploads/**'].
        */
       const PLACEHOLDER_OWNER = "YOUR_GITHUB_USER_OR_ORG";
@@ -373,17 +399,124 @@
       const submitBtn = document.getElementById("submit-btn");
       const tokenInput = document.getElementById("github-token");
       const tokenField = document.getElementById("token-field");
+      const tokenPasswordField = document.getElementById("token-password-field");
+      const tokenPasswordInput = document.getElementById("token-password");
+
+      const TOKEN_CIPHER_ITERATIONS = 100000;
+
+      function getEmbeddedCipherB64() {
+        const el = document.querySelector('meta[name="philatelister-token-cipher"]');
+        if (!el || !el.content) return "";
+        return el.content.replace(/\s+/g, "").trim();
+      }
 
       function syncTokenFieldVisibility() {
+        const cipherB64 = getEmbeddedCipherB64();
         if (PHILATELISTER.token) {
           tokenField.hidden = true;
+          tokenPasswordField.hidden = true;
           tokenInput.removeAttribute("required");
+          tokenPasswordInput.removeAttribute("required");
+        } else if (cipherB64) {
+          tokenField.hidden = true;
+          tokenPasswordField.hidden = false;
+          tokenInput.removeAttribute("required");
+          tokenPasswordInput.setAttribute("required", "required");
         } else {
           tokenField.hidden = false;
+          tokenPasswordField.hidden = true;
+          tokenInput.setAttribute("required", "required");
+          tokenPasswordInput.removeAttribute("required");
         }
       }
 
       syncTokenFieldVisibility();
+
+      function base64ToBytes(b64) {
+        const clean = String(b64).replace(/\s/g, "");
+        const bin = atob(clean);
+        const out = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+        return out;
+      }
+
+      function bytesToUtf8(bytes) {
+        return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+      }
+
+      /**
+       * @param {string} cipherB64
+       * @param {string} passwordAscii
+       * @returns {Promise<string>}
+       */
+      async function decryptEmbeddedTokenCipher(cipherB64, passwordAscii) {
+        if (!crypto || !crypto.subtle) {
+          throw new Error("Web Crypto is not available (use https or localhost).");
+        }
+        const pw = String(passwordAscii ?? "");
+        if (!pw) {
+          throw new Error("Enter the token password for the embedded encrypted token.");
+        }
+        if (!/^[\x20-\x7E]*$/.test(pw)) {
+          throw new Error("Token password must be ASCII only (space through tilde).");
+        }
+        const raw = base64ToBytes(cipherB64);
+        if (raw.byteLength < 16 + 12 + 16 + 1) {
+          throw new Error("philatelister-token-cipher is too short or invalid.");
+        }
+        const salt = raw.slice(0, 16);
+        const iv = raw.slice(16, 28);
+        const ciphertext = raw.slice(28);
+
+        const keyMaterial = await crypto.subtle.importKey(
+          "raw",
+          new TextEncoder().encode(pw),
+          "PBKDF2",
+          false,
+          ["deriveKey"]
+        );
+        const aesKey = await crypto.subtle.deriveKey(
+          {
+            name: "PBKDF2",
+            salt,
+            iterations: TOKEN_CIPHER_ITERATIONS,
+            hash: "SHA-256",
+          },
+          keyMaterial,
+          { name: "AES-GCM", length: 256 },
+          false,
+          ["decrypt"]
+        );
+
+        let plainBuf;
+        try {
+          plainBuf = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, aesKey, ciphertext);
+        } catch (_) {
+          throw new Error("Wrong token password, or the encrypted blob is corrupted.");
+        }
+        return bytesToUtf8(new Uint8Array(plainBuf)).trim();
+      }
+
+      /**
+       * @returns {Promise<string>}
+       */
+      async function resolveGitHubTokenForUpload() {
+        const inline = String(PHILATELISTER.token ?? "").trim();
+        if (inline) return inline;
+
+        await ensureTokenFromTokenTxt();
+        syncTokenFieldVisibility();
+
+        const fromTxt = String(PHILATELISTER.token ?? "").trim();
+        if (fromTxt) return fromTxt;
+
+        const cipherB64 = getEmbeddedCipherB64();
+        if (cipherB64) {
+          return decryptEmbeddedTokenCipher(cipherB64, tokenPasswordInput.value);
+        }
+
+        return tokenInput.value.trim();
+      }
 
       const stampFileInput = document.getElementById("stamp-file");
       const stampPreview = document.getElementById("stamp-preview");
@@ -632,12 +765,20 @@
 
         applyConfigFromEnvironment();
         await ensureTokenFromTokenTxt();
+        syncTokenFieldVisibility();
 
-        const token = PHILATELISTER.token || tokenInput.value.trim();
+        let token;
+        try {
+          token = await resolveGitHubTokenForUpload();
+        } catch (decErr) {
+          statusEl.className = "error";
+          statusEl.textContent = decErr instanceof Error ? decErr.message : String(decErr);
+          return;
+        }
         if (!token) {
           statusEl.className = "error";
           statusEl.textContent =
-            "Add a GitHub token in the field above, put it in same-origin token.txt (when using a local server), or set PHILATELISTER.token for a private deploy.";
+            "Add a GitHub token, an encrypted token (password + philatelister-token-cipher), same-origin token.txt, or set PHILATELISTER.token for a private deploy.";
           return;
         }
 

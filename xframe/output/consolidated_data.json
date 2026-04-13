@@ -1,12 +1,12 @@
 {
-  "version": 3,
-  "timestamp": "2026-04-11T20:14:52Z",
+  "version": 5,
+  "timestamp": "2026-04-13T21:54:48Z",
   "model": {
     "name": "PhilateLister stamp catalog",
     "version": "26.04.11.1",
     "author": "Exergy ∞ LLC",
-    "description": "Dealer and collector catalog for stamps: issuing country, catalog numbers across systems, issue series, year of issue, condition, centering, perforation, and thematic tags.",
-    "include_x_fields": true,
+    "description": "Dealer and collector catalog for stamps: issuing country, catalog numbers across systems, issue series, year of issue, condition, centering, perforation on catalog listings, and thematic tags.",
+    "include_x_fields": false,
     "max_name_underscores": 2,
     "exclude": null
   },
@@ -31,32 +31,43 @@
         "author": "jbemmel",
         "note": "(no change) CI consolidate after model/data change (e0d66cbcb5c48e2bc52131ac867507332e6dd7f3)",
         "git_commit_hash": "e0d66cbcb5c48e2bc52131ac867507332e6dd7f3"
+      },
+      "000000000004": {
+        "id": 4,
+        "timestamp": "2026-04-13T16:38:54-05:00",
+        "author": "root",
+        "note": "Consolidate PhilateLister xFrame model and data; fix scott_catalog_entry composite + allow_unlimited_fields",
+        "git_commit_hash": "358515e7de2ebb415fc0c4bede03172845a035e3"
+      },
+      "000000000005": {
+        "id": 5,
+        "timestamp": "2026-04-13T16:54:48-05:00",
+        "author": "root",
+        "note": "(no change) PhilateLister: composite section subfield references scott_catalog_section_prefix definition",
+        "git_commit_hash": "358515e7de2ebb415fc0c4bede03172845a035e3"
       }
     },
     "catalog_system": {
-      "michel": {
-        "catalog_system_id": "michel",
+      "Mi": {
+        "catalog_system_abbreviation": "Mi",
         "name": "Michel Deutschland-Spezial",
-        "abbreviation": "Mi.",
         "notes": "Example European specialized catalog.",
-        "c": 1,
-        "v": 1
+        "c": 4,
+        "v": 4
       },
-      "scott": {
-        "catalog_system_id": "scott",
+      "Sc": {
+        "catalog_system_abbreviation": "Sc",
         "name": "Scott Standard Postage Stamp Catalogue",
-        "abbreviation": "Sc.",
         "notes": "US-oriented numbering.",
-        "c": 1,
-        "v": 1
+        "c": 4,
+        "v": 4
       },
-      "facit": {
-        "catalog_system_id": "facit",
+      "Facit": {
+        "catalog_system_abbreviation": "Facit",
         "name": "Facit Nordic Countries",
-        "abbreviation": "Facit",
         "notes": "Scandinavian specialized.",
-        "c": 1,
-        "v": 1
+        "c": 4,
+        "v": 4
       }
     },
     "country": {
@@ -97,17 +108,374 @@
         "v": 1
       }
     },
+    "prompt": {
+      "jay_smith_listing": {
+        "prompt_id": "jay_smith_listing",
+        "brief": "Jay Smith–style dealer listing (plain text)",
+        "preferred_model": "gemini-3.1-pro-preview",
+        "output_format": "txt",
+        "template_lines": [
+          "You write stamp descriptions in the voice and density of Jay Smith & Associates–style specialized listings: catalog-precise, narrative-rich, and confident. Technical identifiers and bracketed issue specs come first; condition is honest; rarity and literature support the ask. Do not invent catalog numbers, print quantities, sheet positions, expert quotes, or handbook facts—use only what the image, dealer notes, and uploader JSON plausibly support; where unknown, say so briefly or omit.",
+          "",
+          "Image file name: __IMAGE_BASENAME____FILE_MISMATCH_GAP__",
+          "",
+          "Commit summary line (from uploader):",
+          "__FIRST_LINE__",
+          "",
+          "Full structured parameters from the upload form (JSON — use every field that helps identification or copy):",
+          "__META_JSON__",
+          "",
+          "Dealer target listing price (US$ context for retail; do not invent a catalog value): __TARGET_JSON__",
+          "Dealer notes and hints (weave into identification and narrative): __NOTES_JSON__",
+          "",
+          "TARGET STYLE (match this shape and rhythm; adapt facts to the actual stamp):",
+          "Open with the primary catalog and variety headline, e.g. leading with Scott when that is your default, then the key variety in readable caps (e.g. INVERTED FRAME) when the notes/image justify it. Immediately follow with a single square-bracket block that packs the issue line: year or era, printing or plate generation in parentheses when relevant, denomination and color description (you may capitalize a decisive color word such as ULTRAMARINE when it signals a printing), explicit perforation (e.g. Perforation 14 x 13.5), and any repeated specialty phrase that anchors the variety.",
+          "Then continue in the same flow: mint/used, centering grade (F-VF, VF+, etc.), and cancellation type (e.g. proper type of 4-ring mute cancellation) when visible. If there are faults, use a pivot like “but with defects” and then a frank paragraph: what looks fine at a glance versus what shows under scrutiny (rounded perf tip, thin, creases, marginal tears). Balance honesty with proportion—e.g. defects obvious only under close inspection when that matches the image.",
+          "When rarity is justified by the notes, expand with a specialist essay: quoted emphasis sparingly (e.g. “VERY RARE”, “rarely”) only if defensible; sheet/print arithmetic, positions, survival, and time-to-discovery narratives when the dealer material supplies them. Weave dated literature in-line: Author [year] with short paraphrase or attributed quote; name surveys (archives, plate reconstructions) and decades of study when notes support it—never fabricate citations.",
+          "Add comparative scarcity (Used vs Mint, variety vs normal frame, etc.) when notes allow. For catalog values, mirror the example’s clarity: name each catalog with edition year, value in its native unit, optional parenthetical US$ equivalent with month/year of the conversion when helpful, then other catalogs (Facit, AFA, Scott, etc.) in separate sentences. If the dealer gave a target price, you may relate it to catalog context without claiming it is a catalog value.",
+          "Close with a strong rarity line when earned, optional certificate or guarantee language only if the notes mention it, and optional dealer stock history (“only example since …”) only if the uploader/dealer text supports it.",
+          "",
+          "STRUCTURE RULES:",
+          "- Default catalog lead: Scott unless the notes specify otherwise.",
+          "- One bracketed `[…]` issue specification early; keep it dense but readable.",
+          "- Prefer one sustained BODY after the opening line (or after TITLE + blank line per OUTPUT FORMAT) rather than bullet lists.",
+          "- ALL CAPS: use only for genuine emphasis points (variety name, critical color, RARE), not every other word.",
+          "",
+          "OUTPUT FORMAT:",
+          "1) TITLE — one line: catalog-forward opening matching the target style above (may be long; may include the bracket block on this line).",
+          "2) Blank line.",
+          "3) BODY — continuation in the same voice: defects, rarity and history, valuations, closing flourish, certificate/stock notes if supported; end with a single line “Asking context:” and the dealer’s target price if provided, or say price not specified."
+        ],
+        "c": 4,
+        "v": 4
+      },
+      "multi_stamp_sheet_xframe": {
+        "prompt_id": "multi_stamp_sheet_xframe",
+        "brief": "Many stamps in one image → xFrame catalog JSON",
+        "preferred_model": "gemini-3.1-pro-preview",
+        "output_format": "json",
+        "template_lines": [
+          "You are a philatelic cataloging assistant. The attached image may show MULTIPLE postage stamps on one scan or photo (e.g. a stock sheet, album page, or black-background layout). Your job is to detect every distinct stamp impression, read what is visible on each, and fill the response JSON.",
+          "",
+          "The API returns one object with a \"stamp\" array only: one stamp object per detected impression, matching the response schema. Use the base id and suffix rules below for unique stamp_id values.",
+          "",
+          "Base id from this upload (prefix every stamp_id): __STAMP_SUGGESTED_ID__",
+          "Image file name: __IMAGE_BASENAME____FILE_MISMATCH_GAP__",
+          "",
+          "Commit summary line (from uploader):",
+          "__FIRST_LINE__",
+          "",
+          "Full structured parameters from the upload form (JSON):",
+          "__META_JSON__",
+          "",
+          "Dealer target listing price (JSON; may be null — often one price for the whole sheet): __TARGET_JSON__",
+          "Dealer notes and hints (JSON; may be null): __NOTES_JSON__",
+          "",
+          "=== VISUAL WORKFLOW ===",
+          "1) Segment mentally: treat each physically separate perforated (or cut) stamp as one item. Ignore the background between stamps.",
+          "2) Reading order: top-to-bottom, then left-to-right (row-major), so stamp numbering matches a human scanning the grid.",
+          "3) For each stamp, extract what the image supports:",
+          "   - Country or postal administration (e.g. from script, language, or emblem text such as SVERIGE).",
+          "   - Face value: numerals in side tablets or corners, and currency unit from text (öre, kr, cent, etc.).",
+          "   - Design / series clues: coat of arms, portrait, commemorative topic, \"Official\" / service types, color shade when it distinguishes catalog varieties.",
+          "   - Cancellations: postmark town or route, readable date (day/month/year when possible). If a day is clear, you may note the weekday in stamp.summary.",
+          "   - Condition and centering: infer from the crop (faults, thins, heavy cancel obscuring design, margin balance). Use schema enums only.",
+          "   - Perforation: describe visible perf or roulettes, damage, or \"imperf\" / \"unknown\" in summary when not clear.",
+          "4) When several stamps clearly belong to the same issue or definitive series (same design type and era), say so in each stamp's summary.",
+          "5) If two stamps look like the same denomination but different printings or colors, keep them as separate stamp rows and explain the distinction in summary.",
+          "",
+          "=== STAMP IDS (REQUIRED) ===",
+          "Every stamp row MUST have a unique stamp_id. Build it as: the base id above + \"__\" + a two-digit sequence in reading order (01, 02, … 14). Example: if base is \"stamp_2026-01-01_12-00-00-000_photo_ab12cd34\", use stamp_2026-01-01_12-00-00-000_photo_ab12cd34__01, … __14.",
+          "If you detect fewer than 14 stamps, only emit as many rows as you actually see; still use consecutive two-digit suffixes starting at 01.",
+          "If you detect more than 99 stamps, extend with three digits (001, 002, …) for that run only.",
+          "",
+          "=== PRICING ===",
+          "Do not split a single dealer target price across stamps unless the notes explicitly say so. If one price applies to the whole sheet, mention it in the first stamp's summary (or omit if the schema has no listing fields)."
+        ],
+        "c": 4,
+        "v": 4
+      },
+      "stamp_listing": {
+        "prompt_id": "stamp_listing",
+        "brief": "eBay-style single-stamp listing (plain text)",
+        "preferred_model": "gemini-3.1-pro-preview",
+        "output_format": "txt",
+        "template_lines": [
+          "You are helping a stamp dealer prepare an eBay listing for this upload.",
+          "",
+          "Image file name: __IMAGE_BASENAME____FILE_MISMATCH_GAP__",
+          "",
+          "Commit summary line (from uploader):",
+          "__FIRST_LINE__",
+          "",
+          "Full structured parameters from the upload form (JSON — use every field that helps identification or listing copy):",
+          "__META_JSON__",
+          "",
+          "Dealer target listing price (use as pricing context; do not invent a Scott value): __TARGET_JSON__",
+          "Dealer notes and hints (incorporate into identification and description): __NOTES_JSON__",
+          "",
+          "From the stamp image, identify the issue where possible. Provide:",
+          "- A concise eBay title",
+          "- Scott or main catalog number when you can justify it, or say when uncertain",
+          "- A condition report visible from the image",
+          "- Details on perforations, if any, such as missing or damaged ones, and the count of horizontal and vertical dents",
+          "- Details on the cancel, if any, such as city name or date of cancellation. If the date is clear enough, cite the day of the week it represents",
+          "- Listing body text that respects the dealer's notes and is consistent with their target price band (polite, professional tone)"
+        ],
+        "c": 4,
+        "v": 4
+      },
+      "xframe": {
+        "prompt_id": "xframe",
+        "brief": "Single stamp → xFrame catalog JSON",
+        "preferred_model": "gemini-3.1-pro-preview",
+        "output_format": "json",
+        "template_lines": [
+          "You are a philatelic cataloging assistant. From the stamp image and the dealer context below, produce structured data for THIS stamp only.",
+          "",
+          "The API returns JSON shaped as one object with a \"stamp\" array; each element is a stamp row per the response schema. For a single stamp use one element and set stamp_id to the suggested id below.",
+          "",
+          "Suggested stamp_id for this upload: __STAMP_SUGGESTED_ID__",
+          "Image file name: __IMAGE_BASENAME____FILE_MISMATCH_GAP__",
+          "",
+          "Commit summary line (from uploader):",
+          "__FIRST_LINE__",
+          "",
+          "Full structured parameters from the upload form (JSON):",
+          "__META_JSON__",
+          "",
+          "Dealer target listing price (JSON; may be null): __TARGET_JSON__",
+          "Dealer notes and hints (JSON; may be null): __NOTES_JSON__"
+        ],
+        "c": 4,
+        "v": 4
+      }
+    },
+    "prompt_invocation": {
+      "stamp_listing_gemini": {
+        "invocation_id": "stamp_listing_gemini",
+        "prompt_id": "stamp_listing",
+        "provider_id": "google_gemini",
+        "model": "gemini-3.1-pro-preview",
+        "sort_order": 0,
+        "primary_for_listing": true,
+        "c": 4,
+        "v": 4
+      },
+      "stamp_listing_openrouter": {
+        "invocation_id": "stamp_listing_openrouter",
+        "prompt_id": "stamp_listing",
+        "provider_id": "openrouter",
+        "model": "openai/gpt-4o-mini",
+        "sort_order": 1,
+        "primary_for_listing": false,
+        "c": 4,
+        "v": 4
+      }
+    },
+    "provider": {
+      "google_gemini": {
+        "provider_id": "google_gemini",
+        "brief": "Google Gemini (AI Studio API key)",
+        "api_base_url": "https://generativelanguage.googleapis.com/v1beta",
+        "notes": "GEMINI_API_KEY. Client: @google/genai; api_base_url documents the REST v1beta base the SDK targets.",
+        "c": 4,
+        "v": 4
+      },
+      "openrouter": {
+        "provider_id": "openrouter",
+        "brief": "OpenRouter (OpenAI-compatible API)",
+        "api_base_url": "https://openrouter.ai/api/v1",
+        "notes": "OPENROUTER_API_KEY. Optional: OPENROUTER_HTTP_REFERER, OPENROUTER_TITLE for OpenRouter rankings headers.",
+        "c": 4,
+        "v": 4
+      }
+    },
+    "scott_catalog_entry": {
+      "[object Object]": {
+        "scott": {
+          "country_id": "dk",
+          "section": "M",
+          "number": 45,
+          "variation": "DK45"
+        },
+        "catalog_system_abbreviation": "Facit",
+        "issue_series_id": "dk-bicolors-classic",
+        "perforation": "Perforated 13",
+        "notes": "Illustrative primary listing for the sample stamp; see stamp_catalog_number for Michel cross-ref.",
+        "c": 4,
+        "v": 4
+      }
+    },
+    "scott_catalog_section": {
+      "B": {
+        "section_prefix": "B",
+        "category_name": "Semi-Postal",
+        "description": "Stamps sold for a premium (e.g., 10c+2c) for charity.",
+        "sort_order": 10,
+        "c": 4,
+        "v": 4
+      },
+      "C": {
+        "section_prefix": "C",
+        "category_name": "Airmail",
+        "description": "(Also called Air Post) Specifically for airmail service.",
+        "sort_order": 20,
+        "c": 4,
+        "v": 4
+      },
+      "D": {
+        "section_prefix": "D",
+        "category_name": "Pneumatic Post",
+        "description": "For mail sent via pressurized underground tubes (common in Italy).",
+        "sort_order": 30,
+        "c": 4,
+        "v": 4
+      },
+      "E": {
+        "section_prefix": "E",
+        "category_name": "Special Delivery",
+        "description": "For immediate delivery upon arrival at the post office.",
+        "sort_order": 40,
+        "c": 4,
+        "v": 4
+      },
+      "F": {
+        "section_prefix": "F",
+        "category_name": "Registration",
+        "description": "Paid for the registration fee (tracking/security).",
+        "sort_order": 50,
+        "c": 4,
+        "v": 4
+      },
+      "G": {
+        "section_prefix": "G",
+        "category_name": "Insured Letter",
+        "description": "Used to pay fees for insuring contents.",
+        "sort_order": 60,
+        "c": 4,
+        "v": 4
+      },
+      "H": {
+        "section_prefix": "H",
+        "category_name": "Acknowledgment of Receipt",
+        "description": "Paid for a return receipt to the sender.",
+        "sort_order": 70,
+        "c": 4,
+        "v": 4
+      },
+      "I": {
+        "section_prefix": "I",
+        "category_name": "Late Fee",
+        "description": "Paid for mail posted after the daily collection deadline.",
+        "sort_order": 80,
+        "c": 4,
+        "v": 4
+      },
+      "J": {
+        "section_prefix": "J",
+        "category_name": "Postage Due",
+        "description": "Collected from the recipient for unpaid postage.",
+        "sort_order": 90,
+        "c": 4,
+        "v": 4
+      },
+      "K": {
+        "section_prefix": "K",
+        "category_name": "Offices Abroad",
+        "description": "Issued for use in a country's post offices in foreign cities.",
+        "sort_order": 100,
+        "c": 4,
+        "v": 4
+      },
+      "L": {
+        "section_prefix": "L",
+        "category_name": "Local",
+        "description": "Valid only for delivery within a specific city or district.",
+        "sort_order": 110,
+        "c": 4,
+        "v": 4
+      },
+      "M": {
+        "section_prefix": "M",
+        "category_name": "Military",
+        "description": "Issued for use by armed forces.",
+        "sort_order": 120,
+        "c": 4,
+        "v": 4
+      },
+      "N": {
+        "section_prefix": "N",
+        "category_name": "Occupation",
+        "description": "Issued by a conquering power in an occupied territory.",
+        "sort_order": 130,
+        "c": 4,
+        "v": 4
+      },
+      "O": {
+        "section_prefix": "O",
+        "category_name": "Official",
+        "description": "Restricted for use by government agencies only.",
+        "sort_order": 140,
+        "c": 4,
+        "v": 4
+      },
+      "P": {
+        "section_prefix": "P",
+        "category_name": "Newspaper",
+        "description": "For bulk mailing of periodicals/newspapers.",
+        "sort_order": 150,
+        "c": 4,
+        "v": 4
+      },
+      "Q": {
+        "section_prefix": "Q",
+        "category_name": "Parcel Post",
+        "description": "Specifically for the transport of packages.",
+        "sort_order": 160,
+        "c": 4,
+        "v": 4
+      },
+      "QE": {
+        "section_prefix": "QE",
+        "category_name": "Special Handling",
+        "description": "Fast-tracked handling for parcel post (but not \"Special Delivery\").",
+        "sort_order": 170,
+        "c": 4,
+        "v": 4
+      },
+      "R": {
+        "section_prefix": "R",
+        "category_name": "Revenue",
+        "description": "Technically for taxes/fees, but included in Scott catalogs.",
+        "sort_order": 180,
+        "c": 4,
+        "v": 4
+      },
+      "RW": {
+        "section_prefix": "RW",
+        "category_name": "Hunting Permit",
+        "description": "The \"Duck Stamps\" (often found in the US Specialized catalog).",
+        "sort_order": 190,
+        "c": 4,
+        "v": 4
+      }
+    },
     "stamp": {
       "stamp_2026-04-11_example_001": {
         "stamp_id": "stamp_2026-04-11_example_001",
         "country_id": "dk",
-        "issue_series_id": "dk-bicolors-classic",
+        "scott": {
+          "country_id": "dk",
+          "section": "M",
+          "number": 45,
+          "variation": "DK45"
+        },
         "title": "Denmark 20 øre bicolor used",
         "summary": "VF used, numeral cancel; printing variety per dealer notes.",
         "issue_year": 1895,
         "condition_quality": "used",
         "centering_grade": "fine",
-        "perforation": "Perforated 13",
         "image_basename": "stamp_2026-04-11_example_001.jpg",
         "freeform_keywords": [
           "Facit",
@@ -115,27 +483,36 @@
           "cancel"
         ],
         "c": 1,
-        "v": 1
+        "m": [
+          4
+        ],
+        "v": 4
       }
     },
     "stamp_catalog_number": {
       "scn-001": {
         "catalog_line_id": "scn-001",
         "stamp_id": "stamp_2026-04-11_example_001",
-        "catalog_system_id": "facit",
+        "catalog_system_abbreviation": "Facit",
         "catalog_number": "DK 45",
         "supplement_notes": "Illustrative Facit-style id; replace with real number.",
         "c": 1,
-        "v": 1
+        "m": [
+          4
+        ],
+        "v": 4
       },
       "scn-002": {
         "catalog_line_id": "scn-002",
         "stamp_id": "stamp_2026-04-11_example_001",
-        "catalog_system_id": "michel",
+        "catalog_system_abbreviation": "Mi",
         "catalog_number": "28y",
         "supplement_notes": "Illustrative Michel number.",
         "c": 1,
-        "v": 1
+        "m": [
+          4
+        ],
+        "v": 4
       }
     },
     "stamp_thematic_tag": {

@@ -1,7 +1,6 @@
 {
   "name": "PhilateLister stamp catalog",
   "version": "26.04.14.14",
-  "allow_unlimited_fields": true,
   "author": "Exergy ∞ LLC",
   "description": "Entity shard: normalized catalog listing (system + number); stamp instances may reference one primary entry.",
   "source": "PhilateLister",

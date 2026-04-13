@@ -6,29 +6,34 @@
     "catalog_system": {
       "type": "object",
       "properties": {
-        "catalog_system_id": {
+        "catalog_system_abbreviation": {
           "type": "string",
-          "description": "Stable slug for this catalog (e.g. scott, michel, facit, sg)."
+          "description": "Stable abbreviation for this catalog (primary key; e.g. Sc, Mi, Facit).",
+          "enum": [
+            "Mi",
+            "Sc",
+            "Facit",
+            "SG",
+            "AFA",
+            "Yv",
+            "NVPH",
+            "Zu"
+          ]
         },
         "name": {
           "type": "string",
           "description": "Full name of the catalog or reference work."
-        },
-        "abbreviation": {
-          "type": "string",
-          "description": "Short label shown in UI or listings (e.g. Mi., Sc., SG)."
         },
         "notes": {
           "type": "string",
           "description": "Edition notes, regional scope, or usage caveats."
         }
       },
-      "description": "Reference system used for catalog numbers on individual stamps; one row per system you track.",
+      "description": "Reference system used for catalog numbers on individual stamps; one row per system you track. Primary key is the conventional abbreviation (Mi, Sc, …).",
       "required": [
-        "catalog_system_id",
+        "catalog_system_abbreviation",
         "name"
-      ],
-      "x-primaryKey": "catalog_system_id"
+      ]
     },
     "country": {
       "type": "object",
@@ -44,14 +49,20 @@
         "notes": {
           "type": "string",
           "description": "Optional clarifications (colonies, period splits, obsolete administrations)."
+        },
+        "scott_catalog_entries": {
+          "type": "array",
+          "description": "Optional nested catalog listings for this country (pairs with scott.country_id on scott_catalog_entry, parent_array scott_catalog_entries).",
+          "items": {
+            "type": "string"
+          }
         }
       },
       "description": "Normalized territory for cataloging, filtering, and joins; identifiers should remain stable across inventory and listings.",
       "required": [
         "country_id",
         "display_name"
-      ],
-      "x-primaryKey": "country_id"
+      ]
     },
     "issue_series": {
       "type": "object",
@@ -62,12 +73,7 @@
         },
         "country_id": {
           "type": "string",
-          "description": "Primary issuing country or administration for this series.",
-          "x-foreignKeys": [
-            {
-              "entity": "country"
-            }
-          ]
+          "description": "Primary issuing country or administration for this series."
         },
         "name": {
           "type": "string",
@@ -87,12 +93,7 @@
         },
         "parent_series_id": {
           "type": "string",
-          "description": "Optional parent series for nested grouping (e.g. country definitives under a broad program).",
-          "x-foreignKeys": [
-            {
-              "entity": "issue_series"
-            }
-          ]
+          "description": "Optional parent series for nested grouping (e.g. country definitives under a broad program)."
         }
       },
       "description": "Groups stamps into sets, definitive series, commemoratives, or specialized series for browsing and pricing context.",
@@ -100,8 +101,7 @@
         "series_id",
         "country_id",
         "name"
-      ],
-      "x-primaryKey": "series_id"
+      ]
     },
     "listing": {
       "type": "object",
@@ -112,12 +112,7 @@
         },
         "stamp_id": {
           "type": "string",
-          "description": "Stamp this listing prices.",
-          "x-foreignKeys": [
-            {
-              "entity": "stamp"
-            }
-          ]
+          "description": "Stamp this listing prices."
         },
         "target_price": {
           "type": "number",
@@ -125,7 +120,11 @@
         },
         "listing_currency": {
           "type": "string",
-          "description": "ISO 4217 currency code for target_price (e.g. USD, EUR, DKK)."
+          "description": "ISO 4217 currency code for target_price (closed list; extend enum as needed).",
+          "enum": [
+            "USD",
+            "EUR"
+          ]
         }
       },
       "description": "Separate from philatelic attributes on stamp; omit when no price is tracked or use multiple rows for history or multi-channel asks.",
@@ -134,8 +133,255 @@
         "stamp_id",
         "target_price",
         "listing_currency"
-      ],
-      "x-primaryKey": "listing_id"
+      ]
+    },
+    "prompt": {
+      "type": "object",
+      "properties": {
+        "prompt_id": {
+          "type": "string",
+          "description": "Stable id matching the filename stem (e.g. stamp_listing, xframe); referenced by upload commit metadata prompt field."
+        },
+        "brief": {
+          "type": "string",
+          "description": "Short label for UI or docs."
+        },
+        "preferred_model": {
+          "type": "string",
+          "description": "Default Gemini model id when this prompt has no prompt_invocation rows, or when GEMINI_MODEL overrides only the fallback path."
+        },
+        "output_format": {
+          "type": "string",
+          "description": "Whether appraisal writes listings/<stem>.txt (plain model text) or listings/<stem>.json (parsed catalog object).",
+          "enum": [
+            "txt",
+            "json"
+          ]
+        },
+        "template_lines": {
+          "type": "array",
+          "description": "Prompt body lines; appraisal joins with newline. Placeholders: __IMAGE_BASENAME__, __FILE_MISMATCH_GAP__, __FIRST_LINE__, __META_JSON__, __TARGET_JSON__, __NOTES_JSON__, __STAMP_SUGGESTED_ID__. For output_format json, Gemini and OpenRouter use API structured output (stamp array schema), not inlined consolidated schema.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "gemini_output_lines": {
+          "type": "array",
+          "description": "Optional lines appended to template_lines only for google_gemini when output_format is txt. Omitted for json prompts (structured output is set in the API client). Same placeholders as template_lines.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "One row per prompt id; template_lines are joined with newlines for the model. Files live under xframe/data/prompts/<prompt_id>.json in entity-store shape { \"prompt\": [ { ... } ] }.",
+      "required": [
+        "prompt_id",
+        "preferred_model",
+        "output_format",
+        "template_lines"
+      ]
+    },
+    "prompt_invocation": {
+      "type": "object",
+      "properties": {
+        "invocation_id": {
+          "type": "string",
+          "description": "Unique id (used in sidecar filenames); e.g. stamp_listing_openrouter."
+        },
+        "prompt_id": {
+          "type": "string",
+          "description": "Prompt template this invocation belongs to."
+        },
+        "provider_id": {
+          "type": "string",
+          "description": "Provider row (provider_id selects the appraisal client; see provider entity)."
+        },
+        "model": {
+          "type": "string",
+          "description": "Model id for this provider (Gemini model id or OpenRouter model slug, e.g. openai/gpt-4o-mini)."
+        },
+        "sort_order": {
+          "type": "integer",
+          "description": "Stable ordering for logs and merge; lower runs first in listings."
+        },
+        "primary_for_listing": {
+          "type": "boolean",
+          "description": "If true, this invocation's output is the main listings/<stem> file the uploader polls."
+        }
+      },
+      "description": "Rows live in xframe/data/prompt_invocations.json. All invocations for a prompt_id run in parallel. Exactly one row per prompt should have primary_for_listing true; that output is listings/<stem>.{txt|json}. Others are listings/<stem>__<invocation_id>.{txt|json}. If a prompt_id has no rows, appraisal falls back to a single Gemini call using prompt.preferred_model.",
+      "required": [
+        "invocation_id",
+        "prompt_id",
+        "provider_id",
+        "model",
+        "sort_order",
+        "primary_for_listing"
+      ]
+    },
+    "provider": {
+      "type": "object",
+      "properties": {
+        "provider_id": {
+          "type": "string",
+          "description": "Provider key; appraisal maps each to a client (Gemini SDK vs OpenRouter HTTP).",
+          "enum": [
+            "google_gemini",
+            "openrouter"
+          ]
+        },
+        "brief": {
+          "type": "string",
+          "description": "Human-readable label."
+        },
+        "api_base_url": {
+          "type": "string",
+          "description": "REST API base URL (no trailing path after version segment where applicable). Gemini: v1beta base used by Google AI; OpenRouter: https://openrouter.ai/api/v1"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Env vars, headers, or auth notes."
+        }
+      },
+      "description": "Rows live in xframe/data/providers.json. Appraisal selects the client from provider_id (google_gemini → GEMINI_API_KEY + @google/genai; openrouter → OPENROUTER_API_KEY + chat/completions with vision).",
+      "required": [
+        "provider_id",
+        "api_base_url"
+      ]
+    },
+    "scott_catalog_entry": {
+      "type": "object",
+      "properties": {
+        "scott": {
+          "type": "object",
+          "properties": {
+            "country_id": {
+              "type": "string",
+              "description": "Issuing country or postal administration for this listing (denormalized; use with country.scott_catalog_entries nesting)."
+            },
+            "section": {
+              "type": "string",
+              "description": "Scott major-section letter or pair (e.g. B, RW); omit for regular postage.",
+              "enum": [
+                "B",
+                "C",
+                "D",
+                "E",
+                "F",
+                "G",
+                "H",
+                "I",
+                "J",
+                "K",
+                "L",
+                "M",
+                "N",
+                "O",
+                "P",
+                "Q",
+                "QE",
+                "R",
+                "RW"
+              ]
+            },
+            "number": {
+              "type": "integer",
+              "description": "Scott catalog numeral (main listing number)."
+            },
+            "variation": {
+              "type": "string",
+              "description": "Optional suffix or variety (e.g. 'a')."
+            }
+          },
+          "required": [
+            "country_id",
+            "section",
+            "number",
+            "variation"
+          ],
+          "additionalProperties": false,
+          "description": "Structured Scott listing (primary key)."
+        },
+        "catalog_system_abbreviation": {
+          "type": "string",
+          "description": "Which catalog the number belongs to (matches catalog_system primary key).",
+          "enum": [
+            "Mi",
+            "Sc",
+            "Facit",
+            "SG",
+            "AFA",
+            "Yv",
+            "NVPH",
+            "Zu"
+          ]
+        },
+        "issue_series_id": {
+          "type": "string",
+          "description": "Stamp set or series this catalog listing belongs to, when known."
+        },
+        "perforation": {
+          "type": "string",
+          "description": "Perforation as given for this listing (e.g. perf 11½, comb 13¾, imperforate, roulette)."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Variety, plate, or supplement commentary for this listing."
+        }
+      },
+      "description": "Identifies a stamp design or major listing in a catalog system (Scott, Michel, etc.). Primary key is the composite field scott (country_id, section, number, variation). Optional issue_series_id ties the listing to a set or series row; optional perforation records the catalog-listed gauge or style. A stamp instance optionally points here via the same composite key; additional cross-references stay in stamp_catalog_number.",
+      "required": [
+        "scott",
+        "catalog_system_abbreviation"
+      ]
+    },
+    "scott_catalog_section": {
+      "type": "object",
+      "properties": {
+        "section_prefix": {
+          "type": "string",
+          "description": "Scott catalog number prefix as printed before the numeral (e.g. B, C, QE, RW).",
+          "enum": [
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+            "J",
+            "K",
+            "L",
+            "M",
+            "N",
+            "O",
+            "P",
+            "Q",
+            "QE",
+            "R",
+            "RW"
+          ]
+        },
+        "category_name": {
+          "type": "string",
+          "description": "Short section title (e.g. Semi-Postal, Airmail)."
+        },
+        "description": {
+          "type": "string",
+          "description": "What stamps in this section represent and how they differ from regular postage."
+        },
+        "sort_order": {
+          "type": "integer",
+          "description": "Optional display order in reference lists (lower first)."
+        }
+      },
+      "description": "Each Scott-listed stamp number begins with a section prefix (e.g. B for semi-postal, RW for hunting permits). One row per prefix; use for filtering, UI labels, and matching catalog numbers.",
+      "required": [
+        "section_prefix",
+        "category_name",
+        "description"
+      ]
     },
     "stamp": {
       "type": "object",
@@ -146,16 +392,52 @@
         },
         "country_id": {
           "type": "string",
-          "description": "Issuing country or postal administration.",
-          "x-foreignKeys": [
-            {
-              "entity": "country"
-            }
-          ]
+          "description": "Issuing country or postal administration."
         },
-        "issue_series_id": {
-          "type": "string",
-          "description": "Stamp set or series this item belongs to, when known."
+        "scott": {
+          "type": "object",
+          "properties": {
+            "country_id": {
+              "type": "string",
+              "description": "Issuing country or postal administration for this listing (denormalized; use with country.scott_catalog_entries nesting)."
+            },
+            "section": {
+              "type": "string",
+              "description": "Scott major-section letter or pair (e.g. B, RW); omit for regular postage.",
+              "enum": [
+                "B",
+                "C",
+                "D",
+                "E",
+                "F",
+                "G",
+                "H",
+                "I",
+                "J",
+                "K",
+                "L",
+                "M",
+                "N",
+                "O",
+                "P",
+                "Q",
+                "QE",
+                "R",
+                "RW"
+              ]
+            },
+            "number": {
+              "type": "integer",
+              "description": "Scott catalog numeral (main listing number)."
+            },
+            "variation": {
+              "type": "string",
+              "description": "Optional suffix or variety (e.g. 'a')."
+            }
+          },
+          "required": [],
+          "additionalProperties": false,
+          "description": "Optional primary catalog listing for this stamp (same composite key as scott_catalog_entry.scott). Cross-catalog lines remain on stamp_catalog_number."
         },
         "title": {
           "type": "string",
@@ -216,10 +498,6 @@
             "unknown"
           ]
         },
-        "perforation": {
-          "type": "string",
-          "description": "Perforation description (e.g. perf 11½, comb 13¾, imperforate, roulette)."
-        },
         "image_basename": {
           "type": "string",
           "description": "Image file name in uploads/ or media store."
@@ -232,17 +510,15 @@
           }
         }
       },
-      "description": "Core record: country of issue, year, physical attributes (perforation, centering), condition, optional series membership; catalog numbers, thematic tags, and optional pricing (listing entity) use child rows.",
+      "description": "Core record: country of issue, year, physical attributes (centering), condition, optional primary scott_catalog_entry (perforation and series context live on scott_catalog_entry when linked); additional catalog lines and thematic tags use child rows; optional pricing via listing.",
       "required": [
         "stamp_id",
         "country_id",
         "summary",
         "issue_year",
         "condition_quality",
-        "centering_grade",
-        "perforation"
-      ],
-      "x-primaryKey": "stamp_id"
+        "centering_grade"
+      ]
     },
     "stamp_catalog_number": {
       "type": "object",
@@ -253,20 +529,20 @@
         },
         "stamp_id": {
           "type": "string",
-          "description": "Stamp this number refers to.",
-          "x-foreignKeys": [
-            {
-              "entity": "stamp"
-            }
-          ]
+          "description": "Stamp this number refers to."
         },
-        "catalog_system_id": {
+        "catalog_system_abbreviation": {
           "type": "string",
-          "description": "Which catalog system the number belongs to.",
-          "x-foreignKeys": [
-            {
-              "entity": "catalog_system"
-            }
+          "description": "Which catalog system the number belongs to (matches catalog_system primary key).",
+          "enum": [
+            "Mi",
+            "Sc",
+            "Facit",
+            "SG",
+            "AFA",
+            "Yv",
+            "NVPH",
+            "Zu"
           ]
         },
         "catalog_number": {
@@ -282,10 +558,9 @@
       "required": [
         "catalog_line_id",
         "stamp_id",
-        "catalog_system_id",
+        "catalog_system_abbreviation",
         "catalog_number"
-      ],
-      "x-primaryKey": "catalog_line_id"
+      ]
     },
     "stamp_thematic_tag": {
       "type": "object",
@@ -296,21 +571,11 @@
         },
         "stamp_id": {
           "type": "string",
-          "description": "Stamp receiving the thematic tag.",
-          "x-foreignKeys": [
-            {
-              "entity": "stamp"
-            }
-          ]
+          "description": "Stamp receiving the thematic tag."
         },
         "tag_id": {
           "type": "string",
-          "description": "Thematic tag applied.",
-          "x-foreignKeys": [
-            {
-              "entity": "thematic_tag"
-            }
-          ]
+          "description": "Thematic tag applied."
         },
         "role": {
           "type": "string",
@@ -336,8 +601,7 @@
         "thematic_link_id",
         "stamp_id",
         "tag_id"
-      ],
-      "x-primaryKey": "thematic_link_id"
+      ]
     },
     "thematic_tag": {
       "type": "object",
@@ -356,12 +620,7 @@
         },
         "parent_tag_id": {
           "type": "string",
-          "description": "Optional parent tag for subtopics.",
-          "x-foreignKeys": [
-            {
-              "entity": "thematic_tag"
-            }
-          ]
+          "description": "Optional parent tag for subtopics."
         },
         "sort_order": {
           "type": "integer",
@@ -373,8 +632,7 @@
         "tag_id",
         "name",
         "description"
-      ],
-      "x-primaryKey": "tag_id"
+      ]
     },
     "change": {
       "type": "object",
@@ -433,6 +691,36 @@
       "type": "array",
       "items": {
         "$ref": "#/$defs/listing"
+      }
+    },
+    "prompt": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/prompt"
+      }
+    },
+    "prompt_invocation": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/prompt_invocation"
+      }
+    },
+    "provider": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/provider"
+      }
+    },
+    "scott_catalog_entry": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/scott_catalog_entry"
+      }
+    },
+    "scott_catalog_section": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/scott_catalog_section"
       }
     },
     "stamp": {

@@ -290,31 +290,20 @@
             },
             "variation": {
               "type": "string",
-              "description": "Optional suffix or variety (e.g. 'a')."
+              "description": "Optional plate or variety letter suffix (closed list).",
+              "enum": [
+                "a",
+                "b",
+                "c"
+              ]
             }
           },
           "required": [
             "country_id",
-            "section",
-            "number",
-            "variation"
+            "number"
           ],
           "additionalProperties": false,
           "description": "Structured Scott listing (primary key)."
-        },
-        "catalog_system_abbreviation": {
-          "type": "string",
-          "description": "Which catalog the number belongs to (matches catalog_system primary key).",
-          "enum": [
-            "Mi",
-            "Sc",
-            "Facit",
-            "SG",
-            "AFA",
-            "Yv",
-            "NVPH",
-            "Zu"
-          ]
         },
         "issue_series_id": {
           "type": "string",
@@ -331,8 +320,7 @@
       },
       "description": "Identifies a stamp design or major listing in a catalog system (Scott, Michel, etc.). Primary key is the composite field scott (country_id, section, number, variation). Optional issue_series_id ties the listing to a set or series row; optional perforation records the catalog-listed gauge or style. A stamp instance optionally points here via the same composite key; additional cross-references stay in stamp_catalog_number.",
       "required": [
-        "scott",
-        "catalog_system_abbreviation"
+        "scott"
       ]
     },
     "scott_catalog_section": {
@@ -432,10 +420,17 @@
             },
             "variation": {
               "type": "string",
-              "description": "Optional suffix or variety (e.g. 'a')."
+              "description": "Optional plate or variety letter suffix (closed list).",
+              "enum": [
+                "a",
+                "b",
+                "c"
+              ]
             }
           },
-          "required": [],
+          "required": [
+            "number"
+          ],
           "additionalProperties": false,
           "description": "Optional primary catalog listing for this stamp (same composite key as scott_catalog_entry.scott). Cross-catalog lines remain on stamp_catalog_number."
         },

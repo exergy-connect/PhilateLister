@@ -1,6 +1,6 @@
 {
-  "version": 6,
-  "timestamp": "2026-04-13T21:56:12Z",
+  "version": 7,
+  "timestamp": "2026-04-13T23:05:41Z",
   "model": {
     "name": "PhilateLister stamp catalog",
     "version": "26.04.11.1",
@@ -52,6 +52,13 @@
         "author": "jbemmel",
         "note": "(no change) CI consolidate after model/data change (31354a87b0d4f7e374243bdcef069c16a361d275)",
         "git_commit_hash": "31354a87b0d4f7e374243bdcef069c16a361d275"
+      },
+      "000000000007": {
+        "id": 7,
+        "timestamp": "2026-04-13T23:05:41+00:00",
+        "author": "jbemmel",
+        "note": "CI consolidate after model/data change (35e004cde82e4558a39478b5dbf5f2e9fe17618e)",
+        "git_commit_hash": "35e004cde82e4558a39478b5dbf5f2e9fe17618e"
       }
     },
     "catalog_system": {
@@ -303,15 +310,16 @@
         "scott": {
           "country_id": "dk",
           "section": "M",
-          "number": 45,
-          "variation": "DK45"
+          "number": 45
         },
-        "catalog_system_abbreviation": "Facit",
         "issue_series_id": "dk-bicolors-classic",
         "perforation": "Perforated 13",
         "notes": "Illustrative primary listing for the sample stamp; see stamp_catalog_number for Michel cross-ref.",
         "c": 4,
-        "v": 4
+        "m": [
+          7
+        ],
+        "v": 7
       }
     },
     "scott_catalog_section": {
@@ -475,8 +483,7 @@
         "scott": {
           "country_id": "dk",
           "section": "M",
-          "number": 45,
-          "variation": "DK45"
+          "number": 45
         },
         "title": "Denmark 20 øre bicolor used",
         "summary": "VF used, numeral cancel; printing variety per dealer notes.",
@@ -491,9 +498,10 @@
         ],
         "c": 1,
         "m": [
-          4
+          4,
+          7
         ],
-        "v": 4
+        "v": 7
       }
     },
     "stamp_catalog_number": {

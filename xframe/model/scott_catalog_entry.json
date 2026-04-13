@@ -1,8 +1,8 @@
 {
   "name": "PhilateLister stamp catalog",
-  "version": "26.04.14.14",
+  "version": "26.04.14.18",
   "author": "Exergy ∞ LLC",
-  "description": "Entity shard: normalized catalog listing (system + number); stamp instances may reference one primary entry.",
+  "description": "Entity shard: Scott-style catalog listing (composite scott PK); stamp instances may reference one primary entry.",
   "source": "PhilateLister",
   "entities": [
     {
@@ -27,6 +27,7 @@
               {
                 "name": "section",
                 "description": "Scott major-section letter or pair (e.g. B, RW); omit for regular postage.",
+                "required": false,
                 "type": {
                   "definition": "scott_catalog_section_prefix",
                   "foreignKeys": [{ "entity": "scott_catalog_section" }]
@@ -35,12 +36,16 @@
               {
                 "name": "number",
                 "description": "Scott catalog numeral (main listing number).",
+                "required": true,
                 "type": { "primitive": "integer" }
               },
               {
                 "name": "variation",
-                "description": "Optional suffix or variety (e.g. 'a').",
-                "type": { "primitive": "string" }
+                "description": "Optional plate or variety letter suffix (closed list).",
+                "required": false,
+                "type": {
+                  "enum": ["a", "b", "c"]
+                }
               }
             ]
           }
@@ -51,15 +56,6 @@
           "name": "scott",
           "description": "Structured Scott listing (primary key).",
           "type": { "definition": "scott_listing_key" },
-          "required": true
-        },
-        {
-          "name": "catalog_system_abbreviation",
-          "description": "Which catalog the number belongs to (matches catalog_system primary key).",
-          "type": {
-            "definition": "catalog_system_abbreviation",
-            "foreignKeys": [{ "entity": "catalog_system" }]
-          },
           "required": true
         },
         {

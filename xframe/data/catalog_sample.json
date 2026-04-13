@@ -43,10 +43,8 @@
       "scott": {
         "country_id": "dk",
         "section": "M",
-        "number": 45,
-        "variation": "DK45"
+        "number": 45
       },
-      "catalog_system_abbreviation": "Facit",
       "issue_series_id": "dk-bicolors-classic",
       "perforation": "Perforated 13",
       "notes": "Illustrative primary listing for the sample stamp; see stamp_catalog_number for Michel cross-ref."
@@ -72,8 +70,7 @@
       "scott": {
         "country_id": "dk",
         "section": "M",
-        "number": 45,
-        "variation": "DK45"
+        "number": 45
       },
       "title": "Denmark 20 øre bicolor used",
       "summary": "VF used, numeral cancel; printing variety per dealer notes.",

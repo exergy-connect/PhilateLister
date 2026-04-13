@@ -24,11 +24,8 @@
       "scott": {
         "country_id": "se",
         "section": "O",
-        "number": 6,
-        "variation": ""
+        "number": 6
       },
-      "catalog_system_abbreviation": "Sc",
-      "catalog_number": "O6",
       "issue_series_id": "se_official_1874"
     }
   ],
@@ -39,8 +36,7 @@
       "scott": {
         "country_id": "se",
         "section": "O",
-        "number": 6,
-        "variation": ""
+        "number": 6
       },
       "title": "Sweden 12 öre Official Stamp",
       "summary": "12 öre blue official stamp, postmarked Åsbo.",

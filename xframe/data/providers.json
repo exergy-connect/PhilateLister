@@ -1,0 +1,16 @@
+{
+  "provider": [
+    {
+      "provider_id": "google_gemini",
+      "brief": "Google Gemini (AI Studio API key)",
+      "api_base_url": "https://generativelanguage.googleapis.com/v1beta",
+      "notes": "GEMINI_API_KEY. Client: @google/genai; api_base_url documents the REST v1beta base the SDK targets."
+    },
+    {
+      "provider_id": "openrouter",
+      "brief": "OpenRouter (OpenAI-compatible API)",
+      "api_base_url": "https://openrouter.ai/api/v1",
+      "notes": "OPENROUTER_API_KEY. Optional: OPENROUTER_HTTP_REFERER, OPENROUTER_TITLE for OpenRouter rankings headers."
+    }
+  ]
+}

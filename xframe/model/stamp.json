@@ -1,6 +1,6 @@
 {
   "name": "PhilateLister stamp catalog",
-  "version": "26.04.11.2",
+  "version": "26.04.14.4",
   "author": "Exergy ∞ LLC",
   "description": "Entity shard: catalog row for a single stamp or lot line.",
   "source": "PhilateLister",
@@ -9,7 +9,7 @@
     {
       "name": "stamp",
       "brief": "One inventory or catalog item for a stamp.",
-      "description": "Core record: country of issue, year, physical attributes (perforation, centering), condition, optional series membership; catalog numbers, thematic tags, and optional pricing (listing entity) use child rows.",
+      "description": "Core record: country of issue, year, physical attributes (centering), condition, optional primary scott_catalog_entry (perforation and series context live on scott_catalog_entry when linked); additional catalog lines and thematic tags use child rows; optional pricing via listing.",
       "primary_key": "stamp_id",
       "fields": [
         {
@@ -28,9 +28,12 @@
           "required": true
         },
         {
-          "name": "issue_series_id",
-          "description": "Stamp set or series this item belongs to, when known.",
-          "type": { "entity": "issue_series" },
+          "name": "scott",
+          "description": "Optional primary catalog listing for this stamp (same composite key as scott_catalog_entry.scott). Cross-catalog lines remain on stamp_catalog_number.",
+          "type": {
+            "definition": "scott_listing_key",
+            "foreignKeys": [{ "entity": "scott_catalog_entry" }]
+          },
           "required": false
         },
         {
@@ -102,12 +105,6 @@
               "unknown"
             ]
           },
-          "required": true
-        },
-        {
-          "name": "perforation",
-          "description": "Perforation description (e.g. perf 11½, comb 13¾, imperforate, roulette).",
-          "type": { "primitive": "string" },
           "required": true
         },
         {

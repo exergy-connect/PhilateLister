@@ -13,21 +13,18 @@
   ],
   "catalog_system": [
     {
-      "catalog_system_id": "michel",
+      "catalog_system_abbreviation": "Mi",
       "name": "Michel Deutschland-Spezial",
-      "abbreviation": "Mi.",
       "notes": "Example European specialized catalog."
     },
     {
-      "catalog_system_id": "scott",
+      "catalog_system_abbreviation": "Sc",
       "name": "Scott Standard Postage Stamp Catalogue",
-      "abbreviation": "Sc.",
       "notes": "US-oriented numbering."
     },
     {
-      "catalog_system_id": "facit",
+      "catalog_system_abbreviation": "Facit",
       "name": "Facit Nordic Countries",
-      "abbreviation": "Facit",
       "notes": "Scandinavian specialized."
     }
   ],
@@ -39,6 +36,20 @@
       "description": "Perforated bicolor definitives and numeral designs, late 19th century.",
       "year_from": 1870,
       "year_to": 1905
+    }
+  ],
+  "scott_catalog_entry": [
+    {
+      "scott": {
+        "country_id": "dk",
+        "section": "M",
+        "number": 45,
+        "variation": "DK45"
+      },
+      "catalog_system_abbreviation": "Facit",
+      "issue_series_id": "dk-bicolors-classic",
+      "perforation": "Perforated 13",
+      "notes": "Illustrative primary listing for the sample stamp; see stamp_catalog_number for Michel cross-ref."
     }
   ],
   "thematic_tag": [
@@ -58,13 +69,17 @@
     {
       "stamp_id": "stamp_2026-04-11_example_001",
       "country_id": "dk",
-      "issue_series_id": "dk-bicolors-classic",
+      "scott": {
+        "country_id": "dk",
+        "section": "M",
+        "number": 45,
+        "variation": "DK45"
+      },
       "title": "Denmark 20 øre bicolor used",
       "summary": "VF used, numeral cancel; printing variety per dealer notes.",
       "issue_year": 1895,
       "condition_quality": "used",
       "centering_grade": "fine",
-      "perforation": "Perforated 13",
       "image_basename": "stamp_2026-04-11_example_001.jpg",
       "freeform_keywords": ["Facit", "numeral", "cancel"]
     }
@@ -81,14 +96,14 @@
     {
       "catalog_line_id": "scn-001",
       "stamp_id": "stamp_2026-04-11_example_001",
-      "catalog_system_id": "facit",
+      "catalog_system_abbreviation": "Facit",
       "catalog_number": "DK 45",
       "supplement_notes": "Illustrative Facit-style id; replace with real number."
     },
     {
       "catalog_line_id": "scn-002",
       "stamp_id": "stamp_2026-04-11_example_001",
-      "catalog_system_id": "michel",
+      "catalog_system_abbreviation": "Mi",
       "catalog_number": "28y",
       "supplement_notes": "Illustrative Michel number."
     }

@@ -1,6 +1,6 @@
 {
   "name": "PhilateLister stamp catalog",
-  "version": "26.04.11.1",
+  "version": "26.04.14.7",
   "author": "Exergy ∞ LLC",
   "description": "Entity shard: issuing country or postal administration.",
   "source": "PhilateLister",
@@ -28,6 +28,12 @@
           "name": "notes",
           "description": "Optional clarifications (colonies, period splits, obsolete administrations).",
           "type": { "primitive": "string" },
+          "required": false
+        },
+        {
+          "name": "scott_catalog_entries",
+          "description": "Optional nested catalog listings for this country (pairs with scott.country_id on scott_catalog_entry, parent_array scott_catalog_entries).",
+          "type": { "array": { "entity": "scott_catalog_entry" } },
           "required": false
         }
       ]

@@ -1,0 +1,27 @@
+{
+  "prompt": [
+    {
+      "prompt_id": "xframe",
+      "brief": "Single stamp → xFrame catalog JSON",
+      "preferred_model": "gemini-3.1-pro-preview",
+      "output_format": "json",
+      "template_lines": [
+        "You are a philatelic cataloging assistant. From the stamp image and the dealer context below, produce structured data for THIS stamp only.",
+        "",
+        "The API returns JSON shaped as one object with a \"stamp\" array; each element is a stamp row per the response schema. For a single stamp use one element and set stamp_id to the suggested id below.",
+        "",
+        "Suggested stamp_id for this upload: __STAMP_SUGGESTED_ID__",
+        "Image file name: __IMAGE_BASENAME____FILE_MISMATCH_GAP__",
+        "",
+        "Commit summary line (from uploader):",
+        "__FIRST_LINE__",
+        "",
+        "Full structured parameters from the upload form (JSON):",
+        "__META_JSON__",
+        "",
+        "Dealer target listing price (JSON; may be null): __TARGET_JSON__",
+        "Dealer notes and hints (JSON; may be null): __NOTES_JSON__"
+      ]
+    }
+  ]
+}

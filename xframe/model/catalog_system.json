@@ -1,6 +1,6 @@
 {
   "name": "PhilateLister stamp catalog",
-  "version": "26.04.11.1",
+  "version": "26.04.14.7",
   "author": "Exergy ∞ LLC",
   "description": "Entity shard: major stamp catalog or numbering system.",
   "source": "PhilateLister",
@@ -8,13 +8,23 @@
     {
       "name": "catalog_system",
       "brief": "A published or customary numbering system (Scott, Michel, etc.).",
-      "description": "Reference system used for catalog numbers on individual stamps; one row per system you track.",
-      "primary_key": "catalog_system_id",
+      "description": "Reference system used for catalog numbers on individual stamps; one row per system you track. Primary key is the conventional abbreviation (Mi, Sc, …).",
+      "primary_key": "catalog_system_abbreviation",
+      "field_definitions": [
+        {
+          "name": "catalog_system_abbreviation",
+          "description": "Short label shown in UI or listings; extend the enum when adding catalog_system rows.",
+          "type": {
+            "primitive": "string",
+            "enum": ["Mi", "Sc", "Facit", "SG", "AFA", "Yv", "NVPH", "Zu"]
+          }
+        }
+      ],
       "fields": [
         {
-          "name": "catalog_system_id",
-          "description": "Stable slug for this catalog (e.g. scott, michel, facit, sg).",
-          "type": { "primitive": "string" },
+          "name": "catalog_system_abbreviation",
+          "description": "Stable abbreviation for this catalog (primary key; e.g. Sc, Mi, Facit).",
+          "type": { "definition": "catalog_system_abbreviation" },
           "required": true
         },
         {
@@ -22,12 +32,6 @@
           "description": "Full name of the catalog or reference work.",
           "type": { "primitive": "string" },
           "required": true
-        },
-        {
-          "name": "abbreviation",
-          "description": "Short label shown in UI or listings (e.g. Mi., Sc., SG).",
-          "type": { "primitive": "string" },
-          "required": false
         },
         {
           "name": "notes",

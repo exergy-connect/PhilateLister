@@ -9,7 +9,7 @@
     <meta name="philatelister-branch" content="main" />
     <!-- Optional: AES-256-GCM blob, base64(salt16 || iv12 || ciphertext+tag). Decrypt with ASCII token password field below. Generate: see HTML comment before </body>. -->
     <meta name="philatelister-token-cipher" content="71I16BcF1Yr5kVUaQ6zLW4YtVefnR/Ea57dn/4KLaoyKFTq00tSzKKhVrdcce3kf7g+uiqPborNY3iG3FfVu507BcEPpjyqA+TYedxp78noxIcW/tUd0U/adwAEJfDQF6jWQb7FwMlfko3zrHBAT550jc+cCXiBAWZoYgnd2TqBbdCijF+OLXbU=" />
-    <title>PhilateLister — upload a stamp</title>
+    <title>PhilateLister — stamp listings</title>
     <style>
       :root {
         --bg: #f7f4ee;
@@ -175,6 +175,9 @@
       #status.ok {
         color: var(--ok);
       }
+      .upload-layout > .listing-section {
+        min-height: 0;
+      }
       .listing-section {
         margin-top: 0;
         padding: 1.25rem 1.35rem;
@@ -186,7 +189,10 @@
         position: sticky;
         top: 1rem;
         min-width: 0;
-        overflow: visible;
+        max-height: min(calc(100vh - 2.5rem), 900px);
+        display: flex;
+        flex-direction: column;
+        gap: 0;
       }
       .listing-section[hidden] {
         display: none !important;
@@ -196,32 +202,38 @@
         font-weight: 600;
         margin: 0 0 0.5rem;
         letter-spacing: 0.02em;
+        flex-shrink: 0;
       }
       .listing-wait {
         margin: 0 0 0.75rem;
         font-size: 0.9rem;
         color: var(--muted);
+        flex-shrink: 0;
       }
-      /* Do not mix overflow-x: hidden with overflow-y: visible — spec forces y to auto (scrollbar). */
+      .listing-scroll {
+        flex: 1 1 auto;
+        min-height: 8rem;
+        max-height: min(65vh, calc(100vh - 12rem));
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+      }
       .listing-text {
         margin: 0;
         padding: 1rem;
-        max-height: none;
         font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
         font-size: 0.82rem;
         line-height: 1.45;
         white-space: pre-wrap;
         word-break: break-word;
         overflow-wrap: anywhere;
-        background: #fff;
-        border: 1px solid var(--border);
-        border-radius: 6px;
+        background: transparent;
+        border: none;
+        border-radius: 0;
         color: var(--ink);
-        /* UA stylesheet often sets pre { overflow: auto } */
-        overflow: visible !important;
-      }
-      .listing-text[hidden] {
-        display: none !important;
+        overflow: visible;
       }
       footer {
         margin-top: 2rem;
@@ -237,7 +249,7 @@
   <body>
     <main>
       <h1>PhilateLister</h1>
-      <p class="tagline">Front photo, optional notes, target price — one upload to <code>uploads/</code> to trigger your workflow.</p>
+      <p class="tagline">Add a clear front photo, say what you know about the stamp, and your asking price — then get draft text you can copy or edit.</p>
 
       <div class="upload-layout" id="upload-layout">
         <aside class="preview-panel" aria-label="Selected stamp preview">
@@ -267,34 +279,23 @@
             </div>
 
             <div class="field">
-              <label for="prompt-select">Prompt template</label>
+              <label for="prompt-select">What to generate</label>
               <select id="prompt-select" name="prompt">
-                <option value="stamp_listing" selected>stamp_listing — eBay listing</option>
-                <option value="jay_smith_listing">jay_smith_listing — dealer price-list style</option>
-                <option value="xframe">xframe — catalog JSON (consolidated.schema.json)</option>
+                <option value="stamp_listing" selected>Short sale listing (good for online auctions)</option>
+                <option value="jay_smith_listing">Rich dealer-style write-up</option>
+                <option value="xframe">Catalog-style details for one stamp in the photo</option>
+                <option value="multi_stamp_sheet_xframe">Catalog-style details when the photo shows many stamps</option>
               </select>
-              <p class="hint">Matches <code>prompts/&lt;name&gt;.json</code> on the branch that runs Actions. Add options here when you add new prompt files.</p>
+              <p class="hint">Choose the first option unless you want a longer story or a structured catalog. Use the last option for a whole sheet or stock page.</p>
             </div>
 
             <div class="field" id="token-password-field" hidden>
-              <label for="token-password">Token password</label>
-              <input id="token-password" type="password" autocomplete="off" placeholder="ASCII password for embedded encrypted token" />
-              <p class="hint">
-                Decrypts the <code>philatelister-token-cipher</code> value in the page. ASCII only; use <code>?token_password=…</code> (URL-encoded) if you prefer — that
-                ends up in browser history and logs, so treat links as sensitive. Not saved. Leave blank when using the raw token field or <code>token.txt</code>.
-              </p>
+              <label for="token-password">Access password</label>
+              <input id="token-password" type="password" autocomplete="off" placeholder="Password you were given for this page" />
+              <p class="hint">Only shown when this site is set up to use a password. It is not saved here. Your host may also accept it in the link instead.</p>
             </div>
 
-            <div class="field" id="token-field">
-              <label for="github-token">GitHub fine-grained token</label>
-              <input id="github-token" type="password" autocomplete="off" placeholder="Contents: write on this repo only" />
-              <p class="hint">
-                Not saved in the browser. Hidden when an embedded cipher is set. Leave blank if you use an encrypted token, <code>token.txt</code>, or
-                <code>PHILATELISTER.token</code> for a private deploy.
-              </p>
-            </div>
-
-            <button type="submit" id="submit-btn">Upload to GitHub</button>
+            <button type="submit" id="submit-btn" title="Sends your photo so a draft listing or catalog text can be created from it.">Submit stamp photo</button>
             <div id="status" role="status" aria-live="polite"></div>
           </form>
         </div>
@@ -308,7 +309,9 @@
         >
           <h2 id="listing-heading" class="listing-heading">Generated listing</h2>
           <p id="listing-wait" class="listing-wait"></p>
-          <pre id="listing-text" class="listing-text" hidden></pre>
+          <div class="listing-scroll" id="listing-scroll" hidden>
+            <pre id="listing-text" class="listing-text"></pre>
+          </div>
         </section>
       </div>
 
@@ -327,14 +330,15 @@
       Paste the printed base64 into: <meta name="philatelister-token-cipher" content="...">
     -->
 
+    <!-- Built by xFrame consolidate (--js): defines getConsolidatedData(). If missing (404), prompt formats fall back to fetch below. -->
+    <script src="xframe/output/consolidated_data.js"></script>
     <script>
       /**
        * PhilateLister — Copyright (C) 2026 Exergy ∞ LLC
        *
        * Repo target: <meta name="philatelister-repo" content="owner/repo"> and
        * <meta name="philatelister-branch"> in <head>, then URL / github.io overrides.
-       * Optional: set token for trusted/private hosting only (never commit a real token).
-       * Same-origin token.txt (gitignored) is loaded when served over http(s), not file://.
+       * Auth: PHILATELISTER.token in script, same-origin token.txt (http(s) only), or encrypted meta + password field / ?token_password=.
        * Optional: <meta name="philatelister-token-cipher" content="base64..."> with AES-256-GCM
        *   (see HTML comment before script); password: #token-password or ?token_password= (ASCII, URL-encoded).
        * Push to uploads/ can trigger Actions with paths: ['uploads/**'].
@@ -419,8 +423,6 @@
       const form = document.getElementById("upload-form");
       const statusEl = document.getElementById("status");
       const submitBtn = document.getElementById("submit-btn");
-      const tokenInput = document.getElementById("github-token");
-      const tokenField = document.getElementById("token-field");
       const tokenPasswordField = document.getElementById("token-password-field");
       const tokenPasswordInput = document.getElementById("token-password");
 
@@ -434,20 +436,18 @@
 
       function syncTokenFieldVisibility() {
         const cipherB64 = getEmbeddedCipherB64();
+        const tokenPasswordFromUrl = String(PHILATELISTER.tokenPasswordFromUrl || "").trim();
         if (PHILATELISTER.token) {
-          tokenField.hidden = true;
           tokenPasswordField.hidden = true;
-          tokenInput.removeAttribute("required");
+          tokenPasswordInput.removeAttribute("required");
+        } else if (cipherB64 && tokenPasswordFromUrl) {
+          tokenPasswordField.hidden = true;
           tokenPasswordInput.removeAttribute("required");
         } else if (cipherB64) {
-          tokenField.hidden = true;
           tokenPasswordField.hidden = false;
-          tokenInput.removeAttribute("required");
           tokenPasswordInput.setAttribute("required", "required");
         } else {
-          tokenField.hidden = false;
           tokenPasswordField.hidden = true;
-          tokenInput.setAttribute("required", "required");
           tokenPasswordInput.removeAttribute("required");
         }
       }
@@ -549,7 +549,7 @@
           return decryptEmbeddedTokenCipher(cipherB64, effectiveTokenPassword());
         }
 
-        return tokenInput.value.trim();
+        return "";
       }
 
       const stampFileInput = document.getElementById("stamp-file");
@@ -668,13 +668,76 @@
         return `${COMMIT_PREFIX}: ${imageBasename}\n\n${JSON.stringify(meta)}`;
       }
 
-      /** Same stem as scripts appraisal: listings/<stem>.txt or .json when prompt is xframe. */
-      function listingRelPathFromImageBasename(basename, promptId) {
+      /** Cache: prompt id → "json" | "txt" (from consolidated_data.js or xframe/data/prompts). */
+      const promptOutputFormatCache = new Map();
+
+      /** @type {Promise<Record<string, unknown> | null> | null} */
+      let consolidatedDataRootPromise = null;
+
+      /**
+       * Root from xFrame consolidated_data.js (global getConsolidatedData), or null if unavailable.
+       * @returns {Promise<Record<string, unknown> | null>}
+       */
+      function loadConsolidatedDataRoot() {
+        if (consolidatedDataRootPromise) return consolidatedDataRootPromise;
+        if (typeof getConsolidatedData !== "function") {
+          consolidatedDataRootPromise = Promise.resolve(null);
+          return consolidatedDataRootPromise;
+        }
+        consolidatedDataRootPromise = getConsolidatedData().catch(() => null);
+        return consolidatedDataRootPromise;
+      }
+
+      /**
+       * @param {string} promptId
+       * @returns {Promise<"json"|"txt">}
+       */
+      async function fetchPromptOutputFormat(promptId) {
+        const id = String(promptId || "stamp_listing").trim() || "stamp_listing";
+        if (promptOutputFormatCache.has(id)) return /** @type {"json"|"txt"} */ (promptOutputFormatCache.get(id));
+        let fmt = "txt";
+        const root = await loadConsolidatedDataRoot();
+        const data = root && typeof root === "object" && root.data && typeof root.data === "object" ? root.data : null;
+        const prompts = data && typeof data.prompt === "object" && data.prompt !== null ? data.prompt : null;
+        const row = prompts && typeof prompts[id] === "object" && prompts[id] !== null ? prompts[id] : null;
+        if (row && "output_format" in row) {
+          const raw = String(/** @type {{ output_format?: string }} */ (row).output_format ?? "txt")
+            .trim()
+            .toLowerCase();
+          fmt = raw === "json" ? "json" : "txt";
+        } else {
+          try {
+            const r = await fetch(`xframe/data/prompts/${encodeURIComponent(id)}.json`, { cache: "no-store" });
+            if (r.ok) {
+              const dataJson = await r.json();
+              const pack =
+                Array.isArray(dataJson.prompt) && dataJson.prompt[0] && typeof dataJson.prompt[0] === "object"
+                  ? dataJson.prompt[0]
+                  : dataJson;
+              const raw = String(pack.output_format ?? "txt").trim().toLowerCase();
+              fmt = raw === "json" ? "json" : "txt";
+            }
+          } catch (_) {
+            /* file:// or missing path — default txt */
+          }
+        }
+        promptOutputFormatCache.set(id, fmt);
+        return fmt;
+      }
+
+      /** Same stem as scripts appraisal: listings/&lt;stem&gt;.&lt;ext&gt; */
+      function listingRelPathFromImageBasename(basename, listingExt) {
         const dot = basename.lastIndexOf(".");
         const stem = dot >= 1 ? basename.slice(0, dot) : basename;
-        const ext = promptId === "xframe" ? "json" : "txt";
+        const ext = listingExt === "json" ? "json" : "txt";
         return `listings/${stem}.${ext}`;
       }
+
+      const promptSelectEl = document.getElementById("prompt-select");
+      promptSelectEl.addEventListener("change", () => {
+        void fetchPromptOutputFormat(promptSelectEl.value.trim() || "stamp_listing");
+      });
+      void fetchPromptOutputFormat(promptSelectEl.value.trim() || "stamp_listing");
 
       function decodeGitHubContentBase64(b64) {
         const clean = String(b64).replace(/\s/g, "");
@@ -731,6 +794,7 @@
         const gen = ++listingPollGeneration;
         const section = document.getElementById("listing-section");
         const waitEl = document.getElementById("listing-wait");
+        const scrollEl = document.getElementById("listing-scroll");
         const textEl = document.getElementById("listing-text");
         const uploadLayout = document.getElementById("upload-layout");
         section.hidden = false;
@@ -738,7 +802,7 @@
         const mainEl = document.querySelector("main");
         if (mainEl) mainEl.classList.add("listing-open");
         section.setAttribute("aria-busy", "true");
-        textEl.hidden = true;
+        scrollEl.hidden = true;
         textEl.textContent = "";
         waitEl.textContent = "";
 
@@ -760,7 +824,7 @@
               } else {
                 textEl.textContent = text;
               }
-              textEl.hidden = false;
+              scrollEl.hidden = false;
               section.setAttribute("aria-busy", "false");
               statusEl.textContent += ` Listing ready after ${formatMmSs(Date.now() - start)}.`;
               return;
@@ -826,7 +890,7 @@
         if (!token) {
           statusEl.className = "error";
           statusEl.textContent =
-            "Add a GitHub token, an encrypted token (password or ?token_password= plus philatelister-token-cipher), same-origin token.txt, or set PHILATELISTER.token for a private deploy.";
+            "This page needs permission to save your upload. Ask whoever set the site up to configure access (encrypted password above, token file on the server, or site script settings).";
           return;
         }
 
@@ -862,7 +926,8 @@
           await putFile(path, base64, message, token);
           statusEl.className = "ok";
           statusEl.textContent = `Uploaded ${path}. Waiting for listing on branch ${PHILATELISTER.branch}…`;
-          const listingPath = listingRelPathFromImageBasename(basename, promptId);
+          const listingExt = await fetchPromptOutputFormat(promptId);
+          const listingPath = listingRelPathFromImageBasename(basename, listingExt);
           waitForListingOnBranch(listingPath, token);
         } catch (err) {
           statusEl.className = "error";

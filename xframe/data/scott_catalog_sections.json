@@ -1,0 +1,118 @@
+{
+  "scott_catalog_section": [
+    {
+      "section_prefix": "B",
+      "category_name": "Semi-Postal",
+      "description": "Stamps sold for a premium (e.g., 10c+2c) for charity.",
+      "sort_order": 10
+    },
+    {
+      "section_prefix": "C",
+      "category_name": "Airmail",
+      "description": "(Also called Air Post) Specifically for airmail service.",
+      "sort_order": 20
+    },
+    {
+      "section_prefix": "D",
+      "category_name": "Pneumatic Post",
+      "description": "For mail sent via pressurized underground tubes (common in Italy).",
+      "sort_order": 30
+    },
+    {
+      "section_prefix": "E",
+      "category_name": "Special Delivery",
+      "description": "For immediate delivery upon arrival at the post office.",
+      "sort_order": 40
+    },
+    {
+      "section_prefix": "F",
+      "category_name": "Registration",
+      "description": "Paid for the registration fee (tracking/security).",
+      "sort_order": 50
+    },
+    {
+      "section_prefix": "G",
+      "category_name": "Insured Letter",
+      "description": "Used to pay fees for insuring contents.",
+      "sort_order": 60
+    },
+    {
+      "section_prefix": "H",
+      "category_name": "Acknowledgment of Receipt",
+      "description": "Paid for a return receipt to the sender.",
+      "sort_order": 70
+    },
+    {
+      "section_prefix": "I",
+      "category_name": "Late Fee",
+      "description": "Paid for mail posted after the daily collection deadline.",
+      "sort_order": 80
+    },
+    {
+      "section_prefix": "J",
+      "category_name": "Postage Due",
+      "description": "Collected from the recipient for unpaid postage.",
+      "sort_order": 90
+    },
+    {
+      "section_prefix": "K",
+      "category_name": "Offices Abroad",
+      "description": "Issued for use in a country's post offices in foreign cities.",
+      "sort_order": 100
+    },
+    {
+      "section_prefix": "L",
+      "category_name": "Local",
+      "description": "Valid only for delivery within a specific city or district.",
+      "sort_order": 110
+    },
+    {
+      "section_prefix": "M",
+      "category_name": "Military",
+      "description": "Issued for use by armed forces.",
+      "sort_order": 120
+    },
+    {
+      "section_prefix": "N",
+      "category_name": "Occupation",
+      "description": "Issued by a conquering power in an occupied territory.",
+      "sort_order": 130
+    },
+    {
+      "section_prefix": "O",
+      "category_name": "Official",
+      "description": "Restricted for use by government agencies only.",
+      "sort_order": 140
+    },
+    {
+      "section_prefix": "P",
+      "category_name": "Newspaper",
+      "description": "For bulk mailing of periodicals/newspapers.",
+      "sort_order": 150
+    },
+    {
+      "section_prefix": "Q",
+      "category_name": "Parcel Post",
+      "description": "Specifically for the transport of packages.",
+      "sort_order": 160
+    },
+    {
+      "section_prefix": "QE",
+      "category_name": "Special Handling",
+      "description": "Fast-tracked handling for parcel post (but not \"Special Delivery\").",
+      "sort_order": 170
+    },
+    {
+      "section_prefix": "R",
+      "category_name": "Revenue",
+      "description": "Technically for taxes/fees, but included in Scott catalogs.",
+      "sort_order": 180
+    },
+    {
+      "section_prefix": "RW",
+      "category_name": "Hunting Permit",
+      "description": "The \"Duck Stamps\" (often found in the US Specialized catalog).",
+      "sort_order": 190
+    }
+  ]
+}

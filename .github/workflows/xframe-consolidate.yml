@@ -1,5 +1,5 @@
 # Regenerate xframe/output when model or sample data changes (keeps consolidated.schema.json
-# in-repo for prompts/appraisal and downstream tooling).
+# in-repo for appraisal, xframe/data/prompts, and downstream tooling).
 name: xFrame consolidate
 
 on:
@@ -35,13 +35,18 @@ jobs:
         with:
           working-dir: xframe
           note: "CI consolidate after model/data change (${{ github.sha }})"
+          js: true
 
       - name: Commit consolidated JSON
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # xframe/output/ is gitignored; -f stages schema + data for the repo without .gitignore exceptions.
-          git add -f xframe/output/consolidated.schema.json xframe/output/consolidated_data.json
+          # xframe/output/ is gitignored; -f stages schema + data + JS for the repo without .gitignore exceptions.
+          git add -f \
+            xframe/output/consolidated.schema.json \
+            xframe/output/consolidated_data.json \
+            xframe/output/consolidated.schema.js \
+            xframe/output/consolidated_data.js
           if git diff --staged --quiet; then
             echo "No changes to consolidated schema or data."
           else

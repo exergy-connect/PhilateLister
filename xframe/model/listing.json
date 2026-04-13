@@ -1,6 +1,6 @@
 {
   "name": "PhilateLister stamp catalog",
-  "version": "26.04.11.1",
+  "version": "26.04.11.2",
   "author": "Exergy ∞ LLC",
   "description": "Entity shard: optional sales listing / asking price for a stamp.",
   "source": "PhilateLister",
@@ -34,8 +34,13 @@
         },
         {
           "name": "listing_currency",
-          "description": "ISO 4217 currency code for target_price (e.g. USD, EUR, DKK).",
-          "type": { "primitive": "string" },
+          "description": "ISO 4217 currency code for target_price (closed list; extend enum as needed).",
+          "type": {
+            "enum": [
+              "USD",
+              "EUR"
+            ]
+          },
           "required": true
         }
       ]

@@ -1,0 +1,68 @@
+{
+  "name": "PhilateLister stamp catalog",
+  "version": "26.04.13.3",
+  "author": "Exergy ∞ LLC",
+  "description": "Entity shard: Gemini appraisal prompt template (model id, output shape, template lines).",
+  "source": "PhilateLister",
+  "entities": [
+    {
+      "name": "prompt",
+      "brief": "LLM prompt pack for stamp image appraisal (listing text or catalog JSON).",
+      "description": "One row per prompt id; template_lines are joined with newlines for the model. Files live under xframe/data/prompts/<prompt_id>.json in entity-store shape { \"prompt\": [ { ... } ] }.",
+      "primary_key": "prompt_id",
+      "fields": [
+        {
+          "name": "prompt_id",
+          "description": "Stable id matching the filename stem (e.g. stamp_listing, xframe); referenced by upload commit metadata prompt field.",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "brief",
+          "description": "Short label for UI or docs.",
+          "type": { "primitive": "string" },
+          "required": false
+        },
+        {
+          "name": "preferred_model",
+          "description": "Default Gemini model id when this prompt has no prompt_invocation rows, or when GEMINI_MODEL overrides only the fallback path.",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "output_format",
+          "description": "Whether appraisal writes listings/<stem>.txt (plain model text) or listings/<stem>.json (parsed catalog object).",
+          "type": {
+            "primitive": "string",
+            "enum": ["txt", "json"]
+          },
+          "required": true
+        },
+        {
+          "name": "template_lines",
+          "description": "Prompt body lines; appraisal joins with newline. Placeholders: __IMAGE_BASENAME__, __FILE_MISMATCH_GAP__, __FIRST_LINE__, __META_JSON__, __TARGET_JSON__, __NOTES_JSON__, __STAMP_SUGGESTED_ID__. For output_format json, Gemini and OpenRouter use API structured output (stamp array schema), not inlined consolidated schema.",
+          "type": {
+            "array": {
+              "primitive": "string",
+              "min": 1,
+              "max": 2048
+            }
+          },
+          "required": true
+        },
+        {
+          "name": "gemini_output_lines",
+          "description": "Optional lines appended to template_lines only for google_gemini when output_format is txt. Omitted for json prompts (structured output is set in the API client). Same placeholders as template_lines.",
+          "type": {
+            "array": {
+              "primitive": "string",
+              "min": 0,
+              "max": 512
+            }
+          },
+          "required": false
+        }
+      ]
+    }
+  ]
+}

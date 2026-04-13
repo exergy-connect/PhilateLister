@@ -1,0 +1,71 @@
+{
+  "name": "PhilateLister stamp catalog",
+  "version": "26.04.14.3",
+  "author": "Exergy ∞ LLC",
+  "description": "Entity shard: Scott catalog major section prefix (letter or letter pair before the number).",
+  "source": "PhilateLister",
+  "entities": [
+    {
+      "name": "scott_catalog_section",
+      "brief": "Scott Standard / Specialized catalog section identified by number prefix.",
+      "description": "Each Scott-listed stamp number begins with a section prefix (e.g. B for semi-postal, RW for hunting permits). One row per prefix; use for filtering, UI labels, and matching catalog numbers.",
+      "primary_key": "section_prefix",
+      "field_definitions": [
+        {
+          "name": "scott_catalog_section_prefix",
+          "description": "Scott major-section letter or letter pair before the catalog numeral (values seeded in this model).",
+          "type": {
+            "primitive": "string",
+            "enum": [
+              "B",
+              "C",
+              "D",
+              "E",
+              "F",
+              "G",
+              "H",
+              "I",
+              "J",
+              "K",
+              "L",
+              "M",
+              "N",
+              "O",
+              "P",
+              "Q",
+              "QE",
+              "R",
+              "RW"
+            ]
+          }
+        }
+      ],
+      "fields": [
+        {
+          "name": "section_prefix",
+          "description": "Scott catalog number prefix as printed before the numeral (e.g. B, C, QE, RW).",
+          "type": { "definition": "scott_catalog_section_prefix" },
+          "required": true
+        },
+        {
+          "name": "category_name",
+          "description": "Short section title (e.g. Semi-Postal, Airmail).",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "description",
+          "description": "What stamps in this section represent and how they differ from regular postage.",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "sort_order",
+          "description": "Optional display order in reference lists (lower first).",
+          "type": { "primitive": "integer" },
+          "required": false
+        }
+      ]
+    }
+  ]
+}

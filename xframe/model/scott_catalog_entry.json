@@ -1,0 +1,87 @@
+{
+  "name": "PhilateLister stamp catalog",
+  "version": "26.04.14.14",
+  "allow_unlimited_fields": true,
+  "author": "Exergy ∞ LLC",
+  "description": "Entity shard: normalized catalog listing (system + number); stamp instances may reference one primary entry.",
+  "source": "PhilateLister",
+  "entities": [
+    {
+      "name": "scott_catalog_entry",
+      "brief": "Abstract listing in a published catalog (not a physical copy).",
+      "description": "Identifies a stamp design or major listing in a catalog system (Scott, Michel, etc.). Primary key is the composite field scott (country_id, section, number, variation). Optional issue_series_id ties the listing to a set or series row; optional perforation records the catalog-listed gauge or style. A stamp instance optionally points here via the same composite key; additional cross-references stay in stamp_catalog_number.",
+      "primary_key": "scott",
+      "field_definitions": [
+        {
+          "name": "scott_listing_key",
+          "description": "Listing key: issuing country plus Scott section, numeral, and variety (composite primary key and foreign-key shape on stamp).",
+          "type": {
+            "composite": [
+              {
+                "name": "country_id",
+                "description": "Issuing country or postal administration for this listing (denormalized; use with country.scott_catalog_entries nesting).",
+                "type": {
+                  "primitive": "string",
+                  "foreignKeys": [{ "entity": "country", "parent_array": "scott_catalog_entries" }]
+                }
+              },
+              {
+                "name": "section",
+                "description": "Scott major-section letter or pair (e.g. B, RW); omit for regular postage.",
+                "type": {
+                  "definition": "scott_catalog_section_prefix",
+                  "foreignKeys": [{ "entity": "scott_catalog_section" }]
+                }
+              },
+              {
+                "name": "number",
+                "description": "Scott catalog numeral (main listing number).",
+                "type": { "primitive": "integer" }
+              },
+              {
+                "name": "variation",
+                "description": "Optional suffix or variety (e.g. 'a').",
+                "type": { "primitive": "string" }
+              }
+            ]
+          }
+        }
+      ],
+      "fields": [
+        {
+          "name": "scott",
+          "description": "Structured Scott listing (primary key).",
+          "type": { "definition": "scott_listing_key" },
+          "required": true
+        },
+        {
+          "name": "catalog_system_abbreviation",
+          "description": "Which catalog the number belongs to (matches catalog_system primary key).",
+          "type": {
+            "definition": "catalog_system_abbreviation",
+            "foreignKeys": [{ "entity": "catalog_system" }]
+          },
+          "required": true
+        },
+        {
+          "name": "issue_series_id",
+          "description": "Stamp set or series this catalog listing belongs to, when known.",
+          "type": { "entity": "issue_series" },
+          "required": false
+        },
+        {
+          "name": "perforation",
+          "description": "Perforation as given for this listing (e.g. perf 11½, comb 13¾, imperforate, roulette).",
+          "type": { "primitive": "string" },
+          "required": false
+        },
+        {
+          "name": "notes",
+          "description": "Variety, plate, or supplement commentary for this listing.",
+          "type": { "primitive": "string" },
+          "required": false
+        }
+      ]
+    }
+  ]
+}

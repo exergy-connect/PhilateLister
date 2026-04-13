@@ -30,13 +30,16 @@ jobs:
           printf '%s\n' "$COMMIT_MESSAGE" | head -n 12
 
       # dist/appraisal.cjs is the esbuild bundle (committed by scripts-build); no npm install here.
-      - name: Run Gemini appraisal on new images
+      - name: Run appraisal (Gemini / OpenRouter per prompt_invocation)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          OPENROUTER_HTTP_REFERER: ${{ vars.OPENROUTER_HTTP_REFERER }}
+          OPENROUTER_TITLE: ${{ vars.OPENROUTER_TITLE }}
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
-          if [ -z "${GEMINI_API_KEY}" ]; then
-            echo "Skipping appraisal: add repository secret GEMINI_API_KEY."
+          if [ -z "${GEMINI_API_KEY}" ] && [ -z "${OPENROUTER_API_KEY}" ]; then
+            echo "Skipping appraisal: add repository secret GEMINI_API_KEY and/or OPENROUTER_API_KEY."
             exit 0
           fi
           set -euo pipefail

@@ -1,0 +1,44 @@
+{
+  "name": "PhilateLister stamp catalog",
+  "version": "26.04.12.4",
+  "author": "Exergy ∞ LLC",
+  "description": "Entity shard: LLM API provider (Gemini, OpenRouter, …) for appraisal.",
+  "source": "PhilateLister",
+  "entities": [
+    {
+      "name": "provider",
+      "brief": "Upstream API used to run a prompt invocation.",
+      "description": "Rows live in xframe/data/providers.json. Appraisal selects the client from provider_id (google_gemini → GEMINI_API_KEY + @google/genai; openrouter → OPENROUTER_API_KEY + chat/completions with vision).",
+      "primary_key": "provider_id",
+      "fields": [
+        {
+          "name": "provider_id",
+          "description": "Provider key; appraisal maps each to a client (Gemini SDK vs OpenRouter HTTP).",
+          "type": {
+            "primitive": "string",
+            "enum": ["google_gemini", "openrouter"]
+          },
+          "required": true
+        },
+        {
+          "name": "brief",
+          "description": "Human-readable label.",
+          "type": { "primitive": "string" },
+          "required": false
+        },
+        {
+          "name": "api_base_url",
+          "description": "REST API base URL (no trailing path after version segment where applicable). Gemini: v1beta base used by Google AI; OpenRouter: https://openrouter.ai/api/v1",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "notes",
+          "description": "Env vars, headers, or auth notes.",
+          "type": { "primitive": "string" },
+          "required": false
+        }
+      ]
+    }
+  ]
+}

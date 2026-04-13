@@ -1,5 +1,5 @@
 /**
- * Gemini stamp listing / xFrame catalog JSON from a local image (e.g. CI).
+ * Stamp listing / xFrame catalog JSON from a local image (Gemini, OpenRouter, parallel invocations).
  */
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
@@ -16,12 +16,215 @@ import {
 const repoRoot = process.cwd();
 
 const CONSOLIDATED_SCHEMA_PATH = join(repoRoot, 'xframe', 'output', 'consolidated.schema.json');
-const PROMPTS_DIR = join(repoRoot, 'prompts');
+/** Single source for prompts, providers, prompt_invocation (no xframe/data/*.json reads). */
+const CONSOLIDATED_DATA_PATH = join(repoRoot, 'xframe', 'output', 'consolidated_data.json');
+
 const PROMPT_ID_RE = /^[a-zA-Z0-9][a-zA-Z0-9_-]{0,62}$/;
+
+type ListingOutputFormat = 'json' | 'txt';
 
 type Meta = Record<string, unknown>;
 
-const promptPackCache = new Map<string, { preferredModel: string; template: string }>();
+type ProviderKind = 'google_gemini' | 'openrouter';
+
+type ProviderRow = {
+  provider_id: string;
+  api_base_url: string;
+};
+
+/** Appraisal client is implied by provider_id (not stored on the row). */
+function clientKindForProviderId(providerId: string): ProviderKind {
+  const id = providerId.toLowerCase();
+  if (id === 'google_gemini') return 'google_gemini';
+  if (id === 'openrouter') return 'openrouter';
+  throw new Error(
+    `Unknown provider_id ${JSON.stringify(providerId)}; appraisal supports google_gemini and openrouter.`
+  );
+}
+
+type PromptInvocationRow = {
+  invocation_id: string;
+  prompt_id: string;
+  provider_id: string;
+  model: string;
+  sort_order: number;
+  primary_for_listing: boolean;
+};
+
+type EffectiveInvocation = {
+  invocationId: string;
+  primary: boolean;
+  model: string;
+  provider: ProviderRow;
+};
+
+const promptPackCache = new Map<
+  string,
+  { preferredModel: string; template: string; geminiOutputJoin: string; outputFormat: ListingOutputFormat }
+>();
+
+let providersCache: Map<string, ProviderRow> | null = null;
+let invocationsCache: PromptInvocationRow[] | null = null;
+let consolidatedDataRoot: ConsolidatedDataRoot | null = null;
+
+type ConsolidatedDataRoot = {
+  data?: Record<string, Record<string, Record<string, unknown>>>;
+};
+
+function loadConsolidatedDataRoot(): ConsolidatedDataRoot {
+  if (consolidatedDataRoot) return consolidatedDataRoot;
+  if (!existsSync(CONSOLIDATED_DATA_PATH)) {
+    throw new Error(
+      `Missing ${CONSOLIDATED_DATA_PATH}; run the xFrame consolidator with --working-dir pointing at this repo's xframe/ directory first.`
+    );
+  }
+  try {
+    consolidatedDataRoot = JSON.parse(readFileSync(CONSOLIDATED_DATA_PATH, 'utf-8')) as ConsolidatedDataRoot;
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    throw new Error(`Invalid JSON in ${CONSOLIDATED_DATA_PATH}: ${msg}`);
+  }
+  return consolidatedDataRoot;
+}
+
+function getEntityStore(): Record<string, Record<string, Record<string, unknown>>> {
+  const root = loadConsolidatedDataRoot();
+  const d = root.data;
+  if (!d || typeof d !== 'object') {
+    throw new Error(`${CONSOLIDATED_DATA_PATH} missing top-level "data" object`);
+  }
+  return d;
+}
+
+function parseOutputFormat(row: Record<string, unknown>, promptPath: string): ListingOutputFormat {
+  const raw = row.output_format;
+  if (raw === undefined || raw === null) {
+    return 'txt';
+  }
+  const s = String(raw).trim().toLowerCase();
+  if (s === 'json') return 'json';
+  if (s === 'txt') return 'txt';
+  throw new Error(`${promptPath}: output_format must be "json" or "txt", got ${JSON.stringify(raw)}`);
+}
+
+function loadProvidersMap(): Map<string, ProviderRow> {
+  if (providersCache) return providersCache;
+  const map = new Map<string, ProviderRow>();
+  const store = getEntityStore();
+  const bucket = store.provider;
+  if (!bucket || typeof bucket !== 'object') {
+    providersCache = map;
+    return map;
+  }
+  for (const row of Object.values(bucket)) {
+    if (!row || typeof row !== 'object' || Array.isArray(row)) continue;
+    const r = row as Record<string, unknown>;
+    const id = String(r.provider_id ?? '').trim();
+    if (!id) continue;
+    try {
+      clientKindForProviderId(id);
+    } catch {
+      continue;
+    }
+    map.set(id, {
+      provider_id: id,
+      api_base_url: String(r.api_base_url ?? '').trim(),
+    });
+  }
+  providersCache = map;
+  return map;
+}
+
+function loadPromptInvocations(): PromptInvocationRow[] {
+  if (invocationsCache) return invocationsCache;
+  const store = getEntityStore();
+  const bucket = store.prompt_invocation;
+  if (!bucket || typeof bucket !== 'object') {
+    invocationsCache = [];
+    return invocationsCache;
+  }
+  const out: PromptInvocationRow[] = [];
+  for (const row of Object.values(bucket)) {
+    if (!row || typeof row !== 'object' || Array.isArray(row)) continue;
+    const r = row as Record<string, unknown>;
+    out.push({
+      invocation_id: String(r.invocation_id ?? '').trim(),
+      prompt_id: String(r.prompt_id ?? '').trim(),
+      provider_id: String(r.provider_id ?? '').trim(),
+      model: String(r.model ?? '').trim(),
+      sort_order: typeof r.sort_order === 'number' ? r.sort_order : Number(r.sort_order) || 0,
+      primary_for_listing: Boolean(r.primary_for_listing),
+    });
+  }
+  invocationsCache = out;
+  return invocationsCache;
+}
+
+function getEffectiveInvocations(promptId: string, preferredModel: string): EffectiveInvocation[] {
+  const providers = loadProvidersMap();
+  const rows = loadPromptInvocations()
+    .filter((r) => r.prompt_id === promptId && r.invocation_id)
+    .sort((a, b) => a.sort_order - b.sort_order);
+
+  if (rows.length === 0) {
+    const gem = providers.get('google_gemini');
+    const model = (process.env.GEMINI_MODEL ?? '').trim() || preferredModel;
+    if (!gem) {
+      return [
+        {
+          invocationId: `${promptId}_fallback_gemini`,
+          primary: true,
+          model,
+          provider: {
+            provider_id: 'google_gemini',
+            api_base_url: 'https://generativelanguage.googleapis.com/v1beta',
+          },
+        },
+      ];
+    }
+    return [
+      {
+        invocationId: `${promptId}_fallback_gemini`,
+        primary: true,
+        model,
+        provider: gem,
+      },
+    ];
+  }
+
+  const effective: EffectiveInvocation[] = [];
+  for (const r of rows) {
+    const p = providers.get(r.provider_id);
+    if (!p) {
+      throw new Error(`prompt_invocation ${r.invocation_id}: unknown provider_id ${JSON.stringify(r.provider_id)}`);
+    }
+    effective.push({
+      invocationId: r.invocation_id,
+      primary: r.primary_for_listing,
+      model: r.model,
+      provider: p,
+    });
+  }
+
+  const primaries = effective.filter((e) => e.primary);
+  if (primaries.length !== 1) {
+    throw new Error(
+      `prompt_invocation for prompt_id ${JSON.stringify(promptId)}: expected exactly one primary_for_listing true, got ${primaries.length}`
+    );
+  }
+  return effective;
+}
+
+function invocationHasRequiredApiKey(inv: EffectiveInvocation): boolean {
+  const kind = clientKindForProviderId(inv.provider.provider_id);
+  if (kind === 'google_gemini') {
+    return Boolean(String(process.env.GEMINI_API_KEY ?? '').trim());
+  }
+  if (kind === 'openrouter') {
+    return Boolean(String(process.env.OPENROUTER_API_KEY ?? '').trim());
+  }
+  return false;
+}
 
 function promptIdFromMeta(meta: Meta): string {
   const raw = String(meta.prompt ?? '').trim();
@@ -32,19 +235,32 @@ function promptIdFromMeta(meta: Meta): string {
   return raw;
 }
 
-function loadPromptPack(promptBasename: string): { preferredModel: string; template: string } {
+function loadPromptPack(promptBasename: string): {
+  preferredModel: string;
+  template: string;
+  geminiOutputJoin: string;
+  outputFormat: ListingOutputFormat;
+} {
   const hit = promptPackCache.get(promptBasename);
   if (hit) return hit;
 
   if (!PROMPT_ID_RE.test(promptBasename)) {
     throw new Error(`Invalid prompt id: ${JSON.stringify(promptBasename)}`);
   }
-  const path = join(PROMPTS_DIR, `${promptBasename}.json`);
-  if (!existsSync(path)) {
-    throw new Error(`Missing prompt template: ${path}`);
+  const store = getEntityStore();
+  const promptBucket = store.prompt;
+  if (!promptBucket || typeof promptBucket !== 'object') {
+    throw new Error(`${CONSOLIDATED_DATA_PATH} missing data.prompt`);
   }
-  const data = JSON.parse(readFileSync(path, 'utf-8')) as Record<string, unknown>;
+  const data = promptBucket[promptBasename] as Record<string, unknown> | undefined;
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    throw new Error(
+      `${CONSOLIDATED_DATA_PATH} has no prompt row with prompt_id ${JSON.stringify(promptBasename)} (re-run xFrame consolidate).`
+    );
+  }
+  const ctx = `${CONSOLIDATED_DATA_PATH} prompt ${promptBasename}`;
   const model = String(data.preferred_model ?? 'gemini-3-flash-preview').trim();
+  const outputFormat = parseOutputFormat(data, ctx);
   let template: string;
   if ('template_lines' in data) {
     const lines = data.template_lines;
@@ -55,9 +271,17 @@ function loadPromptPack(promptBasename: string): { preferredModel: string; templ
   } else if ('template' in data && data.template != null) {
     template = String(data.template);
   } else {
-    throw new Error(`${path} needs template_lines or template`);
+    throw new Error(`${ctx}: prompt row needs template_lines or template`);
   }
-  const pack = { preferredModel: model, template };
+  let geminiOutputJoin = '';
+  if (data.gemini_output_lines != null) {
+    const gl = data.gemini_output_lines;
+    if (!Array.isArray(gl)) {
+      throw new TypeError(`${ctx}: gemini_output_lines must be a JSON array of strings`);
+    }
+    geminiOutputJoin = gl.map((line) => String(line)).join('\n');
+  }
+  const pack = { preferredModel: model, template, geminiOutputJoin, outputFormat };
   promptPackCache.set(promptBasename, pack);
   return pack;
 }
@@ -99,25 +323,73 @@ function fileMismatchGap(imageBasename: string, meta: Meta): string {
   return '\n';
 }
 
-function consolidatedSchemaJsonForPrompt(): string {
+let cachedStampCatalogResponseJsonSchema: Record<string, unknown> | null = null;
+
+/**
+ * Shared JSON Schema root for catalog JSON: `{ "stamp": [ …$defs.stamp… ] }`.
+ * Used for OpenRouter `response_format` and Gemini `responseMimeType` + `responseJsonSchema`
+ * (https://ai.google.dev/gemini-api/docs/structured-output).
+ */
+function stampCatalogResponseJsonSchema(): Record<string, unknown> {
+  if (cachedStampCatalogResponseJsonSchema) return cachedStampCatalogResponseJsonSchema;
   if (!existsSync(CONSOLIDATED_SCHEMA_PATH)) {
     throw new Error(
       `Missing ${CONSOLIDATED_SCHEMA_PATH}; run the xFrame consolidator with --working-dir pointing at this repo's xframe/ directory first.`
     );
   }
-  const raw = readFileSync(CONSOLIDATED_SCHEMA_PATH, 'utf-8');
+  let parsed: Record<string, unknown>;
   try {
-    return JSON.stringify(JSON.parse(raw) as object, null, 2);
+    parsed = JSON.parse(readFileSync(CONSOLIDATED_SCHEMA_PATH, 'utf-8')) as Record<string, unknown>;
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     throw new Error(`Invalid JSON in ${CONSOLIDATED_SCHEMA_PATH}: ${msg}`);
   }
+  const defs = parsed.$defs as Record<string, unknown> | undefined;
+  const stamp = defs?.stamp;
+  if (!stamp || typeof stamp !== 'object' || Array.isArray(stamp)) {
+    throw new Error(`${CONSOLIDATED_SCHEMA_PATH} missing object $defs.stamp`);
+  }
+  const stampSchema = JSON.parse(JSON.stringify(stamp)) as Record<string, unknown>;
+  stampSchema.additionalProperties = false;
+  const root: Record<string, unknown> = {
+    type: 'object',
+    properties: {
+      stamp: {
+        type: 'array',
+        description: 'Stamp catalog rows for this image (one per stamp).',
+        minItems: 1,
+        items: stampSchema,
+      },
+    },
+    required: ['stamp'],
+    additionalProperties: false,
+  };
+  cachedStampCatalogResponseJsonSchema = root;
+  return root;
 }
 
-function buildGeminiPrompt(imageBasename: string, parsed: ReturnType<typeof parsePhilatelisterCommit>): string {
+function buildGeminiGenerateConfig(model: string, outputFormat: ListingOutputFormat): GenerateContentConfig {
+  const base = generateConfigForModel(model) ?? {};
+  if (outputFormat !== 'json') return base;
+  return {
+    ...base,
+    responseMimeType: 'application/json',
+    responseJsonSchema: stampCatalogResponseJsonSchema(),
+  };
+}
+
+/**
+ * @param forGemini Appends gemini_output_lines only for txt prompts (json uses API structured output for both Gemini and OpenRouter).
+ */
+function buildUserPromptText(
+  imageBasename: string,
+  parsed: ReturnType<typeof parsePhilatelisterCommit>,
+  forGemini: boolean,
+  outputFormat: ListingOutputFormat
+): string {
   const meta = parsed.meta ?? {};
   const promptId = promptIdFromMeta(meta);
-  const { template: tmpl } = loadPromptPack(promptId);
+  const { template: tmpl, geminiOutputJoin } = loadPromptPack(promptId);
   const firstLine = parsed.firstLine || '';
   const metaJson = JSON.stringify(meta, null, 2);
   const target = meta.targetPrice;
@@ -127,8 +399,8 @@ function buildGeminiPrompt(imageBasename: string, parsed: ReturnType<typeof pars
   const stampSuggestedId = basename(imageBasename, extname(imageBasename));
 
   let text = tmpl;
-  if (text.includes('__CONSOLIDATED_SCHEMA_JSON__')) {
-    text = text.replace('__CONSOLIDATED_SCHEMA_JSON__', consolidatedSchemaJsonForPrompt());
+  if (forGemini && outputFormat === 'txt' && geminiOutputJoin) {
+    text = `${tmpl}${geminiOutputJoin.startsWith('\n') ? '' : '\n'}${geminiOutputJoin}`;
   }
   text = text.replaceAll('__IMAGE_BASENAME__', imageBasename);
   text = text.replaceAll('__FILE_MISMATCH_GAP__', gap);
@@ -178,6 +450,179 @@ function responseText(response: GenerateContentResponse): string {
   return parts.join('\n');
 }
 
+async function runGeminiInvocation(
+  model: string,
+  apiKey: string,
+  userPrompt: string,
+  imgBytes: Buffer,
+  mime: string,
+  outputFormat: ListingOutputFormat
+): Promise<string> {
+  const config = buildGeminiGenerateConfig(model, outputFormat);
+  const ai = new GoogleGenAI({ apiKey });
+  const response = await ai.models.generateContent({
+    model,
+    contents: [
+      {
+        role: 'user',
+        parts: [
+          {
+            inlineData: {
+              mimeType: mime,
+              data: imgBytes.toString('base64'),
+            },
+          },
+          { text: userPrompt },
+        ],
+      },
+    ],
+    config,
+  });
+  return responseText(response);
+}
+
+function openRouterMessageContent(text: string, dataUrl: string): unknown[] {
+  return [
+    { type: 'text', text },
+    { type: 'image_url', image_url: { url: dataUrl } },
+  ];
+}
+
+async function runOpenRouterInvocation(
+  baseUrl: string,
+  apiKey: string,
+  model: string,
+  userPrompt: string,
+  imgBytes: Buffer,
+  mime: string,
+  outputFormat: ListingOutputFormat
+): Promise<string> {
+  const root = baseUrl.replace(/\/$/, '');
+  const url = `${root}/chat/completions`;
+  const dataUrl = `data:${mime};base64,${imgBytes.toString('base64')}`;
+  const headers: Record<string, string> = {
+    Authorization: `Bearer ${apiKey}`,
+    'Content-Type': 'application/json',
+  };
+  const referer = String(process.env.OPENROUTER_HTTP_REFERER ?? '').trim();
+  const title = String(process.env.OPENROUTER_TITLE ?? '').trim();
+  if (referer) headers['HTTP-Referer'] = referer;
+  if (title) headers['X-OpenRouter-Title'] = title;
+
+  const body: Record<string, unknown> = {
+    model,
+    messages: [
+      {
+        role: 'user',
+        content: openRouterMessageContent(userPrompt, dataUrl),
+      },
+    ],
+  };
+
+  if (outputFormat === 'json') {
+    body.response_format = {
+      type: 'json_schema',
+      json_schema: {
+        name: 'philatelister_stamps',
+        strict: false,
+        schema: stampCatalogResponseJsonSchema(),
+      },
+    };
+  }
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body),
+  });
+  const raw = await res.text();
+  if (!res.ok) {
+    throw new Error(`OpenRouter HTTP ${res.status}: ${raw.slice(0, 500)}`);
+  }
+  let json: unknown;
+  try {
+    json = JSON.parse(raw) as unknown;
+  } catch {
+    throw new Error('OpenRouter response is not JSON');
+  }
+  const o = json as Record<string, unknown>;
+  const choices = o.choices as unknown[] | undefined;
+  const c0 = choices?.[0] as Record<string, unknown> | undefined;
+  const msg = c0?.message as Record<string, unknown> | undefined;
+  const content = msg?.content;
+  if (typeof content === 'string') return content;
+  if (Array.isArray(content)) {
+    const texts = content
+      .map((part) => {
+        if (part && typeof part === 'object' && !Array.isArray(part) && 'text' in part) {
+          return String((part as { text?: unknown }).text ?? '');
+        }
+        return '';
+      })
+      .filter(Boolean);
+    if (texts.length) return texts.join('\n');
+  }
+  throw new Error('OpenRouter response missing message content');
+}
+
+async function runOneInvocation(
+  inv: EffectiveInvocation,
+  userPrompt: string,
+  imgBytes: Buffer,
+  mime: string,
+  outputFormat: ListingOutputFormat
+): Promise<{ invocationId: string; text: string; error?: string }> {
+  try {
+    const kind = clientKindForProviderId(inv.provider.provider_id);
+    if (kind === 'google_gemini') {
+      const key = String(process.env.GEMINI_API_KEY ?? '').trim();
+      if (!key) throw new Error('GEMINI_API_KEY not set');
+      const text = await runGeminiInvocation(inv.model, key, userPrompt, imgBytes, mime, outputFormat);
+      return { invocationId: inv.invocationId, text };
+    }
+    if (kind === 'openrouter') {
+      const key = String(process.env.OPENROUTER_API_KEY ?? '').trim();
+      if (!key) throw new Error('OPENROUTER_API_KEY not set');
+      const base = inv.provider.api_base_url || 'https://openrouter.ai/api/v1';
+      const text = await runOpenRouterInvocation(base, key, inv.model, userPrompt, imgBytes, mime, outputFormat);
+      return { invocationId: inv.invocationId, text };
+    }
+    throw new Error(`Unreachable: unknown client for ${JSON.stringify(inv.provider.provider_id)}`);
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    return { invocationId: inv.invocationId, text: '', error: msg };
+  }
+}
+
+function writeListingOutput(
+  baseName: string,
+  outputFormat: ListingOutputFormat,
+  text: string,
+  invocationId: string,
+  primary: boolean
+): string {
+  const listingsDir = join(process.cwd(), 'listings');
+  mkdirSync(listingsDir, { recursive: true });
+  const ext = outputFormat === 'json' ? 'json' : 'txt';
+  const fileName = primary ? `${baseName}.${ext}` : `${baseName}__${invocationId.replace(/[^a-zA-Z0-9._-]+/g, '_')}.${ext}`;
+  const outPath = join(listingsDir, fileName);
+
+  if (outputFormat === 'json') {
+    const body = stripMarkdownJsonFence(text);
+    try {
+      const parsedJson = JSON.parse(body) as unknown;
+      writeFileSync(outPath, `${JSON.stringify(parsedJson, null, 2)}\n`, 'utf-8');
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      console.error(`Warning: ${fileName} is not valid JSON (${msg}); writing raw text.`);
+      writeFileSync(outPath, body, 'utf-8');
+    }
+  } else {
+    writeFileSync(outPath, text, 'utf-8');
+  }
+  return outPath;
+}
+
 function parseArgs(): { imagePath: string; commitMessage: string } {
   const argv = process.argv.slice(2);
   let commitMessage = process.env.COMMIT_MESSAGE ?? '';
@@ -193,12 +638,6 @@ function parseArgs(): { imagePath: string; commitMessage: string } {
 }
 
 async function runAppraisal(imagePath: string, commitMessage: string | undefined): Promise<void> {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    console.error('Error: GEMINI_API_KEY is not set.');
-    process.exit(1);
-  }
-
   const path = join(process.cwd(), imagePath);
   if (!existsSync(path)) {
     console.error(`Error: File ${imagePath} not found.`);
@@ -206,75 +645,98 @@ async function runAppraisal(imagePath: string, commitMessage: string | undefined
   }
 
   const parsed = parsePhilatelisterCommit(commitMessage);
-  let prompt: string;
+  const imageBase = basename(imagePath);
+
+  const meta = parsed.meta ?? {};
+  const promptId = promptIdFromMeta(meta);
+  let preferredModel: string;
+  let outputFormat: ListingOutputFormat;
   try {
-    prompt = buildGeminiPrompt(basename(imagePath), parsed);
+    ({ preferredModel, outputFormat } = loadPromptPack(promptId));
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     console.error(`Error: ${msg}`);
     process.exit(1);
   }
 
-  const imgBytes = readFileSync(path);
-  const mime = guessMime(imagePath);
-  const meta = parsed.meta ?? {};
-  const promptId = promptIdFromMeta(meta);
-  const { preferredModel } = loadPromptPack(promptId);
-  const model = (process.env.GEMINI_MODEL ?? '').trim() || preferredModel;
-  const config = generateConfigForModel(model);
-
-  const ai = new GoogleGenAI({ apiKey });
-  const response = await ai.models.generateContent({
-    model,
-    contents: [
-      {
-        role: 'user',
-        parts: [
-          {
-            inlineData: {
-              mimeType: mime,
-              data: imgBytes.toString('base64'),
-            },
-          },
-          { text: prompt },
-        ],
-      },
-    ],
-    config,
+  let invocations = getEffectiveInvocations(promptId, preferredModel);
+  invocations = invocations.filter((inv) => {
+    if (invocationHasRequiredApiKey(inv)) return true;
+    console.error(
+      `Skipping invocation ${inv.invocationId} (${inv.provider.provider_id}): missing API key (GEMINI_API_KEY or OPENROUTER_API_KEY).`
+    );
+    return false;
   });
 
-  const text = responseText(response);
-  if (!text.trim()) {
-    console.error('Error: Empty model response.');
+  if (invocations.length === 0) {
+    console.error('Error: No invocations could run — set GEMINI_API_KEY and/or OPENROUTER_API_KEY for configured providers.');
+    process.exit(1);
+  }
+
+  const primaries = invocations.filter((i) => i.primary);
+  if (primaries.length !== 1) {
+    console.error(`Error: After filtering by API keys, expected exactly one primary invocation, got ${primaries.length}.`);
+    process.exit(1);
+  }
+
+  const imgBytes = readFileSync(path);
+  const mime = guessMime(imagePath);
+
+  let promptWithGeminiOutput: string;
+  let promptWithoutGeminiOutput: string;
+  try {
+    promptWithGeminiOutput = buildUserPromptText(imageBase, parsed, true, outputFormat);
+    promptWithoutGeminiOutput = buildUserPromptText(imageBase, parsed, false, outputFormat);
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error(`Error: ${msg}`);
+    process.exit(1);
+  }
+
+  const results = await Promise.all(
+    invocations.map((inv) => {
+      const forGemini = clientKindForProviderId(inv.provider.provider_id) === 'google_gemini';
+      const userPrompt = forGemini ? promptWithGeminiOutput : promptWithoutGeminiOutput;
+      return runOneInvocation(inv, userPrompt, imgBytes, mime, outputFormat);
+    })
+  );
+
+  const failed = results.filter((r) => r.error || !String(r.text ?? '').trim());
+  const ok = results.filter((r) => !r.error && String(r.text ?? '').trim());
+  if (ok.length === 0) {
+    for (const r of failed) {
+      console.error(`Invocation ${r.invocationId} failed: ${r.error ?? 'empty response'}`);
+    }
+    process.exit(1);
+  }
+
+  const primaryId = primaries[0]!.invocationId;
+  const primaryResult = results.find((r) => r.invocationId === primaryId);
+  if (!primaryResult || primaryResult.error || !String(primaryResult.text).trim()) {
+    console.error(`Error: Primary invocation ${primaryId} failed; refusing to write listing.`);
+    for (const r of failed) {
+      console.error(`  ${r.invocationId}: ${r.error ?? 'empty'}`);
+    }
     process.exit(1);
   }
 
   const baseName = basename(imagePath, extname(imagePath));
-  const listingsDir = join(process.cwd(), 'listings');
-  mkdirSync(listingsDir, { recursive: true });
+  for (const inv of invocations) {
+    const r = results.find((x) => x.invocationId === inv.invocationId);
+    if (!r || r.error || !String(r.text).trim()) continue;
+    const out = writeListingOutput(baseName, outputFormat, r.text, inv.invocationId, inv.primary);
+    console.log(`Written: ${out} (${inv.invocationId}, ${inv.provider.provider_id}, ${inv.model})`);
+  }
 
-  if (promptId === 'xframe') {
-    const body = stripMarkdownJsonFence(text);
-    const outPath = join(listingsDir, `${baseName}.json`);
-    try {
-      const parsedJson = JSON.parse(body) as unknown;
-      writeFileSync(outPath, `${JSON.stringify(parsedJson, null, 2)}\n`, 'utf-8');
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : String(e);
-      console.error(`Warning: model output is not valid JSON (${msg}); writing raw text.`);
-      writeFileSync(outPath, body, 'utf-8');
-    }
-    console.log(`xFrame catalog JSON written: ${outPath}`);
-  } else {
-    const outPath = join(listingsDir, `${baseName}.txt`);
-    writeFileSync(outPath, text, 'utf-8');
-    console.log(`Listing created: ${outPath}`);
+  for (const r of failed) {
+    console.error(`Warning: invocation ${r.invocationId} failed: ${r.error ?? 'empty response'}`);
   }
 }
 
 const { imagePath, commitMessage } = parseArgs();
 if (!imagePath) {
   console.error('Usage: node appraisal.cjs <image_path> [--commit-message TEXT]');
+  console.error('Env: GEMINI_API_KEY (required for google_gemini), OPENROUTER_API_KEY (for openrouter invocations), optional OPENROUTER_HTTP_REFERER, OPENROUTER_TITLE.');
   process.exit(1);
 }
 

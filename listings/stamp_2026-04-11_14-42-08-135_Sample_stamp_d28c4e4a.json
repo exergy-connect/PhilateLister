@@ -7,9 +7,8 @@
   ],
   "catalog_system": [
     {
-      "catalog_system_id": "scott",
-      "name": "Scott Standard Postage Stamp Catalogue",
-      "abbreviation": "Sc."
+      "catalog_system_abbreviation": "Sc",
+      "name": "Scott Standard Postage Stamp Catalogue"
     }
   ],
   "stamp": [
@@ -27,7 +26,7 @@
     {
       "catalog_line_id": "cat_line_stamp_d28c4e4a_scott_o6",
       "stamp_id": "stamp_2026-04-11_14-42-08-135_Sample_stamp_d28c4e4a",
-      "catalog_system_id": "scott",
+      "catalog_system_abbreviation": "Sc",
       "catalog_number": "O6"
     }
   ]

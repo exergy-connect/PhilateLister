@@ -790,7 +790,7 @@
        */
       async function waitForListingOnBranch(listingPath, token, options) {
         const intervalMs = options && options.intervalMs != null ? options.intervalMs : 4000;
-        const maxWaitMs = options && options.maxWaitMs != null ? options.maxWaitMs : 360000;
+        const maxWaitMs = options && options.maxWaitMs != null ? options.maxWaitMs : 60000;
         const gen = ++listingPollGeneration;
         const section = document.getElementById("listing-section");
         const waitEl = document.getElementById("listing-wait");

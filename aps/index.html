@@ -322,8 +322,8 @@
         <h1>Stamp submission form</h1>
         <p>
           Mirrors the official HipStamp-style sheet. Download PDF loads and fills
-          ../samples/Submission Form-Stamps Fillable.pdf; serve the site over HTTP from the repo
-          root so the browser can fetch the template and pdf-lib from the network.
+          aps/Submission Form-Stamps Fillable.pdf (same folder as this page); serve the site over
+          HTTP from the repo root so the browser can fetch the template and pdf-lib from the network.
         </p>
       </header>
 
@@ -480,8 +480,8 @@
     <script type="module">
       import { PDFDocument, StandardFonts } from "https://esm.sh/pdf-lib@1.17.1";
 
-      /** Official AcroForm (relative to this page under aps/) */
-      const TEMPLATE_PATH = "../samples/Submission%20Form-Stamps%20Fillable.pdf";
+      /** Official AcroForm (same directory as this page) */
+      const TEMPLATE_PATH = "Submission%20Form-Stamps%20Fillable.pdf";
 
       /** Black stamp area on template (PDF coords: origin bottom-left), matches fill_submission_form.py / PyMuPDF measure */
       const STAMP_SLOT = { left: 83.7, topFromTop: 79, right: 590, bottomFromTop: 385 };
@@ -582,7 +582,7 @@
             throw new Error(
               "Missing template PDF (" +
                 TEMPLATE_PATH +
-                "). Serve the site over HTTP from the PhilateLister repo root (not file://), with aps/ and samples/ deployed as in the repository."
+                "). Serve the site over HTTP from the PhilateLister repo root (not file://), with aps/ deployed as in the repository."
             );
           }
           const tmplBytes = await res.arrayBuffer();
@@ -683,7 +683,7 @@
           alert(
             "Could not build PDF.\n\n" +
               (err && err.message ? err.message + "\n\n" : "") +
-              "You need pdf-lib from esm.sh (network) and the official template under samples/."
+              "You need pdf-lib from esm.sh (network) and Submission Form-Stamps Fillable.pdf beside this page."
           );
         } finally {
           pdfBtn.disabled = false;

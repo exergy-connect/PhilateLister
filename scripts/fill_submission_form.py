@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Fill `samples/Submission Form-Stamps Fillable.pdf` (or a compatible template) from a
+Fill `aps/Submission Form-Stamps Fillable.pdf` (or a compatible template) from a
 PhilateLister-style listing JSON (xFrame export: top-level `stamp` array, optional
 `country`, `catalog_system`, `stamp_catalog_number`).
 
@@ -10,7 +10,7 @@ Dependencies:
 
 Stamp images: `image_basename` is resolved next to the listing JSON, then `uploads/`, then
 `listings/` under the repo root, and drawn into the black placeholder on page 1 (coordinates
-match `samples/Submission Form-Stamps Fillable.pdf` only).
+match `aps/Submission Form-Stamps Fillable.pdf` only).
 
 Example:
   scripts/.venv/bin/python scripts/fill_submission_form.py \\
@@ -40,7 +40,7 @@ try:
 except ImportError:
     fitz = None  # type: ignore[misc, assignment]
 
-# AcroForm field names in samples/Submission Form-Stamps Fillable.pdf
+# AcroForm field names in aps/Submission Form-Stamps Fillable.pdf
 F_COUNTRY = "Country"
 F_SCOTT = "Scott Cat"
 F_DESC1 = "Description 1"
@@ -54,7 +54,7 @@ F_CONFIGURATION = "Configuration"
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
-DEFAULT_TEMPLATE = REPO_ROOT / "samples" / "Submission Form-Stamps Fillable.pdf"
+DEFAULT_TEMPLATE = REPO_ROOT / "aps" / "Submission Form-Stamps Fillable.pdf"
 
 # Black stamp-photo placeholder on page 1 of DEFAULT_TEMPLATE (PyMuPDF top-left coords).
 STAMP_PLACEHOLDER_RECT = (83.7, 79.0, 590.0, 385.0)

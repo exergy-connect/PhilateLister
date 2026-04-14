@@ -4,16 +4,16 @@ Fill `aps/Submission Form-Stamps Fillable.pdf` (or a compatible template) from a
 PhilateLister-style listing JSON (xFrame export: top-level `stamp` array, optional
 `country`, `catalog_system`, `stamp_catalog_number`).
 
-Dependencies:
-  python3 -m venv scripts/.venv
-  scripts/.venv/bin/pip install -r scripts/requirements-pdf.txt
+Dependencies (from repo root):
+  python3 -m venv .venv
+  .venv/bin/pip install -r aps/requirements-pdf.txt
 
 Stamp images: `image_basename` is resolved next to the listing JSON, then `uploads/`, then
 `listings/` under the repo root, and drawn into the black placeholder on page 1 (coordinates
 match `aps/Submission Form-Stamps Fillable.pdf` only).
 
 Example:
-  scripts/.venv/bin/python scripts/fill_submission_form.py \\
+  .venv/bin/python aps/fill_submission_form.py \\
     listings/stamp_2026-04-13_19-15-08-561_image_00dec819.json \\
     -o /tmp/submission_filled.pdf
 """
@@ -32,7 +32,7 @@ try:
     from pypdf.constants import PageAttributes as PG
     from pypdf.generic import NameObject
 except ImportError as e:
-    print("Missing dependency: install with pip install -r scripts/requirements-pdf.txt", file=sys.stderr)
+    print("Missing dependency: install with pip install -r aps/requirements-pdf.txt", file=sys.stderr)
     raise SystemExit(1) from e
 
 try:
@@ -52,9 +52,10 @@ F_CONDITION = "Condition"
 F_CONDITION_USED = "Condition 1"
 F_CONFIGURATION = "Configuration"
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
+APS_DIR = Path(__file__).resolve().parent
+REPO_ROOT = APS_DIR.parent
 
-DEFAULT_TEMPLATE = REPO_ROOT / "aps" / "Submission Form-Stamps Fillable.pdf"
+DEFAULT_TEMPLATE = APS_DIR / "Submission Form-Stamps Fillable.pdf"
 
 # Black stamp-photo placeholder on page 1 of DEFAULT_TEMPLATE (PyMuPDF top-left coords).
 STAMP_PLACEHOLDER_RECT = (83.7, 79.0, 590.0, 385.0)

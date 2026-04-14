@@ -515,6 +515,27 @@
         return parts;
       }
 
+      /**
+       * Template uses paired text fields: whole dollars (e.g. undefined_4) and cents (undefined_5).
+       * @returns {{ dollars: string, cents: string } | null}
+       */
+      function splitUsdForPdf(amountStr) {
+        let s = String(amountStr || "")
+          .trim()
+          .replace(/^\$/, "")
+          .replace(/,/g, "");
+        if (!s) return null;
+        if (!/^\d*\.?\d*$/.test(s)) return null;
+        const [intPart, fracRaw = ""] = s.split(".");
+        const dollars =
+          intPart === "" ? "0" : intPart.replace(/^0+(?=\d)/, "") || "0";
+        let frac = fracRaw.replace(/\D/g, "");
+        if (frac.length >= 2) frac = frac.slice(0, 2);
+        else if (frac.length === 1) frac = frac + "0";
+        else frac = "00";
+        return { dollars, cents: frac };
+      }
+
       const CONFIGURATION_TO_PDF = {
         single: "Single",
         multiple: "Multiple",
@@ -604,10 +625,16 @@
           safeSetText(form, "Description 2", d2);
           safeSetText(form, "Description 3", d3);
 
-          const cat = val("catalog_value");
-          const sale = val("sale_price");
-          if (cat) safeSetText(form, "undefined_4", cat);
-          if (sale) safeSetText(form, "undefined_5", sale);
+          const catParts = splitUsdForPdf(val("catalog_value"));
+          if (catParts) {
+            safeSetText(form, "undefined_4", catParts.dollars);
+            safeSetText(form, "undefined_5", catParts.cents);
+          }
+          const saleParts = splitUsdForPdf(val("sale_price"));
+          if (saleParts) {
+            safeSetText(form, "undefined_9", saleParts.dollars);
+            safeSetText(form, "undefined_10", saleParts.cents);
+          }
 
           const usedEl = document.querySelector('input[name="condition_used"]:checked');
           const isUsed = usedEl && usedEl.value === "used";

@@ -606,8 +606,8 @@
 
           const cat = val("catalog_value");
           const sale = val("sale_price");
-          if (cat) safeSetText(form, "undefined_4", "Catalog value (USD): " + cat);
-          if (sale) safeSetText(form, "undefined_5", "Sale price (USD): " + sale);
+          if (cat) safeSetText(form, "undefined_4", cat);
+          if (sale) safeSetText(form, "undefined_5", sale);
 
           const usedEl = document.querySelector('input[name="condition_used"]:checked');
           const isUsed = usedEl && usedEl.value === "used";

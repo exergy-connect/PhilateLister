@@ -1,6 +1,6 @@
 {
   "name": "PhilateLister stamp catalog",
-  "version": "26.04.14.19",
+  "version": "26.04.14.21",
   "author": "Exergy ∞ LLC",
   "description": "Entity shard: Scott-style catalog listing (composite scott PK); stamp instances may reference one primary entry.",
   "source": "PhilateLister",

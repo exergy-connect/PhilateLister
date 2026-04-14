@@ -1,6 +1,6 @@
 {
   "name": "PhilateLister stamp catalog",
-  "version": "26.04.14.18",
+  "version": "26.04.14.19",
   "author": "Exergy ∞ LLC",
   "description": "Entity shard: Scott-style catalog listing (composite scott PK); stamp instances may reference one primary entry.",
   "source": "PhilateLister",
@@ -68,7 +68,13 @@
           "name": "perforation",
           "description": "Perforation as given for this listing (e.g. perf 11½, comb 13¾, imperforate, roulette).",
           "type": { "primitive": "string" },
-          "required": false
+          "required": true
+        },
+        {
+          "name": "primary_color",
+          "description": "Dominant or catalog-listed ink or paper color for this listing (e.g. carmine, blue, bister).",
+          "type": { "primitive": "string" },
+          "required": true
         },
         {
           "name": "notes",

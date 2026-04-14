@@ -24,7 +24,8 @@
         "- Scott or main catalog number when you can justify it, or say when uncertain",
         "- A condition report visible from the image",
         "- Details on perforations, if any, such as missing or damaged ones, and the count of horizontal and vertical dents",
-        "- Details on the cancel, if any, such as city name or date of cancellation. If the date is clear enough, cite the day of the week it represents",
+        "- Details on the cancel, if any, such as city name or date of cancellation. If the date is clear enough, check that it is after the date of issue and cite the day of the week it represents",
+        "- If the city is clear enough, lookup its population at the time of the cancel or issue and describe its role in the region",
         "- Listing body text that respects the dealer's notes and is consistent with their target price band (polite, professional tone)"
       ]
     }

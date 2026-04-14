@@ -1,0 +1,148 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "stamp_2026-04-13_19-15-08-561_image_00dec819__01",
+      "country_id": "us",
+      "scott": {
+        "number": 156
+      },
+      "title": "US 1c Franklin (Continental)",
+      "summary": "1c blue, Benjamin Franklin. 1873 Continental Bank Note Company issue. Used with blue cancel. Label indicates Scott 156.",
+      "issue_year": 1873,
+      "condition_quality": "used",
+      "centering_grade": "good",
+      "image_basename": "stamp_2026-04-13_19-15-08-561_image_00dec819.jpg",
+      "freeform_keywords": [
+        "Continental Bank Note",
+        "Franklin",
+        "Banknote issue"
+      ]
+    },
+    {
+      "stamp_id": "stamp_2026-04-13_19-15-08-561_image_00dec819__02",
+      "country_id": "us",
+      "scott": {
+        "number": 145
+      },
+      "title": "US 1c Franklin (National)",
+      "summary": "1c ultramarine, Benjamin Franklin. 1870 National Bank Note Company issue (ungrilled). Used with heavy black cross-roads or star cancel. Label indicates Scott 145.",
+      "issue_year": 1870,
+      "condition_quality": "used",
+      "centering_grade": "vg",
+      "image_basename": "stamp_2026-04-13_19-15-08-561_image_00dec819.jpg",
+      "freeform_keywords": [
+        "National Bank Note",
+        "Franklin",
+        "Banknote issue"
+      ]
+    },
+    {
+      "stamp_id": "stamp_2026-04-13_19-15-08-561_image_00dec819__03",
+      "country_id": "us",
+      "scott": {
+        "number": 157
+      },
+      "title": "US 2c Jackson (Continental)",
+      "summary": "2c brown, Andrew Jackson. 1873 Continental Bank Note Company issue. Used with black cork cancel. Label indicates Scott 157.",
+      "issue_year": 1873,
+      "condition_quality": "used",
+      "centering_grade": "vg_f",
+      "image_basename": "stamp_2026-04-13_19-15-08-561_image_00dec819.jpg",
+      "freeform_keywords": [
+        "Continental Bank Note",
+        "Jackson",
+        "Banknote issue"
+      ]
+    },
+    {
+      "stamp_id": "stamp_2026-04-13_19-15-08-561_image_00dec819__04",
+      "country_id": "us",
+      "scott": {
+        "number": 146
+      },
+      "title": "US 2c Jackson (National)",
+      "summary": "2c red brown, Andrew Jackson. 1870 National Bank Note Company issue (ungrilled). Used with black cork cancel. Label indicates Scott 146.",
+      "issue_year": 1870,
+      "condition_quality": "used",
+      "centering_grade": "vg_f",
+      "image_basename": "stamp_2026-04-13_19-15-08-561_image_00dec819.jpg",
+      "freeform_keywords": [
+        "National Bank Note",
+        "Jackson",
+        "Banknote issue"
+      ]
+    },
+    {
+      "stamp_id": "stamp_2026-04-13_19-15-08-561_image_00dec819__05",
+      "country_id": "us",
+      "scott": {
+        "number": 158
+      },
+      "title": "US 3c Washington (Continental)",
+      "summary": "3c green, George Washington. 1873 Continental Bank Note Company issue. Used with heavy black cork cancel. Label indicates Scott 158.",
+      "issue_year": 1873,
+      "condition_quality": "used",
+      "centering_grade": "vg",
+      "image_basename": "stamp_2026-04-13_19-15-08-561_image_00dec819.jpg",
+      "freeform_keywords": [
+        "Continental Bank Note",
+        "Washington",
+        "Banknote issue"
+      ]
+    },
+    {
+      "stamp_id": "stamp_2026-04-13_19-15-08-561_image_00dec819__06",
+      "country_id": "us",
+      "scott": {
+        "number": 147
+      },
+      "title": "US 3c Washington (National)",
+      "summary": "3c green, George Washington. 1870 National Bank Note Company issue (ungrilled). Used with black target cancel. Label indicates Scott 147.",
+      "issue_year": 1870,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "image_basename": "stamp_2026-04-13_19-15-08-561_image_00dec819.jpg",
+      "freeform_keywords": [
+        "National Bank Note",
+        "Washington",
+        "Banknote issue"
+      ]
+    },
+    {
+      "stamp_id": "stamp_2026-04-13_19-15-08-561_image_00dec819__07",
+      "country_id": "us",
+      "scott": {
+        "number": 159
+      },
+      "title": "US 6c Lincoln (Continental)",
+      "summary": "6c dull pink, Abraham Lincoln. 1873 Continental Bank Note Company issue. Used with heavy black cork or grid cancel. Label indicates Scott 159.",
+      "issue_year": 1873,
+      "condition_quality": "used",
+      "centering_grade": "good",
+      "image_basename": "stamp_2026-04-13_19-15-08-561_image_00dec819.jpg",
+      "freeform_keywords": [
+        "Continental Bank Note",
+        "Lincoln",
+        "Banknote issue"
+      ]
+    },
+    {
+      "stamp_id": "stamp_2026-04-13_19-15-08-561_image_00dec819__08",
+      "country_id": "us",
+      "scott": {
+        "number": 148
+      },
+      "title": "US 6c Lincoln (National)",
+      "summary": "6c carmine, Abraham Lincoln. 1870 National Bank Note Company issue (ungrilled). Used with black circular cancel. Label indicates Scott 148.",
+      "issue_year": 1870,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "image_basename": "stamp_2026-04-13_19-15-08-561_image_00dec819.jpg",
+      "freeform_keywords": [
+        "National Bank Note",
+        "Lincoln",
+        "Banknote issue"
+      ]
+    }
+  ]
+}

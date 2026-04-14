@@ -530,7 +530,7 @@
     </div>
 
     <script type="module">
-      import { PDFDocument, StandardFonts } from "https://esm.sh/pdf-lib@1.17.1";
+      import { PDFDocument, StandardFonts, TextAlignment } from "https://esm.sh/pdf-lib@1.17.1";
 
       /** Official AcroForm (same directory as this page) */
       const TEMPLATE_PATH = "Submission%20Form-Stamps%20Fillable.pdf";
@@ -550,6 +550,19 @@
           form.getTextField(fieldName).setText(text);
         } catch (err) {
           console.warn("Text field", fieldName, err);
+        }
+      }
+
+      /** Catalog / sale amount boxes on the APS template (dollars + cents). */
+      const PDF_PRICE_FIELD_NAMES = ["undefined_4", "undefined_5", "undefined_9", "undefined_10"];
+
+      function alignPdfPriceFieldsRight(form) {
+        for (const name of PDF_PRICE_FIELD_NAMES) {
+          try {
+            form.getTextField(name).setAlignment(TextAlignment.Right);
+          } catch (err) {
+            console.warn("PDF field alignment", name, err);
+          }
         }
       }
 
@@ -706,6 +719,7 @@
           const pdfDoc = await PDFDocument.load(tmplBytes);
           const form = pdfDoc.getForm();
           const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
+          alignPdfPriceFieldsRight(form);
 
           safeSetText(form, "Country", val("country"));
           safeSetText(form, "Scott Cat", val("scott_cat"));

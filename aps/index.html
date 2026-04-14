@@ -57,6 +57,14 @@
         flex: 1 1 12rem;
         min-width: min(100%, 28rem);
       }
+      header p a {
+        color: var(--accent);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+      header p a:hover {
+        color: var(--accent-hover);
+      }
       .layout {
         display: grid;
         grid-template-columns: minmax(0, min(38vw, 28rem)) minmax(0, 1fr);
@@ -179,13 +187,24 @@
       .field-group textarea {
         margin-bottom: 0;
       }
+      /* Same two columns as .grid-2 so description aligns with Country / Other catalogue */
       .mid-split {
         display: grid;
-        grid-template-columns: minmax(0, 1.35fr) minmax(14rem, 1fr);
-        gap: clamp(0.75rem, 2vw, 1.25rem);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.5rem 1rem;
         align-items: start;
       }
-      @media (max-width: 960px) {
+      .pricing-row {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: 0.65rem 1.25rem;
+      }
+      .pricing-row .field-group {
+        flex: 0 1 auto;
+      }
+      @media (max-width: 520px) {
         .mid-split {
           grid-template-columns: 1fr;
         }
@@ -237,6 +256,14 @@
         background: #fff;
         color: var(--ink);
         margin-bottom: 0;
+      }
+      /* Pricing: ~4 digit glyph width (content-box so padding is outside the ch count) */
+      .field-group input[type="text"].input-price {
+        width: 4ch;
+        min-width: 4ch;
+        max-width: 100%;
+        box-sizing: content-box;
+        font-variant-numeric: tabular-nums;
       }
       input[type="text"]:focus,
       textarea:focus {
@@ -321,9 +348,12 @@
       <header>
         <h1>Stamp submission form</h1>
         <p>
-          Mirrors the official HipStamp-style sheet. Download PDF loads and fills
-          aps/Submission Form-Stamps Fillable.pdf (same folder as this page); serve the site over
-          HTTP from the repo root so the browser can fetch the template and pdf-lib from the network.
+          Mirrors the official
+          <a
+            href="https://stamps.org/Portals/0/StampStore/Submission%20Form-Stamps%20Fillable.pdf"
+            rel="noopener noreferrer"
+            >APS StampStore Submission Form</a
+          >.
         </p>
       </header>
 
@@ -373,51 +403,34 @@
             </div>
           </fieldset>
 
-          <fieldset>
-            <legend>Pricing <span class="hint">(USD)</span></legend>
-            <div class="grid-2">
-              <div class="field-group">
-                <label class="field" for="catalog_value"
-                  >Catalog value <span class="hint">(US&nbsp;$)</span></label
-                >
-                <input
-                  type="text"
-                  id="catalog_value"
-                  name="catalog_value"
-                  inputmode="decimal"
-                  autocomplete="off"
-                  placeholder="e.g. 125.00"
-                />
-              </div>
-              <div class="field-group">
-                <label class="field" for="sale_price"
-                  >Sale price <span class="hint">(US&nbsp;$)</span></label
-                >
-                <input
-                  type="text"
-                  id="sale_price"
-                  name="sale_price"
-                  inputmode="decimal"
-                  autocomplete="off"
-                  placeholder="e.g. 44.00"
-                />
-              </div>
-            </div>
-          </fieldset>
-
-          <div class="mid-split">
+          <div class="grid-2">
             <fieldset>
-              <legend>Description</legend>
-              <div class="field-group">
-                <label class="field" for="description"
-                  >Description <span class="hint">(~4 lines)</span></label
-                >
-                <textarea
-                  id="description"
-                  name="description"
-                  rows="4"
-                  placeholder="Title, summary, catalogue notes, HipStamp text…"
-                ></textarea>
+              <legend>Pricing <span class="hint">(USD)</span></legend>
+              <div class="pricing-row">
+                <div class="field-group">
+                  <label class="field" for="catalog_value">Catalog value</label>
+                  <input
+                    type="text"
+                    id="catalog_value"
+                    name="catalog_value"
+                    class="input-price"
+                    inputmode="decimal"
+                    autocomplete="off"
+                    placeholder="125"
+                  />
+                </div>
+                <div class="field-group">
+                  <label class="field" for="sale_price">Sale price</label>
+                  <input
+                    type="text"
+                    id="sale_price"
+                    name="sale_price"
+                    class="input-price"
+                    inputmode="decimal"
+                    autocomplete="off"
+                    placeholder="44"
+                  />
+                </div>
               </div>
             </fieldset>
 
@@ -445,28 +458,45 @@
                   <label class="choice"><input type="radio" name="gum" value="ng" /> NG</label>
                 </div>
               </fieldset>
-
-              <fieldset>
-                <legend>Configuration</legend>
-                <div class="radio-grid" role="radiogroup" aria-label="Lot configuration">
-                  <label class="choice"
-                    ><input type="radio" name="configuration" value="single" checked /> Single</label
-                  >
-                  <label class="choice"><input type="radio" name="configuration" value="multiple" /> Multiple</label>
-                  <label class="choice"><input type="radio" name="configuration" value="set" /> Complete Set</label>
-                  <label class="choice"><input type="radio" name="configuration" value="plate_block" /> Plate block</label>
-                  <label class="choice"
-                    ><input type="radio" name="configuration" value="souvenir_sheet" /> Souvenir sheet</label
-                  >
-                  <label class="choice"
-                    ><input type="radio" name="configuration" value="cinderella" /> Cinderella</label
-                  >
-                  <label class="choice"
-                    ><input type="radio" name="configuration" value="pnc" /> Plate number coil</label
-                  >
-                </div>
-              </fieldset>
             </div>
+          </div>
+
+          <div class="mid-split">
+            <fieldset>
+              <legend>Description</legend>
+              <div class="field-group">
+                <label class="field" for="description"
+                  >Description <span class="hint">(~4 lines)</span></label
+                >
+                <textarea
+                  id="description"
+                  name="description"
+                  rows="4"
+                  placeholder="Title, summary, catalogue notes, HipStamp text…"
+                ></textarea>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Configuration</legend>
+              <div class="radio-grid" role="radiogroup" aria-label="Lot configuration">
+                <label class="choice"
+                  ><input type="radio" name="configuration" value="single" checked /> Single</label
+                >
+                <label class="choice"><input type="radio" name="configuration" value="multiple" /> Multiple</label>
+                <label class="choice"><input type="radio" name="configuration" value="set" /> Complete Set</label>
+                <label class="choice"><input type="radio" name="configuration" value="plate_block" /> Plate block</label>
+                <label class="choice"
+                  ><input type="radio" name="configuration" value="souvenir_sheet" /> Souvenir sheet</label
+                >
+                <label class="choice"
+                  ><input type="radio" name="configuration" value="cinderella" /> Cinderella</label
+                >
+                <label class="choice"
+                  ><input type="radio" name="configuration" value="pnc" /> Plate number coil</label
+                >
+              </div>
+            </fieldset>
           </div>
 
           <div class="actions">
@@ -593,6 +623,16 @@
       syncGumDisabled();
 
       pdfBtn.addEventListener("click", async () => {
+        const condUsed = document.querySelector('input[name="condition_used"]:checked');
+        if (condUsed && condUsed.value === "unused") {
+          if (!document.querySelector('input[name="gum"]:checked')) {
+            alert("Please select a gum quality before downloading the PDF.");
+            gumFieldset.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            gumFieldset.querySelector('input[name="gum"]')?.focus();
+            return;
+          }
+        }
+
         pdfBtn.disabled = true;
         const prevText = pdfBtn.textContent;
         pdfBtn.textContent = "Building…";

@@ -265,6 +265,13 @@
         box-sizing: content-box;
         font-variant-numeric: tabular-nums;
       }
+      .field-group input[type="text"].input-percent {
+        width: 4ch;
+        min-width: 4ch;
+        max-width: 100%;
+        box-sizing: content-box;
+        font-variant-numeric: tabular-nums;
+      }
       input[type="text"]:focus,
       textarea:focus {
         outline: 2px solid rgba(45, 74, 62, 0.35);
@@ -429,6 +436,21 @@
                     inputmode="decimal"
                     autocomplete="off"
                     placeholder="44"
+                  />
+                </div>
+                <div class="field-group">
+                  <label class="field" for="sale_percent"
+                    >% of catalog <span class="hint">(sale)</span></label
+                  >
+                  <input
+                    type="text"
+                    id="sale_percent"
+                    name="sale_percent"
+                    class="input-percent"
+                    inputmode="decimal"
+                    autocomplete="off"
+                    value="40"
+                    placeholder="40"
                   />
                 </div>
               </div>
@@ -621,6 +643,40 @@
 
       usedRadios.forEach((r) => r.addEventListener("change", syncGumDisabled));
       syncGumDisabled();
+
+      function parseUsdAmount(str) {
+        const t = String(str || "")
+          .trim()
+          .replace(/^\$/, "")
+          .replace(/,/g, "");
+        if (!t || !/^\d*\.?\d*$/.test(t)) return null;
+        const n = Number(t);
+        return Number.isFinite(n) && n >= 0 ? n : null;
+      }
+
+      function formatSaleFromCatalog(catalogNum, pctNum) {
+        const sale = (catalogNum * pctNum) / 100;
+        const rounded = Math.round(sale * 100) / 100;
+        const s = rounded.toFixed(2);
+        return s.replace(/\.?0+$/, "") || "0";
+      }
+
+      function syncSaleFromCatalogPercent() {
+        const saleEl = $("sale_price");
+        const cat = parseUsdAmount(val("catalog_value"));
+        const pctStr = val("sale_percent").replace(/%/g, "").trim();
+        if (cat == null || pctStr === "") return;
+        const pct = Number(pctStr);
+        if (!Number.isFinite(pct) || pct < 0) return;
+        saleEl.value = formatSaleFromCatalog(cat, pct);
+      }
+
+      const catalogInput = $("catalog_value");
+      const salePercentInput = $("sale_percent");
+      for (const evt of ["input", "change"]) {
+        catalogInput?.addEventListener(evt, syncSaleFromCatalogPercent);
+        salePercentInput?.addEventListener(evt, syncSaleFromCatalogPercent);
+      }
 
       pdfBtn.addEventListener("click", async () => {
         const condUsed = document.querySelector('input[name="condition_used"]:checked');

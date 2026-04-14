@@ -135,6 +135,38 @@
         "listing_currency"
       ]
     },
+    "llm_model": {
+      "type": "object",
+      "properties": {
+        "model_id": {
+          "type": "string",
+          "description": "Stable id passed to the provider API (e.g. models/gemini-2.0-flash or OpenRouter route slug)."
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable model name for UI and logs."
+        },
+        "provider_id": {
+          "type": "string",
+          "description": "Upstream provider that serves this model."
+        },
+        "has_free_tier": {
+          "type": "boolean",
+          "description": "Whether the vendor documents a no-cost or trial quota for this model (informational only)."
+        },
+        "rate_limits": {
+          "type": "string",
+          "description": "Operator notes: max RPM/TPM/RPD (or usage-dashboard cap), vendor doc links, token pricing pointers; empty if unknown."
+        }
+      },
+      "description": "Rows describe which vendor model id to pass to the client (e.g. gemini-2.0-flash, openai/gpt-4o). has_free_tier and rate_limits are indicative documentation for operators; they are not enforced by this app.",
+      "required": [
+        "model_id",
+        "name",
+        "provider_id",
+        "has_free_tier"
+      ]
+    },
     "prompt": {
       "type": "object",
       "properties": {
@@ -686,6 +718,12 @@
       "type": "array",
       "items": {
         "$ref": "#/$defs/listing"
+      }
+    },
+    "llm_model": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/llm_model"
       }
     },
     "prompt": {

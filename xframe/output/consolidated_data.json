@@ -1,6 +1,6 @@
 {
-  "version": 7,
-  "timestamp": "2026-04-13T23:05:41Z",
+  "version": 8,
+  "timestamp": "2026-04-14T05:29:51Z",
   "model": {
     "name": "PhilateLister stamp catalog",
     "version": "26.04.11.1",
@@ -59,6 +59,13 @@
         "author": "jbemmel",
         "note": "CI consolidate after model/data change (35e004cde82e4558a39478b5dbf5f2e9fe17618e)",
         "git_commit_hash": "35e004cde82e4558a39478b5dbf5f2e9fe17618e"
+      },
+      "000000000008": {
+        "id": 8,
+        "timestamp": "2026-04-14T05:29:51+00:00",
+        "author": "jbemmel",
+        "note": "CI consolidate after model/data change (7061aa5ecfd31c44c7f9b6d4c9cbc682b1d5e0a6)",
+        "git_commit_hash": "7061aa5ecfd31c44c7f9b6d4c9cbc682b1d5e0a6"
       }
     },
     "catalog_system": {
@@ -122,11 +129,85 @@
         "v": 1
       }
     },
+    "llm_model": {
+      "gemini-3.1-pro-preview": {
+        "model_id": "gemini-3.1-pro-preview",
+        "name": "Gemini 3.1 Pro Preview",
+        "provider_id": "google_gemini",
+        "has_free_tier": false,
+        "rate_limits": "Text-out caps (max RPM / TPM / RPD from usage vs limit UI): 25 RPM, 2M TPM, 250 RPD. Token pricing: https://ai.google.dev/gemini-api/docs/pricing#standard",
+        "c": 8,
+        "v": 8
+      },
+      "gemini-3-flash-preview": {
+        "model_id": "gemini-3-flash-preview",
+        "name": "Gemini 3 Flash Preview",
+        "provider_id": "google_gemini",
+        "has_free_tier": true,
+        "rate_limits": "Text-out caps (max RPM / TPM / RPD): 1K RPM, 2M TPM, 10K RPD. Token pricing: https://ai.google.dev/gemini-api/docs/pricing#standard",
+        "c": 8,
+        "v": 8
+      },
+      "gemini-2.5-pro": {
+        "model_id": "gemini-2.5-pro",
+        "name": "Gemini 2.5 Pro",
+        "provider_id": "google_gemini",
+        "has_free_tier": true,
+        "rate_limits": "Text-out caps (max RPM / TPM / RPD): 150 RPM, 2M TPM, 1K RPD. Token pricing: https://ai.google.dev/gemini-api/docs/pricing#standard",
+        "c": 8,
+        "v": 8
+      },
+      "gemini-2.5-flash": {
+        "model_id": "gemini-2.5-flash",
+        "name": "Gemini 2.5 Flash",
+        "provider_id": "google_gemini",
+        "has_free_tier": true,
+        "rate_limits": "Text-out caps (max RPM / TPM / RPD): 1K RPM, 1M TPM, 10K RPD. Token pricing: https://ai.google.dev/gemini-api/docs/pricing#standard",
+        "c": 8,
+        "v": 8
+      },
+      "gemini-2.5-flash-lite": {
+        "model_id": "gemini-2.5-flash-lite",
+        "name": "Gemini 2.5 Flash-Lite",
+        "provider_id": "google_gemini",
+        "has_free_tier": true,
+        "rate_limits": "Not listed separately in operator chart; typically aligns with Flash-Lite tier on https://ai.google.dev/gemini-api/docs/rate-limits. Standard token pricing: https://ai.google.dev/gemini-api/docs/pricing#standard",
+        "c": 8,
+        "v": 8
+      },
+      "gemini-2.0-flash": {
+        "model_id": "gemini-2.0-flash",
+        "name": "Gemini 2.0 Flash",
+        "provider_id": "google_gemini",
+        "has_free_tier": true,
+        "rate_limits": "Text-out caps (max RPM / TPM / RPD): 2K RPM, 4M TPM, unlimited RPD. Deprecated ~2026-06-01. Token pricing: https://ai.google.dev/gemini-api/docs/pricing#standard",
+        "c": 8,
+        "v": 8
+      },
+      "gemini-2.0-flash-lite": {
+        "model_id": "gemini-2.0-flash-lite",
+        "name": "Gemini 2.0 Flash-Lite",
+        "provider_id": "google_gemini",
+        "has_free_tier": true,
+        "rate_limits": "Not listed separately in operator chart; see https://ai.google.dev/gemini-api/docs/rate-limits. Deprecated ~2026-06-01. Standard token pricing: https://ai.google.dev/gemini-api/docs/pricing#standard",
+        "c": 8,
+        "v": 8
+      },
+      "openai/gpt-4o": {
+        "model_id": "openai/gpt-4o",
+        "name": "GPT-4o (via OpenRouter)",
+        "provider_id": "openrouter",
+        "has_free_tier": false,
+        "rate_limits": "OpenRouter account RPM/TPM; see provider dashboard.",
+        "c": 8,
+        "v": 8
+      }
+    },
     "prompt": {
       "jay_smith_listing": {
         "prompt_id": "jay_smith_listing",
         "brief": "Jay Smith–style dealer listing (plain text)",
-        "preferred_model": "gemini-3.1-pro-preview",
+        "preferred_model": "gemini-3-flash-preview",
         "output_format": "txt",
         "template_lines": [
           "You write stamp descriptions in the voice and density of Jay Smith & Associates–style specialized listings: catalog-precise, narrative-rich, and confident. Technical identifiers and bracketed issue specs come first; condition is honest; rarity and literature support the ask. Do not invent catalog numbers, print quantities, sheet positions, expert quotes, or handbook facts—use only what the image, dealer notes, and uploader JSON plausibly support; where unknown, say so briefly or omit.",
@@ -161,12 +242,15 @@
           "3) BODY — continuation in the same voice: defects, rarity and history, valuations, closing flourish, certificate/stock notes if supported; end with a single line “Asking context:” and the dealer’s target price if provided, or say price not specified."
         ],
         "c": 4,
-        "v": 4
+        "m": [
+          8
+        ],
+        "v": 8
       },
       "multi_stamp_sheet_xframe": {
         "prompt_id": "multi_stamp_sheet_xframe",
         "brief": "Many stamps in one image → xFrame catalog JSON",
-        "preferred_model": "gemini-3.1-pro-preview",
+        "preferred_model": "gemini-3-flash-preview",
         "output_format": "json",
         "template_lines": [
           "You are a philatelic cataloging assistant. The attached image may show MULTIPLE postage stamps on one scan or photo (e.g. a stock sheet, album page, or black-background layout). Your job is to detect every distinct stamp impression, read what is visible on each, and fill the response JSON.",
@@ -207,12 +291,15 @@
           "Do not split a single dealer target price across stamps unless the notes explicitly say so. If one price applies to the whole sheet, mention it in the first stamp's summary (or omit if the schema has no listing fields)."
         ],
         "c": 4,
-        "v": 4
+        "m": [
+          8
+        ],
+        "v": 8
       },
       "stamp_listing": {
         "prompt_id": "stamp_listing",
         "brief": "eBay-style single-stamp listing (plain text)",
-        "preferred_model": "gemini-3.1-pro-preview",
+        "preferred_model": "gemini-3-flash-preview",
         "output_format": "txt",
         "template_lines": [
           "You are helping a stamp dealer prepare an eBay listing for this upload.",
@@ -237,12 +324,15 @@
           "- Listing body text that respects the dealer's notes and is consistent with their target price band (polite, professional tone)"
         ],
         "c": 4,
-        "v": 4
+        "m": [
+          8
+        ],
+        "v": 8
       },
       "xframe": {
         "prompt_id": "xframe",
         "brief": "Single stamp → xFrame catalog JSON",
-        "preferred_model": "gemini-3.1-pro-preview",
+        "preferred_model": "gemini-3-flash-preview",
         "output_format": "json",
         "template_lines": [
           "You are a philatelic cataloging assistant. From the stamp image and the dealer context below, produce structured data for THIS stamp only.",
@@ -262,7 +352,10 @@
           "Dealer notes and hints (JSON; may be null): __NOTES_JSON__"
         ],
         "c": 4,
-        "v": 4
+        "m": [
+          8
+        ],
+        "v": 8
       }
     },
     "prompt_invocation": {
@@ -270,11 +363,14 @@
         "invocation_id": "stamp_listing_gemini",
         "prompt_id": "stamp_listing",
         "provider_id": "google_gemini",
-        "model": "gemini-3.1-pro-preview",
+        "model": "gemini-3-flash-preview",
         "sort_order": 0,
         "primary_for_listing": true,
         "c": 4,
-        "v": 4
+        "m": [
+          8
+        ],
+        "v": 8
       },
       "stamp_listing_openrouter": {
         "invocation_id": "stamp_listing_openrouter",

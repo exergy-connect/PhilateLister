@@ -345,6 +345,10 @@
           "type": "string",
           "description": "Perforation as given for this listing (e.g. perf 11½, comb 13¾, imperforate, roulette)."
         },
+        "primary_color": {
+          "type": "string",
+          "description": "Dominant or catalog-listed ink or paper color for this listing (e.g. carmine, blue, bister)."
+        },
         "notes": {
           "type": "string",
           "description": "Variety, plate, or supplement commentary for this listing."
@@ -352,7 +356,9 @@
       },
       "description": "Identifies a stamp design or major listing in a catalog system (Scott, Michel, etc.). Primary key is the composite field scott (country_id, section, number, variation). Optional issue_series_id ties the listing to a set or series row; optional perforation records the catalog-listed gauge or style. A stamp instance optionally points here via the same composite key; additional cross-references stay in stamp_catalog_number.",
       "required": [
-        "scott"
+        "scott",
+        "perforation",
+        "primary_color"
       ]
     },
     "scott_catalog_section": {
@@ -501,6 +507,30 @@
             "unknown"
           ]
         },
+        "cancel": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "description": "Cancel or postmark class (e.g. circular datestamp, numeral killer, machine, slogan)."
+            },
+            "city": {
+              "type": "string",
+              "description": "Town or post office name read from the cancel, when present."
+            },
+            "numeral": {
+              "type": "string",
+              "description": "Numeral or barred obliterator value from the cancel."
+            },
+            "date": {
+              "type": "string",
+              "description": "Date read from the cancel (ISO 8601 or partial text as transcribed)."
+            }
+          },
+          "required": [],
+          "additionalProperties": false,
+          "description": "Postmark or cancel detail when the item is used or the obliterator is salient."
+        },
         "centering_grade": {
           "type": "string",
           "description": "Centering and margin balance for perforated issues, using the ladder common on eBay and in US expertizing (PSE, Philatelic Foundation): Gem/Superb through Fine/VF/XF slash grades (e.g. VF/XF, F-VF), then VG/Good/Average/Poor. MNH/NH/LH describe gum, not centering—use condition_quality for those.",
@@ -537,7 +567,7 @@
           }
         }
       },
-      "description": "Core record: country of issue, year, physical attributes (centering), condition, optional primary scott_catalog_entry (perforation and series context live on scott_catalog_entry when linked); additional catalog lines and thematic tags use child rows; optional pricing via listing.",
+      "description": "Core record: country of issue, year, physical attributes (centering), condition, optional structured cancel or postmark when used, optional primary scott_catalog_entry (perforation and series context live on scott_catalog_entry when linked); additional catalog lines and thematic tags use child rows; optional pricing via listing.",
       "required": [
         "stamp_id",
         "country_id",

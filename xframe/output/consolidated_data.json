@@ -1,6 +1,6 @@
 {
-  "version": 8,
-  "timestamp": "2026-04-14T05:29:51Z",
+  "version": 9,
+  "timestamp": "2026-04-14T06:12:43Z",
   "model": {
     "name": "PhilateLister stamp catalog",
     "version": "26.04.11.1",
@@ -66,6 +66,13 @@
         "author": "jbemmel",
         "note": "CI consolidate after model/data change (7061aa5ecfd31c44c7f9b6d4c9cbc682b1d5e0a6)",
         "git_commit_hash": "7061aa5ecfd31c44c7f9b6d4c9cbc682b1d5e0a6"
+      },
+      "000000000009": {
+        "id": 9,
+        "timestamp": "2026-04-14T06:12:43+00:00",
+        "author": "jbemmel",
+        "note": "CI consolidate after model/data change (99ead5657f27698c78e104332c575cfd43282857)",
+        "git_commit_hash": "99ead5657f27698c78e104332c575cfd43282857"
       }
     },
     "catalog_system": {
@@ -320,14 +327,16 @@
           "- Scott or main catalog number when you can justify it, or say when uncertain",
           "- A condition report visible from the image",
           "- Details on perforations, if any, such as missing or damaged ones, and the count of horizontal and vertical dents",
-          "- Details on the cancel, if any, such as city name or date of cancellation. If the date is clear enough, cite the day of the week it represents",
+          "- Details on the cancel, if any, such as city name or date of cancellation. If the date is clear enough, check that it is after the date of issue and cite the day of the week it represents",
+          "- If the city is clear enough, lookup its population at the time of the cancel or issue and describe its role in the region",
           "- Listing body text that respects the dealer's notes and is consistent with their target price band (polite, professional tone)"
         ],
         "c": 4,
         "m": [
-          8
+          8,
+          9
         ],
-        "v": 8
+        "v": 9
       },
       "xframe": {
         "prompt_id": "xframe",
@@ -410,12 +419,14 @@
         },
         "issue_series_id": "dk-bicolors-classic",
         "perforation": "Perforated 13",
+        "primary_color": "carmine and blue (bicolor)",
         "notes": "Illustrative primary listing for the sample stamp; see stamp_catalog_number for Michel cross-ref.",
         "c": 4,
         "m": [
-          7
+          7,
+          9
         ],
-        "v": 7
+        "v": 9
       }
     },
     "scott_catalog_section": {

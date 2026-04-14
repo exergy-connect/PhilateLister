@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="copyright" content="Copyright (C) 2026 Exergy ∞ LLC" />
+    <title>Stamp submission form</title>
+    <style>
+      :root {
+        --bg: #f7f4ee;
+        --surface: #fffdf8;
+        --ink: #1c1b18;
+        --muted: #5c5852;
+        --accent: #2d4a3e;
+        --accent-hover: #1f342b;
+        --border: #d9d3c7;
+        --radius: 10px;
+        --stamp-slot: #0a0a0a;
+        font-family: "Georgia", "Times New Roman", serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--ink);
+        line-height: 1.45;
+      }
+      .wrap {
+        width: 100%;
+        max-width: min(100%, 118rem);
+        margin: 0 auto;
+        padding: clamp(0.75rem, 2vw, 1.5rem) clamp(0.75rem, 2.5vw, 2rem) 2rem;
+      }
+      header {
+        margin-bottom: clamp(0.75rem, 1.5vw, 1.25rem);
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 0.65rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 0.35rem 1.5rem;
+      }
+      header h1 {
+        margin: 0;
+        font-size: clamp(1.15rem, 2vw, 1.4rem);
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+      header p {
+        margin: 0;
+        font-size: 0.88rem;
+        color: var(--muted);
+        flex: 1 1 12rem;
+        min-width: min(100%, 28rem);
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(0, min(38vw, 28rem)) minmax(0, 1fr);
+        gap: clamp(1rem, 2vw, 1.75rem);
+        align-items: start;
+      }
+      @media (min-width: 1400px) {
+        .layout {
+          grid-template-columns: minmax(0, 32rem) minmax(0, 1fr);
+        }
+      }
+      @media (max-width: 880px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+      }
+      .stamp-column {
+        position: sticky;
+        top: clamp(0.5rem, 2vw, 1rem);
+        align-self: start;
+      }
+      @media (max-width: 880px) {
+        .stamp-column {
+          position: static;
+        }
+      }
+      .stamp-slot {
+        background: var(--stamp-slot);
+        border-radius: var(--radius);
+        aspect-ratio: 506 / 306;
+        width: 100%;
+        max-height: min(58vh, 520px);
+        min-height: 12rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        padding: 1rem;
+        border: 1px solid #222;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+      }
+      .stamp-slot img {
+        max-width: 100%;
+        max-height: calc(100% - 3rem);
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        display: none;
+      }
+      .stamp-slot.has-image img {
+        display: block;
+      }
+      .stamp-slot.has-image .stamp-placeholder-text {
+        display: none;
+      }
+      .stamp-placeholder-text {
+        color: #8a8a8a;
+        font-size: 0.85rem;
+        text-align: center;
+        max-width: 12rem;
+      }
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+      button.upload-btn {
+        font-family: inherit;
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        border: 1px solid var(--accent);
+        background: var(--accent);
+        color: #f5f2eb;
+        cursor: pointer;
+      }
+      button.upload-btn:hover {
+        background: var(--accent-hover);
+        border-color: var(--accent-hover);
+      }
+      button.upload-btn:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+      .form-panel {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: clamp(0.85rem, 1.5vw, 1.2rem) clamp(0.9rem, 1.8vw, 1.35rem);
+        box-shadow: 0 1px 2px rgba(28, 27, 24, 0.06);
+        display: flex;
+        flex-direction: column;
+        gap: clamp(0.75rem, 1.5vw, 1.1rem);
+        min-width: 0;
+      }
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.5rem 1rem;
+        align-items: start;
+      }
+      @media (max-width: 520px) {
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+      }
+      .field-group {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+      .field-group input[type="text"],
+      .field-group textarea {
+        margin-bottom: 0;
+      }
+      .mid-split {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(14rem, 1fr);
+        gap: clamp(0.75rem, 2vw, 1.25rem);
+        align-items: start;
+      }
+      @media (max-width: 960px) {
+        .mid-split {
+          grid-template-columns: 1fr;
+        }
+      }
+      .cond-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 0.65rem;
+        min-width: 0;
+      }
+      .cond-stack fieldset {
+        margin: 0;
+      }
+      fieldset {
+        border: none;
+        margin: 0;
+        padding: 0;
+        min-width: 0;
+      }
+      legend {
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+        margin-bottom: 0.45rem;
+        padding: 0;
+      }
+      label.field {
+        display: block;
+        font-size: 0.82rem;
+        font-weight: 600;
+        margin-bottom: 0.2rem;
+        color: var(--ink);
+      }
+      .hint {
+        font-size: 0.75rem;
+        font-weight: 400;
+        color: var(--muted);
+      }
+      input[type="text"],
+      textarea {
+        width: 100%;
+        font-family: inherit;
+        font-size: 0.9rem;
+        padding: 0.45rem 0.55rem;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: #fff;
+        color: var(--ink);
+        margin-bottom: 0;
+      }
+      input[type="text"]:focus,
+      textarea:focus {
+        outline: 2px solid rgba(45, 74, 62, 0.35);
+        outline-offset: 1px;
+        border-color: var(--accent);
+      }
+      textarea {
+        min-height: 6.5rem;
+        resize: vertical;
+        line-height: 1.45;
+      }
+      .radio-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(6.75rem, 1fr));
+        gap: 0.3rem 0.65rem;
+        margin: 0;
+      }
+      .radio-grid.compact-cols {
+        grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+      }
+      .radio-grid label.choice {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-weight: 400;
+        font-size: 0.88rem;
+        margin-bottom: 0;
+        cursor: pointer;
+      }
+      .radio-grid input {
+        accent-color: var(--accent);
+      }
+      .actions {
+        margin-top: 0;
+        padding-top: 0.75rem;
+        border-top: 1px solid var(--border);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        align-items: center;
+      }
+      .actions button.secondary {
+        background: transparent;
+        color: var(--accent);
+        border: 1px solid var(--border);
+      }
+      .actions button.secondary:hover {
+        border-color: var(--accent);
+        background: rgba(45, 74, 62, 0.06);
+      }
+      @media print {
+        body {
+          background: #fff;
+        }
+        .actions,
+        #stamp-upload-btn {
+          display: none !important;
+        }
+        .wrap {
+          max-width: none;
+          padding: 0;
+        }
+        .layout {
+          grid-template-columns: 14rem 1fr;
+          gap: 1rem;
+        }
+        .mid-split {
+          grid-template-columns: 1fr 1fr;
+        }
+        .form-panel {
+          box-shadow: none;
+        }
+        .stamp-slot {
+          max-height: 220px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>Stamp submission form</h1>
+        <p>
+          Mirrors the official HipStamp-style sheet. Download PDF loads and fills
+          samples/Submission Form-Stamps Fillable.pdf; serve the repo root over HTTP so the browser
+          can fetch that file and pdf-lib from the network.
+        </p>
+      </header>
+
+      <form class="layout" id="aps-form" action="#" method="post" autocomplete="on" onsubmit="return false;">
+        <div class="stamp-column">
+          <div class="stamp-slot" id="stamp-slot" aria-label="Stamp image preview area">
+            <span class="stamp-placeholder-text">No image yet. Upload a scan or photo of the stamp.</span>
+            <img id="stamp-preview" alt="Stamp preview" />
+            <input
+              class="visually-hidden"
+              type="file"
+              id="stamp-file"
+              name="stamp_image"
+              accept="image/*"
+            />
+            <button type="button" class="upload-btn" id="stamp-upload-btn">Upload stamp image</button>
+          </div>
+        </div>
+
+        <div class="form-panel">
+          <fieldset>
+            <legend>Identification</legend>
+            <div class="grid-2">
+              <div class="field-group">
+                <label class="field" for="country">Country</label>
+                <input type="text" id="country" name="country" placeholder="e.g. Sweden, United States" />
+              </div>
+              <div class="field-group">
+                <label class="field" for="scott_cat">Scott Cat. #</label>
+                <input type="text" id="scott_cat" name="scott_cat" placeholder="e.g. O6, 156" />
+              </div>
+              <div class="field-group">
+                <label class="field" for="other_catalog">Other catalogue</label>
+                <input
+                  type="text"
+                  id="other_catalog"
+                  name="other_catalog"
+                  placeholder="Michel, Facit, Yvert…"
+                />
+              </div>
+              <div class="field-group">
+                <label class="field" for="seller_sku">
+                  Seller item no. <span class="hint">(optional)</span>
+                </label>
+                <input type="text" id="seller_sku" name="seller_sku" placeholder="Internal SKU" />
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Pricing <span class="hint">(USD)</span></legend>
+            <div class="grid-2">
+              <div class="field-group">
+                <label class="field" for="catalog_value"
+                  >Catalog value <span class="hint">(US&nbsp;$)</span></label
+                >
+                <input
+                  type="text"
+                  id="catalog_value"
+                  name="catalog_value"
+                  inputmode="decimal"
+                  autocomplete="off"
+                  placeholder="e.g. 125.00"
+                />
+              </div>
+              <div class="field-group">
+                <label class="field" for="sale_price"
+                  >Sale price <span class="hint">(US&nbsp;$)</span></label
+                >
+                <input
+                  type="text"
+                  id="sale_price"
+                  name="sale_price"
+                  inputmode="decimal"
+                  autocomplete="off"
+                  placeholder="e.g. 44.00"
+                />
+              </div>
+            </div>
+          </fieldset>
+
+          <div class="mid-split">
+            <fieldset>
+              <legend>Description</legend>
+              <div class="field-group">
+                <label class="field" for="description"
+                  >Description <span class="hint">(~4 lines)</span></label
+                >
+                <textarea
+                  id="description"
+                  name="description"
+                  rows="4"
+                  placeholder="Title, summary, catalogue notes, HipStamp text…"
+                ></textarea>
+              </div>
+            </fieldset>
+
+            <div class="cond-stack">
+              <fieldset>
+                <legend>Unused / used</legend>
+                <div class="radio-grid compact-cols" role="radiogroup" aria-label="Unused or used">
+                  <label class="choice"
+                    ><input type="radio" name="condition_used" value="unused" /> Unused</label
+                  >
+                  <label class="choice"
+                    ><input type="radio" name="condition_used" value="used" checked /> Used</label
+                  >
+                </div>
+              </fieldset>
+
+              <fieldset id="gum-fieldset">
+                <legend>Gum <span class="hint">(if unused)</span></legend>
+                <div class="radio-grid compact-cols" role="radiogroup" aria-label="Gum state">
+                  <label class="choice"><input type="radio" name="gum" value="nh" /> NH</label>
+                  <label class="choice"><input type="radio" name="gum" value="h" /> H</label>
+                  <label class="choice"><input type="radio" name="gum" value="lh" /> LH</label>
+                  <label class="choice"><input type="radio" name="gum" value="hh" /> HH</label>
+                  <label class="choice"><input type="radio" name="gum" value="hr" /> HR</label>
+                  <label class="choice"><input type="radio" name="gum" value="ng" /> NG</label>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>Configuration</legend>
+                <div class="radio-grid" role="radiogroup" aria-label="Lot configuration">
+                  <label class="choice"
+                    ><input type="radio" name="configuration" value="single" checked /> Single</label
+                  >
+                  <label class="choice"><input type="radio" name="configuration" value="multiple" /> Multiple</label>
+                  <label class="choice"><input type="radio" name="configuration" value="set" /> Complete Set</label>
+                  <label class="choice"><input type="radio" name="configuration" value="plate_block" /> Plate block</label>
+                  <label class="choice"
+                    ><input type="radio" name="configuration" value="souvenir_sheet" /> Souvenir sheet</label
+                  >
+                  <label class="choice"
+                    ><input type="radio" name="configuration" value="cinderella" /> Cinderella</label
+                  >
+                  <label class="choice"
+                    ><input type="radio" name="configuration" value="pnc" /> Plate number coil</label
+                  >
+                </div>
+              </fieldset>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="upload-btn" id="pdf-btn">Download PDF</button>
+            <button type="reset" class="upload-btn secondary" id="reset-btn">Reset form</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <script type="module">
+      import { PDFDocument, StandardFonts } from "https://esm.sh/pdf-lib@1.17.1";
+
+      /** Official AcroForm: samples/Submission Form-Stamps Fillable.pdf */
+      const TEMPLATE_PATH = "samples/Submission%20Form-Stamps%20Fillable.pdf";
+
+      /** Black stamp area on template (PDF coords: origin bottom-left), matches fill_submission_form.py / PyMuPDF measure */
+      const STAMP_SLOT = { left: 83.7, topFromTop: 79, right: 590, bottomFromTop: 385 };
+
+      const $ = (id) => document.getElementById(id);
+      const val = (id) => {
+        const el = $(id);
+        return el ? String(el.value || "").trim() : "";
+      };
+
+      function safeSetText(form, fieldName, text) {
+        if (!text) return;
+        try {
+          form.getTextField(fieldName).setText(text);
+        } catch (err) {
+          console.warn("Text field", fieldName, err);
+        }
+      }
+
+      /** Split long description across Description 1–3 like fill_submission_form.split_description */
+      function splitDescriptionThree(block, maxLen) {
+        const combined = String(block || "").trim();
+        if (!combined) return ["", "", ""];
+        if (combined.length <= maxLen) return [combined, "", ""];
+        const parts = ["", "", ""];
+        let remaining = combined;
+        for (let i = 0; i < 3 && remaining; i++) {
+          parts[i] = remaining.slice(0, maxLen);
+          remaining = remaining.slice(maxLen).trimStart();
+        }
+        return parts;
+      }
+
+      const CONFIGURATION_TO_PDF = {
+        single: "Single",
+        multiple: "Multiple",
+        set: "Set",
+        plate_block: "Plate Block",
+        souvenir_sheet: "Souvenir Sheet",
+        cinderella: "Cincerella",
+        pnc: "Choice1",
+      };
+
+      const GUM_TO_PDF = { nh: "NH", h: "H", lh: "LH", hh: "HH", hr: "HR", ng: "NG" };
+
+      const fileInput = $("stamp-file");
+      const uploadBtn = $("stamp-upload-btn");
+      const slot = $("stamp-slot");
+      const preview = $("stamp-preview");
+      const resetBtn = $("reset-btn");
+      const pdfBtn = $("pdf-btn");
+      const gumFieldset = $("gum-fieldset");
+      const usedRadios = document.querySelectorAll('input[name="condition_used"]');
+
+      uploadBtn.addEventListener("click", () => fileInput.click());
+
+      fileInput.addEventListener("change", () => {
+        const f = fileInput.files && fileInput.files[0];
+        if (!f || !f.type.startsWith("image/")) return;
+        const url = URL.createObjectURL(f);
+        if (preview.dataset.objectUrl) URL.revokeObjectURL(preview.dataset.objectUrl);
+        preview.dataset.objectUrl = url;
+        preview.src = url;
+        slot.classList.add("has-image");
+      });
+
+      resetBtn.addEventListener("click", () => {
+        if (preview.dataset.objectUrl) {
+          URL.revokeObjectURL(preview.dataset.objectUrl);
+          delete preview.dataset.objectUrl;
+        }
+        preview.removeAttribute("src");
+        slot.classList.remove("has-image");
+      });
+
+      function syncGumDisabled() {
+        const used =
+          document.querySelector('input[name="condition_used"]:checked') &&
+          document.querySelector('input[name="condition_used"]:checked').value === "used";
+        gumFieldset.style.opacity = used ? "0.45" : "1";
+        gumFieldset.querySelectorAll('input[name="gum"]').forEach((el) => {
+          el.disabled = used;
+          if (used) el.checked = false;
+        });
+      }
+
+      usedRadios.forEach((r) => r.addEventListener("change", syncGumDisabled));
+      syncGumDisabled();
+
+      pdfBtn.addEventListener("click", async () => {
+        pdfBtn.disabled = true;
+        const prevText = pdfBtn.textContent;
+        pdfBtn.textContent = "Building…";
+        try {
+          const templateUrl = new URL(TEMPLATE_PATH, window.location.href);
+          const res = await fetch(templateUrl.href);
+          if (!res.ok) {
+            throw new Error(
+              "Missing template PDF (" +
+                TEMPLATE_PATH +
+                "). Open this page via HTTP from the PhilateLister repo root (not file://), or ensure samples/ is deployed next to aps_form.html."
+            );
+          }
+          const tmplBytes = await res.arrayBuffer();
+          const pdfDoc = await PDFDocument.load(tmplBytes);
+          const form = pdfDoc.getForm();
+          const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+          safeSetText(form, "Country", val("country"));
+          safeSetText(form, "Scott Cat", val("scott_cat"));
+          safeSetText(form, "Other Catalogue Name", val("other_catalog"));
+          safeSetText(
+            form,
+            "Seller Item No sellers use only not published",
+            val("seller_sku")
+          );
+
+          const [d1, d2, d3] = splitDescriptionThree(val("description"), 900);
+          safeSetText(form, "Description 1", d1);
+          safeSetText(form, "Description 2", d2);
+          safeSetText(form, "Description 3", d3);
+
+          const cat = val("catalog_value");
+          const sale = val("sale_price");
+          if (cat) safeSetText(form, "undefined_4", "Catalog value (USD): " + cat);
+          if (sale) safeSetText(form, "undefined_5", "Sale price (USD): " + sale);
+
+          const usedEl = document.querySelector('input[name="condition_used"]:checked');
+          const isUsed = usedEl && usedEl.value === "used";
+          try {
+            form.getRadioGroup("Condition 1").select(isUsed ? "Used" : "Unused");
+          } catch (err) {
+            console.warn("Condition 1", err);
+          }
+
+          try {
+            const gumEl = document.querySelector('input[name="gum"]:checked');
+            const gumPdf = gumEl && GUM_TO_PDF[gumEl.value];
+            if (!isUsed && gumPdf) {
+              form.getRadioGroup("Condition").select(gumPdf);
+            } else {
+              form.getRadioGroup("Condition").clear();
+            }
+          } catch (err) {
+            console.warn("Condition", err);
+          }
+
+          try {
+            const cfgEl = document.querySelector('input[name="configuration"]:checked');
+            const opt = cfgEl && CONFIGURATION_TO_PDF[cfgEl.value];
+            if (opt) form.getRadioGroup("Configuration").select(opt);
+          } catch (err) {
+            console.warn("Configuration", err);
+          }
+
+          form.updateFieldAppearances(helvetica);
+
+          const pageH = 792;
+          const slotW = STAMP_SLOT.right - STAMP_SLOT.left;
+          const slotH = STAMP_SLOT.bottomFromTop - STAMP_SLOT.topFromTop;
+          const slotBottomY = pageH - STAMP_SLOT.bottomFromTop;
+
+          if (preview.src && preview.src.startsWith("blob:")) {
+            try {
+              const bytes = await fetch(preview.src).then((r) => r.arrayBuffer());
+              let emb = null;
+              try {
+                emb = await pdfDoc.embedPng(bytes);
+              } catch {
+                emb = await pdfDoc.embedJpg(bytes);
+              }
+              if (emb) {
+                const iw = emb.width;
+                const ih = emb.height;
+                const scale = Math.min(slotW / iw, slotH / ih);
+                const dw = iw * scale;
+                const dh = ih * scale;
+                const ix = STAMP_SLOT.left + (slotW - dw) / 2;
+                const iy = slotBottomY + (slotH - dh) / 2;
+                const [page] = pdfDoc.getPages();
+                page.drawImage(emb, { x: ix, y: iy, width: dw, height: dh });
+              }
+            } catch (_) {
+              /* unsupported image type */
+            }
+          }
+
+          const out = await pdfDoc.save();
+          const blob = new Blob([out], { type: "application/pdf" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "stamp-submission.pdf";
+          a.rel = "noopener";
+          a.click();
+          URL.revokeObjectURL(url);
+        } catch (err) {
+          console.error(err);
+          alert(
+            "Could not build PDF.\n\n" +
+              (err && err.message ? err.message + "\n\n" : "") +
+              "You need pdf-lib from esm.sh (network) and the official template under samples/."
+          );
+        } finally {
+          pdfBtn.disabled = false;
+          pdfBtn.textContent = prevText;
+        }
+      });
+    </script>
+  </body>
+</html>

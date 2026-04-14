@@ -1,0 +1,50 @@
+{
+  "name": "PhilateLister stamp catalog",
+  "version": "26.04.15.5",
+  "author": "Exergy ∞ LLC",
+  "description": "Entity shard: concrete LLM model identifiers usable with a provider (appraisal, listing helpers).",
+  "source": "PhilateLister",
+  "entities": [
+    {
+      "name": "llm_model",
+      "brief": "Named model offering from a provider API.",
+      "description": "Rows describe which vendor model id to pass to the client (e.g. gemini-2.0-flash, openai/gpt-4o). has_free_tier and rate_limits are indicative documentation for operators; they are not enforced by this app.",
+      "primary_key": "model_id",
+      "fields": [
+        {
+          "name": "model_id",
+          "description": "Stable id passed to the provider API (e.g. models/gemini-2.0-flash or OpenRouter route slug).",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "name",
+          "description": "Human-readable model name for UI and logs.",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "provider_id",
+          "description": "Upstream provider that serves this model.",
+          "type": {
+            "primitive": "string",
+            "foreignKeys": [{ "entity": "provider" }]
+          },
+          "required": true
+        },
+        {
+          "name": "has_free_tier",
+          "description": "Whether the vendor documents a no-cost or trial quota for this model (informational only).",
+          "type": { "primitive": "boolean" },
+          "required": true
+        },
+        {
+          "name": "rate_limits",
+          "description": "Operator notes: max RPM/TPM/RPD (or usage-dashboard cap), vendor doc links, token pricing pointers; empty if unknown.",
+          "type": { "primitive": "string" },
+          "required": false
+        }
+      ]
+    }
+  ]
+}

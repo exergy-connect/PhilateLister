@@ -3,7 +3,7 @@
     {
       "prompt_id": "xframe",
       "brief": "Single stamp → xFrame catalog JSON",
-      "preferred_model": "gemini-3.1-pro-preview",
+      "preferred_model": "gemini-3-flash-preview",
       "output_format": "json",
       "template_lines": [
         "You are a philatelic cataloging assistant. From the stamp image and the dealer context below, produce structured data for THIS stamp only.",

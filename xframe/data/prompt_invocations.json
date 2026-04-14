@@ -4,7 +4,7 @@
       "invocation_id": "stamp_listing_gemini",
       "prompt_id": "stamp_listing",
       "provider_id": "google_gemini",
-      "model": "gemini-3.1-pro-preview",
+      "model": "gemini-3-flash-preview",
       "sort_order": 0,
       "primary_for_listing": true
     },

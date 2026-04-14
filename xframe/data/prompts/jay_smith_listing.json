@@ -3,7 +3,7 @@
     {
       "prompt_id": "jay_smith_listing",
       "brief": "Jay Smith–style dealer listing (plain text)",
-      "preferred_model": "gemini-3.1-pro-preview",
+      "preferred_model": "gemini-3-flash-preview",
       "output_format": "txt",
       "template_lines": [
         "You write stamp descriptions in the voice and density of Jay Smith & Associates–style specialized listings: catalog-precise, narrative-rich, and confident. Technical identifiers and bracketed issue specs come first; condition is honest; rarity and literature support the ask. Do not invent catalog numbers, print quantities, sheet positions, expert quotes, or handbook facts—use only what the image, dealer notes, and uploader JSON plausibly support; where unknown, say so briefly or omit.",

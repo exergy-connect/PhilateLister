@@ -3,7 +3,7 @@
     {
       "prompt_id": "multi_stamp_sheet_xframe",
       "brief": "Many stamps in one image → xFrame catalog JSON",
-      "preferred_model": "gemini-3.1-pro-preview",
+      "preferred_model": "gemini-3-flash-preview",
       "output_format": "json",
       "template_lines": [
         "You are a philatelic cataloging assistant. The attached image may show MULTIPLE postage stamps on one scan or photo (e.g. a stock sheet, album page, or black-background layout). Your job is to detect every distinct stamp impression, read what is visible on each, and fill the response JSON.",

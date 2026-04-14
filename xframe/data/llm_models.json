@@ -1,0 +1,60 @@
+{
+  "llm_model": [
+    {
+      "model_id": "gemini-3.1-pro-preview",
+      "name": "Gemini 3.1 Pro Preview",
+      "provider_id": "google_gemini",
+      "has_free_tier": false,
+      "rate_limits": "Text-out caps (max RPM / TPM / RPD from usage vs limit UI): 25 RPM, 2M TPM, 250 RPD. Token pricing: https://ai.google.dev/gemini-api/docs/pricing#standard"
+    },
+    {
+      "model_id": "gemini-3-flash-preview",
+      "name": "Gemini 3 Flash Preview",
+      "provider_id": "google_gemini",
+      "has_free_tier": true,
+      "rate_limits": "Text-out caps (max RPM / TPM / RPD): 1K RPM, 2M TPM, 10K RPD. Token pricing: https://ai.google.dev/gemini-api/docs/pricing#standard"
+    },
+    {
+      "model_id": "gemini-2.5-pro",
+      "name": "Gemini 2.5 Pro",
+      "provider_id": "google_gemini",
+      "has_free_tier": true,
+      "rate_limits": "Text-out caps (max RPM / TPM / RPD): 150 RPM, 2M TPM, 1K RPD. Token pricing: https://ai.google.dev/gemini-api/docs/pricing#standard"
+    },
+    {
+      "model_id": "gemini-2.5-flash",
+      "name": "Gemini 2.5 Flash",
+      "provider_id": "google_gemini",
+      "has_free_tier": true,
+      "rate_limits": "Text-out caps (max RPM / TPM / RPD): 1K RPM, 1M TPM, 10K RPD. Token pricing: https://ai.google.dev/gemini-api/docs/pricing#standard"
+    },
+    {
+      "model_id": "gemini-2.5-flash-lite",
+      "name": "Gemini 2.5 Flash-Lite",
+      "provider_id": "google_gemini",
+      "has_free_tier": true,
+      "rate_limits": "Not listed separately in operator chart; typically aligns with Flash-Lite tier on https://ai.google.dev/gemini-api/docs/rate-limits. Standard token pricing: https://ai.google.dev/gemini-api/docs/pricing#standard"
+    },
+    {
+      "model_id": "gemini-2.0-flash",
+      "name": "Gemini 2.0 Flash",
+      "provider_id": "google_gemini",
+      "has_free_tier": true,
+      "rate_limits": "Text-out caps (max RPM / TPM / RPD): 2K RPM, 4M TPM, unlimited RPD. Deprecated ~2026-06-01. Token pricing: https://ai.google.dev/gemini-api/docs/pricing#standard"
+    },
+    {
+      "model_id": "gemini-2.0-flash-lite",
+      "name": "Gemini 2.0 Flash-Lite",
+      "provider_id": "google_gemini",
+      "has_free_tier": true,
+      "rate_limits": "Not listed separately in operator chart; see https://ai.google.dev/gemini-api/docs/rate-limits. Deprecated ~2026-06-01. Standard token pricing: https://ai.google.dev/gemini-api/docs/pricing#standard"
+    },
+    {
+      "model_id": "openai/gpt-4o",
+      "name": "GPT-4o (via OpenRouter)",
+      "provider_id": "openrouter",
+      "has_free_tier": false,
+      "rate_limits": "OpenRouter account RPM/TPM; see provider dashboard."
+    }
+  ]
+}

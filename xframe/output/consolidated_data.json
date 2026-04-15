@@ -1,6 +1,6 @@
 {
-  "version": 9,
-  "timestamp": "2026-04-14T06:12:43Z",
+  "version": 10,
+  "timestamp": "2026-04-15T00:31:55Z",
   "model": {
     "name": "PhilateLister stamp catalog",
     "version": "26.04.11.1",
@@ -73,6 +73,13 @@
         "author": "jbemmel",
         "note": "CI consolidate after model/data change (99ead5657f27698c78e104332c575cfd43282857)",
         "git_commit_hash": "99ead5657f27698c78e104332c575cfd43282857"
+      },
+      "000000000010": {
+        "id": 10,
+        "timestamp": "2026-04-14T19:31:55-05:00",
+        "author": "PhilateLister",
+        "note": "PhilateLister: reconsolidate xFrame model and data",
+        "git_commit_hash": "54b87d2b8654fea3736c2a52348411c69bbf1131"
       }
     },
     "catalog_system": {
@@ -102,16 +109,135 @@
       "dk": {
         "country_id": "dk",
         "display_name": "Denmark",
-        "notes": "Kingdom of Denmark; includes historical issues.",
+        "ebay_category": 35289,
         "c": 1,
-        "v": 1
+        "m": [
+          10
+        ],
+        "v": 10
       },
       "se": {
         "country_id": "se",
         "display_name": "Sweden",
-        "notes": "",
+        "ebay_category": 47171,
         "c": 1,
-        "v": 1
+        "m": [
+          10
+        ],
+        "v": 10
+      },
+      "us": {
+        "country_id": "us",
+        "display_name": "United States",
+        "notes": "Browse default leaf: US 19th century used; 261 = United States stamps top.",
+        "ebay_category": 675,
+        "c": 10,
+        "v": 10
+      },
+      "ca": {
+        "country_id": "ca",
+        "display_name": "Canada",
+        "ebay_category": 3478,
+        "c": 10,
+        "v": 10
+      },
+      "gb": {
+        "country_id": "gb",
+        "display_name": "Great Britain",
+        "ebay_category": 3499,
+        "c": 10,
+        "v": 10
+      },
+      "no": {
+        "country_id": "no",
+        "display_name": "Norway",
+        "ebay_category": 4742,
+        "c": 10,
+        "v": 10
+      },
+      "de": {
+        "country_id": "de",
+        "display_name": "Germany",
+        "ebay_category": 4742,
+        "c": 10,
+        "v": 10
+      },
+      "fr": {
+        "country_id": "fr",
+        "display_name": "France",
+        "ebay_category": 4742,
+        "c": 10,
+        "v": 10
+      },
+      "it": {
+        "country_id": "it",
+        "display_name": "Italy",
+        "ebay_category": 4742,
+        "c": 10,
+        "v": 10
+      },
+      "nl": {
+        "country_id": "nl",
+        "display_name": "Netherlands",
+        "ebay_category": 40413,
+        "c": 10,
+        "v": 10
+      },
+      "ch": {
+        "country_id": "ch",
+        "display_name": "Switzerland",
+        "ebay_category": 4742,
+        "c": 10,
+        "v": 10
+      },
+      "jp": {
+        "country_id": "jp",
+        "display_name": "Japan",
+        "ebay_category": 47174,
+        "c": 10,
+        "v": 10
+      },
+      "cn": {
+        "country_id": "cn",
+        "display_name": "China",
+        "ebay_category": 47174,
+        "c": 10,
+        "v": 10
+      },
+      "au": {
+        "country_id": "au",
+        "display_name": "Australia",
+        "ebay_category": 150923,
+        "c": 10,
+        "v": 10
+      },
+      "nz": {
+        "country_id": "nz",
+        "display_name": "New Zealand",
+        "ebay_category": 150923,
+        "c": 10,
+        "v": 10
+      },
+      "br": {
+        "country_id": "br",
+        "display_name": "Brazil",
+        "ebay_category": 181417,
+        "c": 10,
+        "v": 10
+      },
+      "mx": {
+        "country_id": "mx",
+        "display_name": "Mexico",
+        "ebay_category": 181417,
+        "c": 10,
+        "v": 10
+      },
+      "za": {
+        "country_id": "za",
+        "display_name": "South Africa",
+        "ebay_category": 181423,
+        "c": 10,
+        "v": 10
       }
     },
     "issue_series": {

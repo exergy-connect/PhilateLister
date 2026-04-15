@@ -1,0 +1,95 @@
+{
+  "country": [
+    {
+      "country_id": "us",
+      "display_name": "United States",
+      "ebay_category": 675,
+      "notes": "Browse default leaf: US 19th century used; 261 = United States stamps top."
+    },
+    {
+      "country_id": "ca",
+      "display_name": "Canada",
+      "ebay_category": 3478
+    },
+    {
+      "country_id": "gb",
+      "display_name": "Great Britain",
+      "ebay_category": 3499
+    },
+    {
+      "country_id": "se",
+      "display_name": "Sweden",
+      "ebay_category": 47171
+    },
+    {
+      "country_id": "dk",
+      "display_name": "Denmark",
+      "ebay_category": 35289
+    },
+    {
+      "country_id": "no",
+      "display_name": "Norway",
+      "ebay_category": 4742
+    },
+    {
+      "country_id": "de",
+      "display_name": "Germany",
+      "ebay_category": 4742
+    },
+    {
+      "country_id": "fr",
+      "display_name": "France",
+      "ebay_category": 4742
+    },
+    {
+      "country_id": "it",
+      "display_name": "Italy",
+      "ebay_category": 4742
+    },
+    {
+      "country_id": "nl",
+      "display_name": "Netherlands",
+      "ebay_category": 40413
+    },
+    {
+      "country_id": "ch",
+      "display_name": "Switzerland",
+      "ebay_category": 4742
+    },
+    {
+      "country_id": "jp",
+      "display_name": "Japan",
+      "ebay_category": 47174
+    },
+    {
+      "country_id": "cn",
+      "display_name": "China",
+      "ebay_category": 47174
+    },
+    {
+      "country_id": "au",
+      "display_name": "Australia",
+      "ebay_category": 150923
+    },
+    {
+      "country_id": "nz",
+      "display_name": "New Zealand",
+      "ebay_category": 150923
+    },
+    {
+      "country_id": "br",
+      "display_name": "Brazil",
+      "ebay_category": 181417
+    },
+    {
+      "country_id": "mx",
+      "display_name": "Mexico",
+      "ebay_category": 181417
+    },
+    {
+      "country_id": "za",
+      "display_name": "South Africa",
+      "ebay_category": 181423
+    }
+  ]
+}

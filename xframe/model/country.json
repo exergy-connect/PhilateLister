@@ -1,6 +1,6 @@
 {
   "name": "PhilateLister stamp catalog",
-  "version": "26.04.14.7",
+  "version": "26.04.14.8",
   "author": "Exergy ∞ LLC",
   "description": "Entity shard: issuing country or postal administration.",
   "source": "PhilateLister",
@@ -28,6 +28,12 @@
           "name": "notes",
           "description": "Optional clarifications (colonies, period splits, obsolete administrations).",
           "type": { "primitive": "string" },
+          "required": false
+        },
+        {
+          "name": "ebay_category",
+          "description": "Optional eBay.com (EBAY_US taxonomy) stamp leaf category id for Browse ``category_ids`` when searching or filtering listings for this country.",
+          "type": { "primitive": "integer" },
           "required": false
         },
         {

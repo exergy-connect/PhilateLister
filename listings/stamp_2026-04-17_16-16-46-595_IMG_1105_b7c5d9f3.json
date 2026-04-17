@@ -1,0 +1,60 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "stamp_2026-04-17_16-16-46-595_IMG_1105_b7c5d9f3__01",
+      "country_id": "denmark",
+      "scott": {
+        "section": "O",
+        "number": 1
+      },
+      "title": "Denmark 2sk Blue Official",
+      "summary": "1871 Coat of Arms Official (Tjeneste) issue, 2 skilling blue. Used with circular cancel.",
+      "issue_year": 1871,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "image_basename": "stamp_2026-04-17_16-16-46-595_IMG_1105_b7c5d9f3.jpeg"
+    },
+    {
+      "stamp_id": "stamp_2026-04-17_16-16-46-595_IMG_1105_b7c5d9f3__02",
+      "country_id": "denmark",
+      "scott": {
+        "section": "O",
+        "number": 2
+      },
+      "title": "Denmark 4sk Red Official",
+      "summary": "1871 Coat of Arms Official (Tjeneste) issue, 4 skilling red. Used with barred circular cancel.",
+      "issue_year": 1871,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "image_basename": "stamp_2026-04-17_16-16-46-595_IMG_1105_b7c5d9f3.jpeg"
+    },
+    {
+      "stamp_id": "stamp_2026-04-17_16-16-46-595_IMG_1105_b7c5d9f3__03",
+      "country_id": "denmark",
+      "scott": {
+        "section": "O",
+        "number": 6
+      },
+      "title": "Denmark 3ore Lilac Official",
+      "summary": "1875 Coat of Arms Official (Tjeneste) issue, 3 ore lilac. Used with numeral '5' cancel.",
+      "issue_year": 1875,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "image_basename": "stamp_2026-04-17_16-16-46-595_IMG_1105_b7c5d9f3.jpeg"
+    },
+    {
+      "stamp_id": "stamp_2026-04-17_16-16-46-595_IMG_1105_b7c5d9f3__04",
+      "country_id": "denmark",
+      "scott": {
+        "section": "O",
+        "number": 7
+      },
+      "title": "Denmark 4ore Blue/Green Official",
+      "summary": "1875 Coat of Arms Official (Tjeneste) issue, 4 ore blue & green. Mint condition, likely hinged.",
+      "issue_year": 1875,
+      "condition_quality": "mint_hinged",
+      "centering_grade": "vf",
+      "image_basename": "stamp_2026-04-17_16-16-46-595_IMG_1105_b7c5d9f3.jpeg"
+    }
+  ]
+}

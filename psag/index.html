@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="copyright" content="Copyright (C) 2026 Exergy ∞ LLC" />
+    <title>PSAG Certificate Builder</title>
+    <style>
+      :root {
+        --bg: #f7f4ee;
+        --surface: #fffdf8;
+        --ink: #1c1b18;
+        --muted: #5c5852;
+        --accent: #2d4a3e;
+        --accent-hover: #1f342b;
+        --border: #d9d3c7;
+        --radius: 10px;
+        --preview-bg: #0a0a0a;
+        font-family: "Georgia", "Times New Roman", serif;
+        --fs-h1: clamp(1.35rem, 2.25vw, 1.75rem);
+        --fs-lead: 1.05rem;
+        --fs-legend: 0.9rem;
+        --fs-label: 1.02rem;
+        --fs-hint: 0.92rem;
+        --fs-input: 1.06rem;
+        --fs-ui: 1.02rem;
+        --fs-footer: 0.92rem;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--ink);
+        line-height: 1.55;
+      }
+      .wrap {
+        width: 100%;
+        max-width: min(100%, 118rem);
+        margin: 0 auto;
+        padding: clamp(0.75rem, 2vw, 1.5rem) clamp(0.75rem, 2.5vw, 2rem) 2rem;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      header {
+        margin-bottom: clamp(0.75rem, 1.5vw, 1.25rem);
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 0.65rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 0.35rem 1.5rem;
+      }
+      header h1 {
+        margin: 0;
+        font-size: var(--fs-h1);
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+      header p {
+        margin: 0;
+        font-size: var(--fs-lead);
+        color: var(--muted);
+        flex: 1 1 12rem;
+        min-width: min(100%, 28rem);
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(0, min(40vw, 34rem)) minmax(0, 1fr);
+        gap: clamp(1rem, 2vw, 1.75rem);
+        align-items: start;
+      }
+      @media (max-width: 980px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+      }
+      .preview-column {
+        position: sticky;
+        top: clamp(0.5rem, 2vw, 1rem);
+      }
+      @media (max-width: 980px) {
+        .preview-column {
+          position: static;
+        }
+      }
+      .preview-card {
+        background: var(--preview-bg);
+        border-radius: var(--radius);
+        border: 1px solid #222;
+        padding: 0.85rem;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+      }
+      #cert-canvas {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 6px;
+      }
+      .preview-help {
+        margin: 0.65rem 0 0;
+        color: #b9b9b9;
+        font-size: 0.92rem;
+      }
+      .form-panel {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: clamp(0.85rem, 1.5vw, 1.2rem) clamp(0.9rem, 1.8vw, 1.35rem);
+        box-shadow: 0 1px 2px rgba(28, 27, 24, 0.06);
+        display: flex;
+        flex-direction: column;
+        gap: clamp(0.75rem, 1.5vw, 1.1rem);
+      }
+      fieldset {
+        border: none;
+        margin: 0;
+        padding: 0;
+        min-width: 0;
+      }
+      legend {
+        font-size: var(--fs-legend);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+        margin-bottom: 0.5rem;
+        padding: 0;
+      }
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.5rem 1rem;
+      }
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.5rem 1rem;
+      }
+      @media (max-width: 680px) {
+        .grid-2,
+        .grid-3 {
+          grid-template-columns: 1fr;
+        }
+      }
+      .field-group {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+      label.field {
+        display: block;
+        font-size: var(--fs-label);
+        font-weight: 600;
+        margin-bottom: 0.28rem;
+        color: var(--ink);
+      }
+      .hint {
+        font-size: var(--fs-hint);
+        font-weight: 400;
+        color: var(--muted);
+      }
+      input[type="text"],
+      input[type="date"],
+      textarea {
+        width: 100%;
+        font-family: inherit;
+        font-size: var(--fs-input);
+        padding: 0.52rem 0.62rem;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: #fff;
+        color: var(--ink);
+      }
+      textarea {
+        min-height: 5.75rem;
+        resize: vertical;
+        line-height: 1.5;
+      }
+      input[type="text"]:focus,
+      input[type="date"]:focus,
+      textarea:focus {
+        outline: 3px solid rgba(45, 74, 62, 0.45);
+        outline-offset: 2px;
+        border-color: var(--accent);
+      }
+      .radio-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
+        gap: 0.4rem 0.75rem;
+      }
+      .radio-grid label.choice {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        font-weight: 400;
+        font-size: var(--fs-ui);
+        cursor: pointer;
+      }
+      .radio-grid input {
+        accent-color: var(--accent);
+        width: 1.12em;
+        height: 1.12em;
+      }
+      .actions {
+        margin-top: 0;
+        padding-top: 0.75rem;
+        border-top: 1px solid var(--border);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        align-items: center;
+      }
+      button.btn {
+        font-family: inherit;
+        font-size: var(--fs-ui);
+        padding: 0.55rem 1.15rem;
+        border-radius: 6px;
+        border: 1px solid var(--accent);
+        background: var(--accent);
+        color: #f5f2eb;
+        cursor: pointer;
+      }
+      button.btn:hover {
+        background: var(--accent-hover);
+        border-color: var(--accent-hover);
+      }
+      button.btn.secondary {
+        background: transparent;
+        color: var(--accent);
+        border: 1px solid var(--border);
+      }
+      button.btn.secondary:hover {
+        border-color: var(--accent);
+        background: rgba(45, 74, 62, 0.06);
+      }
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+      .site-footer {
+        margin-top: auto;
+        padding-top: 0.65rem;
+        border-top: 1px solid var(--border);
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: baseline;
+        gap: 0.35rem 0.75rem;
+        font-size: var(--fs-footer);
+        color: var(--muted);
+      }
+      .site-footer .footer-copy {
+        grid-column: 2;
+        text-align: center;
+        justify-self: center;
+      }
+      .site-footer .footer-version {
+        grid-column: 3;
+        justify-self: end;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+      }
+      @media print {
+        body {
+          background: #fff;
+        }
+        .actions,
+        #stamp-upload-btn {
+          display: none !important;
+        }
+        .wrap {
+          max-width: none;
+          padding: 0;
+          min-height: auto;
+        }
+        .layout {
+          grid-template-columns: 1fr;
+        }
+        .form-panel {
+          box-shadow: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>PSAG certificate builder</h1>
+        <p>Generate a small or large PSAG certificate image from a stamp photo and your certificate details.</p>
+      </header>
+
+      <form class="layout" id="psag-form" action="#" method="post" autocomplete="on" onsubmit="return false;">
+        <div class="preview-column">
+          <div class="preview-card">
+            <canvas id="cert-canvas" width="412" height="628" aria-label="PSAG certificate preview"></canvas>
+            <p class="preview-help">
+              Preview updates live as you type. Download saves the rendered certificate as PNG (works offline; templates are embedded so the canvas is not tainted).
+            </p>
+          </div>
+        </div>
+
+        <div class="form-panel">
+          <fieldset>
+            <legend>Certificate size</legend>
+            <div class="radio-grid" role="radiogroup" aria-label="Certificate size">
+              <label class="choice"><input type="radio" name="cert_size" value="large" checked /> Large</label>
+              <label class="choice"><input type="radio" name="cert_size" value="small" /> Small</label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Stamp image</legend>
+            <input class="visually-hidden" type="file" id="stamp-file" name="stamp_image" accept="image/*" />
+            <button type="button" class="btn" id="stamp-upload-btn">Upload stamp image</button>
+          </fieldset>
+
+          <fieldset>
+            <legend>Identity</legend>
+            <div class="grid-3">
+              <div class="field-group">
+                <label class="field" for="cert_no">Certificate no.</label>
+                <input type="text" id="cert_no" name="cert_no" placeholder="0601245" />
+              </div>
+              <div class="field-group">
+                <label class="field" for="cat_no">Cat no.</label>
+                <input type="text" id="cat_no" name="cat_no" placeholder="233a" />
+              </div>
+              <div class="field-group">
+                <label class="field" for="cert_date">Date</label>
+                <input type="date" id="cert_date" name="cert_date" />
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Stamp data</legend>
+            <div class="grid-3">
+              <div class="field-group">
+                <label class="field" for="issue">Issue</label>
+                <input type="text" id="issue" name="issue" placeholder="1893" />
+              </div>
+              <div class="field-group">
+                <label class="field" for="denom">Denomination</label>
+                <input type="text" id="denom" name="denom" placeholder="4c" />
+              </div>
+              <div class="field-group">
+                <label class="field" for="shade">Shade</label>
+                <input type="text" id="shade" name="shade" placeholder="Blue" />
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Committee text</legend>
+            <div class="grid-2">
+              <div class="field-group">
+                <label class="field" for="grade">Grade line <span class="hint">(large layout)</span></label>
+                <input type="text" id="grade" name="grade" placeholder="Grade: 95 Used" />
+              </div>
+              <div class="field-group">
+                <label class="field" for="chairman">Acting Committee Chairman</label>
+                <input type="text" id="chairman" name="chairman" placeholder="Name or signature text" />
+              </div>
+            </div>
+            <div class="field-group" style="margin-top: 0.65rem;">
+              <label class="field" for="opinion">Expert opinion</label>
+              <textarea
+                id="opinion"
+                name="opinion"
+                rows="3"
+                placeholder='"it is genuine unused, og previously hinged with a tiny pinhole at right"'
+              ></textarea>
+            </div>
+          </fieldset>
+
+          <div class="actions">
+            <button type="button" class="btn" id="download-btn">Download PNG</button>
+            <button type="reset" class="btn secondary" id="reset-btn">Reset form</button>
+          </div>
+        </div>
+      </form>
+
+      <footer class="site-footer">
+        <span class="footer-copy">Copyright (C) 2026 Exergy ∞ LLC</span>
+        <time class="footer-version" datetime="2026-04-17">2026-04-17</time>
+      </footer>
+    </div>
+
+    <script src="cert_templates.js"></script>
+    <script type="module">
+      const TEMPLATE_DATA_URLS = globalThis.TEMPLATE_DATA_URLS;
+      if (!TEMPLATE_DATA_URLS) {
+        throw new Error("cert_templates.js did not set window.TEMPLATE_DATA_URLS.");
+      }
+
+      const TEMPLATES = {
+        large: {
+          width: 412,
+          height: 628,
+          patchColor: "#f5f5f7",
+          stampSlot: { x: 148, y: 463, w: 124, h: 105, pad: 6, bg: "#111320" },
+          certNo: { x: 88, y: 51, maxW: 44, align: "left", size: 11, weight: "500" },
+          catNo: { x: 71, y: 293, maxW: 20, align: "left", size: 11, weight: "500" },
+          issue: { x: 148, y: 293, maxW: 29, align: "left", size: 11, weight: "500" },
+          denom: { x: 201, y: 293, maxW: 19, align: "left", size: 11, weight: "500" },
+          shade: { x: 254, y: 293, maxW: 41, align: "left", size: 11, weight: "500" },
+          date: { x: 374, y: 51, maxW: 56, align: "right", size: 11, weight: "500" },
+          grade: { x: 240, y: 259, maxW: 64, align: "center", size: 12, weight: "600" },
+          opinion: { x: 208, y: 331, maxW: 220, align: "center", size: 11, weight: "500" },
+          chairman: { x: 206, y: 603, maxW: 120, align: "center", size: 11, weight: "500" },
+          patches: {
+            certNo: { x: 88, y: 39, w: 44, h: 14 },
+            date: { x: 318, y: 39, w: 56, h: 14 },
+            grade: { x: 206, y: 244, w: 71, h: 18 },
+            details: { x: 71, y: 282, w: 224, h: 14 },
+            opinion: { x: 94, y: 319, w: 227, h: 16 },
+            chairman: { x: 160, y: 592, w: 92, h: 13 },
+          },
+        },
+        small: {
+          width: 597,
+          height: 362,
+          patchColor: "#f5f5f5",
+          stampSlot: { x: 46, y: 78, w: 161, h: 128, pad: 6, bg: "#2b2b2b" },
+          certNo: { x: 101, y: 39, maxW: 48, align: "left", size: 19, weight: "500" },
+          catNo: { x: 534, y: 39, maxW: 57, align: "right", size: 19, weight: "500" },
+          date: { x: 551, y: 334, maxW: 36, align: "right", size: 16, weight: "500" },
+          catNoData: { x: 232, y: 207, maxW: 31, align: "left", size: 16, weight: "500" },
+          issue: { x: 307, y: 207, maxW: 33, align: "left", size: 16, weight: "500" },
+          denom: { x: 364, y: 207, maxW: 33, align: "left", size: 16, weight: "500" },
+          shade: { x: 451, y: 207, maxW: 34, align: "left", size: 16, weight: "500" },
+          opinion: { x: 391, y: 253, maxW: 315, align: "center", size: 18, weight: "500" },
+          chairman: { x: 137, y: 255, maxW: 132, align: "center", size: 15, weight: "500" },
+          patches: {
+            certNo: { x: 101, y: 27, w: 48, h: 14 },
+            catNo: { x: 478, y: 27, w: 57, h: 14 },
+            details: { x: 231, y: 194, w: 255, h: 15 },
+            opinion: { x: 231, y: 236, w: 321, h: 22 },
+            date: { x: 520, y: 320, w: 32, h: 16 },
+            chairman: { x: 67, y: 236, w: 140, h: 24 },
+          },
+        },
+      };
+
+      const canvas = document.getElementById("cert-canvas");
+      const ctx = canvas.getContext("2d");
+      const form = document.getElementById("psag-form");
+      const stampFile = document.getElementById("stamp-file");
+      const uploadBtn = document.getElementById("stamp-upload-btn");
+      const resetBtn = document.getElementById("reset-btn");
+      const downloadBtn = document.getElementById("download-btn");
+
+      const templateImgs = new Map();
+      let stampObjectUrl = "";
+      let stampImage = null;
+
+      function todayIso() {
+        const d = new Date();
+        const y = String(d.getFullYear());
+        const m = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+        return y + "-" + m + "-" + day;
+      }
+
+      function formatShortDate(isoDate) {
+        if (!isoDate || !/^\d{4}-\d{2}-\d{2}$/.test(isoDate)) return "";
+        const [y, m, d] = isoDate.split("-");
+        return Number(m) + "/" + Number(d) + "/" + y;
+      }
+
+      function getSizeChoice() {
+        return (
+          form.querySelector('input[name="cert_size"]:checked')?.value || "large"
+        );
+      }
+
+      function val(id) {
+        const el = document.getElementById(id);
+        return el ? String(el.value || "").trim() : "";
+      }
+
+      function clearPatch(layout, name) {
+        const patch = layout.patches[name];
+        if (!patch) return;
+        ctx.fillStyle = layout.patchColor;
+        ctx.fillRect(patch.x, patch.y, patch.w, patch.h);
+      }
+
+      function fitTextToWidth(text, style, maxWidth) {
+        let size = style.size;
+        while (size > 12) {
+          ctx.font = `${style.weight || "400"} ${size}px Georgia, \"Times New Roman\", serif`;
+          if (ctx.measureText(text).width <= maxWidth) return size;
+          size -= 1;
+        }
+        return 12;
+      }
+
+      function drawText(text, cfg) {
+        if (!text) return;
+        const size = fitTextToWidth(text, cfg, cfg.maxW || 9999);
+        ctx.font = `${cfg.italic ? "italic " : ""}${cfg.weight || "400"} ${size}px Georgia, \"Times New Roman\", serif`;
+        ctx.fillStyle = "#111";
+        ctx.textAlign = cfg.align || "left";
+        ctx.textBaseline = "alphabetic";
+        ctx.fillText(text, cfg.x, cfg.y);
+      }
+
+      function drawWrappedText(text, cfg) {
+        if (!text) return;
+        const cleaned = String(text).replace(/\s+/g, " ").trim();
+        if (!cleaned) return;
+
+        const words = cleaned.split(" ");
+        const minSize = cfg.minSize || 9;
+        let size = Math.max(cfg.size || 14, minSize);
+        let lines = [];
+
+        while (size >= minSize) {
+          ctx.font = `${cfg.italic ? "italic " : ""}${cfg.weight || "400"} ${size}px Georgia, "Times New Roman", serif`;
+          lines = [];
+          let current = "";
+          for (const word of words) {
+            const next = current ? current + " " + word : word;
+            if (ctx.measureText(next).width <= cfg.maxW) {
+              current = next;
+            } else if (current) {
+              lines.push(current);
+              current = word;
+            } else {
+              lines.push(word);
+              current = "";
+            }
+          }
+          if (current) lines.push(current);
+          if (lines.length <= (cfg.maxLines || 2)) break;
+          size -= 1;
+        }
+
+        if (!lines.length) lines = [cleaned];
+
+        const lineHeight = Math.round(size * 1.18);
+        const totalH = lineHeight * lines.length;
+        let startY = cfg.y;
+        if (cfg.vAlign === "center") startY = cfg.y - totalH / 2 + lineHeight * 0.8;
+
+        ctx.font = `${cfg.italic ? "italic " : ""}${cfg.weight || "400"} ${size}px Georgia, "Times New Roman", serif`;
+        ctx.fillStyle = "#111";
+        ctx.textAlign = cfg.align || "left";
+        ctx.textBaseline = "alphabetic";
+        lines.forEach((line, i) => {
+          ctx.fillText(line, cfg.x, startY + i * lineHeight);
+        });
+      }
+
+      function drawStamp(layout) {
+        const slot = layout.stampSlot;
+
+        ctx.fillStyle = slot.bg;
+        ctx.fillRect(slot.x, slot.y, slot.w, slot.h);
+
+        if (!stampImage) {
+          ctx.fillStyle = "rgba(255,255,255,0.78)";
+          ctx.font = "500 12px Georgia, \"Times New Roman\", serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText("Upload stamp image", slot.x + slot.w / 2, slot.y + slot.h / 2);
+          return;
+        }
+
+        const innerW = slot.w - slot.pad * 2;
+        const innerH = slot.h - slot.pad * 2;
+        const iw = stampImage.width;
+        const ih = stampImage.height;
+        const scale = Math.min(innerW / iw, innerH / ih);
+        const dw = Math.max(1, Math.round(iw * scale));
+        const dh = Math.max(1, Math.round(ih * scale));
+        const dx = Math.round(slot.x + (slot.w - dw) / 2);
+        const dy = Math.round(slot.y + (slot.h - dh) / 2);
+        ctx.drawImage(stampImage, dx, dy, dw, dh);
+      }
+
+      function drawLarge(layout) {
+        clearPatch(layout, "certNo");
+        clearPatch(layout, "date");
+        clearPatch(layout, "grade");
+        clearPatch(layout, "details");
+        clearPatch(layout, "opinion");
+        clearPatch(layout, "chairman");
+
+        drawText(val("cert_no"), layout.certNo);
+        drawText(formatShortDate(val("cert_date")), layout.date);
+        drawText(val("grade"), layout.grade);
+        drawText(val("cat_no"), layout.catNo);
+        drawText(val("issue"), layout.issue);
+        drawText(val("denom"), layout.denom);
+        drawText(val("shade"), layout.shade);
+        drawWrappedText(val("opinion"), { ...layout.opinion, maxLines: 2, vAlign: "center" });
+        drawText(val("chairman"), layout.chairman);
+      }
+
+      function drawSmall(layout) {
+        clearPatch(layout, "certNo");
+        clearPatch(layout, "catNo");
+        clearPatch(layout, "details");
+        clearPatch(layout, "opinion");
+        clearPatch(layout, "date");
+        clearPatch(layout, "chairman");
+
+        drawText(val("cert_no"), layout.certNo);
+        drawText(val("cat_no"), layout.catNo);
+        drawText(formatShortDate(val("cert_date")), layout.date);
+
+        drawText(val("cat_no"), layout.catNoData);
+        drawText(val("issue"), layout.issue);
+        drawText(val("denom"), layout.denom);
+        drawText(val("shade"), layout.shade);
+        drawWrappedText(val("opinion"), { ...layout.opinion, maxLines: 2, vAlign: "center" });
+        drawText(val("chairman"), layout.chairman);
+      }
+
+      async function loadTemplate(size) {
+        if (templateImgs.has(size)) return templateImgs.get(size);
+        const cfg = TEMPLATES[size];
+        const img = new Image();
+        img.decoding = "async";
+        const ready = new Promise((resolve, reject) => {
+          img.onload = () => resolve(img);
+          img.onerror = () =>
+            reject(new Error("Could not load embedded template: " + size));
+        });
+        img.src = TEMPLATE_DATA_URLS[size];
+        const loaded = await ready;
+        templateImgs.set(size, loaded);
+        return loaded;
+      }
+
+      async function renderCertificate() {
+        const size = getSizeChoice();
+        const layout = TEMPLATES[size];
+        const baseImg = await loadTemplate(size);
+
+        canvas.width = layout.width;
+        canvas.height = layout.height;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(baseImg, 0, 0, layout.width, layout.height);
+
+        drawStamp(layout);
+        if (size === "large") drawLarge(layout);
+        else drawSmall(layout);
+      }
+
+      function refreshSoon() {
+        renderCertificate().catch((err) => {
+          console.error(err);
+          alert("Could not render certificate. " + (err?.message || ""));
+        });
+      }
+
+      uploadBtn.addEventListener("click", () => stampFile.click());
+
+      stampFile.addEventListener("change", () => {
+        const file = stampFile.files && stampFile.files[0];
+        if (!file || !file.type.startsWith("image/")) return;
+
+        if (stampObjectUrl) URL.revokeObjectURL(stampObjectUrl);
+        stampObjectUrl = URL.createObjectURL(file);
+
+        const img = new Image();
+        img.onload = () => {
+          stampImage = img;
+          refreshSoon();
+        };
+        img.onerror = () => {
+          stampImage = null;
+          alert("Could not load the selected image.");
+        };
+        img.src = stampObjectUrl;
+      });
+
+      form.querySelectorAll("input, textarea").forEach((el) => {
+        const evt = el.type === "radio" ? "change" : "input";
+        el.addEventListener(evt, refreshSoon);
+      });
+
+      resetBtn.addEventListener("click", () => {
+        setTimeout(() => {
+          if (stampObjectUrl) {
+            URL.revokeObjectURL(stampObjectUrl);
+            stampObjectUrl = "";
+          }
+          stampImage = null;
+          document.getElementById("cert_date").value = todayIso();
+          form.querySelector('input[name="cert_size"][value="large"]').checked = true;
+          refreshSoon();
+        }, 0);
+      });
+
+      downloadBtn.addEventListener("click", async () => {
+        downloadBtn.disabled = true;
+        const prev = downloadBtn.textContent;
+        downloadBtn.textContent = "Building…";
+        try {
+          await renderCertificate();
+          let url = "";
+          try {
+            url = canvas.toDataURL("image/png");
+          } catch (exportErr) {
+            const msg = String(exportErr?.message || "");
+            const tainted =
+              /tainted canvases may not be exported/i.test(msg) ||
+              exportErr?.name === "SecurityError";
+            if (tainted) {
+              throw new Error(
+                "Canvas export was blocked (tainted canvas). If you replaced embedded templates, regenerate cert_templates.js with python3 regenerate_cert_templates.py. Otherwise try another browser or a non-private window."
+              );
+            }
+            throw exportErr;
+          }
+
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `psag-certificate-${getSizeChoice()}.png`;
+          a.rel = "noopener";
+          a.click();
+        } catch (err) {
+          console.error(err);
+          alert("Could not build certificate image. " + (err?.message || ""));
+        } finally {
+          downloadBtn.disabled = false;
+          downloadBtn.textContent = prev;
+        }
+      });
+
+      document.getElementById("cert_date").value = todayIso();
+      refreshSoon();
+    </script>
+  </body>
+</html>

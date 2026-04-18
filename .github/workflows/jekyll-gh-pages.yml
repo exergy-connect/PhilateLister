@@ -8,6 +8,7 @@ on:
     paths:
       - "index.html"
       - "aps/index.html"
+      - "psag/*"
 
   workflow_dispatch:
 

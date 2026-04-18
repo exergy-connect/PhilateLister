@@ -464,6 +464,8 @@
       };
 
       const CERT_VERIFY_BASE = "https://psaginc.com/certs/";
+      /** Same directory as this page (Jekyll: `/psag/…`). */
+      const PSAG_QR_LOGO_SRC = "psag_approval_stamp.png";
 
       const canvas = document.getElementById("cert-canvas");
       const ctx = canvas.getContext("2d");
@@ -520,28 +522,6 @@
         return CERT_VERIFY_BASE + encodeURIComponent(no);
       }
 
-      /** Data-URL “PSAG” badge for QR center (white background). */
-      function psagQrCenterImageDataUrl(px) {
-        const scale = 2;
-        const w = Math.max(96, Math.round(px * 0.38 * scale));
-        const h = Math.max(40, Math.round(px * 0.16 * scale));
-        const c = document.createElement("canvas");
-        c.width = w;
-        c.height = h;
-        const g = c.getContext("2d");
-        g.fillStyle = "#ffffff";
-        g.fillRect(0, 0, w, h);
-        g.strokeStyle = "rgba(21, 21, 21, 0.2)";
-        g.lineWidth = scale;
-        g.strokeRect(scale / 2, scale / 2, w - scale, h - scale);
-        g.fillStyle = "#151515";
-        g.font = `600 ${Math.round(h * 0.42)}px system-ui, "Segoe UI", Roboto, sans-serif`;
-        g.textAlign = "center";
-        g.textBaseline = "middle";
-        g.fillText("PSAG", w / 2, h / 2 + 1);
-        return c.toDataURL("image/png");
-      }
-
       /**
        * QR seal: square with its center on the top-right corner of the stamp
        * (inner photo area — inside slot padding).
@@ -581,7 +561,7 @@
             height: px,
             type: "canvas",
             data,
-            image: psagQrCenterImageDataUrl(px),
+            image: PSAG_QR_LOGO_SRC,
             imageOptions: {
               hideBackgroundDots: true,
               margin: 3,

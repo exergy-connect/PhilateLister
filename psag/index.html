@@ -238,6 +238,10 @@
         border-color: var(--accent);
         background: rgba(45, 74, 62, 0.06);
       }
+      button.btn:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+      }
       .visually-hidden {
         position: absolute;
         width: 1px;
@@ -305,7 +309,7 @@
           <div class="preview-card">
             <canvas id="cert-canvas" width="412" height="628" aria-label="PSAG certificate preview"></canvas>
             <p class="preview-help">
-              Preview updates live as you type. Download saves the rendered certificate as PNG (works offline; templates are embedded so the canvas is not tainted).
+              Preview updates live as you type. Download saves the rendered certificate as PNG (templates embedded for export). With a certificate number set, a QR seal is drawn on the stamp (linking to psaginc.com; requires loading the QR script from the network).
             </p>
           </div>
         </div>
@@ -385,7 +389,7 @@
           </fieldset>
 
           <div class="actions">
-            <button type="button" class="btn" id="download-btn">Download PNG</button>
+            <button type="button" class="btn" id="download-btn" disabled>Download PNG</button>
             <button type="reset" class="btn secondary" id="reset-btn">Reset form</button>
           </div>
         </div>
@@ -398,6 +402,10 @@
     </div>
 
     <script src="cert_templates.js"></script>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"
+    ></script>
     <script type="module">
       const TEMPLATE_DATA_URLS = globalThis.TEMPLATE_DATA_URLS;
       if (!TEMPLATE_DATA_URLS) {
@@ -419,6 +427,7 @@
           grade: { x: 240, y: 259, maxW: 64, align: "center", size: 12, weight: "600" },
           opinion: { x: 208, y: 331, maxW: 220, align: "center", size: 11, weight: "500" },
           chairman: { x: 206, y: 603, maxW: 120, align: "center", size: 11, weight: "500" },
+          qrSealScale: 0.88,
           patches: {
             certNo: { x: 88, y: 39, w: 44, h: 14 },
             date: { x: 318, y: 39, w: 56, h: 14 },
@@ -432,26 +441,29 @@
           width: 597,
           height: 362,
           patchColor: "#f5f5f5",
-          stampSlot: { x: 46, y: 78, w: 161, h: 128, pad: 6, bg: "#2b2b2b" },
-          certNo: { x: 101, y: 39, maxW: 48, align: "left", size: 19, weight: "500" },
-          catNo: { x: 534, y: 39, maxW: 57, align: "right", size: 19, weight: "500" },
-          date: { x: 551, y: 334, maxW: 36, align: "right", size: 16, weight: "500" },
-          catNoData: { x: 232, y: 207, maxW: 31, align: "left", size: 16, weight: "500" },
-          issue: { x: 307, y: 207, maxW: 33, align: "left", size: 16, weight: "500" },
-          denom: { x: 364, y: 207, maxW: 33, align: "left", size: 16, weight: "500" },
-          shade: { x: 451, y: 207, maxW: 34, align: "left", size: 16, weight: "500" },
-          opinion: { x: 391, y: 253, maxW: 315, align: "center", size: 18, weight: "500" },
-          chairman: { x: 137, y: 255, maxW: 132, align: "center", size: 15, weight: "500" },
+          stampSlot: { x: 50, y: 115, w: 160, h: 116, pad: 6, bg: "#2b2b2b" },
+          certNo: { x: 100, y: 56, maxW: 56, align: "left", size: 19, weight: "500" },
+          catNo: { x: 560, y: 54, maxW: 40, align: "right", size: 19, weight: "500" },
+          date: { x: 560, y: 298, maxW: 52, align: "right", size: 14, weight: "500" },
+          catNoData: { x: 236, y: 213, maxW: 28, align: "left", size: 16, weight: "500" },
+          issue: { x: 308, y: 213, maxW: 28, align: "left", size: 16, weight: "500" },
+          denom: { x: 367, y: 213, maxW: 18, align: "left", size: 16, weight: "500" },
+          shade: { x: 425, y: 213, maxW: 32, align: "left", size: 16, weight: "500" },
+          opinion: { x: 393, y: 237, maxW: 318, align: "center", size: 17, weight: "500" },
+          chairman: { x: 130, y: 258, maxW: 140, align: "center", size: 15, weight: "500" },
+          qrSealScale: 0.88,
           patches: {
-            certNo: { x: 101, y: 27, w: 48, h: 14 },
-            catNo: { x: 478, y: 27, w: 57, h: 14 },
-            details: { x: 231, y: 194, w: 255, h: 15 },
-            opinion: { x: 231, y: 236, w: 321, h: 22 },
-            date: { x: 520, y: 320, w: 32, h: 16 },
-            chairman: { x: 67, y: 236, w: 140, h: 24 },
+            certNo: { x: 90, y: 36, w: 70, h: 26 },
+            catNo: { x: 522, y: 34, w: 42, h: 26 },
+            details: { x: 228, y: 194, w: 234, h: 28 },
+            opinion: { x: 224, y: 218, w: 338, h: 40 },
+            date: { x: 508, y: 284, w: 56, h: 20 },
+            chairman: { x: 92, y: 247, w: 77, h: 21 },
           },
         },
       };
+
+      const CERT_VERIFY_BASE = "https://psaginc.com/certs/";
 
       const canvas = document.getElementById("cert-canvas");
       const ctx = canvas.getContext("2d");
@@ -488,6 +500,109 @@
       function val(id) {
         const el = document.getElementById(id);
         return el ? String(el.value || "").trim() : "";
+      }
+
+      function certNoForFilename() {
+        const raw = val("cert_no");
+        let seg = raw.replace(/[^a-zA-Z0-9._-]+/g, "_").replace(/^_+|_+$/g, "");
+        if (!seg) seg = "cert";
+        if (seg.length > 120) seg = seg.slice(0, 120);
+        return seg;
+      }
+
+      function syncDownloadButton() {
+        downloadBtn.disabled = !val("cert_no");
+      }
+
+      function certificateVerifyUrl() {
+        const no = val("cert_no");
+        if (!no) return "";
+        return CERT_VERIFY_BASE + encodeURIComponent(no);
+      }
+
+      /** Data-URL “PSAG” badge for QR center (white background). */
+      function psagQrCenterImageDataUrl(px) {
+        const scale = 2;
+        const w = Math.max(96, Math.round(px * 0.38 * scale));
+        const h = Math.max(40, Math.round(px * 0.16 * scale));
+        const c = document.createElement("canvas");
+        c.width = w;
+        c.height = h;
+        const g = c.getContext("2d");
+        g.fillStyle = "#ffffff";
+        g.fillRect(0, 0, w, h);
+        g.strokeStyle = "rgba(21, 21, 21, 0.2)";
+        g.lineWidth = scale;
+        g.strokeRect(scale / 2, scale / 2, w - scale, h - scale);
+        g.fillStyle = "#151515";
+        g.font = `600 ${Math.round(h * 0.42)}px system-ui, "Segoe UI", Roboto, sans-serif`;
+        g.textAlign = "center";
+        g.textBaseline = "middle";
+        g.fillText("PSAG", w / 2, h / 2 + 1);
+        return c.toDataURL("image/png");
+      }
+
+      /**
+       * QR seal: square with its center on the top-right corner of the stamp
+       * (inner photo area — inside slot padding).
+       */
+      function stampSealQrSlot(layout) {
+        const s = layout.stampSlot;
+        const inner = Math.min(s.w - s.pad * 2, s.h - s.pad * 2);
+        const frac = typeof layout.qrSealScale === "number" ? layout.qrSealScale : 0.88;
+        const size = Math.round(Math.max(44, Math.min(inner * frac, inner - 4)));
+        const cx = s.x + s.w - s.pad;
+        const cy = s.y + s.pad;
+        let x = Math.round(cx - size / 2);
+        let y = Math.round(cy - size / 2);
+        // 50% of half the QR edge length → further up (−y) and right (+x)
+        const nudge = Math.round((size / 2) * 0.5);
+        x += nudge;
+        y -= nudge;
+        return { x, y, size };
+      }
+
+      async function drawVerificationQr(layout) {
+        const no = val("cert_no");
+        const QR = globalThis.QRCodeStyling;
+        if (!no || !QR) {
+          if (no && !QR) {
+            console.warn("QRCodeStyling is not available (script blocked or offline); QR omitted.");
+          }
+          return;
+        }
+
+        try {
+          const slot = stampSealQrSlot(layout);
+          const data = certificateVerifyUrl();
+          const px = Math.max(64, Math.round(slot.size));
+          const qr = new QR({
+            width: px,
+            height: px,
+            type: "canvas",
+            data,
+            image: psagQrCenterImageDataUrl(px),
+            imageOptions: {
+              hideBackgroundDots: true,
+              margin: 3,
+              imageSize: 0.32,
+            },
+            dotsOptions: { color: "#151515", type: "rounded" },
+            cornersSquareOptions: { color: "#151515", type: "extra-rounded" },
+            cornersDotOptions: { color: "#151515", type: "dot" },
+            backgroundOptions: { color: "#ffffff" },
+            qrOptions: { errorCorrectionLevel: "H" },
+          });
+
+          const blob = await qr.getRawData("png");
+          if (!blob) return;
+
+          const bmp = await createImageBitmap(blob);
+          ctx.drawImage(bmp, slot.x, slot.y, slot.size, slot.size);
+          bmp.close();
+        } catch (err) {
+          console.error("Could not draw verification QR.", err);
+        }
       }
 
       function clearPatch(layout, name) {
@@ -659,6 +774,7 @@
         drawStamp(layout);
         if (size === "large") drawLarge(layout);
         else drawSmall(layout);
+        await drawVerificationQr(layout);
       }
 
       function refreshSoon() {
@@ -691,7 +807,10 @@
 
       form.querySelectorAll("input, textarea").forEach((el) => {
         const evt = el.type === "radio" ? "change" : "input";
-        el.addEventListener(evt, refreshSoon);
+        el.addEventListener(evt, () => {
+          refreshSoon();
+          syncDownloadButton();
+        });
       });
 
       resetBtn.addEventListener("click", () => {
@@ -704,10 +823,12 @@
           document.getElementById("cert_date").value = todayIso();
           form.querySelector('input[name="cert_size"][value="large"]').checked = true;
           refreshSoon();
+          syncDownloadButton();
         }, 0);
       });
 
       downloadBtn.addEventListener("click", async () => {
+        if (!val("cert_no")) return;
         downloadBtn.disabled = true;
         const prev = downloadBtn.textContent;
         downloadBtn.textContent = "Building…";
@@ -731,19 +852,20 @@
 
           const a = document.createElement("a");
           a.href = url;
-          a.download = `psag-certificate-${getSizeChoice()}.png`;
+          a.download = `psag-certificate-${certNoForFilename()}-${getSizeChoice()}.png`;
           a.rel = "noopener";
           a.click();
         } catch (err) {
           console.error(err);
           alert("Could not build certificate image. " + (err?.message || ""));
         } finally {
-          downloadBtn.disabled = false;
           downloadBtn.textContent = prev;
+          syncDownloadButton();
         }
       });
 
       document.getElementById("cert_date").value = todayIso();
+      syncDownloadButton();
       refreshSoon();
     </script>
   </body>

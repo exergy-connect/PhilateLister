@@ -9,56 +9,49 @@
           "name": "1847 First General Issue",
           "description": "First U.S. nationwide adhesive postage issue (Franklin and Washington).",
           "year_from": 1847,
-          "year_to": 1847,
-          "country_id": "us"
+          "year_to": 1847
         },
         {
           "series_id": "us-1875-reprints-of-1847",
           "name": "1875 Reprints of 1847 Issue",
           "description": "BEP reprints of the original 1847 designs, produced mainly for collectors and archives.",
           "year_from": 1875,
-          "year_to": 1875,
-          "country_id": "us"
+          "year_to": 1875
         },
         {
           "series_id": "us-1851-1856-imperforate-definitives",
           "name": "1851-1856 Imperforate Definitives",
           "description": "Imperforate 1851-era definitive issue and related early denominations/types.",
           "year_from": 1851,
-          "year_to": 1856,
-          "country_id": "us"
+          "year_to": 1856
         },
         {
           "series_id": "us-1857-1860-perforated-definitives",
           "name": "1857-1860 Perforated Definitives",
           "description": "Perforated continuation of classic 1851 designs with type and plate distinctions.",
           "year_from": 1857,
-          "year_to": 1860,
-          "country_id": "us"
+          "year_to": 1860
         },
         {
           "series_id": "us-1857-reprints",
           "name": "1857 Reprints",
           "description": "Reprint-related classic listings in the 40-47 block.",
           "year_from": 1857,
-          "year_to": 1857,
-          "country_id": "us"
+          "year_to": 1857
         },
         {
           "series_id": "us-1861-1866-civil-war-definitives",
           "name": "1861-1866 Civil War Definitives",
           "description": "National Bank Note Company issue replacing prior designs during and after Civil War contract changes.",
           "year_from": 1861,
-          "year_to": 1866,
-          "country_id": "us"
+          "year_to": 1866
         },
         {
           "series_id": "us-1867-1868-grilled-issue",
           "name": "1867-1868 Grilled Issue",
           "description": "D/E/F and Z grill-era classic definitives and related varieties.",
           "year_from": 1867,
-          "year_to": 1868,
-          "country_id": "us"
+          "year_to": 1868
         }
       ]
     }

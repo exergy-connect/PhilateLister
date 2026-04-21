@@ -3,22 +3,22 @@
     {
       "country_id": "dk",
       "display_name": "Denmark",
-      "notes": "Kingdom of Denmark; includes historical issues.",
-      "issue_series": [
-        {
-          "series_id": "dk-bicolors-classic",
-          "country_id": "dk",
-          "name": "Denmark classic bicolors",
-          "description": "Perforated bicolor definitives and numeral designs, late 19th century.",
-          "year_from": 1870,
-          "year_to": 1905
-        }
-      ]
+      "notes": "Kingdom of Denmark; includes historical issues."
     },
     {
       "country_id": "se",
       "display_name": "Sweden",
       "notes": ""
+    }
+  ],
+  "issue_series": [
+    {
+      "series_id": "dk-bicolors-classic",
+      "country_id": "dk",
+      "name": "Denmark classic bicolors",
+      "description": "Perforated bicolor definitives and numeral designs, late 19th century.",
+      "year_from": 1870,
+      "year_to": 1905
     }
   ],
   "catalog_system": [
@@ -88,7 +88,11 @@
         "y_min": 0,
         "y_max": 1000
       },
-      "freeform_keywords": ["Facit", "numeral", "cancel"]
+      "freeform_keywords": [
+        "Facit",
+        "numeral",
+        "cancel"
+      ]
     }
   ],
   "listing": [

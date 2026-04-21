@@ -625,6 +625,7 @@
       const previewOverlay = document.getElementById("preview-overlay");
       const previewPlaceholder = document.getElementById("preview-placeholder");
       const downloadStampZipBtn = document.getElementById("download-stamp-zip-btn");
+      const BBOX_CROP_MARGIN_PX = 5;
       let previewObjectUrl = null;
       let previewBoxes = [];
       let stampCropRows = [];
@@ -830,10 +831,16 @@
 
         for (let i = 0; i < stampCropRows.length; i++) {
           const crop = stampCropRows[i];
-          const x = Math.max(0, Math.min(imageW - 1, Math.round(crop.box.xMin * imageW)));
-          const y = Math.max(0, Math.min(imageH - 1, Math.round(crop.box.yMin * imageH)));
-          const right = Math.max(x + 1, Math.min(imageW, Math.round(crop.box.xMax * imageW)));
-          const bottom = Math.max(y + 1, Math.min(imageH, Math.round(crop.box.yMax * imageH)));
+          const x = Math.max(0, Math.min(imageW - 1, Math.floor(crop.box.xMin * imageW) - BBOX_CROP_MARGIN_PX));
+          const y = Math.max(0, Math.min(imageH - 1, Math.floor(crop.box.yMin * imageH) - BBOX_CROP_MARGIN_PX));
+          const right = Math.max(
+            x + 1,
+            Math.min(imageW, Math.ceil(crop.box.xMax * imageW) + BBOX_CROP_MARGIN_PX)
+          );
+          const bottom = Math.max(
+            y + 1,
+            Math.min(imageH, Math.ceil(crop.box.yMax * imageH) + BBOX_CROP_MARGIN_PX)
+          );
           const width = right - x;
           const height = bottom - y;
           if (width < 1 || height < 1) continue;

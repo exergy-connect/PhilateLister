@@ -24,6 +24,7 @@
         "",
         "=== VISUAL WORKFLOW ===",
         "1) Segment mentally: treat each physically separate perforated (or cut) stamp as one item. Ignore the background between stamps.",
+        "1a) Bounding boxes / crops: include the full stamp plus a small safety margin outside the perforations on all sides (about 2-5% padding per edge when space allows). Do NOT clip or touch the perforation tips with the box.",
         "2) Reading order: top-to-bottom, then left-to-right (row-major), so stamp numbering matches a human scanning the grid.",
         "3) For each stamp, extract what the image supports:",
         "   - Country or postal administration (e.g. from script, language, or emblem text such as SVERIGE).",

@@ -1,0 +1,220 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "stamp_2026-04-21_16-32-49-394_multiple_alt_catalog_4d49a017__01",
+      "country_id": "Switzerland",
+      "scott": {
+        "number": 41
+      },
+      "title": "5c Brown Sitting Helvetia",
+      "summary": "Switzerland Sitting Helvetia perforated issue. 5c Brown. Used with circular cancel. Label indicates Michel 13 (€2,50).",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 740,
+        "x_max": 855,
+        "y_min": 55,
+        "y_max": 265
+      }
+    },
+    {
+      "stamp_id": "stamp_2026-04-21_16-32-49-394_multiple_alt_catalog_4d49a017__02",
+      "country_id": "Switzerland",
+      "scott": {
+        "number": 43
+      },
+      "title": "10c Red Sitting Helvetia",
+      "summary": "Switzerland Sitting Helvetia perforated issue. 10c Red. Heavy cancel. Label indicates Michel 15 (€5,-).",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 23,
+        "x_max": 123,
+        "y_min": 317,
+        "y_max": 517
+      }
+    },
+    {
+      "stamp_id": "stamp_2026-04-21_16-32-49-394_multiple_alt_catalog_4d49a017__03",
+      "country_id": "Switzerland",
+      "scott": {
+        "number": 52
+      },
+      "title": "2c Grayish Sitting Helvetia",
+      "summary": "Switzerland Sitting Helvetia perforated issue. 2c Grayish. Used. Label indicates Michel 20 (€0,30).",
+      "issue_year": 1867,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 313,
+        "x_max": 423,
+        "y_min": 327,
+        "y_max": 510
+      }
+    },
+    {
+      "stamp_id": "stamp_2026-04-21_16-32-49-394_multiple_alt_catalog_4d49a017__04",
+      "country_id": "Switzerland",
+      "scott": {
+        "number": 53
+      },
+      "title": "3c Grey-Black Sitting Helvetia",
+      "summary": "Switzerland Sitting Helvetia perforated issue. 3c Grey-Black. Used. Label indicates Michel 21 (€10,-).",
+      "issue_year": 1867,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 565,
+        "x_max": 675,
+        "y_min": 320,
+        "y_max": 500
+      }
+    },
+    {
+      "stamp_id": "stamp_2026-04-21_16-32-49-394_multiple_alt_catalog_4d49a017__05",
+      "country_id": "Switzerland",
+      "scott": {
+        "number": 53
+      },
+      "title": "3c Grey-Black Sitting Helvetia",
+      "summary": "Switzerland Sitting Helvetia perforated issue. 3c Grey-Black. Used with circular cancel. Label indicates Michel 21 (€10,-).",
+      "issue_year": 1867,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 18,
+        "x_max": 125,
+        "y_min": 560,
+        "y_max": 740
+      }
+    },
+    {
+      "stamp_id": "stamp_2026-04-21_16-32-49-394_multiple_alt_catalog_4d49a017__06",
+      "country_id": "Switzerland",
+      "scott": {
+        "number": 59
+      },
+      "title": "40c Green Sitting Helvetia",
+      "summary": "Switzerland Sitting Helvetia perforated issue. 40c Green. Used. Label indicates Michel 26 (€4,-).",
+      "issue_year": 1867,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 253,
+        "x_max": 360,
+        "y_min": 555,
+        "y_max": 740
+      }
+    },
+    {
+      "stamp_id": "stamp_2026-04-21_16-32-49-394_multiple_alt_catalog_4d49a017__07",
+      "country_id": "Switzerland",
+      "scott": {
+        "number": 68
+      },
+      "title": "1Fr Gold/Bronze Sitting Helvetia",
+      "summary": "Switzerland Sitting Helvetia perforated issue. 1Fr Gold/Bronze. Used. Label indicates Michel 28 (€8,-).",
+      "issue_year": 1867,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 515,
+        "x_max": 625,
+        "y_min": 545,
+        "y_max": 735
+      }
+    },
+    {
+      "stamp_id": "stamp_2026-04-21_16-32-49-394_multiple_alt_catalog_4d49a017__08",
+      "country_id": "Switzerland",
+      "scott": {
+        "number": 70
+      },
+      "title": "2c Gray Sitting Helvetia",
+      "summary": "Switzerland Sitting Helvetia perforated issue. 2c Gray. Used. Label indicates Michel 29 B (€15,-).",
+      "issue_year": 1881,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 767,
+        "x_max": 880,
+        "y_min": 550,
+        "y_max": 735
+      }
+    },
+    {
+      "stamp_id": "stamp_2026-04-21_16-32-49-394_multiple_alt_catalog_4d49a017__09",
+      "country_id": "Switzerland",
+      "scott": {
+        "number": 75
+      },
+      "title": "25c Green Sitting Helvetia",
+      "summary": "Switzerland Sitting Helvetia perforated issue. 25c Green. Used. Label indicates Michel 32 (€0,50).",
+      "issue_year": 1881,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 13,
+        "x_max": 120,
+        "y_min": 778,
+        "y_max": 965
+      }
+    },
+    {
+      "stamp_id": "stamp_2026-04-21_16-32-49-394_multiple_alt_catalog_4d49a017__10",
+      "country_id": "Switzerland",
+      "scott": {
+        "number": 76
+      },
+      "title": "30c Blue Sitting Helvetia",
+      "summary": "Switzerland Sitting Helvetia perforated issue. 30c Blue. Used. Left stamp of pair labeled Michel 33 A+B (€21,- for pair).",
+      "issue_year": 1881,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 238,
+        "x_max": 343,
+        "y_min": 783,
+        "y_max": 965
+      }
+    },
+    {
+      "stamp_id": "stamp_2026-04-21_16-32-49-394_multiple_alt_catalog_4d49a017__11",
+      "country_id": "Switzerland",
+      "scott": {
+        "number": 76
+      },
+      "title": "30c Blue Sitting Helvetia",
+      "summary": "Switzerland Sitting Helvetia perforated issue. 30c Blue. Used. Right stamp of pair labeled Michel 33 A+B.",
+      "issue_year": 1881,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 348,
+        "x_max": 455,
+        "y_min": 778,
+        "y_max": 965
+      }
+    },
+    {
+      "stamp_id": "stamp_2026-04-21_16-32-49-394_multiple_alt_catalog_4d49a017__12",
+      "country_id": "Switzerland",
+      "scott": {
+        "number": 76
+      },
+      "title": "30c Dark Blue Sitting Helvetia",
+      "summary": "Switzerland Sitting Helvetia perforated issue. 30c Dark Blue. Used. Label indicates Michel 33 B (€20,-).",
+      "issue_year": 1881,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 635,
+        "x_max": 745,
+        "y_min": 783,
+        "y_max": 970
+      }
+    }
+  ]
+}

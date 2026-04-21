@@ -54,6 +54,13 @@
           "type": "integer",
           "description": "Optional eBay.com (EBAY_US taxonomy) stamp leaf category id for Browse ``category_ids`` when searching or filtering listings for this country."
         },
+        "issue_series": {
+          "type": "array",
+          "description": "Optional nested stamp sets or series for this country (pairs with issue_series.country_id, parent_array issue_series).",
+          "items": {
+            "$ref": "#/$defs/issue_series"
+          }
+        },
         "scott_catalog_entries": {
           "type": "array",
           "description": "Optional nested catalog listings for this country (pairs with scott.country_id on scott_catalog_entry, parent_array scott_catalog_entries).",
@@ -330,7 +337,10 @@
               "enum": [
                 "a",
                 "b",
-                "c"
+                "c",
+                "d",
+                "e",
+                "f"
               ]
             }
           },
@@ -345,6 +355,15 @@
           "type": "string",
           "description": "Stamp set or series this catalog listing belongs to, when known."
         },
+        "issue_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Required issue date for this catalog listing (ISO 8601 date string)."
+        },
+        "denomination": {
+          "type": "string",
+          "description": "Required face value denomination as printed or cataloged (for example 5c, 10c, 1¢, $1)."
+        },
         "perforation": {
           "type": "string",
           "description": "Perforation as given for this listing (e.g. perf 11½, comb 13¾, imperforate, roulette)."
@@ -352,6 +371,10 @@
         "primary_color": {
           "type": "string",
           "description": "Dominant or catalog-listed ink or paper color for this listing (e.g. carmine, blue, bister)."
+        },
+        "description": {
+          "type": "string",
+          "description": "Required short listing description (design subject, issue context, or key distinguishing detail)."
         },
         "notes": {
           "type": "string",
@@ -361,8 +384,11 @@
       "description": "Identifies a stamp design or major listing in a catalog system (Scott, Michel, etc.). Primary key is the composite field scott (country_id, section, number, variation). Optional issue_series_id ties the listing to a set or series row; optional perforation records the catalog-listed gauge or style. A stamp instance optionally points here via the same composite key; additional cross-references stay in stamp_catalog_number.",
       "required": [
         "scott",
+        "issue_date",
+        "denomination",
         "perforation",
-        "primary_color"
+        "primary_color",
+        "description"
       ]
     },
     "scott_catalog_section": {
@@ -466,7 +492,10 @@
               "enum": [
                 "a",
                 "b",
-                "c"
+                "c",
+                "d",
+                "e",
+                "f"
               ]
             }
           },

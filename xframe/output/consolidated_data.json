@@ -1,14 +1,67 @@
 {
-  "version": 11,
-  "timestamp": "2026-04-15T14:36:26Z",
+  "version": 13,
+  "timestamp": "2026-04-21T20:27:56Z",
   "model": {
     "name": "PhilateLister stamp catalog",
     "version": "26.04.11.1",
     "author": "Exergy ∞ LLC",
     "description": "Dealer and collector catalog for stamps: issuing country, catalog numbers across systems, issue series, year of issue, condition, centering, perforation on catalog listings, and thematic tags.",
     "include_x_fields": false,
+    "track_source_files": true,
     "max_name_underscores": 2,
     "exclude": null
+  },
+  "sourcefiles": {
+    "000000000001": {
+      "id": 1,
+      "path": "data/catalog_sample.json",
+      "dependencies": [
+        2
+      ]
+    },
+    "000000000002": {
+      "id": 2,
+      "path": "data/countries.json"
+    },
+    "000000000003": {
+      "id": 3,
+      "path": "data/llm_models.json",
+      "dependencies": [
+        9
+      ]
+    },
+    "000000000004": {
+      "id": 4,
+      "path": "data/prompt_invocations.json",
+      "dependencies": [
+        7,
+        9
+      ]
+    },
+    "000000000005": {
+      "id": 5,
+      "path": "data/prompts/jay_smith_listing.json"
+    },
+    "000000000006": {
+      "id": 6,
+      "path": "data/prompts/multi_stamp_sheet_xframe.json"
+    },
+    "000000000007": {
+      "id": 7,
+      "path": "data/prompts/stamp_listing.json"
+    },
+    "000000000008": {
+      "id": 8,
+      "path": "data/prompts/xframe.json"
+    },
+    "000000000009": {
+      "id": 9,
+      "path": "data/providers.json"
+    },
+    "000000000010": {
+      "id": 10,
+      "path": "data/scott_catalog_sections.json"
+    }
   },
   "data": {
     "change": {
@@ -87,6 +140,18 @@
         "author": "jbemmel",
         "note": "(no change) CI consolidate after model/data change (e31f14309056a7f64d0cf6ac6bab5956f3714eeb)",
         "git_commit_hash": "e31f14309056a7f64d0cf6ac6bab5956f3714eeb"
+      },
+      "000000000012": {
+        "id": 12,
+        "timestamp": "2026-04-21T15:24:14-05:00",
+        "author": "jeroen",
+        "note": "Sample data: stamp bounding_box; omit optional stamp.scott (FK check vs composite PK mismatch in consolidator)."
+      },
+      "000000000013": {
+        "id": 13,
+        "timestamp": "2026-04-21T15:27:56-05:00",
+        "author": "jeroen",
+        "note": "Verify stamp.scott FK after composite PK loader fix."
       }
     },
     "catalog_system": {
@@ -544,7 +609,7 @@
       }
     },
     "scott_catalog_entry": {
-      "[object Object]": {
+      "dk|M|45": {
         "scott": {
           "country_id": "dk",
           "section": "M",
@@ -554,12 +619,8 @@
         "perforation": "Perforated 13",
         "primary_color": "carmine and blue (bicolor)",
         "notes": "Illustrative primary listing for the sample stamp; see stamp_catalog_number for Michel cross-ref.",
-        "c": 4,
-        "m": [
-          7,
-          9
-        ],
-        "v": 9
+        "c": 13,
+        "v": 13
       }
     },
     "scott_catalog_section": {
@@ -731,6 +792,12 @@
         "condition_quality": "used",
         "centering_grade": "fine",
         "image_basename": "stamp_2026-04-11_example_001.jpg",
+        "bounding_box": {
+          "x_min": 0,
+          "x_max": 1000,
+          "y_min": 0,
+          "y_max": 1000
+        },
         "freeform_keywords": [
           "Facit",
           "numeral",
@@ -738,10 +805,11 @@
         ],
         "c": 1,
         "m": [
-          4,
-          7
+          7,
+          12,
+          13
         ],
-        "v": 7
+        "v": 13
       }
     },
     "stamp_catalog_number": {

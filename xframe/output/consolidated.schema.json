@@ -563,6 +563,35 @@
           "type": "string",
           "description": "Image file name in uploads/ or media store."
         },
+        "bounding_box": {
+          "type": "object",
+          "properties": {
+            "x_min": {
+              "type": "integer",
+              "description": "Left edge of the box (0 = left, 1000 = right)."
+            },
+            "x_max": {
+              "type": "integer",
+              "description": "Right edge of the box (0 = left, 1000 = right)."
+            },
+            "y_min": {
+              "type": "integer",
+              "description": "Top edge of the box (0 = top, 1000 = bottom)."
+            },
+            "y_max": {
+              "type": "integer",
+              "description": "Bottom edge of the box (0 = top, 1000 = bottom)."
+            }
+          },
+          "required": [
+            "x_min",
+            "x_max",
+            "y_min",
+            "y_max"
+          ],
+          "additionalProperties": false,
+          "description": "Region of interest on the stamp or lot image; coordinates are permille (0–1000) along each axis relative to image width and height."
+        },
         "freeform_keywords": {
           "type": "array",
           "description": "Ad-hoc keywords not yet mapped to thematic_tag.",
@@ -578,7 +607,8 @@
         "summary",
         "issue_year",
         "condition_quality",
-        "centering_grade"
+        "centering_grade",
+        "bounding_box"
       ]
     },
     "stamp_catalog_number": {

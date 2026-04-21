@@ -1,0 +1,224 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "stamp_2026-04-21_15-33-30-805_multiple_alt_catalog_fb1813eb__01",
+      "country_id": "switzerland",
+      "scott": {
+        "number": 43
+      },
+      "title": "Sitting Helvetia 5c Brown",
+      "summary": "Dealer label 13, priced •‒2,50. Seated Helvetia definitive issue, used with light cancel.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 737,
+        "x_max": 857,
+        "y_min": 52,
+        "y_max": 274
+      },
+      "freeform_keywords": [
+        "seated helvetia",
+        "sitting helvetia"
+      ]
+    },
+    {
+      "stamp_id": "stamp_2026-04-21_15-33-30-805_multiple_alt_catalog_fb1813eb__02",
+      "country_id": "switzerland",
+      "scott": {
+        "number": 44
+      },
+      "title": "Sitting Helvetia 10c Red",
+      "summary": "Dealer label 15, priced •‒5,-. Seated Helvetia definitive, heavily canceled.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 21,
+        "x_max": 126,
+        "y_min": 315,
+        "y_max": 520
+      }
+    },
+    {
+      "stamp_id": "stamp_2026-04-21_15-33-30-805_multiple_alt_catalog_fb1813eb__03",
+      "country_id": "switzerland",
+      "scott": {
+        "number": 80
+      },
+      "title": "Standing Helvetia 2c Grey",
+      "summary": "Dealer label 20, priced •‒0,30. Used with circular cancel.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 311,
+        "x_max": 423,
+        "y_min": 325,
+        "y_max": 511
+      }
+    },
+    {
+      "stamp_id": "stamp_2026-04-21_15-33-30-805_multiple_alt_catalog_fb1813eb__04",
+      "country_id": "switzerland",
+      "scott": {
+        "number": 81
+      },
+      "title": "Standing Helvetia 3c Grey",
+      "summary": "Dealer label 21, priced •‒10,-. Standing Helvetia definitive, used.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 564,
+        "x_max": 677,
+        "y_min": 319,
+        "y_max": 505
+      }
+    },
+    {
+      "stamp_id": "stamp_2026-04-21_15-33-30-805_multiple_alt_catalog_fb1813eb__05",
+      "country_id": "switzerland",
+      "scott": {
+        "number": 81
+      },
+      "title": "Standing Helvetia 3c Grey",
+      "summary": "Dealer label 21., priced •‒10,-. Used with clear central cancel.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 17,
+        "x_max": 125,
+        "y_min": 558,
+        "y_max": 745
+      }
+    },
+    {
+      "stamp_id": "stamp_2026-04-21_15-33-30-805_multiple_alt_catalog_fb1813eb__06",
+      "country_id": "switzerland",
+      "scott": {
+        "number": 89
+      },
+      "title": "Standing Helvetia 40c Green",
+      "summary": "Dealer label 26, priced •‒4,-. Standing Helvetia definitive, green.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 251,
+        "x_max": 361,
+        "y_min": 553,
+        "y_max": 743
+      }
+    },
+    {
+      "stamp_id": "stamp_2026-04-21_15-33-30-805_multiple_alt_catalog_fb1813eb__07",
+      "country_id": "switzerland",
+      "scott": {
+        "number": 92
+      },
+      "title": "Standing Helvetia 1fr Brown",
+      "summary": "Dealer label 28., priced •‒8,-. Used.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 511,
+        "x_max": 625,
+        "y_min": 546,
+        "y_max": 739
+      }
+    },
+    {
+      "stamp_id": "stamp_2026-04-21_15-33-30-805_multiple_alt_catalog_fb1813eb__08",
+      "country_id": "switzerland",
+      "scott": {
+        "number": 93
+      },
+      "title": "Standing Helvetia 2fr Brown",
+      "summary": "Dealer label 29 B, priced •‒15,-. Higher value of the series.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 765,
+        "x_max": 883,
+        "y_min": 548,
+        "y_max": 741
+      }
+    },
+    {
+      "stamp_id": "stamp_2026-04-21_15-33-30-805_multiple_alt_catalog_fb1813eb__09",
+      "country_id": "switzerland",
+      "scott": {
+        "number": 87
+      },
+      "title": "Standing Helvetia 25c Green",
+      "summary": "Dealer label 32, priced •‒0,50. Green definitive, used.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 11,
+        "x_max": 121,
+        "y_min": 778,
+        "y_max": 966
+      }
+    },
+    {
+      "stamp_id": "stamp_2026-04-21_15-33-30-805_multiple_alt_catalog_fb1813eb__10",
+      "country_id": "switzerland",
+      "scott": {
+        "number": 88
+      },
+      "title": "Standing Helvetia 30c Blue (Left of Pair)",
+      "summary": "Dealer label 33 A+B, pair priced •‒21,-. Part of a used pair.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 236,
+        "x_max": 348,
+        "y_min": 782,
+        "y_max": 971
+      }
+    },
+    {
+      "stamp_id": "stamp_2026-04-21_15-33-30-805_multiple_alt_catalog_fb1813eb__11",
+      "country_id": "switzerland",
+      "scott": {
+        "number": 88
+      },
+      "title": "Standing Helvetia 30c Blue (Right of Pair)",
+      "summary": "Dealer label 33 A+B, pair priced •‒21,-. Part of a used pair.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 346,
+        "x_max": 457,
+        "y_min": 780,
+        "y_max": 971
+      }
+    },
+    {
+      "stamp_id": "stamp_2026-04-21_15-33-30-805_multiple_alt_catalog_fb1813eb__12",
+      "country_id": "switzerland",
+      "scott": {
+        "number": 88
+      },
+      "title": "Standing Helvetia 30c Blue",
+      "summary": "Dealer label 33B, priced •‒20,-. Single used example.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 634,
+        "x_max": 747,
+        "y_min": 784,
+        "y_max": 976
+      }
+    }
+  ]
+}

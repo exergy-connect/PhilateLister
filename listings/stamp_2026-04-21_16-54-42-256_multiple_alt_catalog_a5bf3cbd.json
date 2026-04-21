@@ -1,0 +1,280 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "ch-13-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 13
+      },
+      "title": "5r Brown Strubel",
+      "summary": "Switzerland Scott #13, 5r brown Strubel issue. Imperforate with four margins. Used with black grid cancel. Dealer price €2.50.",
+      "issue_year": 1854,
+      "condition_quality": "used",
+      "centering_grade": "not_applicable",
+      "image_basename": "stamp_2026-04-21_16-54-42-256_multiple_alt_catalog_a5bf3cbd.png",
+      "bounding_box": {
+        "x_min": 741,
+        "x_max": 856,
+        "y_min": 55,
+        "y_max": 266
+      },
+      "freeform_keywords": [
+        "Strubel",
+        "Sitting Helvetia"
+      ]
+    },
+    {
+      "stamp_id": "ch-15-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 15
+      },
+      "title": "5r Yellow-brown Strubel",
+      "summary": "Switzerland Scott #15, 5r yellow-brown Strubel issue. Imperforate. Used with heavy black cancellation. Dealer price €5.",
+      "issue_year": 1854,
+      "condition_quality": "used",
+      "centering_grade": "not_applicable",
+      "image_basename": "stamp_2026-04-21_16-54-42-256_multiple_alt_catalog_a5bf3cbd.png",
+      "bounding_box": {
+        "x_min": 25,
+        "x_max": 124,
+        "y_min": 318,
+        "y_max": 518
+      },
+      "freeform_keywords": [
+        "Strubel",
+        "Sitting Helvetia"
+      ]
+    },
+    {
+      "stamp_id": "ch-20-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 20
+      },
+      "title": "2c Gray Sitting Helvetia",
+      "summary": "Switzerland Scott #20, 2c gray Sitting Helvetia, perforated issue. Used with circular datestamp. Dealer price €0.30.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "image_basename": "stamp_2026-04-21_16-54-42-256_multiple_alt_catalog_a5bf3cbd.png",
+      "bounding_box": {
+        "x_min": 315,
+        "x_max": 423,
+        "y_min": 327,
+        "y_max": 511
+      },
+      "freeform_keywords": [
+        "Sitting Helvetia",
+        "perforated"
+      ]
+    },
+    {
+      "stamp_id": "ch-21-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 21
+      },
+      "title": "3c Black Sitting Helvetia",
+      "summary": "Switzerland Scott #21, 3c black Sitting Helvetia, perforated issue. Used. Dealer price €10.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "image_basename": "stamp_2026-04-21_16-54-42-256_multiple_alt_catalog_a5bf3cbd.png",
+      "bounding_box": {
+        "x_min": 567,
+        "x_max": 676,
+        "y_min": 320,
+        "y_max": 503
+      },
+      "freeform_keywords": [
+        "Sitting Helvetia",
+        "perforated"
+      ]
+    },
+    {
+      "stamp_id": "ch-21-2",
+      "country_id": "ch",
+      "scott": {
+        "number": 21
+      },
+      "title": "3c Black Sitting Helvetia",
+      "summary": "Switzerland Scott #21, 3c black Sitting Helvetia, perforated issue. Used with heavy circular cancellation. Dealer price €10.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "image_basename": "stamp_2026-04-21_16-54-42-256_multiple_alt_catalog_a5bf3cbd.png",
+      "bounding_box": {
+        "x_min": 18,
+        "x_max": 126,
+        "y_min": 560,
+        "y_max": 743
+      },
+      "freeform_keywords": [
+        "Sitting Helvetia",
+        "perforated"
+      ]
+    },
+    {
+      "stamp_id": "ch-26-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 26
+      },
+      "title": "40c Green Sitting Helvetia",
+      "summary": "Switzerland Scott #26, 40c green Sitting Helvetia, perforated issue. Used. Dealer price €4.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "image_basename": "stamp_2026-04-21_16-54-42-256_multiple_alt_catalog_a5bf3cbd.png",
+      "bounding_box": {
+        "x_min": 254,
+        "x_max": 363,
+        "y_min": 554,
+        "y_max": 742
+      },
+      "freeform_keywords": [
+        "Sitting Helvetia",
+        "perforated"
+      ]
+    },
+    {
+      "stamp_id": "ch-28-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 28
+      },
+      "title": "60c Bronze Sitting Helvetia",
+      "summary": "Switzerland Scott #28, 60c bronze Sitting Helvetia, perforated issue. Used with circular cancellation. Dealer price €8.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "image_basename": "stamp_2026-04-21_16-54-42-256_multiple_alt_catalog_a5bf3cbd.png",
+      "bounding_box": {
+        "x_min": 516,
+        "x_max": 626,
+        "y_min": 546,
+        "y_max": 737
+      },
+      "freeform_keywords": [
+        "Sitting Helvetia",
+        "perforated"
+      ]
+    },
+    {
+      "stamp_id": "ch-29-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 29
+      },
+      "title": "1fr Gold Sitting Helvetia",
+      "summary": "Switzerland Scott #29, 1fr gold Sitting Helvetia, perforated issue. Used with circular cancellation. Dealer price €15.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "image_basename": "stamp_2026-04-21_16-54-42-256_multiple_alt_catalog_a5bf3cbd.png",
+      "bounding_box": {
+        "x_min": 769,
+        "x_max": 881,
+        "y_min": 551,
+        "y_max": 740
+      },
+      "freeform_keywords": [
+        "Sitting Helvetia",
+        "perforated"
+      ]
+    },
+    {
+      "stamp_id": "ch-32-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 32
+      },
+      "title": "25c Green Sitting Helvetia",
+      "summary": "Switzerland Scott #32, 25c green Sitting Helvetia, perforated issue. Used with circular datestamp. Dealer price €0.50.",
+      "issue_year": 1867,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "image_basename": "stamp_2026-04-21_16-54-42-256_multiple_alt_catalog_a5bf3cbd.png",
+      "bounding_box": {
+        "x_min": 14,
+        "x_max": 120,
+        "y_min": 780,
+        "y_max": 965
+      },
+      "freeform_keywords": [
+        "Sitting Helvetia",
+        "perforated"
+      ]
+    },
+    {
+      "stamp_id": "ch-33-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 33
+      },
+      "title": "30c Blue Sitting Helvetia",
+      "summary": "Switzerland Scott #33, 30c blue Sitting Helvetia, perforated issue. Left stamp of a used pair. Combined price with neighbor €21.",
+      "issue_year": 1867,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "image_basename": "stamp_2026-04-21_16-54-42-256_multiple_alt_catalog_a5bf3cbd.png",
+      "bounding_box": {
+        "x_min": 238,
+        "x_max": 345,
+        "y_min": 782,
+        "y_max": 970
+      },
+      "freeform_keywords": [
+        "Sitting Helvetia",
+        "perforated"
+      ]
+    },
+    {
+      "stamp_id": "ch-33-2",
+      "country_id": "ch",
+      "scott": {
+        "number": 33
+      },
+      "title": "30c Blue Sitting Helvetia",
+      "summary": "Switzerland Scott #33, 30c blue Sitting Helvetia, perforated issue. Right stamp of a used pair.",
+      "issue_year": 1867,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "image_basename": "stamp_2026-04-21_16-54-42-256_multiple_alt_catalog_a5bf3cbd.png",
+      "bounding_box": {
+        "x_min": 349,
+        "x_max": 457,
+        "y_min": 781,
+        "y_max": 969
+      },
+      "freeform_keywords": [
+        "Sitting Helvetia",
+        "perforated"
+      ]
+    },
+    {
+      "stamp_id": "ch-33-3",
+      "country_id": "ch",
+      "scott": {
+        "number": 33
+      },
+      "title": "30c Blue Sitting Helvetia",
+      "summary": "Switzerland Scott #33, 30c blue Sitting Helvetia, perforated issue. Used with circular datestamp. Dealer price €20.",
+      "issue_year": 1867,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "image_basename": "stamp_2026-04-21_16-54-42-256_multiple_alt_catalog_a5bf3cbd.png",
+      "bounding_box": {
+        "x_min": 636,
+        "x_max": 746,
+        "y_min": 784,
+        "y_max": 976
+      },
+      "freeform_keywords": [
+        "Sitting Helvetia",
+        "perforated"
+      ]
+    }
+  ]
+}

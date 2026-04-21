@@ -4,6 +4,7 @@
   "author": "Exergy ∞ LLC",
   "description": "Entity shard: Scott-style catalog listing (composite scott PK); stamp instances may reference one primary entry.",
   "source": "PhilateLister",
+  "allow_unlimited_fields": true,
   "entities": [
     {
       "name": "scott_catalog_entry",
@@ -44,7 +45,7 @@
                 "description": "Optional plate or variety letter suffix (closed list).",
                 "required": false,
                 "type": {
-                  "enum": ["a", "b", "c"]
+                  "enum": ["a", "b", "c", "d", "e", "f"]
                 }
               }
             ]
@@ -65,6 +66,18 @@
           "required": false
         },
         {
+          "name": "issue_date",
+          "description": "Required issue date for this catalog listing (ISO 8601 date string).",
+          "type": { "primitive": "date" },
+          "required": true
+        },
+        {
+          "name": "denomination",
+          "description": "Required face value denomination as printed or cataloged (for example 5c, 10c, 1¢, $1).",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
           "name": "perforation",
           "description": "Perforation as given for this listing (e.g. perf 11½, comb 13¾, imperforate, roulette).",
           "type": { "primitive": "string" },
@@ -73,6 +86,12 @@
         {
           "name": "primary_color",
           "description": "Dominant or catalog-listed ink or paper color for this listing (e.g. carmine, blue, bister).",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "description",
+          "description": "Required short listing description (design subject, issue context, or key distinguishing detail).",
           "type": { "primitive": "string" },
           "required": true
         },

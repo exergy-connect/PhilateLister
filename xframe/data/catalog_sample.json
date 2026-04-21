@@ -3,7 +3,17 @@
     {
       "country_id": "dk",
       "display_name": "Denmark",
-      "notes": "Kingdom of Denmark; includes historical issues."
+      "notes": "Kingdom of Denmark; includes historical issues.",
+      "issue_series": [
+        {
+          "series_id": "dk-bicolors-classic",
+          "country_id": "dk",
+          "name": "Denmark classic bicolors",
+          "description": "Perforated bicolor definitives and numeral designs, late 19th century.",
+          "year_from": 1870,
+          "year_to": 1905
+        }
+      ]
     },
     {
       "country_id": "se",
@@ -28,16 +38,6 @@
       "notes": "Scandinavian specialized."
     }
   ],
-  "issue_series": [
-    {
-      "series_id": "dk-bicolors-classic",
-      "country_id": "dk",
-      "name": "Denmark classic bicolors",
-      "description": "Perforated bicolor definitives and numeral designs, late 19th century.",
-      "year_from": 1870,
-      "year_to": 1905
-    }
-  ],
   "scott_catalog_entry": [
     {
       "scott": {
@@ -46,8 +46,11 @@
         "number": 45
       },
       "issue_series_id": "dk-bicolors-classic",
+      "issue_date": "1895-01-01",
+      "denomination": "20ø",
       "perforation": "Perforated 13",
       "primary_color": "carmine and blue (bicolor)",
+      "description": "Illustrative Denmark bicolor definitive tied to sample inventory; see stamp_catalog_number for Michel cross-reference.",
       "notes": "Illustrative primary listing for the sample stamp; see stamp_catalog_number for Michel cross-ref."
     }
   ],

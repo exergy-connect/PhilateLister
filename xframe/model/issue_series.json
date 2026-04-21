@@ -22,7 +22,9 @@
           "description": "Primary issuing country or administration for this series.",
           "type": {
             "primitive": "string",
-            "foreignKeys": [{ "entity": "country" }]
+            "foreignKeys": [
+              { "entity": "country", "parent_array": "issue_series" }
+            ]
           },
           "required": true
         },

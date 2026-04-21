@@ -1,6 +1,6 @@
 {
-  "version": 17,
-  "timestamp": "2026-04-21T21:52:00Z",
+  "version": 18,
+  "timestamp": "2026-04-21T22:00:41Z",
   "model": {
     "name": "PhilateLister stamp catalog",
     "version": "26.04.11.1",
@@ -183,6 +183,13 @@
         "author": "jbemmel",
         "note": "(no change) CI consolidate after model/data change (5050d75b7b3d4599fc0bb9cdd75b8462c5cabc7d)",
         "git_commit_hash": "5050d75b7b3d4599fc0bb9cdd75b8462c5cabc7d"
+      },
+      "000000000018": {
+        "id": 18,
+        "timestamp": "2026-04-21T22:00:41+00:00",
+        "author": "jbemmel",
+        "note": "CI consolidate after model/data change (26c25555e6b658640a8aa97c03a676a33b13d697)",
+        "git_commit_hash": "26c25555e6b658640a8aa97c03a676a33b13d697"
       }
     },
     "catalog_system": {
@@ -564,6 +571,7 @@
           "",
           "=== VISUAL WORKFLOW ===",
           "1) Segment mentally: treat each physically separate perforated (or cut) stamp as one item. Ignore the background between stamps.",
+          "1a) Bounding boxes / crops: include the full stamp plus a small safety margin outside the perforations on all sides (about 2-5% padding per edge when space allows). Do NOT clip or touch the perforation tips with the box.",
           "2) Reading order: top-to-bottom, then left-to-right (row-major), so stamp numbering matches a human scanning the grid.",
           "3) For each stamp, extract what the image supports:",
           "   - Country or postal administration (e.g. from script, language, or emblem text such as SVERIGE).",
@@ -589,9 +597,10 @@
         "c": 4,
         "m": [
           8,
-          16
+          16,
+          18
         ],
-        "v": 16
+        "v": 18
       },
       "stamp_listing": {
         "prompt_id": "stamp_listing",

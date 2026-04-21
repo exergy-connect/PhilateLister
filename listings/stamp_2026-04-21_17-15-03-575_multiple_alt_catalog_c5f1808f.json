@@ -1,0 +1,232 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "ch-13-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 13
+      },
+      "title": "Switzerland Sitting Helvetia 5c brown, imperforate",
+      "summary": "Switzerland Sitting Helvetia (Strubel) issue, 5 Centimes/Rappen brown. Imperforate. Michel #13. Used condition.",
+      "issue_year": 1854,
+      "condition_quality": "used",
+      "centering_grade": "not_applicable",
+      "image_basename": "stamp_2026-04-21_17-15-03-575_multiple_alt_catalog_c5f1808f.png",
+      "bounding_box": {
+        "x_min": 742,
+        "x_max": 856,
+        "y_min": 57,
+        "y_max": 263
+      }
+    },
+    {
+      "stamp_id": "ch-15-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 15
+      },
+      "title": "Switzerland Sitting Helvetia 10c orange, imperforate",
+      "summary": "Switzerland Sitting Helvetia (Strubel) issue, 10 Centimes orange-red. Imperforate. Michel #15. Used with circular cancel.",
+      "issue_year": 1854,
+      "condition_quality": "used",
+      "centering_grade": "not_applicable",
+      "image_basename": "stamp_2026-04-21_17-15-03-575_multiple_alt_catalog_c5f1808f.png",
+      "bounding_box": {
+        "x_min": 24,
+        "x_max": 126,
+        "y_min": 317,
+        "y_max": 517
+      }
+    },
+    {
+      "stamp_id": "ch-41-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 41
+      },
+      "title": "Switzerland Sitting Helvetia 2c grey, perforated",
+      "summary": "Switzerland Sitting Helvetia perforated issue (no watermark), 2 Centimes grey. Michel #20. Used condition.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "image_basename": "stamp_2026-04-21_17-15-03-575_multiple_alt_catalog_c5f1808f.png",
+      "bounding_box": {
+        "x_min": 313,
+        "x_max": 424,
+        "y_min": 328,
+        "y_max": 513
+      }
+    },
+    {
+      "stamp_id": "ch-42-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 42
+      },
+      "title": "Switzerland Sitting Helvetia 3c black, perforated",
+      "summary": "Switzerland Sitting Helvetia perforated issue (no watermark), 3 Centimes black. Michel #21. Used condition.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "image_basename": "stamp_2026-04-21_17-15-03-575_multiple_alt_catalog_c5f1808f.png",
+      "bounding_box": {
+        "x_min": 565,
+        "x_max": 676,
+        "y_min": 321,
+        "y_max": 506
+      }
+    },
+    {
+      "stamp_id": "ch-42-2",
+      "country_id": "ch",
+      "scott": {
+        "number": 42
+      },
+      "title": "Switzerland Sitting Helvetia 3c black, perforated",
+      "summary": "Switzerland Sitting Helvetia perforated issue (no watermark), 3 Centimes black. Michel #21. Used condition with circular cancel.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "image_basename": "stamp_2026-04-21_17-15-03-575_multiple_alt_catalog_c5f1808f.png",
+      "bounding_box": {
+        "x_min": 19,
+        "x_max": 127,
+        "y_min": 559,
+        "y_max": 742
+      }
+    },
+    {
+      "stamp_id": "ch-48-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 48
+      },
+      "title": "Switzerland Sitting Helvetia 40c green, perforated",
+      "summary": "Switzerland Sitting Helvetia perforated issue (no watermark), 40 Centimes green. Michel #26. Used condition.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "image_basename": "stamp_2026-04-21_17-15-03-575_multiple_alt_catalog_c5f1808f.png",
+      "bounding_box": {
+        "x_min": 251,
+        "x_max": 362,
+        "y_min": 553,
+        "y_max": 743
+      }
+    },
+    {
+      "stamp_id": "ch-51-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 51
+      },
+      "title": "Switzerland Sitting Helvetia 1fr gold, perforated",
+      "summary": "Switzerland Sitting Helvetia perforated issue (no watermark), 1 Franc gold-brown. Michel #28. Used condition.",
+      "issue_year": 1863,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "image_basename": "stamp_2026-04-21_17-15-03-575_multiple_alt_catalog_c5f1808f.png",
+      "bounding_box": {
+        "x_min": 514,
+        "x_max": 626,
+        "y_min": 546,
+        "y_max": 737
+      }
+    },
+    {
+      "stamp_id": "ch-71-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 71
+      },
+      "title": "Switzerland Sitting Helvetia 2c brown, perforated wmk",
+      "summary": "Switzerland Sitting Helvetia with cross in oval watermark, 2 Centimes brown. Michel #29. Used condition.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "image_basename": "stamp_2026-04-21_17-15-03-575_multiple_alt_catalog_c5f1808f.png",
+      "bounding_box": {
+        "x_min": 768,
+        "x_max": 882,
+        "y_min": 548,
+        "y_max": 738
+      }
+    },
+    {
+      "stamp_id": "ch-77-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 77
+      },
+      "title": "Switzerland Sitting Helvetia 25c green, perforated wmk",
+      "summary": "Switzerland Sitting Helvetia with cross in oval watermark, 25 Centimes green. Michel #32. Used condition.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "image_basename": "stamp_2026-04-21_17-15-03-575_multiple_alt_catalog_c5f1808f.png",
+      "bounding_box": {
+        "x_min": 13,
+        "x_max": 120,
+        "y_min": 779,
+        "y_max": 963
+      }
+    },
+    {
+      "stamp_id": "ch-78-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 78
+      },
+      "title": "Switzerland Sitting Helvetia 30c blue, perforated wmk",
+      "summary": "Switzerland Sitting Helvetia with cross in oval watermark, 30 Centimes blue. Michel #33. Used condition. Left stamp of a pair.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "image_basename": "stamp_2026-04-21_17-15-03-575_multiple_alt_catalog_c5f1808f.png",
+      "bounding_box": {
+        "x_min": 237,
+        "x_max": 344,
+        "y_min": 783,
+        "y_max": 968
+      }
+    },
+    {
+      "stamp_id": "ch-78-2",
+      "country_id": "ch",
+      "scott": {
+        "number": 78
+      },
+      "title": "Switzerland Sitting Helvetia 30c blue, perforated wmk",
+      "summary": "Switzerland Sitting Helvetia with cross in oval watermark, 30 Centimes blue. Michel #33. Used condition. Right stamp of a pair.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "image_basename": "stamp_2026-04-21_17-15-03-575_multiple_alt_catalog_c5f1808f.png",
+      "bounding_box": {
+        "x_min": 346,
+        "x_max": 456,
+        "y_min": 779,
+        "y_max": 966
+      }
+    },
+    {
+      "stamp_id": "ch-78-3",
+      "country_id": "ch",
+      "scott": {
+        "number": 78
+      },
+      "title": "Switzerland Sitting Helvetia 30c blue, perforated wmk",
+      "summary": "Switzerland Sitting Helvetia with cross in oval watermark, 30 Centimes ultramarine/blue shade. Michel #33. Used condition.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "image_basename": "stamp_2026-04-21_17-15-03-575_multiple_alt_catalog_c5f1808f.png",
+      "bounding_box": {
+        "x_min": 634,
+        "x_max": 747,
+        "y_min": 784,
+        "y_max": 968
+      }
+    }
+  ]
+}

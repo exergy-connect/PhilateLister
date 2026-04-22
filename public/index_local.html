@@ -51,7 +51,7 @@
         min-height: 0;
       }
       .upload-layout.listing-open {
-        grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.85fr);
+        grid-template-columns: minmax(0, 2.24fr) minmax(0, 1fr);
       }
       @media (max-width: 960px) {
         body {
@@ -580,6 +580,21 @@
               const maxNmsCandidates = 250;
               const maxOutputBoxes = 120;
               const raw = [];
+              const maxAspectRatio = 2.0;
+              const minAspectRatio = 0.5;
+
+              function pushCandidate(x0, y0, bw, bh, areaEstimate) {
+                const area = bw * bh;
+                if (area < minA || area > maxA) return;
+                const ar = bw / Math.max(1, bh);
+                if (ar < minAspectRatio || ar > maxAspectRatio) return;
+                const extent = areaEstimate / Math.max(1, area);
+                if (extent < minExtent) return;
+                // Filter long horizontal strips near the bottom edge that are not individual stamps.
+                if (bw > w * 0.55 && bh < h * 0.18) return;
+                const score = extent * 2.0 - Math.abs(Math.log(Math.max(0.2, Math.min(5, ar))));
+                raw.push({ x0, y0, x1: x0 + bw, y1: y0 + bh, area, score });
+              }
 
               for (let i = 0; i < contours.size(); i++) {
                 const c = contours.get(i);
@@ -591,13 +606,28 @@
                 const area = rw * rh;
                 if (area < minA || area > maxA) continue;
                 const ar = rw / Math.max(1, rh);
-                if (ar < 0.5 || ar > 2.0) continue;
-                const extent = contourArea / Math.max(1, area);
-                if (extent < minExtent) continue;
-                // Filter long horizontal strips near the bottom edge that are not individual stamps.
-                if (rw > w * 0.55 && rh < h * 0.18) continue;
-                const score = extent * 2.0 - Math.abs(Math.log(Math.max(0.2, Math.min(5, ar))));
-                raw.push({ x0: r.x, y0: r.y, x1: r.x + rw, y1: r.y + rh, area, score });
+                if (ar >= minAspectRatio && ar <= maxAspectRatio) {
+                  pushCandidate(r.x, r.y, rw, rh, contourArea);
+                } else if (ar > maxAspectRatio) {
+                  const parts = Math.min(6, Math.ceil(ar / maxAspectRatio));
+                  for (let p = 0; p < parts; p++) {
+                    const sx0 = r.x + Math.floor((p * rw) / parts);
+                    const sx1 = r.x + Math.floor(((p + 1) * rw) / parts);
+                    const sw = Math.max(1, sx1 - sx0);
+                    pushCandidate(sx0, r.y, sw, rh, contourArea / parts);
+                    if (raw.length >= maxRawCandidates) break;
+                  }
+                } else {
+                  const invAr = rh / Math.max(1, rw);
+                  const parts = Math.min(6, Math.ceil(invAr / maxAspectRatio));
+                  for (let p = 0; p < parts; p++) {
+                    const sy0 = r.y + Math.floor((p * rh) / parts);
+                    const sy1 = r.y + Math.floor(((p + 1) * rh) / parts);
+                    const sh = Math.max(1, sy1 - sy0);
+                    pushCandidate(r.x, sy0, rw, sh, contourArea / parts);
+                    if (raw.length >= maxRawCandidates) break;
+                  }
+                }
                 if (raw.length >= maxRawCandidates) break;
               }
               contours.delete();

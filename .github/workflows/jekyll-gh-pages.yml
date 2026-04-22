@@ -7,7 +7,7 @@ on:
     branches: ["main"]
     paths:
       - "public/index.html"
-      - "public/index_local.html"
+      - "public/test/**"
       - "public/listings/**"
       - "public/aps/index.html"
       - "public/psag/*"

@@ -127,6 +127,10 @@
         background: color-mix(in srgb, #00d8ff 14%, transparent);
         box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45);
       }
+      .preview-bbox.preview-bbox-primary {
+        border-color: #ffd166;
+        background: color-mix(in srgb, #ffd166 18%, transparent);
+      }
       .preview-bbox-label {
         position: absolute;
         top: -1.2rem;
@@ -567,6 +571,7 @@
             const openKernel = oddAtLeast(clamp(t.openKernel ?? 7, 1, 31), 1);
             const peakThreshold = clamp(t.peakThreshold ?? 0.34, 0.05, 0.95);
             const minAreaRatio = clamp(t.minAreaRatio ?? 0.0015, 0.00005, 0.5);
+            const maxAreaRatio = clamp(t.maxAreaRatio ?? 0.985, 0.1, 0.9995);
             const minExtentT = clamp(t.minExtent ?? 0.25, 0.01, 1);
             const minArT = clamp(t.minAspectRatio ?? 0.5, 0.05, 20);
             const maxArT = clamp(t.maxAspectRatio ?? 2.0, minArT, 20);
@@ -614,7 +619,7 @@
 
               const imgArea = w * h;
               const minA = imgArea * minAreaRatio;
-              const maxA = imgArea * 0.45;
+              const maxA = imgArea * maxAreaRatio;
               const minExtent = minExtentT;
               const maxRawCandidates = 1200;
               const maxNmsCandidates = 250;
@@ -622,12 +627,24 @@
               const raw = [];
               const maxAspectRatio = maxArT;
               const minAspectRatio = minArT;
+              const borderMarginPx = Math.max(2, Math.round(Math.min(w, h) * 0.01));
 
               function pushCandidate(x0, y0, bw, bh, areaEstimate, tiltDeg) {
                 const area = bw * bh;
                 if (area < minA || area > maxA) return;
                 const ar = bw / Math.max(1, bh);
                 if (ar < minAspectRatio || ar > maxAspectRatio) return;
+                const touchesLeft = x0 <= borderMarginPx;
+                const touchesTop = y0 <= borderMarginPx;
+                const touchesRight = x0 + bw >= w - borderMarginPx;
+                const touchesBottom = y0 + bh >= h - borderMarginPx;
+                const borderTouchCount =
+                  (touchesLeft ? 1 : 0) +
+                  (touchesTop ? 1 : 0) +
+                  (touchesRight ? 1 : 0) +
+                  (touchesBottom ? 1 : 0);
+                // Reject near-full-frame components (usually dark background bleed).
+                if (borderTouchCount >= 3 && area >= imgArea * 0.9) return;
                 const extent = areaEstimate / Math.max(1, area);
                 if (extent < minExtent) return;
                 // Filter long horizontal strips near the bottom edge that are not individual stamps.
@@ -1213,7 +1230,7 @@
         const leftOffset = imgRect.left - frameRect.left;
         const topOffset = imgRect.top - frameRect.top;
 
-        for (const { box, label } of previewBoxes) {
+        for (const { box, label, className } of previewBoxes) {
           const left = leftOffset + box.xMin * imgRect.width;
           const top = topOffset + box.yMin * imgRect.height;
           const width = (box.xMax - box.xMin) * imgRect.width;
@@ -1221,7 +1238,7 @@
           if (width < 1 || height < 1) continue;
 
           const boxEl = document.createElement("div");
-          boxEl.className = "preview-bbox";
+          boxEl.className = `preview-bbox${className ? ` ${className}` : ""}`;
           boxEl.style.left = `${left}px`;
           boxEl.style.top = `${top}px`;
           boxEl.style.width = `${width}px`;
@@ -1369,6 +1386,16 @@
         return best;
       }
 
+      function boxesClose(a, b, eps = 1e-6) {
+        if (!a || !b) return false;
+        return (
+          Math.abs((a.xMin ?? 0) - (b.xMin ?? 0)) <= eps &&
+          Math.abs((a.xMax ?? 0) - (b.xMax ?? 0)) <= eps &&
+          Math.abs((a.yMin ?? 0) - (b.yMin ?? 0)) <= eps &&
+          Math.abs((a.yMax ?? 0) - (b.yMax ?? 0)) <= eps
+        );
+      }
+
       function centeringGrade(scorePct) {
         if (scorePct >= 98) return "Superb";
         if (scorePct >= 95) return "Excellent";
@@ -1475,6 +1502,23 @@
           }
 
           const previewList = [];
+          const previewCandidateLimit = 10;
+          const previewCandidates = chosenBoxes.slice(0, previewCandidateLimit);
+          for (let i = 0; i < previewCandidates.length; i += 1) {
+            const box = previewCandidates[i];
+            previewList.push({
+              box,
+              label: boxesClose(box, stampBox) ? "Selected stamp" : `Candidate ${i + 1}`,
+              className: boxesClose(box, stampBox) ? "preview-bbox-primary" : "",
+            });
+          }
+          if (!previewList.some((item) => boxesClose(item.box, stampBox))) {
+            previewList.push({
+              box: stampBox,
+              label: "Selected stamp",
+              className: "preview-bbox-primary",
+            });
+          }
           const report = centeringReportFromBox(stampBox, natW, natH);
           report.alignment.estimated_tilt_deg_before_correction = estimatedTiltDeg;
           report.alignment.applied_rotation_deg = effectiveRotationDeg;

@@ -25,6 +25,7 @@ jobs:
       - uses: actions/checkout@v6
         with:
           ref: ${{ github.sha }}
+          fetch-depth: 1
 
       - uses: actions/setup-node@v6
         with:
@@ -37,6 +38,11 @@ jobs:
           note: "CI consolidate after model/data change (${{ github.sha }})"
           js: true
 
+      - name: Publish consolidated JS into public
+        run: |
+          mkdir -p public
+          cp xframe/output/consolidated_data.js public/consolidated_data.js
+
       - name: Commit consolidated JSON
         run: |
           git config user.name "github-actions[bot]"
@@ -46,7 +52,7 @@ jobs:
             xframe/output/consolidated.schema.json \
             xframe/output/consolidated_data.json \
             xframe/output/consolidated.schema.js \
-            xframe/output/consolidated_data.js
+            public/consolidated_data.js
           if git diff --staged --quiet; then
             echo "No changes to consolidated schema or data."
           else

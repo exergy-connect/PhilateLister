@@ -410,9 +410,9 @@
       const WORKER_INIT_TIMEOUT_MS = 90000;
       const WORKER_DETECT_TIMEOUT_MS = 120000;
       const IS_FILE_ORIGIN = window.location.protocol === "file:";
+      const urlParams = new URLSearchParams(window.location.search);
       const DEBUG_LOGGING =
-        new URLSearchParams(window.location.search).get("debug") === "1" ||
-        window.localStorage.getItem("philatelister_debug") === "1";
+        urlParams.get("debug") === "1" || window.localStorage.getItem("philatelister_debug") === "1";
       let detectorWorker = null;
       let detectorWorkerUrl = null;
       let detectorReqSeq = 0;
@@ -1079,6 +1079,49 @@
       let previewLoadSeq = 0;
       let previewRotationDeg = 0;
 
+      function fileNameFromSourceUrl(sourceUrl) {
+        try {
+          const u = new URL(sourceUrl || "");
+          const name = decodeURIComponent((u.pathname.split("/").pop() || "").trim());
+          return name || "image-from-url.png";
+        } catch (_) {
+          return "image-from-url.png";
+        }
+      }
+
+      async function loadImageFromUrlParam() {
+        const imageUrl = urlParams.get("image_url");
+        if (!imageUrl) return;
+
+        if (statusEl) {
+          statusEl.className = "";
+          statusEl.textContent = "Loading image from image_url parameter…";
+        }
+
+        const res = await fetch(imageUrl, { mode: "cors", credentials: "omit", cache: "no-store" });
+        if (!res.ok) {
+          throw new Error(`Failed to fetch image_url (HTTP ${res.status}).`);
+        }
+        const blob = await res.blob();
+        if (!blob || (blob.type && !blob.type.startsWith("image/"))) {
+          throw new Error("image_url did not return an image.");
+        }
+
+        const file = new File([blob], fileNameFromSourceUrl(imageUrl), {
+          type: blob.type || "image/png",
+        });
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        stampFileInput.files = dt.files;
+        setPreviewBoxes([]);
+        setStampPreview(file);
+        submitBtn.disabled = false;
+
+        await waitForImageReady(stampPreview);
+        await nextFrame();
+        form.requestSubmit();
+      }
+
       function setPreviewRotation(deg) {
         previewRotationDeg = Number.isFinite(deg) ? deg : 0;
         stampPreview.style.transformOrigin = "50% 50%";
@@ -1398,6 +1441,12 @@
         } finally {
           submitBtn.disabled = false;
         }
+      });
+
+      loadImageFromUrlParam().catch((err) => {
+        if (!statusEl) return;
+        statusEl.className = "error";
+        statusEl.textContent = err instanceof Error ? err.message : String(err);
       });
     </script>
   </body>

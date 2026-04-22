@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "PhilateLister Centering Analyzer",
+  "description": "Right-click a stamp image and open a tab for OpenCV-based centering analysis.",
+  "version": "0.1.0",
+  "permissions": ["contextMenus", "storage", "tabs"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  }
+}

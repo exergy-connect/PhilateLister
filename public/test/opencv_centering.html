@@ -1724,20 +1724,87 @@
       }
 
       function deriveOuterStampBoxFromSeed(imageData, seedBox, imageW, imageH) {
-        const { mask } = buildStampMaskFromImage(imageData, seedBox, imageW, imageH);
+        const data = imageData.data;
+        const pixelCount = imageW * imageH;
+
+        function sampleBackgroundStats() {
+          const cornerW = Math.max(8, Math.round(imageW * 0.14));
+          const cornerH = Math.max(8, Math.round(imageH * 0.14));
+          let n = 0;
+          let sumR = 0;
+          let sumG = 0;
+          let sumB = 0;
+          for (let y = 0; y < imageH; y += 1) {
+            for (let x = 0; x < imageW; x += 1) {
+              const inTopLeft = x < cornerW && y < cornerH;
+              const inTopRight = x >= imageW - cornerW && y < cornerH;
+              const inBottomLeft = x < cornerW && y >= imageH - cornerH;
+              const inBottomRight = x >= imageW - cornerW && y >= imageH - cornerH;
+              if (!inTopLeft && !inTopRight && !inBottomLeft && !inBottomRight) continue;
+              const p = (y * imageW + x) * 4;
+              sumR += data[p];
+              sumG += data[p + 1];
+              sumB += data[p + 2];
+              n += 1;
+            }
+          }
+          if (n <= 0) return { r: 0, g: 0, b: 0, luma: 0, distMean: 0, distStd: 0 };
+          const r = sumR / n;
+          const g = sumG / n;
+          const b = sumB / n;
+          const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+
+          let sumD = 0;
+          let sumD2 = 0;
+          for (let y = 0; y < imageH; y += 1) {
+            for (let x = 0; x < imageW; x += 1) {
+              const inTopLeft = x < cornerW && y < cornerH;
+              const inTopRight = x >= imageW - cornerW && y < cornerH;
+              const inBottomLeft = x < cornerW && y >= imageH - cornerH;
+              const inBottomRight = x >= imageW - cornerW && y >= imageH - cornerH;
+              if (!inTopLeft && !inTopRight && !inBottomLeft && !inBottomRight) continue;
+              const p = (y * imageW + x) * 4;
+              const dr = data[p] - r;
+              const dg = data[p + 1] - g;
+              const db = data[p + 2] - b;
+              const d = Math.hypot(dr, dg, db);
+              sumD += d;
+              sumD2 += d * d;
+            }
+          }
+          const distMean = sumD / n;
+          const variance = Math.max(0, sumD2 / n - distMean * distMean);
+          const distStd = Math.sqrt(variance);
+          return { r, g, b, luma, distMean, distStd };
+        }
+
+        const bg = sampleBackgroundStats();
+        const fg = new Uint8Array(pixelCount);
+        const fgDistThresh = Math.max(16, bg.distMean + bg.distStd * 3.0);
+        const fgLumaThresh = Math.min(245, bg.luma + Math.max(14, bg.distStd * 0.9));
+        for (let i = 0, p = 0; i < pixelCount; i += 1, p += 4) {
+          const dr = data[p] - bg.r;
+          const dg = data[p + 1] - bg.g;
+          const db = data[p + 2] - bg.b;
+          const luma = 0.2126 * data[p] + 0.7152 * data[p + 1] + 0.0722 * data[p + 2];
+          const byDistance = Math.hypot(dr, dg, db) >= fgDistThresh;
+          const byLuma = luma >= fgLumaThresh;
+          fg[i] = byDistance || byLuma ? 1 : 0;
+        }
+
         const seedPx = toPixelBox(seedBox, imageW, imageH);
         const seedW = Math.max(1, seedPx.x1 - seedPx.x0 + 1);
         const seedH = Math.max(1, seedPx.y1 - seedPx.y0 + 1);
         const cx = Math.max(0, Math.min(imageW - 1, Math.round((seedPx.x0 + seedPx.x1) * 0.5)));
         const cy = Math.max(0, Math.min(imageH - 1, Math.round((seedPx.y0 + seedPx.y1) * 0.5)));
-        const gapTol = Math.max(2, Math.round(Math.min(imageW, imageH) * 0.0035));
+        const gapTol = Math.max(4, Math.round(Math.min(imageW, imageH) * 0.018));
 
         function rowBoundary(y, dir) {
           let x = cx;
           let lastOn = -1;
           let gap = 0;
           while (x >= 0 && x < imageW) {
-            if (mask[y * imageW + x]) {
+            if (fg[y * imageW + x]) {
               lastOn = x;
               gap = 0;
             } else if (lastOn >= 0) {
@@ -1754,7 +1821,7 @@
           let lastOn = -1;
           let gap = 0;
           while (y >= 0 && y < imageH) {
-            if (mask[y * imageW + x]) {
+            if (fg[y * imageW + x]) {
               lastOn = y;
               gap = 0;
             } else if (lastOn >= 0) {
@@ -1940,10 +2007,18 @@
           })();
           const outerStampBoxRaw = deriveOuterStampBoxFromSeed(analysisImageData, innerSeedBox, natW, natH);
           const outerStampBox = {
-            xMin: Math.min(outerStampBoxRaw.xMin, innerSeedBox.xMin),
-            xMax: Math.max(outerStampBoxRaw.xMax, innerSeedBox.xMax),
-            yMin: Math.min(outerStampBoxRaw.yMin, innerSeedBox.yMin),
-            yMax: Math.max(outerStampBoxRaw.yMax, innerSeedBox.yMax),
+            xMin: clamp01(
+              Math.min(outerStampBoxRaw.xMin, innerSeedBox.xMin)
+            ),
+            xMax: clamp01(
+              Math.max(outerStampBoxRaw.xMax, innerSeedBox.xMax)
+            ),
+            yMin: clamp01(
+              Math.min(outerStampBoxRaw.yMin, innerSeedBox.yMin)
+            ),
+            yMax: clamp01(
+              Math.max(outerStampBoxRaw.yMax, innerSeedBox.yMax)
+            ),
           };
           const innerDesignBox = innerSeedBox;
 

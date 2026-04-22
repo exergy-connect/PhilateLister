@@ -63,6 +63,8 @@ chrome.contextMenus.onClicked.addListener(async (info) => {
   }
 
   const url = new URL(ANALYZE_BASE_URL);
+  url.searchParams.set("v", chrome.runtime.getManifest().version);
+  url.searchParams.set("cb", String(Date.now()));
   url.searchParams.set("extension_id", chrome.runtime.id);
   if (openError) url.searchParams.set("error", openError);
   await chrome.tabs.create({ url: url.toString() });

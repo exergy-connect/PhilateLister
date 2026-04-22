@@ -24,45 +24,73 @@
       }
       body {
         margin: 0;
-        min-height: 100vh;
+        height: 100vh;
         background: var(--bg);
         color: var(--ink);
         line-height: 1.5;
+        overflow: hidden;
       }
       main {
         max-width: min(100%, 72rem);
         margin: 0 auto;
-        padding: 2rem 1.25rem 3rem;
+        height: 100vh;
+        padding: 0.85rem 1rem 0.65rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
       }
       main.listing-open {
         max-width: min(100%, 104rem);
       }
       .upload-layout {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+        grid-template-columns: minmax(0, 1fr);
         gap: 1.35rem;
         align-items: start;
+        flex: 1 1 auto;
+        min-height: 0;
       }
       .upload-layout.listing-open {
-        grid-template-columns: minmax(0, 0.62fr) minmax(0, 0.78fr) minmax(0, 2.15fr);
+        grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.85fr);
       }
       @media (max-width: 960px) {
+        body {
+          height: auto;
+          min-height: 100vh;
+          overflow: auto;
+        }
+        main {
+          height: auto;
+          min-height: 100vh;
+          padding: 1.25rem 1rem 2rem;
+          gap: 0.85rem;
+        }
         .upload-layout,
         .upload-layout.listing-open {
           grid-template-columns: 1fr;
         }
       }
       .preview-panel {
-        position: sticky;
-        top: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        min-height: 0;
+      }
+      .preview-panel .form-panel {
+        margin-top: 1rem;
+        width: 50%;
+        min-width: 17rem;
+        max-width: 32rem;
+        align-self: center;
       }
       .preview-frame {
         background: #1c1b18;
         border: 1px solid var(--border);
         border-radius: var(--radius);
+        width: 100%;
         min-height: 14rem;
         aspect-ratio: 4 / 5;
-        max-height: min(70vh, 28rem);
+        max-height: min(57vh, 25rem);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -77,6 +105,13 @@
         height: auto;
         object-fit: contain;
         display: block;
+      }
+      @media (max-width: 960px) {
+        .preview-panel .form-panel {
+          width: 100%;
+          min-width: 0;
+          max-width: none;
+        }
       }
       .preview-overlay {
         position: absolute;
@@ -117,22 +152,29 @@
       .form-panel form {
         margin: 0;
       }
+      .controls-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 9rem auto;
+        gap: 0.65rem;
+        align-items: end;
+        justify-content: center;
+      }
       h1 {
-        font-size: 1.5rem;
+        font-size: 1.35rem;
         font-weight: 600;
-        margin: 0 0 0.25rem;
+        margin: 0;
         letter-spacing: 0.02em;
       }
       .tagline {
         color: var(--muted);
-        font-size: 0.95rem;
-        margin: 0 0 2rem;
+        font-size: 0.86rem;
+        margin: 0;
       }
       form {
         background: var(--surface);
         border: 1px solid var(--border);
         border-radius: var(--radius);
-        padding: 1.25rem 1.35rem;
+        padding: 0.8rem 0.9rem;
         box-shadow: 0 1px 2px rgba(28, 27, 24, 0.06);
       }
       label {
@@ -143,13 +185,13 @@
         color: var(--ink);
       }
       .field {
-        margin-bottom: 1.1rem;
+        margin-bottom: 0;
       }
       .hint {
-        font-size: 0.8rem;
+        font-size: 0.74rem;
         color: var(--muted);
         font-weight: 400;
-        margin-top: 0.25rem;
+        margin-top: 0.2rem;
       }
       input[type="file"],
       input[type="number"] {
@@ -162,11 +204,11 @@
         color: var(--ink);
       }
       button[type="submit"] {
-        width: 100%;
-        margin-top: 0.25rem;
+        width: auto;
+        margin-top: 0;
         padding: 0.65rem 1rem;
         font: inherit;
-        font-size: 1rem;
+        font-size: 0.95rem;
         font-weight: 600;
         color: #fff;
         background: var(--accent);
@@ -205,9 +247,9 @@
         cursor: not-allowed;
       }
       #status {
-        margin-top: 1rem;
-        font-size: 0.9rem;
-        min-height: 1.5em;
+        margin-top: 0.45rem;
+        font-size: 0.84rem;
+        min-height: 1.2em;
       }
       #status.error {
         color: var(--danger);
@@ -220,16 +262,15 @@
       }
       .listing-section {
         margin-top: 0;
-        padding: 1.25rem 1.35rem;
+        padding: 0.9rem 1rem;
         background: var(--surface);
         border: 1px solid var(--border);
         border-radius: var(--radius);
         box-shadow: 0 1px 2px rgba(28, 27, 24, 0.06);
         align-self: start;
-        position: sticky;
-        top: 1rem;
+        position: relative;
         min-width: 0;
-        max-height: min(calc(100vh - 2.5rem), 900px);
+        max-height: min(calc(100vh - 6rem), 900px);
         display: flex;
         flex-direction: column;
         gap: 0;
@@ -252,8 +293,8 @@
       }
       .listing-scroll {
         flex: 1 1 auto;
-        min-height: 8rem;
-        max-height: min(65vh, calc(100vh - 12rem));
+        min-height: 6rem;
+        max-height: min(62vh, calc(100vh - 10rem));
         overflow: auto;
         -webkit-overflow-scrolling: touch;
         background: #fff;
@@ -276,10 +317,23 @@
         overflow: visible;
       }
       footer {
-        margin-top: 2rem;
+        margin-top: 0;
         font-size: 0.75rem;
         color: var(--muted);
         text-align: center;
+        flex-shrink: 0;
+      }
+      @media (max-width: 960px) {
+        .controls-row {
+          grid-template-columns: 1fr;
+          gap: 0.6rem;
+        }
+        .preview-frame {
+          max-height: min(62vh, 26rem);
+        }
+        button[type="submit"] {
+          width: 100%;
+        }
       }
       #opencv-canvas {
         display: none;
@@ -301,24 +355,26 @@
             <div id="preview-overlay" class="preview-overlay" aria-hidden="true"></div>
             <p id="preview-placeholder">Choose an image to see it here.</p>
           </div>
+          <div class="form-panel">
+            <form id="upload-form" novalidate>
+              <div class="controls-row">
+                <div class="field">
+                  <label for="stamp-file">Stamp image <span aria-hidden="true">*</span></label>
+                  <input id="stamp-file" name="stamp" type="file" accept="image/*" required />
+                  <p class="hint">Best with good contrast.</p>
+                </div>
+                <div class="field">
+                  <label for="max-side">Max side (px)</label>
+                  <input id="max-side" name="maxSide" type="number" min="400" max="2400" step="1" value="1200" />
+                  <p class="hint">Higher = slower.</p>
+                </div>
+                <button type="submit" id="submit-btn" disabled>Detect</button>
+              </div>
+              <div id="image-resolution" class="hint" style="margin-top: 0.35rem"></div>
+              <div id="status" role="status" aria-live="polite"></div>
+            </form>
+          </div>
         </aside>
-
-        <div class="form-panel">
-          <form id="upload-form" novalidate>
-            <div class="field">
-              <label for="stamp-file">Stamp image <span aria-hidden="true">*</span></label>
-              <input id="stamp-file" name="stamp" type="file" accept="image/*" required />
-              <p class="hint">Works best with decent contrast between stamps and background.</p>
-            </div>
-            <div class="field">
-              <label for="max-side">Max processing side (px)</label>
-              <input id="max-side" name="maxSide" type="number" min="400" max="2400" step="50" value="1200" />
-              <p class="hint">Larger is slower but can help tiny stamps on big scans.</p>
-            </div>
-            <button type="submit" id="submit-btn" disabled>Detect stamp regions</button>
-            <div id="status" role="status" aria-live="polite"></div>
-          </form>
-        </div>
 
         <section
           id="listing-section"
@@ -519,6 +575,7 @@
               const imgArea = w * h;
               const minA = imgArea * 0.0015;
               const maxA = imgArea * 0.45;
+              const minExtent = 0.25;
               const maxRawCandidates = 1200;
               const maxNmsCandidates = 250;
               const maxOutputBoxes = 120;
@@ -526,6 +583,7 @@
 
               for (let i = 0; i < contours.size(); i++) {
                 const c = contours.get(i);
+                const contourArea = cv.contourArea(c, false);
                 const r = cv.boundingRect(c);
                 c.delete();
                 const rw = r.width;
@@ -534,13 +592,18 @@
                 if (area < minA || area > maxA) continue;
                 const ar = rw / Math.max(1, rh);
                 if (ar < 0.2 || ar > 5) continue;
-                raw.push({ x0: r.x, y0: r.y, x1: r.x + rw, y1: r.y + rh, area });
+                const extent = contourArea / Math.max(1, area);
+                if (extent < minExtent) continue;
+                // Filter long horizontal strips near the bottom edge that are not individual stamps.
+                if (rw > w * 0.55 && rh < h * 0.18) continue;
+                const score = extent * 2.0 - Math.abs(Math.log(Math.max(0.2, Math.min(5, ar))));
+                raw.push({ x0: r.x, y0: r.y, x1: r.x + rw, y1: r.y + rh, area, score });
                 if (raw.length >= maxRawCandidates) break;
               }
               contours.delete();
               hierarchy.delete();
 
-              raw.sort((a, b) => b.area - a.area);
+              raw.sort((a, b) => b.score - a.score || b.area - a.area);
               const nmsInput = raw.slice(0, maxNmsCandidates);
               const keep = [];
               const iouThresh = 0.35;
@@ -806,6 +869,7 @@
 
       const stampFileInput = document.getElementById("stamp-file");
       const maxSideInput = document.getElementById("max-side");
+      const imageResolutionEl = document.getElementById("image-resolution");
       const previewFrame = document.querySelector(".preview-frame");
       const stampPreview = document.getElementById("stamp-preview");
       const previewOverlay = document.getElementById("preview-overlay");
@@ -892,6 +956,7 @@
           stampPreview.removeAttribute("src");
           previewPlaceholder.hidden = false;
           setPreviewBoxes([]);
+          if (imageResolutionEl) imageResolutionEl.textContent = "";
           if (file && statusEl) {
             statusEl.className = "error";
             statusEl.textContent = "Selected file does not look like a supported image.";
@@ -910,6 +975,16 @@
           if (seq !== previewLoadSeq) return;
           stampPreview.hidden = false;
           previewPlaceholder.hidden = true;
+          const natW = stampPreview.naturalWidth || 0;
+          const natH = stampPreview.naturalHeight || 0;
+          const longEdge = Math.max(natW, natH);
+          if (imageResolutionEl) {
+            imageResolutionEl.textContent = natW && natH ? `Resolution: ${natW} x ${natH}px` : "";
+          }
+          if (longEdge > 0) {
+            maxSideInput.max = String(Math.max(400, longEdge));
+            maxSideInput.value = String(Math.max(400, longEdge));
+          }
           if (statusEl && !/Detecting regions/i.test(statusEl.textContent || "")) {
             statusEl.className = "";
             statusEl.textContent = `Selected image: ${file.name}`;
@@ -923,6 +998,7 @@
           stampPreview.removeAttribute("src");
           previewPlaceholder.hidden = false;
           setPreviewBoxes([]);
+          if (imageResolutionEl) imageResolutionEl.textContent = "";
           if (statusEl) {
             statusEl.className = "error";
             statusEl.textContent = "Could not decode selected image for preview.";
@@ -1089,7 +1165,8 @@
           return;
         }
 
-        const maxSide = Math.max(400, Math.min(2400, Number(maxSideInput.value) || 1200));
+        const maxSideCeiling = Math.max(400, Number(maxSideInput.max) || 2400);
+        const maxSide = Math.max(400, Math.min(maxSideCeiling, Number(maxSideInput.value) || 1200));
 
         submitBtn.disabled = true;
         statusEl.textContent = "Preparing worker…";

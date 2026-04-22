@@ -1,0 +1,33 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "stamp_2026-04-22_09-52-55-718_600dpi_full_detail_single_card_a92c9569",
+      "country_id": "fiume",
+      "scott": {
+        "country_id": "fiume",
+        "section": "B",
+        "number": 4
+      },
+      "title": "Fiume 1919 15c on 15c Semi-Postal",
+      "summary": "Semi-postal issue of 1919. 15c grey stamp of the 'Pro Fondazione Studio' series, surcharged 'Valore globale Cent. 15'. Design features the Capitoline Wolf and the date 30 X 1918.",
+      "issue_year": 1919,
+      "condition_quality": "mint_hinged",
+      "centering_grade": "vf",
+      "image_basename": "stamp_2026-04-22_09-52-55-718_600dpi_full_detail_single_card_a92c9569.png",
+      "bounding_box": {
+        "x_min": 440,
+        "x_max": 773,
+        "y_min": 282,
+        "y_max": 852
+      },
+      "freeform_keywords": [
+        "Fiume",
+        "Capitoline Wolf",
+        "Surcharge",
+        "Semi-postal",
+        "Posta di Fiume",
+        "Pro Fondazione Studio"
+      ]
+    }
+  ]
+}

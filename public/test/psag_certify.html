@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="copyright" content="Copyright (C) 2026 Exergy ∞ LLC" />
+    <title>PhilateLister — PSAG Certify (Centering)</title>
+    <style>
+      :root {
+        --bg: #f4f0e8;
+        --surface: #fffdf9;
+        --ink: #1c1b18;
+        --muted: #5c5852;
+        --accent: #1f4b73;
+        --accent-hover: #163751;
+        --danger: #8b2942;
+        --ok: #2d6a4f;
+        --border: #d9d3c7;
+        --radius: 10px;
+        font-family: "Georgia", "Times New Roman", serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--ink);
+      }
+      main {
+        max-width: min(100%, 110rem);
+        margin: 0 auto;
+        min-height: 100vh;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+      }
+      h1 {
+        margin: 0;
+        font-size: 1.4rem;
+      }
+      .tagline {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(300px, 430px) minmax(0, 1fr);
+        gap: 1rem;
+        align-items: start;
+      }
+      @media (max-width: 980px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+      }
+      .panel {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: 0 1px 2px rgba(28, 27, 24, 0.07);
+      }
+      .cert-panel {
+        padding: 0.8rem;
+      }
+      .cert-wrap {
+        background: #111;
+        border-radius: 8px;
+        padding: 0.5rem;
+      }
+      #cert-canvas {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 6px;
+      }
+      .form-panel {
+        padding: 0.9rem;
+      }
+      form {
+        margin: 0;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.7rem;
+      }
+      @media (max-width: 700px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .field {
+        margin-bottom: 0.72rem;
+      }
+      label {
+        display: block;
+        font-size: 0.83rem;
+        font-weight: 600;
+        margin-bottom: 0.32rem;
+      }
+      input[type="file"],
+      input[type="number"],
+      input[type="text"],
+      input[type="date"] {
+        width: 100%;
+        font: inherit;
+        padding: 0.5rem 0.62rem;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: #fff;
+        color: var(--ink);
+      }
+      .hint {
+        margin: 0.22rem 0 0;
+        color: var(--muted);
+        font-size: 0.74rem;
+      }
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        flex-wrap: wrap;
+      }
+      button[type="submit"] {
+        padding: 0.62rem 0.95rem;
+        border: 0;
+        border-radius: 6px;
+        color: #fff;
+        background: var(--accent);
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      button[type="submit"]:hover:not(:disabled) {
+        background: var(--accent-hover);
+      }
+      button[type="submit"]:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+      }
+      #status {
+        min-height: 1.3em;
+        margin-top: 0.45rem;
+        font-size: 0.86rem;
+      }
+      #status.ok {
+        color: var(--ok);
+      }
+      #status.error {
+        color: var(--danger);
+      }
+      .source-preview {
+        margin-top: 0.9rem;
+        border-top: 1px solid var(--border);
+        padding-top: 0.8rem;
+      }
+      #stamp-preview {
+        width: 100%;
+        max-height: 240px;
+        object-fit: contain;
+        display: block;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: #141414;
+      }
+      #listing-section {
+        padding: 0.9rem;
+        margin-top: 0.9rem;
+      }
+      .listing-heading {
+        margin: 0 0 0.5rem;
+        font-size: 1.02rem;
+      }
+      .listing-wait {
+        margin: 0 0 0.65rem;
+        color: var(--muted);
+        font-size: 0.86rem;
+      }
+      .listing-scroll {
+        max-height: 26rem;
+        overflow: auto;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: #fff;
+      }
+      .listing-text {
+        margin: 0;
+        padding: 0.8rem;
+        font-family: ui-monospace, "Cascadia Code", Menlo, Consolas, monospace;
+        font-size: 0.8rem;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      footer {
+        margin-top: auto;
+        text-align: center;
+        color: var(--muted);
+        font-size: 0.75rem;
+      }
+      #opencv-canvas {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>PSAG Certificate Centering Draft</h1>
+      <p class="tagline">
+        Styled from PSAG large template. Analyze stamp centering with OpenCV.js and place the resulting grade onto the
+        certificate draft.
+      </p>
+
+      <div class="layout">
+        <section class="panel cert-panel" aria-label="PSAG certificate preview">
+          <div class="cert-wrap">
+            <canvas id="cert-canvas" width="412" height="628"></canvas>
+          </div>
+        </section>
+
+        <section class="panel form-panel">
+          <form id="upload-form" novalidate>
+            <div class="grid">
+              <div class="field">
+                <label for="stamp-file">Stamp image <span aria-hidden="true">*</span></label>
+                <input id="stamp-file" name="stamp" type="file" accept="image/*" required />
+                <p class="hint">Single cropped stamp image with visible outer edges.</p>
+              </div>
+              <div class="field">
+                <label for="max-side">Max side (px)</label>
+                <input id="max-side" name="maxSide" type="number" min="400" max="2400" step="1" value="1200" />
+                <p class="hint">Higher can improve edge precision, but is slower.</p>
+              </div>
+            </div>
+
+            <div class="grid">
+              <div class="field">
+                <label for="cert-no">Certificate No</label>
+                <input id="cert-no" name="certNo" type="text" value="PSAG-DRAFT" />
+              </div>
+              <div class="field">
+                <label for="cert-date">Certificate Date</label>
+                <input id="cert-date" name="certDate" type="date" />
+              </div>
+            </div>
+
+            <div class="actions">
+              <button type="submit" id="submit-btn" disabled>Analyze + Render Cert</button>
+              <span id="image-resolution" class="hint"></span>
+            </div>
+            <div id="status" role="status" aria-live="polite"></div>
+          </form>
+
+          <div class="source-preview">
+            <label for="stamp-preview">Source image preview</label>
+            <img id="stamp-preview" alt="Selected stamp image" hidden />
+          </div>
+
+          <section id="listing-section" class="panel" hidden aria-labelledby="listing-heading" aria-busy="false">
+            <h2 id="listing-heading" class="listing-heading">Centering Analysis JSON</h2>
+            <p id="listing-wait" class="listing-wait"></p>
+            <div class="listing-scroll" id="listing-scroll" hidden>
+              <pre id="listing-text" class="listing-text"></pre>
+            </div>
+          </section>
+        </section>
+      </div>
+
+      <canvas id="opencv-canvas"></canvas>
+
+      <footer>
+        <p>Copyright (C) 2026 Exergy ∞ LLC</p>
+      </footer>
+    </main>
+
+    <script>
+      const form = document.getElementById("upload-form");
+      const statusEl = document.getElementById("status");
+      const submitBtn = document.getElementById("submit-btn");
+      const stampFileInput = document.getElementById("stamp-file");
+      const maxSideInput = document.getElementById("max-side");
+      const certNoInput = document.getElementById("cert-no");
+      const certDateInput = document.getElementById("cert-date");
+      const imageResolutionEl = document.getElementById("image-resolution");
+      const stampPreview = document.getElementById("stamp-preview");
+      const opencvCanvas = document.getElementById("opencv-canvas");
+      const certCanvas = document.getElementById("cert-canvas");
+      const certCtx = certCanvas.getContext("2d");
+      const urlParams = new URLSearchParams(window.location.search);
+
+      const WORKER_INIT_TIMEOUT_MS = 90000;
+      const WORKER_DETECT_TIMEOUT_MS = 120000;
+      const IS_FILE_ORIGIN = window.location.protocol === "file:";
+      const DEBUG_LOGGING =
+        urlParams.get("debug") === "1" || window.localStorage.getItem("philatelister_debug") === "1";
+
+      const CERT_LAYOUT = {
+        width: 412,
+        height: 628,
+        patchColor: "#f5f5f7",
+        stampSlot: { x: 148, y: 463, w: 124, h: 105, pad: 6, bg: "#111320" },
+        certNo: { x: 88, y: 51, maxW: 44, align: "left", size: 11, weight: "500" },
+        date: { x: 374, y: 51, maxW: 56, align: "right", size: 11, weight: "500" },
+        grade: { x: 240, y: 259, maxW: 90, align: "center", size: 12, weight: "600" },
+        opinion: { x: 208, y: 331, maxW: 240, align: "center", size: 10, weight: "500" },
+        patches: {
+          certNo: { x: 88, y: 39, w: 44, h: 14 },
+          date: { x: 318, y: 39, w: 56, h: 14 },
+          grade: { x: 196, y: 244, w: 96, h: 18 },
+          opinion: { x: 88, y: 319, w: 245, h: 17 },
+        },
+      };
+
+      const templateImage = new Image();
+      templateImage.decoding = "async";
+      templateImage.src = "../psag/psag_cert_large_template.png";
+      let templateReady = false;
+      templateImage.onload = () => {
+        templateReady = true;
+        renderCertificate(lastReport);
+      };
+
+      let detectorWorker = null;
+      let detectorWorkerUrl = null;
+      let detectorReqSeq = 0;
+      const pendingDetections = new Map();
+      let workerReadyPromise = null;
+      let workerReadyTimer = null;
+      let workerReadyResolve = null;
+      let workerReadyReject = null;
+      let previewObjectUrl = null;
+      let previewLoadSeq = 0;
+      let lastReport = null;
+
+      function dbg(...args) {
+        if (!DEBUG_LOGGING) return;
+        console.debug("[PSAG Certify]", ...args);
+      }
+
+      function todayIso() {
+        const d = new Date();
+        const y = String(d.getFullYear());
+        const m = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+        return `${y}-${m}-${day}`;
+      }
+
+      function formatShortDate(isoDate) {
+        if (!isoDate || !/^\d{4}-\d{2}-\d{2}$/.test(isoDate)) return "";
+        const [y, m, d] = isoDate.split("-");
+        return `${Number(m)}/${Number(d)}/${y}`;
+      }
+
+      certDateInput.value = todayIso();
+
+      function fitTextToWidth(text, style, maxWidth) {
+        let size = style.size;
+        while (size > 9) {
+          certCtx.font = `${style.weight || "400"} ${size}px Georgia, "Times New Roman", serif`;
+          if (certCtx.measureText(text).width <= maxWidth) return size;
+          size -= 1;
+        }
+        return 9;
+      }
+
+      function drawText(text, cfg) {
+        if (!text) return;
+        const size = fitTextToWidth(text, cfg, cfg.maxW || 9999);
+        certCtx.font = `${cfg.weight || "400"} ${size}px Georgia, "Times New Roman", serif`;
+        certCtx.fillStyle = "#111";
+        certCtx.textAlign = cfg.align || "left";
+        certCtx.textBaseline = "alphabetic";
+        certCtx.fillText(text, cfg.x, cfg.y);
+      }
+
+      function clearPatch(name) {
+        const patch = CERT_LAYOUT.patches[name];
+        if (!patch) return;
+        certCtx.fillStyle = CERT_LAYOUT.patchColor;
+        certCtx.fillRect(patch.x, patch.y, patch.w, patch.h);
+      }
+
+      function drawWrappedText(text, cfg) {
+        if (!text) return;
+        const words = String(text).replace(/\s+/g, " ").trim().split(" ");
+        if (!words.length) return;
+        let size = cfg.size || 11;
+        let lines = [];
+        while (size >= 8) {
+          certCtx.font = `${cfg.weight || "400"} ${size}px Georgia, "Times New Roman", serif`;
+          lines = [];
+          let current = "";
+          for (const word of words) {
+            const next = current ? `${current} ${word}` : word;
+            if (certCtx.measureText(next).width <= cfg.maxW) {
+              current = next;
+            } else if (current) {
+              lines.push(current);
+              current = word;
+            }
+          }
+          if (current) lines.push(current);
+          if (lines.length <= 2) break;
+          size -= 1;
+        }
+        certCtx.font = `${cfg.weight || "400"} ${size}px Georgia, "Times New Roman", serif`;
+        certCtx.fillStyle = "#111";
+        certCtx.textAlign = cfg.align || "left";
+        certCtx.textBaseline = "alphabetic";
+        const lineH = Math.round(size * 1.2);
+        const startY = cfg.y - (lines.length - 1) * lineH * 0.45;
+        lines.forEach((line, i) => certCtx.fillText(line, cfg.x, startY + i * lineH));
+      }
+
+      function drawStampInSlot() {
+        const slot = CERT_LAYOUT.stampSlot;
+        certCtx.fillStyle = slot.bg;
+        certCtx.fillRect(slot.x, slot.y, slot.w, slot.h);
+        if (stampPreview.hidden || !stampPreview.complete || stampPreview.naturalWidth <= 0) {
+          certCtx.fillStyle = "rgba(255,255,255,0.8)";
+          certCtx.font = "500 11px Georgia, \"Times New Roman\", serif";
+          certCtx.textAlign = "center";
+          certCtx.textBaseline = "middle";
+          certCtx.fillText("Stamp image", slot.x + slot.w / 2, slot.y + slot.h / 2);
+          return;
+        }
+        const innerW = slot.w - slot.pad * 2;
+        const innerH = slot.h - slot.pad * 2;
+        const iw = stampPreview.naturalWidth;
+        const ih = stampPreview.naturalHeight;
+        const scale = Math.min(innerW / iw, innerH / ih);
+        const dw = Math.max(1, Math.round(iw * scale));
+        const dh = Math.max(1, Math.round(ih * scale));
+        const dx = Math.round(slot.x + (slot.w - dw) / 2);
+        const dy = Math.round(slot.y + (slot.h - dh) / 2);
+        certCtx.drawImage(stampPreview, dx, dy, dw, dh);
+      }
+
+      function renderCertificate(report) {
+        certCanvas.width = CERT_LAYOUT.width;
+        certCanvas.height = CERT_LAYOUT.height;
+        certCtx.clearRect(0, 0, certCanvas.width, certCanvas.height);
+
+        if (templateReady) {
+          certCtx.drawImage(templateImage, 0, 0, CERT_LAYOUT.width, CERT_LAYOUT.height);
+        } else {
+          certCtx.fillStyle = "#f8f6f0";
+          certCtx.fillRect(0, 0, CERT_LAYOUT.width, CERT_LAYOUT.height);
+          certCtx.strokeStyle = "#d7d2c7";
+          certCtx.strokeRect(8, 8, CERT_LAYOUT.width - 16, CERT_LAYOUT.height - 16);
+        }
+
+        drawStampInSlot();
+
+        clearPatch("certNo");
+        clearPatch("date");
+        clearPatch("grade");
+        clearPatch("opinion");
+
+        drawText((certNoInput.value || "PSAG-DRAFT").trim(), CERT_LAYOUT.certNo);
+        drawText(formatShortDate(certDateInput.value), CERT_LAYOUT.date);
+
+        if (report && report.centering) {
+          drawText(`Grade: ${report.centering.grade}`, CERT_LAYOUT.grade);
+          drawWrappedText(
+            `Centering score ${report.centering.final_centering_score_pct.toFixed(1)}% (${report.centering.grade}).`,
+            CERT_LAYOUT.opinion
+          );
+        } else {
+          drawText("Grade: Pending", CERT_LAYOUT.grade);
+          drawWrappedText("Run analysis to place centering grade and score on this draft certificate.", CERT_LAYOUT.opinion);
+        }
+      }
+
+      renderCertificate(null);
+
+      function clamp01(n) {
+        return Math.min(1, Math.max(0, Number(n)));
+      }
+
+      function isLikelyImageFile(file) {
+        if (!file) return false;
+        const mime = String(file.type || "").toLowerCase();
+        if (mime.startsWith("image/")) return true;
+        const name = String(file.name || "").toLowerCase();
+        return /\.(jpg|jpeg|png|gif|webp|bmp|tif|tiff|heic|heif|avif|jfif)$/i.test(name);
+      }
+
+      function setStampPreview(file) {
+        previewLoadSeq += 1;
+        const seq = previewLoadSeq;
+        if (previewObjectUrl) {
+          URL.revokeObjectURL(previewObjectUrl);
+          previewObjectUrl = null;
+        }
+        if (!file || !isLikelyImageFile(file)) {
+          stampPreview.hidden = true;
+          stampPreview.removeAttribute("src");
+          if (imageResolutionEl) imageResolutionEl.textContent = "";
+          renderCertificate(lastReport);
+          if (file && statusEl) {
+            statusEl.className = "error";
+            statusEl.textContent = "Selected file does not look like a supported image.";
+          }
+          return;
+        }
+
+        previewObjectUrl = URL.createObjectURL(file);
+        stampPreview.hidden = true;
+        stampPreview.src = previewObjectUrl;
+        if (statusEl && !/Analyzing centering/i.test(statusEl.textContent || "")) {
+          statusEl.className = "";
+          statusEl.textContent = `Loading preview: ${file.name}`;
+        }
+
+        const onLoad = () => {
+          if (seq !== previewLoadSeq) return;
+          stampPreview.hidden = false;
+          const natW = stampPreview.naturalWidth || 0;
+          const natH = stampPreview.naturalHeight || 0;
+          const longEdge = Math.max(natW, natH);
+          if (imageResolutionEl) {
+            imageResolutionEl.textContent = natW && natH ? `Resolution: ${natW} x ${natH}px` : "";
+          }
+          if (longEdge > 0) {
+            maxSideInput.max = String(Math.max(400, longEdge));
+            maxSideInput.value = String(Math.max(400, longEdge));
+          }
+          renderCertificate(lastReport);
+          if (statusEl && !/Analyzing centering/i.test(statusEl.textContent || "")) {
+            statusEl.className = "";
+            statusEl.textContent = `Selected image: ${file.name}`;
+          }
+        };
+
+        const onError = () => {
+          if (seq !== previewLoadSeq) return;
+          stampPreview.hidden = true;
+          stampPreview.removeAttribute("src");
+          if (imageResolutionEl) imageResolutionEl.textContent = "";
+          renderCertificate(lastReport);
+          if (statusEl) {
+            statusEl.className = "error";
+            statusEl.textContent = "Could not decode selected image for preview.";
+          }
+        };
+
+        stampPreview.addEventListener("load", onLoad, { once: true });
+        stampPreview.addEventListener("error", onError, { once: true });
+      }
+
+      certNoInput.addEventListener("input", () => renderCertificate(lastReport));
+      certDateInput.addEventListener("change", () => renderCertificate(lastReport));
+
+      function ensureDetectorWorker() {
+        if (IS_FILE_ORIGIN) {
+          throw new Error(
+            "This page is opened as file://. Web Worker + OpenCV needs http(s). Run a local server and open http://localhost instead."
+          );
+        }
+        if (detectorWorker) return detectorWorker;
+
+        const source = `
+          const OPENCV_URL = "https://cdn.jsdelivr.net/npm/@techstark/opencv-js@4.12.0-release.1/dist/opencv.min.js";
+          const OPENCV_BASE = OPENCV_URL.replace(/[^/]+$/, "");
+          const INIT_TIMEOUT_MS = ${WORKER_INIT_TIMEOUT_MS};
+          const DEBUG = ${DEBUG_LOGGING ? "true" : "false"};
+          let cvReadyPromise = null;
+          let cvInstance = null;
+          let readySent = false;
+
+          function dbg(...args) {
+            if (!DEBUG) return;
+            self.postMessage({ type: "debug", args });
+          }
+
+          function clamp01(n) {
+            return Math.min(1, Math.max(0, Number(n)));
+          }
+
+          function clamp(n, lo, hi) {
+            return Math.min(hi, Math.max(lo, Number(n)));
+          }
+
+          function oddAtLeast(v, min) {
+            let n = Math.max(min, Math.round(Number(v) || min));
+            if (n % 2 === 0) n += 1;
+            return n;
+          }
+
+          function iouBox(a, b) {
+            const x1 = Math.max(a.x0, b.x0);
+            const y1 = Math.max(a.y0, b.y0);
+            const x2 = Math.min(a.x1, b.x1);
+            const y2 = Math.min(a.y1, b.y1);
+            const inter = Math.max(0, x2 - x1) * Math.max(0, y2 - y1);
+            const areaA = (a.x1 - a.x0) * (a.y1 - a.y0);
+            const areaB = (b.x1 - b.x0) * (b.y1 - b.y0);
+            const u = areaA + areaB - inter;
+            return u <= 0 ? 0 : inter / u;
+          }
+
+          function overlapArea(a, b) {
+            const x1 = Math.max(a.x0, b.x0);
+            const y1 = Math.max(a.y0, b.y0);
+            const x2 = Math.min(a.x1, b.x1);
+            const y2 = Math.min(a.y1, b.y1);
+            return Math.max(0, x2 - x1) * Math.max(0, y2 - y1);
+          }
+
+          function ensureCvReady() {
+            if (cvReadyPromise) return cvReadyPromise;
+            cvReadyPromise = new Promise((resolve, reject) => {
+              let done = false;
+              let poll = null;
+              const timer = setTimeout(() => {
+                if (done) return;
+                done = true;
+                if (poll) clearInterval(poll);
+                reject(new Error("Timed out while initializing OpenCV.js in worker."));
+              }, INIT_TIMEOUT_MS);
+              const finish = (err, value) => {
+                if (done) return;
+                done = true;
+                clearTimeout(timer);
+                if (poll) clearInterval(poll);
+                if (err) {
+                  reject(err);
+                  return;
+                }
+                cvInstance = value || self.cv || null;
+                resolve(true);
+              };
+              self.Module = {
+                locateFile(path) {
+                  return OPENCV_BASE + path;
+                },
+                onRuntimeInitialized() {
+                  dbg("Worker onRuntimeInitialized fired");
+                  if (self.cv && self.cv.Mat) finish(null, self.cv);
+                },
+              };
+              (async () => {
+                try {
+                  const res = await fetch(OPENCV_URL, { cache: "no-store", mode: "cors" });
+                  if (!res.ok) {
+                    throw new Error("OpenCV.js fetch failed: HTTP " + res.status);
+                  }
+                  const scriptText = await res.text();
+                  (0, eval)(scriptText);
+                  poll = setInterval(() => {
+                    if (done) return;
+                    if (self.cv && self.cv.Mat) {
+                      finish(null, self.cv);
+                    }
+                  }, 120);
+                } catch (e) {
+                  finish(e instanceof Error ? e : new Error(String(e)));
+                }
+              })();
+            });
+            return cvReadyPromise;
+          }
+
+          function notifyReady() {
+            if (readySent) return;
+            readySent = true;
+            self.postMessage({ type: "ready" });
+          }
+
+          function normalizeTiltDeg(rawAngleDeg, rectW, rectH) {
+            let angle = Number(rawAngleDeg) || 0;
+            if (rectW < rectH) angle += 90;
+            while (angle > 45) angle -= 90;
+            while (angle < -45) angle += 90;
+            return angle;
+          }
+
+          function detectBoxes(cv, width, height, rgbaBuffer, maxSide) {
+            const t = {};
+            const blurKernel = oddAtLeast(clamp(t.blurKernel ?? 5, 1, 31), 1);
+            const threshBlock = oddAtLeast(clamp(t.threshBlock ?? 15, 3, 101), 3);
+            const threshC = clamp(t.threshC ?? 4, -50, 50);
+            const useWatershed = !!t.useWatershed;
+            const closeKernel = oddAtLeast(clamp(t.closeKernel ?? 7, 1, 31), 1);
+            const openKernel = oddAtLeast(clamp(t.openKernel ?? 7, 1, 31), 1);
+            const peakThreshold = clamp(t.peakThreshold ?? 0.34, 0.05, 0.95);
+            const minAreaRatio = clamp(t.minAreaRatio ?? 0.0015, 0.00005, 0.5);
+            const minExtentT = clamp(t.minExtent ?? 0.25, 0.01, 1);
+            const minArT = clamp(t.minAspectRatio ?? 0.5, 0.05, 20);
+            const maxArT = clamp(t.maxAspectRatio ?? 2.0, minArT, 20);
+            const iouThresholdT = clamp(t.iouThreshold ?? 0.35, 0.01, 0.95);
+            const rgba = new Uint8ClampedArray(rgbaBuffer);
+            const src = cv.matFromArray(height, width, cv.CV_8UC4, rgba);
+            const scale = Math.min(1, maxSide / Math.max(width, height));
+            const w = Math.max(1, Math.round(width * scale));
+            const h = Math.max(1, Math.round(height * scale));
+            const scaled = new cv.Mat();
+            const gray = new cv.Mat();
+            const blurred = new cv.Mat();
+            const bin = new cv.Mat();
+            const dist = new cv.Mat();
+            const distNorm = new cv.Mat();
+            const sureFg = new cv.Mat();
+            const sureFg8 = new cv.Mat();
+            const sureBg = new cv.Mat();
+            const unknown = new cv.Mat();
+            const markers = new cv.Mat();
+            const markersPlusOne = new cv.Mat();
+            const markerOnes = new cv.Mat();
+            const rgb = new cv.Mat();
+            const closeK = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(closeKernel, closeKernel));
+            const openK = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(openKernel, openKernel));
+            const splitK = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(5, 5));
+            const bgK = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(3, 3));
+            try {
+              cv.resize(src, scaled, new cv.Size(w, h), 0, 0, cv.INTER_AREA);
+              cv.cvtColor(scaled, gray, cv.COLOR_RGBA2GRAY);
+              cv.GaussianBlur(gray, blurred, new cv.Size(blurKernel, blurKernel), 0);
+              cv.adaptiveThreshold(
+                blurred,
+                bin,
+                255,
+                cv.ADAPTIVE_THRESH_GAUSSIAN_C,
+                cv.THRESH_BINARY_INV,
+                threshBlock,
+                threshC
+              );
+              cv.morphologyEx(bin, bin, cv.MORPH_CLOSE, closeK);
+              cv.morphologyEx(bin, bin, cv.MORPH_OPEN, openK);
+              cv.erode(bin, bin, splitK, new cv.Point(-1, -1), 2);
+
+              const imgArea = w * h;
+              const minA = imgArea * minAreaRatio;
+              const maxA = imgArea * 0.45;
+              const minExtent = minExtentT;
+              const maxRawCandidates = 1200;
+              const maxNmsCandidates = 250;
+              const maxOutputBoxes = 120;
+              const raw = [];
+              const maxAspectRatio = maxArT;
+              const minAspectRatio = minArT;
+
+              function pushCandidate(x0, y0, bw, bh, areaEstimate, tiltDeg) {
+                const area = bw * bh;
+                if (area < minA || area > maxA) return;
+                const ar = bw / Math.max(1, bh);
+                if (ar < minAspectRatio || ar > maxAspectRatio) return;
+                const extent = areaEstimate / Math.max(1, area);
+                if (extent < minExtent) return;
+                if (bw > w * 0.55 && bh < h * 0.18) return;
+                const score = extent * 2.0 - Math.abs(Math.log(Math.max(0.2, Math.min(5, ar))));
+                raw.push({ x0, y0, x1: x0 + bw, y1: y0 + bh, area, score, tiltDeg });
+              }
+
+              if (useWatershed) {
+                cv.distanceTransform(bin, dist, cv.DIST_L2, 5);
+                cv.normalize(dist, distNorm, 0, 1.0, cv.NORM_MINMAX);
+                cv.threshold(distNorm, sureFg, peakThreshold, 1.0, cv.THRESH_BINARY);
+                sureFg.convertTo(sureFg8, cv.CV_8U, 255);
+                cv.dilate(bin, sureBg, bgK);
+                cv.subtract(sureBg, sureFg8, unknown);
+                cv.connectedComponents(sureFg8, markers, 8, cv.CV_32S);
+
+                markerOnes.create(markers.rows, markers.cols, cv.CV_32S);
+                markerOnes.setTo(new cv.Scalar(1));
+                cv.add(markers, markerOnes, markersPlusOne);
+                markersPlusOne.copyTo(markers);
+                markers.setTo(new cv.Scalar(0), unknown);
+
+                cv.cvtColor(scaled, rgb, cv.COLOR_RGBA2RGB);
+                cv.watershed(rgb, markers);
+
+                const markerData = markers.data32S;
+                const stats = new Map();
+                for (let y = 0; y < h; y++) {
+                  const rowBase = y * w;
+                  for (let x = 0; x < w; x++) {
+                    const label = markerData[rowBase + x];
+                    if (label <= 1) continue;
+                    let s = stats.get(label);
+                    if (!s) {
+                      s = { minX: x, minY: y, maxX: x, maxY: y, count: 1 };
+                      stats.set(label, s);
+                    } else {
+                      if (x < s.minX) s.minX = x;
+                      if (y < s.minY) s.minY = y;
+                      if (x > s.maxX) s.maxX = x;
+                      if (y > s.maxY) s.maxY = y;
+                      s.count += 1;
+                    }
+                  }
+                }
+
+                for (const s of stats.values()) {
+                  const rw = s.maxX - s.minX + 1;
+                  const rh = s.maxY - s.minY + 1;
+                  pushCandidate(s.minX, s.minY, rw, rh, s.count, null);
+                  if (raw.length >= maxRawCandidates) break;
+                }
+              } else {
+                const contours = new cv.MatVector();
+                const hierarchy = new cv.Mat();
+                cv.findContours(bin, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+                for (let i = 0; i < contours.size(); i++) {
+                  const c = contours.get(i);
+                  const contourArea = cv.contourArea(c, false);
+                  const r = cv.boundingRect(c);
+                  const rr = cv.minAreaRect(c);
+                  const tiltDeg = normalizeTiltDeg(
+                    rr && typeof rr.angle === "number" ? rr.angle : 0,
+                    rr && rr.size ? rr.size.width : r.width,
+                    rr && rr.size ? rr.size.height : r.height
+                  );
+                  c.delete();
+                  pushCandidate(r.x, r.y, r.width, r.height, contourArea, tiltDeg);
+                  if (raw.length >= maxRawCandidates) break;
+                }
+                contours.delete();
+                hierarchy.delete();
+              }
+
+              raw.sort((a, b) => b.score - a.score || b.area - a.area);
+              const nmsInput = raw.slice(0, maxNmsCandidates);
+              const keep = [];
+              const iouThresh = iouThresholdT;
+              for (const b of nmsInput) {
+                let skip = false;
+                for (const k of keep) {
+                  if (iouBox(b, k) > iouThresh) {
+                    skip = true;
+                    break;
+                  }
+                }
+                if (!skip) {
+                  keep.push(b);
+                  if (keep.length >= maxOutputBoxes) break;
+                }
+              }
+
+              let filtered = keep;
+              if (keep.length >= 4) {
+                const sortedAreas = keep.map((b) => b.area).sort((a, b) => a - b);
+                const mid = Math.floor(sortedAreas.length / 2);
+                const medianArea =
+                  sortedAreas.length % 2 === 0
+                    ? (sortedAreas[mid - 1] + sortedAreas[mid]) / 2
+                    : sortedAreas[mid];
+                const minConsistentArea = medianArea * 0.55;
+                const maxConsistentArea = medianArea * 1.85;
+                const consistent = keep.filter(
+                  (b) => b.area >= minConsistentArea && b.area <= maxConsistentArea
+                );
+                if (consistent.length >= Math.max(3, Math.floor(keep.length * 0.6))) {
+                  filtered = consistent;
+                }
+              }
+
+              const nonOverlapping = [];
+              for (const b of filtered) {
+                let conflicts = false;
+                for (const k of nonOverlapping) {
+                  if (overlapArea(b, k) > 0) {
+                    conflicts = true;
+                    break;
+                  }
+                }
+                if (!conflicts) nonOverlapping.push(b);
+              }
+
+              let estimatedTiltDeg = 0;
+              for (const b of nonOverlapping) {
+                if (Number.isFinite(b.tiltDeg)) {
+                  estimatedTiltDeg = b.tiltDeg;
+                  break;
+                }
+              }
+
+              return {
+                boxes: nonOverlapping.map((b) => ({
+                  xMin: clamp01(b.x0 / w),
+                  xMax: clamp01(b.x1 / w),
+                  yMin: clamp01(b.y0 / h),
+                  yMax: clamp01(b.y1 / h),
+                })),
+                estimatedTiltDeg,
+              };
+            } finally {
+              src.delete();
+              scaled.delete();
+              gray.delete();
+              blurred.delete();
+              bin.delete();
+              dist.delete();
+              distNorm.delete();
+              sureFg.delete();
+              sureFg8.delete();
+              sureBg.delete();
+              unknown.delete();
+              markers.delete();
+              markersPlusOne.delete();
+              markerOnes.delete();
+              rgb.delete();
+              closeK.delete();
+              openK.delete();
+              splitK.delete();
+              bgK.delete();
+            }
+          }
+
+          self.onmessage = async (ev) => {
+            const data = ev.data || {};
+            const id = data.id;
+            if (!id) return;
+            try {
+              await ensureCvReady();
+              const cv = cvInstance || self.cv;
+              if (!cv || !cv.Mat) throw new Error("OpenCV runtime initialized without usable cv API.");
+              notifyReady();
+              const result = detectBoxes(cv, data.width, data.height, data.rgbaBuffer, data.maxSide);
+              const boxes = Array.isArray(result && result.boxes) ? result.boxes : [];
+              const estimatedTiltDeg = Number(result && result.estimatedTiltDeg) || 0;
+              self.postMessage({ id, ok: true, boxes, estimatedTiltDeg });
+            } catch (err) {
+              self.postMessage({
+                id,
+                ok: false,
+                error: err instanceof Error ? err.message : String(err),
+              });
+            }
+          };
+
+          ensureCvReady().then(
+            () => notifyReady(),
+            (err) => {
+              self.postMessage({
+                type: "init_error",
+                error: err instanceof Error ? err.message : String(err),
+              });
+            }
+          );
+        `;
+
+        detectorWorkerUrl = URL.createObjectURL(new Blob([source], { type: "text/javascript" }));
+        detectorWorker = new Worker(detectorWorkerUrl);
+
+        workerReadyPromise = new Promise((resolve, reject) => {
+          workerReadyResolve = resolve;
+          workerReadyReject = reject;
+          workerReadyTimer = setTimeout(() => {
+            workerReadyResolve = null;
+            workerReadyReject = null;
+            reject(new Error("Timed out while initializing OpenCV in worker."));
+          }, WORKER_INIT_TIMEOUT_MS);
+        });
+
+        detectorWorker.onmessage = (ev) => {
+          const data = ev.data || {};
+          if (data.type === "debug") {
+            dbg("Worker:", ...(Array.isArray(data.args) ? data.args : []));
+            return;
+          }
+          if (data.type === "ready") {
+            if (workerReadyTimer) {
+              clearTimeout(workerReadyTimer);
+              workerReadyTimer = null;
+            }
+            if (workerReadyResolve) {
+              workerReadyResolve();
+              workerReadyResolve = null;
+              workerReadyReject = null;
+            }
+            return;
+          }
+          if (data.type === "init_error") {
+            const msg = data.error || "Worker OpenCV init failed.";
+            if (workerReadyTimer) {
+              clearTimeout(workerReadyTimer);
+              workerReadyTimer = null;
+            }
+            if (workerReadyReject) {
+              workerReadyReject(new Error(msg));
+              workerReadyResolve = null;
+              workerReadyReject = null;
+            }
+            return;
+          }
+
+          const req = pendingDetections.get(data.id);
+          if (!req) return;
+          pendingDetections.delete(data.id);
+          clearTimeout(req.timer);
+          if (data.ok) {
+            req.resolve({
+              boxes: Array.isArray(data.boxes) ? data.boxes : [],
+              estimatedTiltDeg: Number(data.estimatedTiltDeg) || 0,
+            });
+          } else {
+            req.reject(new Error(data.error || "Worker detection failed."));
+          }
+        };
+
+        detectorWorker.onerror = () => {
+          for (const [, req] of pendingDetections) {
+            clearTimeout(req.timer);
+            req.reject(new Error("Detection worker crashed."));
+          }
+          pendingDetections.clear();
+          detectorWorker.terminate();
+          detectorWorker = null;
+          workerReadyPromise = null;
+          if (workerReadyTimer) {
+            clearTimeout(workerReadyTimer);
+            workerReadyTimer = null;
+          }
+          workerReadyResolve = null;
+          workerReadyReject = null;
+          if (detectorWorkerUrl) {
+            URL.revokeObjectURL(detectorWorkerUrl);
+            detectorWorkerUrl = null;
+          }
+        };
+
+        return detectorWorker;
+      }
+
+      function ensureDetectorWorkerReady() {
+        ensureDetectorWorker();
+        if (!workerReadyPromise) {
+          return Promise.reject(new Error("Worker did not create a readiness promise."));
+        }
+        workerReadyPromise = workerReadyPromise
+          .then(() => undefined)
+          .catch((err) => {
+            workerReadyPromise = null;
+            throw err;
+          });
+        return workerReadyPromise;
+      }
+
+      function previewImageData(natW, natH) {
+        opencvCanvas.width = natW;
+        opencvCanvas.height = natH;
+        const ctx2d = opencvCanvas.getContext("2d");
+        if (!ctx2d) throw new Error("Canvas is not available in this browser.");
+        ctx2d.drawImage(stampPreview, 0, 0, natW, natH);
+        return ctx2d.getImageData(0, 0, natW, natH);
+      }
+
+      function rotateImageData(imageData, width, height, rotationDeg) {
+        const srcCanvas = document.createElement("canvas");
+        srcCanvas.width = width;
+        srcCanvas.height = height;
+        const srcCtx = srcCanvas.getContext("2d");
+        if (!srcCtx) throw new Error("Canvas is not available in this browser.");
+        srcCtx.putImageData(imageData, 0, 0);
+
+        const dstCanvas = document.createElement("canvas");
+        dstCanvas.width = width;
+        dstCanvas.height = height;
+        const dstCtx = dstCanvas.getContext("2d");
+        if (!dstCtx) throw new Error("Canvas is not available in this browser.");
+        dstCtx.fillStyle = "#ffffff";
+        dstCtx.fillRect(0, 0, width, height);
+        dstCtx.translate(width / 2, height / 2);
+        dstCtx.rotate((rotationDeg * Math.PI) / 180);
+        dstCtx.drawImage(srcCanvas, -width / 2, -height / 2, width, height);
+        return dstCtx.getImageData(0, 0, width, height);
+      }
+
+      async function detectStampBoxesWithWorkerImageData(natW, natH, maxSide, imageData) {
+        await ensureDetectorWorkerReady();
+        const worker = ensureDetectorWorker();
+        const id = `detect_${Date.now()}_${++detectorReqSeq}`;
+        return new Promise((resolve, reject) => {
+          const timer = setTimeout(() => {
+            pendingDetections.delete(id);
+            reject(new Error("Detection timed out in worker."));
+          }, WORKER_DETECT_TIMEOUT_MS);
+          pendingDetections.set(id, { resolve, reject, timer });
+          worker.postMessage(
+            { id, cmd: "detect", width: natW, height: natH, maxSide, rgbaBuffer: imageData.data.buffer },
+            [imageData.data.buffer]
+          );
+        });
+      }
+
+      function waitForImageReady(imgEl) {
+        if (imgEl.complete && imgEl.naturalWidth > 0) return Promise.resolve();
+        return new Promise((resolve, reject) => {
+          const onLoad = () => {
+            cleanup();
+            resolve();
+          };
+          const onError = () => {
+            cleanup();
+            reject(new Error("Could not decode the image."));
+          };
+          const cleanup = () => {
+            imgEl.removeEventListener("load", onLoad);
+            imgEl.removeEventListener("error", onError);
+          };
+          imgEl.addEventListener("load", onLoad, { once: true });
+          imgEl.addEventListener("error", onError, { once: true });
+          if (imgEl.complete && imgEl.naturalWidth > 0) {
+            cleanup();
+            resolve();
+          }
+        });
+      }
+
+      function nextFrame() {
+        return new Promise((resolve) => requestAnimationFrame(resolve));
+      }
+
+      function choosePrimaryStampBox(boxes) {
+        if (!Array.isArray(boxes) || !boxes.length) return null;
+        let best = null;
+        let bestScore = -Infinity;
+        for (const box of boxes) {
+          const w = Math.max(0, box.xMax - box.xMin);
+          const h = Math.max(0, box.yMax - box.yMin);
+          const area = w * h;
+          if (area <= 0) continue;
+          const cx = (box.xMin + box.xMax) / 2;
+          const cy = (box.yMin + box.yMax) / 2;
+          const centerDistance = Math.hypot(cx - 0.5, cy - 0.5);
+          const score = area - centerDistance * 0.2;
+          if (score > bestScore) {
+            bestScore = score;
+            best = box;
+          }
+        }
+        return best;
+      }
+
+      function centeringGrade(scorePct) {
+        if (scorePct >= 98) return "Superb";
+        if (scorePct >= 95) return "Excellent";
+        if (scorePct >= 90) return "Very Fine";
+        if (scorePct >= 84) return "Fine";
+        return "Off-center";
+      }
+
+      function centeringReportFromBox(box, imageW, imageH) {
+        const left = clamp01(box.xMin);
+        const right = clamp01(1 - box.xMax);
+        const top = clamp01(box.yMin);
+        const bottom = clamp01(1 - box.yMax);
+
+        const horizontalScore = (Math.min(left, right) / Math.max(1e-9, Math.max(left, right))) * 100;
+        const verticalScore = (Math.min(top, bottom) / Math.max(1e-9, Math.max(top, bottom))) * 100;
+        const finalCenteringScore = Math.min(horizontalScore, verticalScore);
+
+        return {
+          type: "single_stamp_centering_analysis",
+          image_size_px: { width: imageW, height: imageH },
+          detected_stamp_box: {
+            x_min: box.xMin,
+            x_max: box.xMax,
+            y_min: box.yMin,
+            y_max: box.yMax,
+            width_pct: (box.xMax - box.xMin) * 100,
+            height_pct: (box.yMax - box.yMin) * 100,
+          },
+          border_margins_pct: {
+            left: left * 100,
+            right: right * 100,
+            top: top * 100,
+            bottom: bottom * 100,
+          },
+          centering: {
+            horizontal_score_pct: horizontalScore,
+            vertical_score_pct: verticalScore,
+            final_centering_score_pct: finalCenteringScore,
+            dead_centered: horizontalScore >= 99.999 && verticalScore >= 99.999,
+            grade: centeringGrade(finalCenteringScore),
+          },
+          alignment: {
+            estimated_tilt_deg_before_correction: 0,
+            applied_rotation_deg: 0,
+          },
+        };
+      }
+
+      async function loadImageFromUrlParam() {
+        const imageUrl = urlParams.get("image_url");
+        if (!imageUrl) return;
+
+        if (statusEl) {
+          statusEl.className = "";
+          statusEl.textContent = "Loading image from image_url parameter…";
+        }
+
+        const res = await fetch(imageUrl, { mode: "cors", credentials: "omit", cache: "no-store" });
+        if (!res.ok) {
+          throw new Error(`Failed to fetch image_url (HTTP ${res.status}).`);
+        }
+        const blob = await res.blob();
+        if (!blob || (blob.type && !blob.type.startsWith("image/"))) {
+          throw new Error("image_url did not return an image.");
+        }
+
+        const fileName = (() => {
+          try {
+            const u = new URL(imageUrl);
+            const name = decodeURIComponent((u.pathname.split("/").pop() || "").trim());
+            return name || "image-from-url.png";
+          } catch (_) {
+            return "image-from-url.png";
+          }
+        })();
+
+        const file = new File([blob], fileName, { type: blob.type || "image/png" });
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        stampFileInput.files = dt.files;
+        setStampPreview(file);
+        submitBtn.disabled = false;
+
+        await waitForImageReady(stampPreview);
+        await nextFrame();
+        form.requestSubmit();
+      }
+
+      if (statusEl) {
+        if (IS_FILE_ORIGIN) {
+          statusEl.textContent =
+            "Opened as file://. Start a local server (for example: python3 -m http.server 8000) and open over http://localhost.";
+          statusEl.className = "error";
+        } else {
+          statusEl.textContent = "Starting worker OpenCV runtime…";
+          statusEl.className = "";
+        }
+      }
+      if (submitBtn) {
+        submitBtn.disabled = IS_FILE_ORIGIN;
+      }
+      if (!IS_FILE_ORIGIN) {
+        ensureDetectorWorkerReady().then(
+          () => {
+            if (!statusEl) return;
+            if (/Loading preview|Selected image|Analyzing centering/i.test(statusEl.textContent || "")) return;
+            statusEl.textContent = "OpenCV worker ready";
+            statusEl.className = "ok";
+          },
+          (err) => {
+            if (!statusEl) return;
+            statusEl.className = "error";
+            statusEl.textContent = err instanceof Error ? err.message : String(err);
+          }
+        );
+      }
+
+      stampFileInput.addEventListener("change", () => {
+        lastReport = null;
+        setStampPreview(stampFileInput.files && stampFileInput.files[0] ? stampFileInput.files[0] : null);
+      });
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        statusEl.textContent = "";
+        statusEl.className = "";
+
+        const file = stampFileInput.files && stampFileInput.files[0];
+        if (!file) {
+          statusEl.className = "error";
+          statusEl.textContent = "Choose an image.";
+          return;
+        }
+
+        const maxSideCeiling = Math.max(400, Number(maxSideInput.max) || 2400);
+        const maxSide = Math.max(400, Math.min(maxSideCeiling, Number(maxSideInput.value) || 1200));
+        submitBtn.disabled = true;
+        statusEl.textContent = "Preparing worker…";
+
+        try {
+          await ensureDetectorWorkerReady();
+          statusEl.textContent = "Analyzing centering in worker…";
+          await nextFrame();
+
+          await waitForImageReady(stampPreview);
+
+          const natW = stampPreview.naturalWidth;
+          const natH = stampPreview.naturalHeight;
+          await nextFrame();
+          const rawImageData = previewImageData(natW, natH);
+          const firstPass = await detectStampBoxesWithWorkerImageData(natW, natH, maxSide, rawImageData);
+          const estimatedTiltDeg = Number(firstPass.estimatedTiltDeg) || 0;
+          const maxDeskewDeg = 12;
+          const shouldDeskew = Math.abs(estimatedTiltDeg) >= 0.2 && Math.abs(estimatedTiltDeg) <= maxDeskewDeg;
+          const appliedRotationDeg = shouldDeskew ? -estimatedTiltDeg : 0;
+
+          let secondInput = previewImageData(natW, natH);
+          if (appliedRotationDeg !== 0) {
+            secondInput = rotateImageData(secondInput, natW, natH, appliedRotationDeg);
+          }
+          const secondPass = await detectStampBoxesWithWorkerImageData(natW, natH, maxSide, secondInput);
+          const stampBox = choosePrimaryStampBox(secondPass.boxes);
+          if (!stampBox) {
+            throw new Error("Could not detect a clear stamp boundary. Try a tighter crop with clear stamp edges.");
+          }
+
+          const report = centeringReportFromBox(stampBox, natW, natH);
+          report.alignment.estimated_tilt_deg_before_correction = estimatedTiltDeg;
+          report.alignment.applied_rotation_deg = appliedRotationDeg;
+          lastReport = report;
+          renderCertificate(lastReport);
+
+          const jsonStr = JSON.stringify(report, null, 2);
+          const section = document.getElementById("listing-section");
+          const waitEl = document.getElementById("listing-wait");
+          const scrollEl = document.getElementById("listing-scroll");
+          const textEl = document.getElementById("listing-text");
+          section.hidden = false;
+          section.setAttribute("aria-busy", "false");
+          waitEl.textContent =
+            appliedRotationDeg !== 0
+              ? `Applied deskew rotation of ${appliedRotationDeg.toFixed(2)}° before centering analysis.`
+              : "No deskew rotation applied; image already near level.";
+          textEl.textContent = jsonStr;
+          scrollEl.hidden = false;
+
+          statusEl.className = "ok";
+          statusEl.textContent = `Centering analysis complete. Grade: ${report.centering.grade} (${report.centering.final_centering_score_pct.toFixed(1)}%).`;
+        } catch (err) {
+          statusEl.className = "error";
+          statusEl.textContent = err instanceof Error ? err.message : String(err);
+        } finally {
+          submitBtn.disabled = false;
+        }
+      });
+
+      loadImageFromUrlParam().catch((err) => {
+        if (!statusEl) return;
+        statusEl.className = "error";
+        statusEl.textContent = err instanceof Error ? err.message : String(err);
+      });
+
+      window.addEventListener("beforeunload", () => {
+        if (detectorWorker) {
+          detectorWorker.terminate();
+          detectorWorker = null;
+        }
+        workerReadyPromise = null;
+        if (workerReadyTimer) {
+          clearTimeout(workerReadyTimer);
+          workerReadyTimer = null;
+        }
+        workerReadyResolve = null;
+        workerReadyReject = null;
+        if (detectorWorkerUrl) {
+          URL.revokeObjectURL(detectorWorkerUrl);
+          detectorWorkerUrl = null;
+        }
+      });
+    </script>
+  </body>
+</html>

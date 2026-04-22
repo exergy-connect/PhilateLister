@@ -3,7 +3,7 @@
   "name": "PhilateLister Centering Analyzer",
   "description": "Right-click a stamp image and open a tab for OpenCV-based centering analysis.",
   "version": "0.1.0",
-  "permissions": ["contextMenus", "storage", "tabs"],
+  "permissions": ["contextMenus", "tabs"],
   "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.js",

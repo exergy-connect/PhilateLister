@@ -2123,16 +2123,29 @@
         return "Off-center";
       }
 
-      function centeringReportFromBoxes(outerBox, innerBox, imageW, imageH) {
-        const outerW = Math.max(1e-9, (outerBox.xMax || 0) - (outerBox.xMin || 0));
-        const outerH = Math.max(1e-9, (outerBox.yMax || 0) - (outerBox.yMin || 0));
-        const left = clamp01(((innerBox.xMin || 0) - (outerBox.xMin || 0)) / outerW);
-        const right = clamp01(((outerBox.xMax || 0) - (innerBox.xMax || 0)) / outerW);
-        const top = clamp01(((innerBox.yMin || 0) - (outerBox.yMin || 0)) / outerH);
-        const bottom = clamp01(((outerBox.yMax || 0) - (innerBox.yMax || 0)) / outerH);
+      function symmetryScorePx(aPx, bPx, tolPx) {
+        const a = Math.max(0, Number(aPx) || 0);
+        const b = Math.max(0, Number(bPx) || 0);
+        const sum = a + b;
+        if (sum <= 1e-9) return 100;
+        const diff = Math.max(0, Math.abs(a - b) - Math.max(0, Number(tolPx) || 0));
+        return clamp01(1 - diff / sum) * 100;
+      }
 
-        const horizontalScore = (Math.min(left, right) / Math.max(1e-9, Math.max(left, right))) * 100;
-        const verticalScore = (Math.min(top, bottom) / Math.max(1e-9, Math.max(top, bottom))) * 100;
+      function centeringReportFromBoxes(outerBox, innerBox, imageW, imageH) {
+        const outerPx = toPixelBox(outerBox, imageW, imageH);
+        const innerPx = toPixelBox(innerBox, imageW, imageH);
+        const outerWidthPxInt = Math.max(1, outerPx.x1 - outerPx.x0 + 1);
+        const outerHeightPxInt = Math.max(1, outerPx.y1 - outerPx.y0 + 1);
+        const leftPx = Math.max(0, innerPx.x0 - outerPx.x0);
+        const rightPx = Math.max(0, outerPx.x1 - innerPx.x1);
+        const topPx = Math.max(0, innerPx.y0 - outerPx.y0);
+        const bottomPx = Math.max(0, outerPx.y1 - innerPx.y1);
+
+        const axisTolPx = Math.max(1, Math.round(Math.min(imageW, imageH) * 0.0015));
+
+        const horizontalScore = symmetryScorePx(leftPx, rightPx, axisTolPx);
+        const verticalScore = symmetryScorePx(topPx, bottomPx, axisTolPx);
         const finalCenteringScore = Math.min(horizontalScore, verticalScore);
 
         return {
@@ -2143,22 +2156,40 @@
             x_max: outerBox.xMax,
             y_min: outerBox.yMin,
             y_max: outerBox.yMax,
+            x_min_px: outerPx.x0,
+            x_max_px: outerPx.x1,
+            y_min_px: outerPx.y0,
+            y_max_px: outerPx.y1,
             width_pct: ((outerBox.xMax || 0) - (outerBox.xMin || 0)) * 100,
             height_pct: ((outerBox.yMax || 0) - (outerBox.yMin || 0)) * 100,
+            width_px: outerWidthPxInt,
+            height_px: outerHeightPxInt,
           },
           detected_inner_design_box: {
             x_min: innerBox.xMin,
             x_max: innerBox.xMax,
             y_min: innerBox.yMin,
             y_max: innerBox.yMax,
+            x_min_px: innerPx.x0,
+            x_max_px: innerPx.x1,
+            y_min_px: innerPx.y0,
+            y_max_px: innerPx.y1,
             width_pct: ((innerBox.xMax || 0) - (innerBox.xMin || 0)) * 100,
             height_pct: ((innerBox.yMax || 0) - (innerBox.yMin || 0)) * 100,
+            width_px: Math.max(1, innerPx.x1 - innerPx.x0 + 1),
+            height_px: Math.max(1, innerPx.y1 - innerPx.y0 + 1),
+          },
+          design_margins_within_stamp_px: {
+            left: leftPx,
+            right: rightPx,
+            top: topPx,
+            bottom: bottomPx,
           },
           design_margins_within_stamp_pct: {
-            left: left * 100,
-            right: right * 100,
-            top: top * 100,
-            bottom: bottom * 100,
+            left: (leftPx / outerWidthPxInt) * 100,
+            right: (rightPx / outerWidthPxInt) * 100,
+            top: (topPx / outerHeightPxInt) * 100,
+            bottom: (bottomPx / outerHeightPxInt) * 100,
           },
           centering: {
             horizontal_score_pct: horizontalScore,

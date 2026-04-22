@@ -1,0 +1,1662 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="copyright" content="Copyright (C) 2026 Exergy ∞ LLC" />
+    <title>PhilateLister — local centering analysis (OpenCV.js)</title>
+    <style>
+      :root {
+        --bg: #f7f4ee;
+        --surface: #fffdf8;
+        --ink: #1c1b18;
+        --muted: #5c5852;
+        --accent: #2d4a3e;
+        --accent-hover: #1f342b;
+        --danger: #8b2942;
+        --ok: #2d6a4f;
+        --border: #d9d3c7;
+        --radius: 10px;
+        font-family: "Georgia", "Times New Roman", serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        height: 100vh;
+        background: var(--bg);
+        color: var(--ink);
+        line-height: 1.5;
+        overflow: hidden;
+      }
+      main {
+        max-width: min(100%, 72rem);
+        margin: 0 auto;
+        height: 100vh;
+        padding: 0.85rem 1rem 0.65rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+      }
+      main.listing-open {
+        max-width: min(100%, 104rem);
+      }
+      .upload-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.35rem;
+        align-items: start;
+        flex: 1 1 auto;
+        min-height: 0;
+      }
+      .upload-layout.listing-open {
+        grid-template-columns: minmax(0, 2.24fr) minmax(0, 1fr);
+      }
+      @media (max-width: 960px) {
+        body {
+          height: auto;
+          min-height: 100vh;
+          overflow: auto;
+        }
+        main {
+          height: auto;
+          min-height: 100vh;
+          padding: 1.25rem 1rem 2rem;
+          gap: 0.85rem;
+        }
+        .upload-layout,
+        .upload-layout.listing-open {
+          grid-template-columns: 1fr;
+        }
+      }
+      .preview-panel {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        min-height: 0;
+      }
+      .preview-panel .form-panel {
+        margin-top: 1rem;
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+        align-self: stretch;
+      }
+      .preview-frame {
+        --scan-w: 5100;
+        --scan-h: 7016;
+        --frame-max-h: min(57vh, calc(100vh - 10rem));
+        --frame-w: min(100%, calc(var(--frame-max-h) * var(--scan-w) / var(--scan-h)));
+        background: #1c1b18;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        width: var(--frame-w);
+        height: calc(var(--frame-w) * var(--scan-h) / var(--scan-w));
+        margin-inline: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        box-shadow: 0 1px 2px rgba(28, 27, 24, 0.08);
+        position: relative;
+      }
+      .preview-frame img {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        display: block;
+      }
+      @media (max-width: 960px) {
+        .preview-panel .form-panel {
+          width: 100%;
+          min-width: 0;
+          max-width: none;
+        }
+      }
+      .preview-overlay {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+      .preview-bbox {
+        position: absolute;
+        border: 2px solid #00d8ff;
+        background: color-mix(in srgb, #00d8ff 14%, transparent);
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45);
+      }
+      .preview-bbox-label {
+        position: absolute;
+        top: -1.2rem;
+        left: 0;
+        font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
+        font-size: 0.68rem;
+        line-height: 1;
+        color: #fff;
+        background: rgba(0, 0, 0, 0.72);
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        border-radius: 4px;
+        padding: 0.18rem 0.28rem;
+        max-width: 10.5rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      #preview-placeholder {
+        margin: 0;
+        padding: 1.25rem;
+        text-align: center;
+        font-size: 0.9rem;
+        color: #a39e94;
+        line-height: 1.45;
+      }
+      .form-panel form {
+        margin: 0;
+      }
+      .tuning-panel {
+        margin-top: 0.45rem;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: #fffcf6;
+        padding: 0.35rem 0.5rem 0.5rem;
+        overflow-x: auto;
+      }
+      .tuning-panel > summary {
+        cursor: pointer;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: var(--ink);
+        list-style: none;
+      }
+      .tuning-panel > summary::-webkit-details-marker {
+        display: none;
+      }
+      .tuning-grid {
+        margin-top: 0.4rem;
+        display: grid;
+        grid-template-rows: repeat(2, auto);
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(8rem, 8.8rem);
+        gap: 0.35rem 0.45rem;
+        width: max-content;
+      }
+      .tune-field {
+        margin: 0;
+      }
+      .tune-label {
+        display: block;
+        font-size: 0.68rem;
+        font-weight: 600;
+        color: var(--muted);
+        margin-bottom: 0.15rem;
+        white-space: nowrap;
+      }
+      .tune-field input {
+        width: 100%;
+        font: inherit;
+        font-size: 0.76rem;
+        padding: 0.24rem 0.3rem;
+      }
+      .controls-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 8.6rem 8.6rem auto;
+        gap: 0.65rem;
+        align-items: start;
+        justify-content: center;
+      }
+      h1 {
+        font-size: 1.35rem;
+        font-weight: 600;
+        margin: 0;
+        letter-spacing: 0.02em;
+      }
+      .tagline {
+        color: var(--muted);
+        font-size: 0.86rem;
+        margin: 0;
+      }
+      form {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 0.8rem 0.9rem;
+        box-shadow: 0 1px 2px rgba(28, 27, 24, 0.06);
+      }
+      label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 0.35rem;
+        color: var(--ink);
+      }
+      .field {
+        margin-bottom: 0;
+      }
+      .hint {
+        font-size: 0.74rem;
+        color: var(--muted);
+        font-weight: 400;
+        margin-top: 0.2rem;
+      }
+      input[type="file"],
+      input[type="number"] {
+        width: 100%;
+        font: inherit;
+        padding: 0.5rem 0.6rem;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: #fff;
+        color: var(--ink);
+      }
+      button[type="submit"] {
+        width: auto;
+        margin-top: 0;
+        padding: 0.65rem 1rem;
+        font: inherit;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #fff;
+        background: var(--accent);
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        align-self: end;
+      }
+      button[type="submit"]:hover:not(:disabled) {
+        background: var(--accent-hover);
+      }
+      button[type="submit"]:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+      }
+      .listing-actions {
+        margin: 0 0 0.75rem;
+        display: flex;
+        justify-content: flex-start;
+      }
+      .listing-download-btn {
+        font: inherit;
+        font-size: 0.85rem;
+        font-weight: 600;
+        padding: 0.45rem 0.72rem;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        background: #fff;
+        color: var(--ink);
+        cursor: pointer;
+      }
+      .listing-download-btn:hover:not(:disabled) {
+        background: #f3eee4;
+      }
+      .listing-download-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      #status {
+        margin-top: 0.45rem;
+        font-size: 0.84rem;
+        min-height: 1.2em;
+      }
+      #status.error {
+        color: var(--danger);
+      }
+      #status.ok {
+        color: var(--ok);
+      }
+      .upload-layout > .listing-section {
+        min-height: 0;
+      }
+      .listing-section {
+        margin-top: 0;
+        padding: 0.9rem 1rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: 0 1px 2px rgba(28, 27, 24, 0.06);
+        align-self: start;
+        position: relative;
+        min-width: 0;
+        max-height: min(calc(100vh - 6rem), 900px);
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .listing-section[hidden] {
+        display: none !important;
+      }
+      .listing-heading {
+        font-size: 1.05rem;
+        font-weight: 600;
+        margin: 0 0 0.5rem;
+        letter-spacing: 0.02em;
+        flex-shrink: 0;
+      }
+      .listing-wait {
+        margin: 0 0 0.75rem;
+        font-size: 0.9rem;
+        color: var(--muted);
+        flex-shrink: 0;
+      }
+      .listing-scroll {
+        flex: 1 1 auto;
+        min-height: 6rem;
+        max-height: min(62vh, calc(100vh - 10rem));
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+      }
+      .listing-text {
+        margin: 0;
+        padding: 1rem;
+        font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
+        font-size: 0.82rem;
+        line-height: 1.45;
+        white-space: pre-wrap;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        color: var(--ink);
+        overflow: visible;
+      }
+      footer {
+        margin-top: 0;
+        font-size: 0.75rem;
+        color: var(--muted);
+        text-align: center;
+        flex-shrink: 0;
+      }
+      @media (max-width: 960px) {
+        .controls-row {
+          grid-template-columns: 1fr;
+          gap: 0.6rem;
+        }
+        .preview-frame {
+          --frame-max-h: min(62vh, calc(100vh - 8rem));
+        }
+        button[type="submit"] {
+          width: 100%;
+        }
+      }
+      #opencv-canvas {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>PhilateLister Centering (local)</h1>
+      <p class="tagline">
+        Analyze centering for a single cropped stamp image in your browser with OpenCV.js. Nothing is uploaded.
+      </p>
+
+      <div class="upload-layout" id="upload-layout">
+        <aside class="preview-panel" aria-label="Selected stamp preview">
+          <p class="hint" style="margin: 0 0 0.5rem; font-weight: 600; color: var(--ink)">Preview</p>
+          <div class="preview-frame">
+            <img id="stamp-preview" alt="Selected stamp image" hidden />
+            <div id="preview-overlay" class="preview-overlay" aria-hidden="true"></div>
+            <p id="preview-placeholder">Choose an image to see it here.</p>
+          </div>
+          <div class="form-panel">
+            <form id="upload-form" novalidate>
+              <div class="controls-row">
+                <div class="field">
+                  <label for="stamp-file">Stamp image <span aria-hidden="true">*</span></label>
+                  <input id="stamp-file" name="stamp" type="file" accept="image/*" required />
+                  <p class="hint">Use a single cropped stamp with visible outer edges.</p>
+                </div>
+                <div class="field">
+                  <label for="max-side">Max side (px)</label>
+                  <input id="max-side" name="maxSide" type="number" min="400" max="2400" step="1" value="1200" />
+                  <p class="hint">Higher = slower, but can improve edge precision.</p>
+                </div>
+                <button type="submit" id="submit-btn" disabled>Analyze Centering</button>
+              </div>
+              <div id="image-resolution" class="hint" style="margin-top: 0.35rem"></div>
+              <details class="tuning-panel">
+                <summary>Edge Detection Tuning</summary>
+                <div class="tuning-grid">
+                  <div class="tune-field">
+                    <label class="tune-label" for="tune-blur">Blur kernel (odd)</label>
+                    <input
+                      id="tune-blur"
+                      type="number"
+                      min="1"
+                      max="15"
+                      step="2"
+                      value="5"
+                      title="Gaussian blur kernel size. Lower keeps edges sharper; higher smooths noise."
+                    />
+                  </div>
+                  <div class="tune-field">
+                    <label class="tune-label" for="tune-thresh-block">Threshold block (odd)</label>
+                    <input
+                      id="tune-thresh-block"
+                      type="number"
+                      min="3"
+                      max="51"
+                      step="2"
+                      value="15"
+                      title="Adaptive-threshold neighborhood size. Larger uses broader local context."
+                    />
+                  </div>
+                  <div class="tune-field">
+                    <label class="tune-label" for="tune-thresh-c">Threshold C</label>
+                    <input
+                      id="tune-thresh-c"
+                      type="number"
+                      min="-10"
+                      max="20"
+                      step="1"
+                      value="4"
+                      title="Constant subtracted in adaptive thresholding. Lower increases sensitivity; higher is stricter."
+                    />
+                  </div>
+                  <div class="tune-field">
+                    <label class="tune-label" for="tune-peak-thresh">Peak threshold</label>
+                    <input
+                      id="tune-peak-thresh"
+                      type="number"
+                      min="0.05"
+                      max="0.95"
+                      step="0.01"
+                      value="0.34"
+                      title="Distance-transform peak cutoff used for watershed markers. Lower usually splits more regions; higher merges more."
+                    />
+                  </div>
+                  <div class="tune-field">
+                    <label class="tune-label" for="tune-use-watershed">Use watershed</label>
+                    <input
+                      id="tune-use-watershed"
+                      type="checkbox"
+                      title="Experimental segmentation mode. Leave off for contour-based detection."
+                    />
+                  </div>
+                  <div class="tune-field">
+                    <label class="tune-label" for="tune-close-k">Close kernel (odd)</label>
+                    <input
+                      id="tune-close-k"
+                      type="number"
+                      min="1"
+                      max="21"
+                      step="2"
+                      value="7"
+                      title="Morphological close kernel. Helps connect broken borders and fill small gaps."
+                    />
+                  </div>
+                  <div class="tune-field">
+                    <label class="tune-label" for="tune-open-k">Open kernel (odd)</label>
+                    <input
+                      id="tune-open-k"
+                      type="number"
+                      min="1"
+                      max="21"
+                      step="2"
+                      value="7"
+                      title="Morphological open kernel. Removes tiny specks/noise but can erase fine edges if too high."
+                    />
+                  </div>
+                  <div class="tune-field">
+                    <label class="tune-label" for="tune-min-area">Min area ratio</label>
+                    <input
+                      id="tune-min-area"
+                      type="number"
+                      min="0.0001"
+                      max="0.05"
+                      step="0.0001"
+                      value="0.0015"
+                      title="Minimum box area as fraction of the processed image. Lower allows smaller stamps."
+                    />
+                  </div>
+                  <div class="tune-field">
+                    <label class="tune-label" for="tune-min-extent">Min extent</label>
+                    <input
+                      id="tune-min-extent"
+                      type="number"
+                      min="0.01"
+                      max="1"
+                      step="0.01"
+                      value="0.25"
+                      title="Contour fill ratio (contour area / box area). Lower accepts looser/non-solid contours."
+                    />
+                  </div>
+                  <div class="tune-field">
+                    <label class="tune-label" for="tune-ar-min">Aspect min</label>
+                    <input
+                      id="tune-ar-min"
+                      type="number"
+                      min="0.1"
+                      max="2"
+                      step="0.05"
+                      value="0.5"
+                      title="Minimum width/height ratio allowed for candidate boxes."
+                    />
+                  </div>
+                  <div class="tune-field">
+                    <label class="tune-label" for="tune-ar-max">Aspect max</label>
+                    <input
+                      id="tune-ar-max"
+                      type="number"
+                      min="1"
+                      max="8"
+                      step="0.1"
+                      value="2.0"
+                      title="Maximum width/height ratio allowed for candidate boxes."
+                    />
+                  </div>
+                  <div class="tune-field">
+                    <label class="tune-label" for="tune-iou">Overlap IoU</label>
+                    <input
+                      id="tune-iou"
+                      type="number"
+                      min="0.01"
+                      max="0.95"
+                      step="0.01"
+                      value="0.35"
+                      title="NMS overlap threshold. Lower rejects overlapping boxes more aggressively."
+                    />
+                  </div>
+                </div>
+              </details>
+              <div id="status" role="status" aria-live="polite"></div>
+            </form>
+          </div>
+        </aside>
+
+        <section
+          id="listing-section"
+          class="listing-section"
+          hidden
+          aria-labelledby="listing-heading"
+          aria-busy="false"
+        >
+          <h2 id="listing-heading" class="listing-heading">Centering Analysis JSON</h2>
+          <p id="listing-wait" class="listing-wait"></p>
+          <div class="listing-scroll" id="listing-scroll" hidden>
+            <pre id="listing-text" class="listing-text"></pre>
+          </div>
+        </section>
+      </div>
+
+      <canvas id="opencv-canvas"></canvas>
+
+      <footer>
+        <p>Copyright (C) 2026 Exergy ∞ LLC</p>
+      </footer>
+    </main>
+
+    <script>
+      const form = document.getElementById("upload-form");
+      const statusEl = document.getElementById("status");
+      const submitBtn = document.getElementById("submit-btn");
+
+      const WORKER_INIT_TIMEOUT_MS = 90000;
+      const WORKER_DETECT_TIMEOUT_MS = 120000;
+      const IS_FILE_ORIGIN = window.location.protocol === "file:";
+      const DEBUG_LOGGING =
+        new URLSearchParams(window.location.search).get("debug") === "1" ||
+        window.localStorage.getItem("philatelister_debug") === "1";
+      let detectorWorker = null;
+      let detectorWorkerUrl = null;
+      let detectorReqSeq = 0;
+      const pendingDetections = new Map();
+      let workerReadyPromise = null;
+      let workerReadyTimer = null;
+      let workerReadyResolve = null;
+      let workerReadyReject = null;
+
+      function dbg(...args) {
+        if (!DEBUG_LOGGING) return;
+        console.debug("[PhilateLister]", ...args);
+      }
+
+      function ensureDetectorWorker() {
+        if (IS_FILE_ORIGIN) {
+          throw new Error(
+            "This page is opened as file://. Web Worker + OpenCV needs http(s). Run a local server and open http://localhost instead."
+          );
+        }
+        if (detectorWorker) return detectorWorker;
+        dbg("Creating detection worker");
+        const source = `
+          const OPENCV_URL = "https://cdn.jsdelivr.net/npm/@techstark/opencv-js@4.12.0-release.1/dist/opencv.min.js";
+          const OPENCV_BASE = OPENCV_URL.replace(/[^/]+$/, "");
+          const INIT_TIMEOUT_MS = ${WORKER_INIT_TIMEOUT_MS};
+          const DEBUG = ${DEBUG_LOGGING ? "true" : "false"};
+          let cvReadyPromise = null;
+          let cvInstance = null;
+          let readySent = false;
+
+          function dbg(...args) {
+            if (!DEBUG) return;
+            self.postMessage({ type: "debug", args });
+          }
+
+          function clamp01(n) {
+            return Math.min(1, Math.max(0, Number(n)));
+          }
+
+          function clamp(n, lo, hi) {
+            return Math.min(hi, Math.max(lo, Number(n)));
+          }
+
+          function oddAtLeast(v, min) {
+            let n = Math.max(min, Math.round(Number(v) || min));
+            if (n % 2 === 0) n += 1;
+            return n;
+          }
+
+          function iouBox(a, b) {
+            const x1 = Math.max(a.x0, b.x0);
+            const y1 = Math.max(a.y0, b.y0);
+            const x2 = Math.min(a.x1, b.x1);
+            const y2 = Math.min(a.y1, b.y1);
+            const inter = Math.max(0, x2 - x1) * Math.max(0, y2 - y1);
+            const areaA = (a.x1 - a.x0) * (a.y1 - a.y0);
+            const areaB = (b.x1 - b.x0) * (b.y1 - b.y0);
+            const u = areaA + areaB - inter;
+            return u <= 0 ? 0 : inter / u;
+          }
+
+          function overlapArea(a, b) {
+            const x1 = Math.max(a.x0, b.x0);
+            const y1 = Math.max(a.y0, b.y0);
+            const x2 = Math.min(a.x1, b.x1);
+            const y2 = Math.min(a.y1, b.y1);
+            return Math.max(0, x2 - x1) * Math.max(0, y2 - y1);
+          }
+
+          function ensureCvReady() {
+            if (cvReadyPromise) return cvReadyPromise;
+            cvReadyPromise = new Promise((resolve, reject) => {
+              let done = false;
+              let poll = null;
+              const timer = setTimeout(() => {
+                if (done) return;
+                done = true;
+                if (poll) clearInterval(poll);
+                reject(new Error("Timed out while initializing OpenCV.js in worker."));
+              }, INIT_TIMEOUT_MS);
+              const finish = (err, value) => {
+                if (done) return;
+                done = true;
+                clearTimeout(timer);
+                if (poll) clearInterval(poll);
+                if (err) {
+                  reject(err);
+                  return;
+                }
+                // Never resolve a Promise with raw cv; some builds expose thenable-like cv objects.
+                cvInstance = value || self.cv || null;
+                resolve(true);
+              };
+              self.Module = {
+                locateFile(path) {
+                  return OPENCV_BASE + path;
+                },
+                onRuntimeInitialized() {
+                  dbg("Worker onRuntimeInitialized fired");
+                  if (self.cv && self.cv.Mat) finish(null, self.cv);
+                },
+              };
+              (async () => {
+                try {
+                  dbg("Fetching OpenCV.js", OPENCV_URL);
+                  const res = await fetch(OPENCV_URL, { cache: "no-store", mode: "cors" });
+                  if (!res.ok) {
+                    throw new Error("OpenCV.js fetch failed: HTTP " + res.status);
+                  }
+                  const scriptText = await res.text();
+                  dbg("Evaluating OpenCV.js", { bytes: scriptText.length });
+                  (0, eval)(scriptText);
+                  dbg("OpenCV.js evaluated");
+                  poll = setInterval(() => {
+                    if (done) return;
+                    if (self.cv && self.cv.Mat) {
+                      dbg("cv.Mat available");
+                      finish(null, self.cv);
+                    }
+                  }, 120);
+                } catch (e) {
+                  finish(e instanceof Error ? e : new Error(String(e)));
+                }
+              })();
+            });
+            return cvReadyPromise;
+          }
+
+          function notifyReady() {
+            if (readySent) return;
+            readySent = true;
+            dbg("Worker ready signal");
+            self.postMessage({ type: "ready" });
+          }
+
+          function normalizeTiltDeg(rawAngleDeg, rectW, rectH) {
+            let angle = Number(rawAngleDeg) || 0;
+            if (rectW < rectH) angle += 90;
+            while (angle > 45) angle -= 90;
+            while (angle < -45) angle += 90;
+            return angle;
+          }
+
+          function detectBoxes(cv, width, height, rgbaBuffer, maxSide, tuning) {
+            const t = tuning && typeof tuning === "object" ? tuning : {};
+            const blurKernel = oddAtLeast(clamp(t.blurKernel ?? 5, 1, 31), 1);
+            const threshBlock = oddAtLeast(clamp(t.threshBlock ?? 15, 3, 101), 3);
+            const threshC = clamp(t.threshC ?? 4, -50, 50);
+            const useWatershed = !!t.useWatershed;
+            const closeKernel = oddAtLeast(clamp(t.closeKernel ?? 7, 1, 31), 1);
+            const openKernel = oddAtLeast(clamp(t.openKernel ?? 7, 1, 31), 1);
+            const peakThreshold = clamp(t.peakThreshold ?? 0.34, 0.05, 0.95);
+            const minAreaRatio = clamp(t.minAreaRatio ?? 0.0015, 0.00005, 0.5);
+            const minExtentT = clamp(t.minExtent ?? 0.25, 0.01, 1);
+            const minArT = clamp(t.minAspectRatio ?? 0.5, 0.05, 20);
+            const maxArT = clamp(t.maxAspectRatio ?? 2.0, minArT, 20);
+            const iouThresholdT = clamp(t.iouThreshold ?? 0.35, 0.01, 0.95);
+            const rgba = new Uint8ClampedArray(rgbaBuffer);
+            const src = cv.matFromArray(height, width, cv.CV_8UC4, rgba);
+            const scale = Math.min(1, maxSide / Math.max(width, height));
+            const w = Math.max(1, Math.round(width * scale));
+            const h = Math.max(1, Math.round(height * scale));
+            const scaled = new cv.Mat();
+            const gray = new cv.Mat();
+            const blurred = new cv.Mat();
+            const bin = new cv.Mat();
+            const dist = new cv.Mat();
+            const distNorm = new cv.Mat();
+            const sureFg = new cv.Mat();
+            const sureFg8 = new cv.Mat();
+            const sureBg = new cv.Mat();
+            const unknown = new cv.Mat();
+            const markers = new cv.Mat();
+            const markersPlusOne = new cv.Mat();
+            const markerOnes = new cv.Mat();
+            const rgb = new cv.Mat();
+            const closeK = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(closeKernel, closeKernel));
+            const openK = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(openKernel, openKernel));
+            const splitK = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(5, 5));
+            const bgK = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(3, 3));
+            try {
+              cv.resize(src, scaled, new cv.Size(w, h), 0, 0, cv.INTER_AREA);
+              cv.cvtColor(scaled, gray, cv.COLOR_RGBA2GRAY);
+              cv.GaussianBlur(gray, blurred, new cv.Size(blurKernel, blurKernel), 0);
+              cv.adaptiveThreshold(
+                blurred,
+                bin,
+                255,
+                cv.ADAPTIVE_THRESH_GAUSSIAN_C,
+                cv.THRESH_BINARY_INV,
+                threshBlock,
+                threshC
+              );
+              cv.morphologyEx(bin, bin, cv.MORPH_CLOSE, closeK);
+              cv.morphologyEx(bin, bin, cv.MORPH_OPEN, openK);
+              // Quick split pass: shrink connected blobs to break thin bridges.
+              cv.erode(bin, bin, splitK, new cv.Point(-1, -1), 2);
+
+              const imgArea = w * h;
+              const minA = imgArea * minAreaRatio;
+              const maxA = imgArea * 0.45;
+              const minExtent = minExtentT;
+              const maxRawCandidates = 1200;
+              const maxNmsCandidates = 250;
+              const maxOutputBoxes = 120;
+              const raw = [];
+              const maxAspectRatio = maxArT;
+              const minAspectRatio = minArT;
+
+              function pushCandidate(x0, y0, bw, bh, areaEstimate, tiltDeg) {
+                const area = bw * bh;
+                if (area < minA || area > maxA) return;
+                const ar = bw / Math.max(1, bh);
+                if (ar < minAspectRatio || ar > maxAspectRatio) return;
+                const extent = areaEstimate / Math.max(1, area);
+                if (extent < minExtent) return;
+                // Filter long horizontal strips near the bottom edge that are not individual stamps.
+                if (bw > w * 0.55 && bh < h * 0.18) return;
+                const score = extent * 2.0 - Math.abs(Math.log(Math.max(0.2, Math.min(5, ar))));
+                raw.push({ x0, y0, x1: x0 + bw, y1: y0 + bh, area, score, tiltDeg });
+              }
+
+              if (useWatershed) {
+                // Watershed markers from distance-transform peaks.
+                cv.distanceTransform(bin, dist, cv.DIST_L2, 5);
+                cv.normalize(dist, distNorm, 0, 1.0, cv.NORM_MINMAX);
+                cv.threshold(distNorm, sureFg, peakThreshold, 1.0, cv.THRESH_BINARY);
+                sureFg.convertTo(sureFg8, cv.CV_8U, 255);
+                cv.dilate(bin, sureBg, bgK);
+                cv.subtract(sureBg, sureFg8, unknown);
+                cv.connectedComponents(sureFg8, markers, 8, cv.CV_32S);
+
+                markerOnes.create(markers.rows, markers.cols, cv.CV_32S);
+                markerOnes.setTo(new cv.Scalar(1));
+                cv.add(markers, markerOnes, markersPlusOne);
+                markersPlusOne.copyTo(markers);
+                markers.setTo(new cv.Scalar(0), unknown);
+
+                cv.cvtColor(scaled, rgb, cv.COLOR_RGBA2RGB);
+                cv.watershed(rgb, markers);
+
+                const markerData = markers.data32S;
+                const stats = new Map();
+                for (let y = 0; y < h; y++) {
+                  const rowBase = y * w;
+                  for (let x = 0; x < w; x++) {
+                    const label = markerData[rowBase + x];
+                    if (label <= 1) continue;
+                    let s = stats.get(label);
+                    if (!s) {
+                      s = { minX: x, minY: y, maxX: x, maxY: y, count: 1 };
+                      stats.set(label, s);
+                    } else {
+                      if (x < s.minX) s.minX = x;
+                      if (y < s.minY) s.minY = y;
+                      if (x > s.maxX) s.maxX = x;
+                      if (y > s.maxY) s.maxY = y;
+                      s.count += 1;
+                    }
+                  }
+                }
+
+                for (const s of stats.values()) {
+                  const rw = s.maxX - s.minX + 1;
+                  const rh = s.maxY - s.minY + 1;
+                  pushCandidate(s.minX, s.minY, rw, rh, s.count, null);
+                  if (raw.length >= maxRawCandidates) break;
+                }
+              } else {
+                // Default: contour-based box extraction.
+                const contours = new cv.MatVector();
+                const hierarchy = new cv.Mat();
+                cv.findContours(bin, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+                for (let i = 0; i < contours.size(); i++) {
+                  const c = contours.get(i);
+                  const contourArea = cv.contourArea(c, false);
+                  const r = cv.boundingRect(c);
+                  const rr = cv.minAreaRect(c);
+                  const tiltDeg = normalizeTiltDeg(
+                    rr && typeof rr.angle === "number" ? rr.angle : 0,
+                    rr && rr.size ? rr.size.width : r.width,
+                    rr && rr.size ? rr.size.height : r.height
+                  );
+                  c.delete();
+                  pushCandidate(r.x, r.y, r.width, r.height, contourArea, tiltDeg);
+                  if (raw.length >= maxRawCandidates) break;
+                }
+                contours.delete();
+                hierarchy.delete();
+              }
+
+              raw.sort((a, b) => b.score - a.score || b.area - a.area);
+              const nmsInput = raw.slice(0, maxNmsCandidates);
+              const keep = [];
+              const iouThresh = iouThresholdT;
+              for (const b of nmsInput) {
+                let skip = false;
+                for (const k of keep) {
+                  if (iouBox(b, k) > iouThresh) {
+                    skip = true;
+                    break;
+                  }
+                }
+                if (!skip) {
+                  keep.push(b);
+                  if (keep.length >= maxOutputBoxes) break;
+                }
+              }
+
+              // Keep boxes near the dominant size so results are roughly uniform.
+              let filtered = keep;
+              if (keep.length >= 4) {
+                const sortedAreas = keep.map((b) => b.area).sort((a, b) => a - b);
+                const mid = Math.floor(sortedAreas.length / 2);
+                const medianArea =
+                  sortedAreas.length % 2 === 0
+                    ? (sortedAreas[mid - 1] + sortedAreas[mid]) / 2
+                    : sortedAreas[mid];
+                const minConsistentArea = medianArea * 0.55;
+                const maxConsistentArea = medianArea * 1.85;
+                const consistent = keep.filter(
+                  (b) => b.area >= minConsistentArea && b.area <= maxConsistentArea
+                );
+                if (consistent.length >= Math.max(3, Math.floor(keep.length * 0.6))) {
+                  filtered = consistent;
+                }
+              }
+
+              // Hard constraint: output must contain no overlapping boxes at all.
+              const nonOverlapping = [];
+              for (const b of filtered) {
+                let conflicts = false;
+                for (const k of nonOverlapping) {
+                  if (overlapArea(b, k) > 0) {
+                    conflicts = true;
+                    break;
+                  }
+                }
+                if (!conflicts) nonOverlapping.push(b);
+              }
+
+              let estimatedTiltDeg = 0;
+              for (const b of nonOverlapping) {
+                if (Number.isFinite(b.tiltDeg)) {
+                  estimatedTiltDeg = b.tiltDeg;
+                  break;
+                }
+              }
+
+              return {
+                boxes: nonOverlapping.map((b) => ({
+                  xMin: clamp01(b.x0 / w),
+                  xMax: clamp01(b.x1 / w),
+                  yMin: clamp01(b.y0 / h),
+                  yMax: clamp01(b.y1 / h),
+                })),
+                estimatedTiltDeg,
+              };
+            } finally {
+              src.delete();
+              scaled.delete();
+              gray.delete();
+              blurred.delete();
+              bin.delete();
+              dist.delete();
+              distNorm.delete();
+              sureFg.delete();
+              sureFg8.delete();
+              sureBg.delete();
+              unknown.delete();
+              markers.delete();
+              markersPlusOne.delete();
+              markerOnes.delete();
+              rgb.delete();
+              closeK.delete();
+              openK.delete();
+              splitK.delete();
+              bgK.delete();
+            }
+          }
+
+          self.onmessage = async (ev) => {
+            const data = ev.data || {};
+            const id = data.id;
+            if (!id) return;
+            try {
+              await ensureCvReady();
+              const cv = cvInstance || self.cv;
+              if (!cv || !cv.Mat) throw new Error("OpenCV runtime initialized without usable cv API.");
+              notifyReady();
+              dbg("Detect request start", {
+                width: data.width,
+                height: data.height,
+                maxSide: data.maxSide,
+                tuning: data.tuning || null,
+              });
+              const result = detectBoxes(cv, data.width, data.height, data.rgbaBuffer, data.maxSide, data.tuning);
+              const boxes = Array.isArray(result && result.boxes) ? result.boxes : [];
+              const estimatedTiltDeg = Number(result && result.estimatedTiltDeg) || 0;
+              dbg("Detect request complete", { boxes: boxes.length, estimatedTiltDeg });
+              self.postMessage({ id, ok: true, boxes, estimatedTiltDeg });
+            } catch (err) {
+              self.postMessage({
+                id,
+                ok: false,
+                error: err instanceof Error ? err.message : String(err),
+              });
+            }
+          };
+
+          // Warm up OpenCV immediately; main thread tracks readiness from this signal.
+          ensureCvReady().then(
+            () => notifyReady(),
+            (err) => {
+              self.postMessage({
+                type: "init_error",
+                error: err instanceof Error ? err.message : String(err),
+              });
+            }
+          );
+        `;
+        detectorWorkerUrl = URL.createObjectURL(new Blob([source], { type: "text/javascript" }));
+        detectorWorker = new Worker(detectorWorkerUrl);
+        workerReadyPromise = new Promise((resolve, reject) => {
+          workerReadyResolve = resolve;
+          workerReadyReject = reject;
+          workerReadyTimer = setTimeout(() => {
+            workerReadyResolve = null;
+            workerReadyReject = null;
+            reject(new Error("Timed out while initializing OpenCV in worker."));
+          }, WORKER_INIT_TIMEOUT_MS);
+        });
+        detectorWorker.onmessage = (ev) => {
+          const data = ev.data || {};
+          if (data.type === "debug") {
+            dbg("Worker:", ...(Array.isArray(data.args) ? data.args : []));
+            return;
+          }
+          if (data.type === "ready") {
+            dbg("Worker ready acknowledged");
+            if (workerReadyTimer) {
+              clearTimeout(workerReadyTimer);
+              workerReadyTimer = null;
+            }
+            if (workerReadyResolve) {
+              workerReadyResolve();
+              workerReadyResolve = null;
+              workerReadyReject = null;
+            }
+            return;
+          }
+          if (data.type === "init_error") {
+            const msg = data.error || "Worker OpenCV init failed.";
+            dbg("Worker init error", msg);
+            if (workerReadyTimer) {
+              clearTimeout(workerReadyTimer);
+              workerReadyTimer = null;
+            }
+            if (workerReadyReject) {
+              workerReadyReject(new Error(msg));
+              workerReadyResolve = null;
+              workerReadyReject = null;
+            }
+            return;
+          }
+          const req = pendingDetections.get(data.id);
+          if (!req) return;
+          pendingDetections.delete(data.id);
+          clearTimeout(req.timer);
+          dbg("Worker response", {
+            id: data.id,
+            ok: !!data.ok,
+            boxes: Array.isArray(data.boxes) ? data.boxes.length : undefined,
+            estimatedTiltDeg: Number(data.estimatedTiltDeg) || 0,
+          });
+          if (data.ok) {
+            req.resolve({
+              boxes: Array.isArray(data.boxes) ? data.boxes : [],
+              estimatedTiltDeg: Number(data.estimatedTiltDeg) || 0,
+            });
+          }
+          else req.reject(new Error(data.error || "Worker detection failed."));
+        };
+        detectorWorker.onerror = (ev) => {
+          dbg("Worker crashed", { message: ev.message, filename: ev.filename, lineno: ev.lineno, colno: ev.colno });
+          for (const [, req] of pendingDetections) {
+            clearTimeout(req.timer);
+            req.reject(new Error("Detection worker crashed."));
+          }
+          pendingDetections.clear();
+          detectorWorker.terminate();
+          detectorWorker = null;
+          workerReadyPromise = null;
+          if (workerReadyTimer) {
+            clearTimeout(workerReadyTimer);
+            workerReadyTimer = null;
+          }
+          workerReadyResolve = null;
+          workerReadyReject = null;
+          if (detectorWorkerUrl) {
+            URL.revokeObjectURL(detectorWorkerUrl);
+            detectorWorkerUrl = null;
+          }
+        };
+        return detectorWorker;
+      }
+
+      function requestWorker(data, timeoutMs, timeoutMessage) {
+        const worker = ensureDetectorWorker();
+        const id = `worker_${Date.now()}_${++detectorReqSeq}`;
+        const startedAt = performance.now();
+        dbg("Worker request start", { id, cmd: data.cmd || "detect", timeoutMs });
+        return new Promise((resolve, reject) => {
+          const timer = setTimeout(() => {
+            pendingDetections.delete(id);
+            dbg("Worker request timeout", { id, cmd: data.cmd || "detect", elapsedMs: Math.round(performance.now() - startedAt) });
+            reject(new Error(timeoutMessage));
+          }, timeoutMs);
+          pendingDetections.set(id, {
+            resolve: (value) => {
+              dbg("Worker request done", { id, cmd: data.cmd || "detect", elapsedMs: Math.round(performance.now() - startedAt) });
+              resolve(value);
+            },
+            reject: (err) => {
+              dbg("Worker request failed", {
+                id,
+                cmd: data.cmd || "detect",
+                elapsedMs: Math.round(performance.now() - startedAt),
+                error: err instanceof Error ? err.message : String(err),
+              });
+              reject(err);
+            },
+            timer,
+          });
+          worker.postMessage({ ...data, id });
+        });
+      }
+
+      function ensureDetectorWorkerReady() {
+        dbg("Worker init requested");
+        ensureDetectorWorker();
+        if (!workerReadyPromise) {
+          return Promise.reject(new Error("Worker did not create a readiness promise."));
+        }
+        workerReadyPromise = workerReadyPromise
+          .then(() => {
+            dbg("Worker init ready");
+            return undefined;
+          })
+          .catch((err) => {
+            workerReadyPromise = null;
+            dbg("Worker init failed", err instanceof Error ? err.message : String(err));
+            throw err;
+          });
+        return workerReadyPromise;
+      }
+
+      function previewImageData(natW, natH) {
+        opencvCanvas.width = natW;
+        opencvCanvas.height = natH;
+        const ctx2d = opencvCanvas.getContext("2d");
+        if (!ctx2d) throw new Error("Canvas is not available in this browser.");
+        ctx2d.drawImage(stampPreview, 0, 0, natW, natH);
+        return ctx2d.getImageData(0, 0, natW, natH);
+      }
+
+      function rotateImageData(imageData, width, height, rotationDeg) {
+        const srcCanvas = document.createElement("canvas");
+        srcCanvas.width = width;
+        srcCanvas.height = height;
+        const srcCtx = srcCanvas.getContext("2d");
+        if (!srcCtx) throw new Error("Canvas is not available in this browser.");
+        srcCtx.putImageData(imageData, 0, 0);
+
+        const dstCanvas = document.createElement("canvas");
+        dstCanvas.width = width;
+        dstCanvas.height = height;
+        const dstCtx = dstCanvas.getContext("2d");
+        if (!dstCtx) throw new Error("Canvas is not available in this browser.");
+        dstCtx.fillStyle = "#ffffff";
+        dstCtx.fillRect(0, 0, width, height);
+        dstCtx.translate(width / 2, height / 2);
+        dstCtx.rotate((rotationDeg * Math.PI) / 180);
+        dstCtx.drawImage(srcCanvas, -width / 2, -height / 2, width, height);
+        return dstCtx.getImageData(0, 0, width, height);
+      }
+
+      async function detectStampBoxesWithWorkerImageData(natW, natH, maxSide, tuning, imageData) {
+        dbg("Detect request", { natW, natH, maxSide, tuning });
+        await ensureDetectorWorkerReady();
+        const worker = ensureDetectorWorker();
+        const id = `detect_${Date.now()}_${++detectorReqSeq}`;
+        return new Promise((resolve, reject) => {
+          const timer = setTimeout(() => {
+            pendingDetections.delete(id);
+            reject(new Error("Detection timed out in worker."));
+          }, WORKER_DETECT_TIMEOUT_MS);
+          pendingDetections.set(id, { resolve, reject, timer });
+          worker.postMessage(
+            { id, cmd: "detect", width: natW, height: natH, maxSide, tuning, rgbaBuffer: imageData.data.buffer },
+            [imageData.data.buffer]
+          );
+        });
+      }
+
+      window.addEventListener("beforeunload", () => {
+        if (detectorWorker) {
+          detectorWorker.terminate();
+          detectorWorker = null;
+        }
+        workerReadyPromise = null;
+        if (workerReadyTimer) {
+          clearTimeout(workerReadyTimer);
+          workerReadyTimer = null;
+        }
+        workerReadyResolve = null;
+        workerReadyReject = null;
+        if (detectorWorkerUrl) {
+          URL.revokeObjectURL(detectorWorkerUrl);
+          detectorWorkerUrl = null;
+        }
+      });
+
+      if (statusEl) {
+        if (IS_FILE_ORIGIN) {
+          statusEl.textContent =
+            "Opened as file://. Start a local server (for example: python3 -m http.server 8000) and open http://localhost:8000/public/test/opencv_centering.html";
+          statusEl.className = "error";
+        } else {
+          statusEl.textContent = "Starting worker OpenCV runtime…";
+          statusEl.className = "";
+        }
+      }
+      if (submitBtn) {
+        submitBtn.disabled = IS_FILE_ORIGIN;
+      }
+      if (!IS_FILE_ORIGIN) {
+        if (DEBUG_LOGGING) dbg("Debug logging enabled");
+        ensureDetectorWorkerReady().then(
+          () => {
+            if (!statusEl) return;
+            if (/Loading preview|Selected image|Analyzing centering/i.test(statusEl.textContent || "")) return;
+            statusEl.textContent = "OpenCV worker ready";
+            statusEl.className = "ok";
+          },
+          (err) => {
+            if (!statusEl) return;
+            statusEl.className = "error";
+            statusEl.textContent = err instanceof Error ? err.message : String(err);
+          }
+        );
+      }
+
+      const stampFileInput = document.getElementById("stamp-file");
+      const maxSideInput = document.getElementById("max-side");
+      const tuneBlurInput = document.getElementById("tune-blur");
+      const tuneThreshBlockInput = document.getElementById("tune-thresh-block");
+      const tuneThreshCInput = document.getElementById("tune-thresh-c");
+      const tunePeakThreshInput = document.getElementById("tune-peak-thresh");
+      const tuneUseWatershedInput = document.getElementById("tune-use-watershed");
+      const tuneCloseKInput = document.getElementById("tune-close-k");
+      const tuneOpenKInput = document.getElementById("tune-open-k");
+      const tuneMinAreaInput = document.getElementById("tune-min-area");
+      const tuneMinExtentInput = document.getElementById("tune-min-extent");
+      const tuneArMinInput = document.getElementById("tune-ar-min");
+      const tuneArMaxInput = document.getElementById("tune-ar-max");
+      const tuneIouInput = document.getElementById("tune-iou");
+      const imageResolutionEl = document.getElementById("image-resolution");
+      const previewFrame = document.querySelector(".preview-frame");
+      const stampPreview = document.getElementById("stamp-preview");
+      const previewOverlay = document.getElementById("preview-overlay");
+      const previewPlaceholder = document.getElementById("preview-placeholder");
+      const opencvCanvas = document.getElementById("opencv-canvas");
+      let previewObjectUrl = null;
+      let previewBoxes = [];
+      let previewLoadSeq = 0;
+
+      function syncWatershedTuningUi() {
+        if (!tunePeakThreshInput) return;
+        const on = !!(tuneUseWatershedInput && tuneUseWatershedInput.checked);
+        tunePeakThreshInput.disabled = !on;
+      }
+      if (tuneUseWatershedInput) {
+        tuneUseWatershedInput.addEventListener("change", syncWatershedTuningUi);
+      }
+      syncWatershedTuningUi();
+
+      function clamp01(n) {
+        return Math.min(1, Math.max(0, Number(n)));
+      }
+
+      function isLikelyImageFile(file) {
+        if (!file) return false;
+        const mime = String(file.type || "").toLowerCase();
+        if (mime.startsWith("image/")) return true;
+        const name = String(file.name || "").toLowerCase();
+        return /\.(jpg|jpeg|png|gif|webp|bmp|tif|tiff|heic|heif|avif|jfif)$/i.test(name);
+      }
+
+      function renderPreviewBoxes() {
+        previewOverlay.innerHTML = "";
+        if (stampPreview.hidden || !stampPreview.src || !previewFrame) return;
+        if (!previewBoxes.length) return;
+
+        const imgRect = stampPreview.getBoundingClientRect();
+        const frameRect = previewFrame.getBoundingClientRect();
+        if (!imgRect.width || !imgRect.height || !frameRect.width || !frameRect.height) return;
+
+        const leftOffset = imgRect.left - frameRect.left;
+        const topOffset = imgRect.top - frameRect.top;
+
+        for (const { box, label } of previewBoxes) {
+          const left = leftOffset + box.xMin * imgRect.width;
+          const top = topOffset + box.yMin * imgRect.height;
+          const width = (box.xMax - box.xMin) * imgRect.width;
+          const height = (box.yMax - box.yMin) * imgRect.height;
+          if (width < 1 || height < 1) continue;
+
+          const boxEl = document.createElement("div");
+          boxEl.className = "preview-bbox";
+          boxEl.style.left = `${left}px`;
+          boxEl.style.top = `${top}px`;
+          boxEl.style.width = `${width}px`;
+          boxEl.style.height = `${height}px`;
+          const labelEl = document.createElement("span");
+          labelEl.className = "preview-bbox-label";
+          labelEl.textContent = label;
+          boxEl.appendChild(labelEl);
+          previewOverlay.appendChild(boxEl);
+        }
+      }
+
+      function setPreviewBoxes(boxes) {
+        previewBoxes = Array.isArray(boxes) ? boxes : [];
+        renderPreviewBoxes();
+      }
+
+      function setStampPreview(file) {
+        previewLoadSeq += 1;
+        const seq = previewLoadSeq;
+        if (previewObjectUrl) {
+          URL.revokeObjectURL(previewObjectUrl);
+          previewObjectUrl = null;
+        }
+        if (!file || !isLikelyImageFile(file)) {
+          stampPreview.hidden = true;
+          stampPreview.removeAttribute("src");
+          previewPlaceholder.hidden = false;
+          setPreviewBoxes([]);
+          if (imageResolutionEl) imageResolutionEl.textContent = "";
+          if (file && statusEl) {
+            statusEl.className = "error";
+            statusEl.textContent = "Selected file does not look like a supported image.";
+          }
+          return;
+        }
+        previewObjectUrl = URL.createObjectURL(file);
+        stampPreview.hidden = true;
+        previewPlaceholder.hidden = false;
+        stampPreview.src = previewObjectUrl;
+        if (statusEl && !/Analyzing centering/i.test(statusEl.textContent || "")) {
+          statusEl.className = "";
+          statusEl.textContent = `Loading preview: ${file.name}`;
+        }
+        const onLoad = () => {
+          if (seq !== previewLoadSeq) return;
+          stampPreview.hidden = false;
+          previewPlaceholder.hidden = true;
+          const natW = stampPreview.naturalWidth || 0;
+          const natH = stampPreview.naturalHeight || 0;
+          const longEdge = Math.max(natW, natH);
+          if (imageResolutionEl) {
+            imageResolutionEl.textContent = natW && natH ? `Resolution: ${natW} x ${natH}px` : "";
+          }
+          if (longEdge > 0) {
+            maxSideInput.max = String(Math.max(400, longEdge));
+            maxSideInput.value = String(Math.max(400, longEdge));
+          }
+          if (statusEl && !/Analyzing centering/i.test(statusEl.textContent || "")) {
+            statusEl.className = "";
+            statusEl.textContent = `Selected image: ${file.name}`;
+          }
+          renderPreviewBoxes();
+        };
+        const onError = () => {
+          if (seq !== previewLoadSeq) return;
+          stampPreview.hidden = true;
+          stampPreview.removeAttribute("src");
+          previewPlaceholder.hidden = false;
+          setPreviewBoxes([]);
+          if (imageResolutionEl) imageResolutionEl.textContent = "";
+          if (statusEl) {
+            statusEl.className = "error";
+            statusEl.textContent = "Could not decode selected image for preview.";
+          }
+        };
+        stampPreview.addEventListener("load", onLoad, { once: true });
+        stampPreview.addEventListener("error", onError, { once: true });
+      }
+
+      stampFileInput.addEventListener("change", () => {
+        setPreviewBoxes([]);
+        setStampPreview(stampFileInput.files && stampFileInput.files[0] ? stampFileInput.files[0] : null);
+      });
+      stampPreview.addEventListener("load", () => {
+        renderPreviewBoxes();
+      });
+      stampPreview.addEventListener("error", () => {
+        stampPreview.hidden = true;
+        previewPlaceholder.hidden = false;
+      });
+      window.addEventListener("resize", renderPreviewBoxes);
+
+      function nextFrame() {
+        return new Promise((resolve) => {
+          requestAnimationFrame(() => resolve());
+        });
+      }
+
+      function readNumberInput(el, fallback) {
+        if (!el) return fallback;
+        const n = Number(el.value);
+        return Number.isFinite(n) ? n : fallback;
+      }
+
+      function oddAtLeast(v, min) {
+        let n = Math.max(min, Math.round(Number(v) || min));
+        if (n % 2 === 0) n += 1;
+        return n;
+      }
+
+      function clampValue(v, lo, hi) {
+        return Math.min(hi, Math.max(lo, Number(v)));
+      }
+
+      function readDetectionTuning() {
+        const minAr = clampValue(readNumberInput(tuneArMinInput, 0.5), 0.05, 20);
+        const maxAr = clampValue(readNumberInput(tuneArMaxInput, 2.0), minAr, 20);
+        return {
+          useWatershed: !!(tuneUseWatershedInput && tuneUseWatershedInput.checked),
+          blurKernel: oddAtLeast(clampValue(readNumberInput(tuneBlurInput, 5), 1, 31), 1),
+          threshBlock: oddAtLeast(clampValue(readNumberInput(tuneThreshBlockInput, 15), 3, 101), 3),
+          threshC: clampValue(readNumberInput(tuneThreshCInput, 4), -50, 50),
+          peakThreshold: clampValue(readNumberInput(tunePeakThreshInput, 0.34), 0.05, 0.95),
+          closeKernel: oddAtLeast(clampValue(readNumberInput(tuneCloseKInput, 7), 1, 31), 1),
+          openKernel: oddAtLeast(clampValue(readNumberInput(tuneOpenKInput, 7), 1, 31), 1),
+          minAreaRatio: clampValue(readNumberInput(tuneMinAreaInput, 0.0015), 0.00005, 0.5),
+          minExtent: clampValue(readNumberInput(tuneMinExtentInput, 0.25), 0.01, 1),
+          minAspectRatio: minAr,
+          maxAspectRatio: maxAr,
+          iouThreshold: clampValue(readNumberInput(tuneIouInput, 0.35), 0.01, 0.95),
+        };
+      }
+
+      function normalizeDetectionTuning(tuning) {
+        const t = tuning && typeof tuning === "object" ? tuning : {};
+        const minAr = clampValue(Number(t.minAspectRatio ?? 0.5), 0.05, 20);
+        const maxAr = clampValue(Number(t.maxAspectRatio ?? 2.0), minAr, 20);
+        return {
+          useWatershed: !!t.useWatershed,
+          blurKernel: oddAtLeast(clampValue(Number(t.blurKernel ?? 5), 1, 31), 1),
+          threshBlock: oddAtLeast(clampValue(Number(t.threshBlock ?? 15), 3, 101), 3),
+          threshC: clampValue(Number(t.threshC ?? 4), -50, 50),
+          peakThreshold: clampValue(Number(t.peakThreshold ?? 0.34), 0.05, 0.95),
+          closeKernel: oddAtLeast(clampValue(Number(t.closeKernel ?? 7), 1, 31), 1),
+          openKernel: oddAtLeast(clampValue(Number(t.openKernel ?? 7), 1, 31), 1),
+          minAreaRatio: clampValue(Number(t.minAreaRatio ?? 0.0015), 0.00005, 0.5),
+          minExtent: clampValue(Number(t.minExtent ?? 0.25), 0.01, 1),
+          minAspectRatio: minAr,
+          maxAspectRatio: maxAr,
+          iouThreshold: clampValue(Number(t.iouThreshold ?? 0.35), 0.01, 0.95),
+        };
+      }
+
+      function waitForImageReady(imgEl) {
+        if (imgEl.complete && imgEl.naturalWidth > 0) return Promise.resolve();
+        return new Promise((resolve, reject) => {
+          const onLoad = () => {
+            cleanup();
+            resolve();
+          };
+          const onError = () => {
+            cleanup();
+            reject(new Error("Could not decode the image."));
+          };
+          const cleanup = () => {
+            imgEl.removeEventListener("load", onLoad);
+            imgEl.removeEventListener("error", onError);
+          };
+          imgEl.addEventListener("load", onLoad, { once: true });
+          imgEl.addEventListener("error", onError, { once: true });
+          if (imgEl.complete && imgEl.naturalWidth > 0) {
+            cleanup();
+            resolve();
+          }
+        });
+      }
+
+      function choosePrimaryStampBox(boxes) {
+        if (!Array.isArray(boxes) || !boxes.length) return null;
+        let best = null;
+        let bestScore = -Infinity;
+        for (const box of boxes) {
+          const w = Math.max(0, box.xMax - box.xMin);
+          const h = Math.max(0, box.yMax - box.yMin);
+          const area = w * h;
+          if (area <= 0) continue;
+          const cx = (box.xMin + box.xMax) / 2;
+          const cy = (box.yMin + box.yMax) / 2;
+          const centerDistance = Math.hypot(cx - 0.5, cy - 0.5);
+          const score = area - centerDistance * 0.2;
+          if (score > bestScore) {
+            bestScore = score;
+            best = box;
+          }
+        }
+        return best;
+      }
+
+      function centeringGrade(scorePct) {
+        if (scorePct >= 98) return "Superb";
+        if (scorePct >= 95) return "Excellent";
+        if (scorePct >= 90) return "Very Fine";
+        if (scorePct >= 84) return "Fine";
+        return "Off-center";
+      }
+
+      function centeringReportFromBox(box, imageW, imageH) {
+        const left = clamp01(box.xMin);
+        const right = clamp01(1 - box.xMax);
+        const top = clamp01(box.yMin);
+        const bottom = clamp01(1 - box.yMax);
+
+        const horizontalScore = (Math.min(left, right) / Math.max(1e-9, Math.max(left, right))) * 100;
+        const verticalScore = (Math.min(top, bottom) / Math.max(1e-9, Math.max(top, bottom))) * 100;
+        const finalCenteringScore = Math.min(horizontalScore, verticalScore);
+
+        return {
+          type: "single_stamp_centering_analysis",
+          image_size_px: { width: imageW, height: imageH },
+          detected_stamp_box: {
+            x_min: box.xMin,
+            x_max: box.xMax,
+            y_min: box.yMin,
+            y_max: box.yMax,
+            width_pct: (box.xMax - box.xMin) * 100,
+            height_pct: (box.yMax - box.yMin) * 100,
+          },
+          border_margins_pct: {
+            left: left * 100,
+            right: right * 100,
+            top: top * 100,
+            bottom: bottom * 100,
+          },
+          centering: {
+            horizontal_score_pct: horizontalScore,
+            vertical_score_pct: verticalScore,
+            final_centering_score_pct: finalCenteringScore,
+            dead_centered: horizontalScore >= 99.999 && verticalScore >= 99.999,
+            grade: centeringGrade(finalCenteringScore),
+          },
+          alignment: {
+            estimated_tilt_deg_before_correction: 0,
+            applied_rotation_deg: 0,
+          },
+        };
+      }
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        statusEl.textContent = "";
+        statusEl.className = "";
+
+        const file = stampFileInput.files && stampFileInput.files[0];
+        if (!file) {
+          statusEl.className = "error";
+          statusEl.textContent = "Choose an image.";
+          return;
+        }
+
+        const maxSideCeiling = Math.max(400, Number(maxSideInput.max) || 2400);
+        const maxSide = Math.max(400, Math.min(maxSideCeiling, Number(maxSideInput.value) || 1200));
+        submitBtn.disabled = true;
+        statusEl.textContent = "Preparing worker…";
+
+        try {
+          await ensureDetectorWorkerReady();
+          statusEl.textContent = "Analyzing centering in worker…";
+          await nextFrame();
+
+          await waitForImageReady(stampPreview);
+
+          const natW = stampPreview.naturalWidth;
+          const natH = stampPreview.naturalHeight;
+          const tuning = readDetectionTuning();
+          await nextFrame();
+          const rawImageData = previewImageData(natW, natH);
+          const firstPass = await detectStampBoxesWithWorkerImageData(natW, natH, maxSide, tuning, rawImageData);
+          const estimatedTiltDeg = Number(firstPass.estimatedTiltDeg) || 0;
+          const maxDeskewDeg = 12;
+          const shouldDeskew = Math.abs(estimatedTiltDeg) >= 0.2 && Math.abs(estimatedTiltDeg) <= maxDeskewDeg;
+          const appliedRotationDeg = shouldDeskew ? -estimatedTiltDeg : 0;
+
+          let secondInput = previewImageData(natW, natH);
+          if (appliedRotationDeg !== 0) {
+            secondInput = rotateImageData(secondInput, natW, natH, appliedRotationDeg);
+          }
+          const secondPass = await detectStampBoxesWithWorkerImageData(
+            natW,
+            natH,
+            maxSide,
+            tuning,
+            secondInput
+          );
+          const stampBox = choosePrimaryStampBox(secondPass.boxes);
+          if (!stampBox) {
+            throw new Error("Could not detect a clear stamp boundary. Try a tighter crop or adjust tuning.");
+          }
+
+          const previewList = [];
+          const report = centeringReportFromBox(stampBox, natW, natH);
+          report.alignment.estimated_tilt_deg_before_correction = estimatedTiltDeg;
+          report.alignment.applied_rotation_deg = appliedRotationDeg;
+          const jsonStr = JSON.stringify(report, null, 2);
+
+          const section = document.getElementById("listing-section");
+          const waitEl = document.getElementById("listing-wait");
+          const scrollEl = document.getElementById("listing-scroll");
+          const textEl = document.getElementById("listing-text");
+          const uploadLayout = document.getElementById("upload-layout");
+          section.hidden = false;
+          if (uploadLayout) uploadLayout.classList.add("listing-open");
+          document.querySelector("main")?.classList.add("listing-open");
+          // Layout width changes when listing panel opens; render boxes after reflow.
+          setPreviewBoxes(previewList);
+          await nextFrame();
+          renderPreviewBoxes();
+          section.setAttribute("aria-busy", "false");
+          waitEl.textContent =
+            appliedRotationDeg !== 0
+              ? `Applied deskew rotation of ${appliedRotationDeg.toFixed(2)}° before centering analysis.`
+              : "No deskew rotation applied; image already near level.";
+          textEl.textContent = jsonStr;
+          scrollEl.hidden = false;
+
+          statusEl.className = "ok";
+          statusEl.textContent = `Centering analysis complete. Grade: ${report.centering.grade} (${report.centering.final_centering_score_pct.toFixed(1)}%).`;
+        } catch (err) {
+          statusEl.className = "error";
+          statusEl.textContent = err instanceof Error ? err.message : String(err);
+        } finally {
+          submitBtn.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>

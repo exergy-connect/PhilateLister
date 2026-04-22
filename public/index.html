@@ -1074,6 +1074,8 @@
        */
       async function waitForListingOnBranch(listingPath, token, options) {
         const intervalMs = options && options.intervalMs != null ? options.intervalMs : 4000;
+        const initialPollDelayMs =
+          options && options.initialPollDelayMs != null ? options.initialPollDelayMs : 20000;
         const maxWaitMs = options && options.maxWaitMs != null ? options.maxWaitMs : 60000;
         const gen = ++listingPollGeneration;
         const section = document.getElementById("listing-section");
@@ -1093,6 +1095,11 @@
         setStampCropRows([]);
 
         const start = Date.now();
+        const firstDelayMs = Math.max(0, Math.min(initialPollDelayMs, maxWaitMs));
+        if (firstDelayMs > 0) {
+          waitEl.textContent = `Waiting for Actions to write ${listingPath} on ${PHILATELISTER.branch}… (${formatMmSs(Date.now() - start)} elapsed)`;
+          await new Promise((r) => setTimeout(r, firstDelayMs));
+        }
         while (Date.now() - start < maxWaitMs) {
           if (gen !== listingPollGeneration) return;
           waitEl.textContent = `Waiting for Actions to write ${listingPath} on ${PHILATELISTER.branch}… (${formatMmSs(Date.now() - start)} elapsed)`;

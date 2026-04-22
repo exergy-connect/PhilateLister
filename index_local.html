@@ -361,13 +361,22 @@
       const statusEl = document.getElementById("status");
       const submitBtn = document.getElementById("submit-btn");
 
-      const WORKER_INIT_TIMEOUT_MS = 20000;
-      const WORKER_DETECT_TIMEOUT_MS = 45000;
+      const WORKER_INIT_TIMEOUT_MS = 90000;
+      const WORKER_DETECT_TIMEOUT_MS = 120000;
       const IS_FILE_ORIGIN = window.location.protocol === "file:";
+      const DEBUG_LOGGING =
+        new URLSearchParams(window.location.search).get("debug") === "1" ||
+        window.localStorage.getItem("philatelister_debug") === "1";
       let detectorWorker = null;
       let detectorWorkerUrl = null;
       let detectorReqSeq = 0;
       const pendingDetections = new Map();
+      let workerReadyPromise = null;
+
+      function dbg(...args) {
+        if (!DEBUG_LOGGING) return;
+        console.debug("[PhilateLister]", ...args);
+      }
 
       function ensureDetectorWorker() {
         if (IS_FILE_ORIGIN) {
@@ -376,6 +385,7 @@
           );
         }
         if (detectorWorker) return detectorWorker;
+        dbg("Creating detection worker");
         const source = `
           const OPENCV_URL = "https://docs.opencv.org/4.13.0/opencv.js";
           const INIT_TIMEOUT_MS = ${WORKER_INIT_TIMEOUT_MS};
@@ -532,6 +542,10 @@
             if (!id) return;
             try {
               const cv = await ensureCvReady();
+              if (data.cmd === "init") {
+                self.postMessage({ id, ok: true, ready: true });
+                return;
+              }
               const boxes = detectBoxes(cv, data.width, data.height, data.rgbaBuffer, data.maxSide);
               self.postMessage({ id, ok: true, boxes });
             } catch (err) {
@@ -551,10 +565,12 @@
           if (!req) return;
           pendingDetections.delete(data.id);
           clearTimeout(req.timer);
+          dbg("Worker response", { id: data.id, ok: !!data.ok, boxes: Array.isArray(data.boxes) ? data.boxes.length : undefined });
           if (data.ok) req.resolve(Array.isArray(data.boxes) ? data.boxes : []);
           else req.reject(new Error(data.error || "Worker detection failed."));
         };
-        detectorWorker.onerror = () => {
+        detectorWorker.onerror = (ev) => {
+          dbg("Worker crashed", { message: ev.message, filename: ev.filename, lineno: ev.lineno, colno: ev.colno });
           for (const [, req] of pendingDetections) {
             clearTimeout(req.timer);
             req.reject(new Error("Detection worker crashed."));
@@ -562,6 +578,7 @@
           pendingDetections.clear();
           detectorWorker.terminate();
           detectorWorker = null;
+          workerReadyPromise = null;
           if (detectorWorkerUrl) {
             URL.revokeObjectURL(detectorWorkerUrl);
             detectorWorkerUrl = null;
@@ -570,16 +587,68 @@
         return detectorWorker;
       }
 
-      async function detectStampBoxesWithWorker(natW, natH, maxSide) {
+      function requestWorker(data, timeoutMs, timeoutMessage) {
         const worker = ensureDetectorWorker();
+        const id = `worker_${Date.now()}_${++detectorReqSeq}`;
+        const startedAt = performance.now();
+        dbg("Worker request start", { id, cmd: data.cmd || "detect", timeoutMs });
+        return new Promise((resolve, reject) => {
+          const timer = setTimeout(() => {
+            pendingDetections.delete(id);
+            dbg("Worker request timeout", { id, cmd: data.cmd || "detect", elapsedMs: Math.round(performance.now() - startedAt) });
+            reject(new Error(timeoutMessage));
+          }, timeoutMs);
+          pendingDetections.set(id, {
+            resolve: (value) => {
+              dbg("Worker request done", { id, cmd: data.cmd || "detect", elapsedMs: Math.round(performance.now() - startedAt) });
+              resolve(value);
+            },
+            reject: (err) => {
+              dbg("Worker request failed", {
+                id,
+                cmd: data.cmd || "detect",
+                elapsedMs: Math.round(performance.now() - startedAt),
+                error: err instanceof Error ? err.message : String(err),
+              });
+              reject(err);
+            },
+            timer,
+          });
+          worker.postMessage({ ...data, id });
+        });
+      }
+
+      function ensureDetectorWorkerReady() {
+        if (workerReadyPromise) return workerReadyPromise;
+        dbg("Worker init requested");
+        workerReadyPromise = requestWorker(
+          { cmd: "init" },
+          WORKER_INIT_TIMEOUT_MS,
+          "Timed out while initializing OpenCV in worker."
+        )
+          .then(() => {
+            dbg("Worker init ready");
+            return undefined;
+          })
+          .catch((err) => {
+            workerReadyPromise = null;
+            dbg("Worker init failed", err instanceof Error ? err.message : String(err));
+            throw err;
+          });
+        return workerReadyPromise;
+      }
+
+      async function detectStampBoxesWithWorker(natW, natH, maxSide) {
+        dbg("Detect request", { natW, natH, maxSide });
+        await ensureDetectorWorkerReady();
         opencvCanvas.width = natW;
         opencvCanvas.height = natH;
         const ctx2d = opencvCanvas.getContext("2d");
         if (!ctx2d) throw new Error("Canvas is not available in this browser.");
         ctx2d.drawImage(stampPreview, 0, 0, natW, natH);
         const imageData = ctx2d.getImageData(0, 0, natW, natH);
+        const worker = ensureDetectorWorker();
         const id = `detect_${Date.now()}_${++detectorReqSeq}`;
-
         return new Promise((resolve, reject) => {
           const timer = setTimeout(() => {
             pendingDetections.delete(id);
@@ -587,13 +656,7 @@
           }, WORKER_DETECT_TIMEOUT_MS);
           pendingDetections.set(id, { resolve, reject, timer });
           worker.postMessage(
-            {
-              id,
-              width: natW,
-              height: natH,
-              maxSide,
-              rgbaBuffer: imageData.data.buffer,
-            },
+            { id, cmd: "detect", width: natW, height: natH, maxSide, rgbaBuffer: imageData.data.buffer },
             [imageData.data.buffer]
           );
         });
@@ -604,6 +667,7 @@
           detectorWorker.terminate();
           detectorWorker = null;
         }
+        workerReadyPromise = null;
         if (detectorWorkerUrl) {
           URL.revokeObjectURL(detectorWorkerUrl);
           detectorWorkerUrl = null;
@@ -616,12 +680,28 @@
             "Opened as file://. Start a local server (for example: python3 -m http.server 8000) and open http://localhost:8000/index_local.html";
           statusEl.className = "error";
         } else {
-          statusEl.textContent = "AI Vision Active (worker mode)";
-          statusEl.className = "ok";
+          statusEl.textContent = "Starting worker OpenCV runtime…";
+          statusEl.className = "";
         }
       }
       if (submitBtn) {
         submitBtn.disabled = IS_FILE_ORIGIN;
+      }
+      if (!IS_FILE_ORIGIN) {
+        if (DEBUG_LOGGING) dbg("Debug logging enabled");
+        ensureDetectorWorkerReady().then(
+          () => {
+            if (!statusEl) return;
+            if (/Loading preview|Selected image|Detecting regions/i.test(statusEl.textContent || "")) return;
+            statusEl.textContent = "AI Vision Active (worker mode)";
+            statusEl.className = "ok";
+          },
+          (err) => {
+            if (!statusEl) return;
+            statusEl.className = "error";
+            statusEl.textContent = err instanceof Error ? err.message : String(err);
+          }
+        );
       }
 
       const stampFileInput = document.getElementById("stamp-file");
@@ -915,6 +995,7 @@
         statusEl.textContent = "Preparing worker…";
 
         try {
+          await ensureDetectorWorkerReady();
           statusEl.textContent = "Detecting regions in worker…";
           await nextFrame();
 

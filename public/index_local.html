@@ -78,10 +78,10 @@
       }
       .preview-panel .form-panel {
         margin-top: 1rem;
-        width: 50%;
-        min-width: 17rem;
-        max-width: 32rem;
-        align-self: center;
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+        align-self: stretch;
       }
       .preview-frame {
         background: #1c1b18;
@@ -151,6 +151,50 @@
       }
       .form-panel form {
         margin: 0;
+      }
+      .tuning-panel {
+        margin-top: 0.45rem;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: #fffcf6;
+        padding: 0.35rem 0.5rem 0.5rem;
+        overflow-x: auto;
+      }
+      .tuning-panel > summary {
+        cursor: pointer;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: var(--ink);
+        list-style: none;
+      }
+      .tuning-panel > summary::-webkit-details-marker {
+        display: none;
+      }
+      .tuning-grid {
+        margin-top: 0.4rem;
+        display: grid;
+        grid-template-rows: repeat(2, auto);
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(8rem, 8.8rem);
+        gap: 0.35rem 0.45rem;
+        width: max-content;
+      }
+      .tune-field {
+        margin: 0;
+      }
+      .tune-label {
+        display: block;
+        font-size: 0.68rem;
+        font-weight: 600;
+        color: var(--muted);
+        margin-bottom: 0.15rem;
+        white-space: nowrap;
+      }
+      .tune-field input {
+        width: 100%;
+        font: inherit;
+        font-size: 0.76rem;
+        padding: 0.24rem 0.3rem;
       }
       .controls-row {
         display: grid;
@@ -371,6 +415,119 @@
                 <button type="submit" id="submit-btn" disabled>Detect</button>
               </div>
               <div id="image-resolution" class="hint" style="margin-top: 0.35rem"></div>
+              <details class="tuning-panel">
+                <summary>Detection tuning</summary>
+                <div class="tuning-grid">
+                  <div class="tune-field">
+                    <label class="tune-label" for="tune-blur">Blur kernel (odd)</label>
+                    <input
+                      id="tune-blur"
+                      type="number"
+                      min="1"
+                      max="15"
+                      step="2"
+                      value="5"
+                      title="Gaussian blur kernel size. Lower keeps edges sharper; higher smooths noise."
+                    />
+                  </div>
+                  <div class="tune-field">
+                    <label class="tune-label" for="tune-thresh-block">Threshold block (odd)</label>
+                    <input
+                      id="tune-thresh-block"
+                      type="number"
+                      min="3"
+                      max="51"
+                      step="2"
+                      value="15"
+                      title="Adaptive-threshold neighborhood size. Larger uses broader local context."
+                    />
+                  </div>
+                  <div class="tune-field">
+                    <label class="tune-label" for="tune-thresh-c">Threshold C</label>
+                    <input
+                      id="tune-thresh-c"
+                      type="number"
+                      min="-10"
+                      max="20"
+                      step="1"
+                      value="4"
+                      title="Constant subtracted in adaptive thresholding. Lower increases sensitivity; higher is stricter."
+                    />
+                  </div>
+                  <div class="tune-field">
+                    <label class="tune-label" for="tune-close-k">Close kernel (odd)</label>
+                    <input
+                      id="tune-close-k"
+                      type="number"
+                      min="1"
+                      max="21"
+                      step="2"
+                      value="7"
+                      title="Morphological close kernel. Helps connect broken borders and fill small gaps."
+                    />
+                  </div>
+                  <div class="tune-field">
+                    <label class="tune-label" for="tune-open-k">Open kernel (odd)</label>
+                    <input
+                      id="tune-open-k"
+                      type="number"
+                      min="1"
+                      max="21"
+                      step="2"
+                      value="7"
+                      title="Morphological open kernel. Removes tiny specks/noise but can erase fine edges if too high."
+                    />
+                  </div>
+                  <div class="tune-field">
+                    <label class="tune-label" for="tune-min-area">Min area ratio</label>
+                    <input
+                      id="tune-min-area"
+                      type="number"
+                      min="0.0001"
+                      max="0.05"
+                      step="0.0001"
+                      value="0.0015"
+                      title="Minimum box area as fraction of the processed image. Lower allows smaller stamps."
+                    />
+                  </div>
+                  <div class="tune-field">
+                    <label class="tune-label" for="tune-min-extent">Min extent</label>
+                    <input
+                      id="tune-min-extent"
+                      type="number"
+                      min="0.01"
+                      max="1"
+                      step="0.01"
+                      value="0.25"
+                      title="Contour fill ratio (contour area / box area). Lower accepts looser/non-solid contours."
+                    />
+                  </div>
+                  <div class="tune-field">
+                    <label class="tune-label" for="tune-ar-min">Aspect min</label>
+                    <input
+                      id="tune-ar-min"
+                      type="number"
+                      min="0.1"
+                      max="2"
+                      step="0.05"
+                      value="0.5"
+                      title="Minimum width/height ratio allowed for candidate boxes."
+                    />
+                  </div>
+                  <div class="tune-field">
+                    <label class="tune-label" for="tune-ar-max">Aspect max</label>
+                    <input
+                      id="tune-ar-max"
+                      type="number"
+                      min="1"
+                      max="8"
+                      step="0.1"
+                      value="2.0"
+                      title="Maximum width/height ratio allowed for candidate boxes."
+                    />
+                  </div>
+                </div>
+              </details>
               <div id="status" role="status" aria-live="polite"></div>
             </form>
           </div>
@@ -463,6 +620,16 @@
             return Math.min(1, Math.max(0, Number(n)));
           }
 
+          function clamp(n, lo, hi) {
+            return Math.min(hi, Math.max(lo, Number(n)));
+          }
+
+          function oddAtLeast(v, min) {
+            let n = Math.max(min, Math.round(Number(v) || min));
+            if (n % 2 === 0) n += 1;
+            return n;
+          }
+
           function iouBox(a, b) {
             const x1 = Math.max(a.x0, b.x0);
             const y1 = Math.max(a.y0, b.y0);
@@ -541,7 +708,17 @@
             self.postMessage({ type: "ready" });
           }
 
-          function detectBoxes(cv, width, height, rgbaBuffer, maxSide) {
+          function detectBoxes(cv, width, height, rgbaBuffer, maxSide, tuning) {
+            const t = tuning && typeof tuning === "object" ? tuning : {};
+            const blurKernel = oddAtLeast(clamp(t.blurKernel ?? 5, 1, 31), 1);
+            const threshBlock = oddAtLeast(clamp(t.threshBlock ?? 15, 3, 101), 3);
+            const threshC = clamp(t.threshC ?? 4, -50, 50);
+            const closeKernel = oddAtLeast(clamp(t.closeKernel ?? 7, 1, 31), 1);
+            const openKernel = oddAtLeast(clamp(t.openKernel ?? 7, 1, 31), 1);
+            const minAreaRatio = clamp(t.minAreaRatio ?? 0.0015, 0.00005, 0.5);
+            const minExtentT = clamp(t.minExtent ?? 0.25, 0.01, 1);
+            const minArT = clamp(t.minAspectRatio ?? 0.5, 0.05, 20);
+            const maxArT = clamp(t.maxAspectRatio ?? 2.0, minArT, 20);
             const rgba = new Uint8ClampedArray(rgbaBuffer);
             const src = cv.matFromArray(height, width, cv.CV_8UC4, rgba);
             const scale = Math.min(1, maxSide / Math.max(width, height));
@@ -551,37 +728,38 @@
             const gray = new cv.Mat();
             const blurred = new cv.Mat();
             const bin = new cv.Mat();
-            const kernel = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(7, 7));
+            const closeK = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(closeKernel, closeKernel));
+            const openK = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(openKernel, openKernel));
             try {
               cv.resize(src, scaled, new cv.Size(w, h), 0, 0, cv.INTER_AREA);
               cv.cvtColor(scaled, gray, cv.COLOR_RGBA2GRAY);
-              cv.GaussianBlur(gray, blurred, new cv.Size(5, 5), 0);
+              cv.GaussianBlur(gray, blurred, new cv.Size(blurKernel, blurKernel), 0);
               cv.adaptiveThreshold(
                 blurred,
                 bin,
                 255,
                 cv.ADAPTIVE_THRESH_GAUSSIAN_C,
                 cv.THRESH_BINARY_INV,
-                15,
-                4
+                threshBlock,
+                threshC
               );
-              cv.morphologyEx(bin, bin, cv.MORPH_CLOSE, kernel);
-              cv.morphologyEx(bin, bin, cv.MORPH_OPEN, kernel);
+              cv.morphologyEx(bin, bin, cv.MORPH_CLOSE, closeK);
+              cv.morphologyEx(bin, bin, cv.MORPH_OPEN, openK);
 
               const contours = new cv.MatVector();
               const hierarchy = new cv.Mat();
               cv.findContours(bin, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
 
               const imgArea = w * h;
-              const minA = imgArea * 0.0015;
+              const minA = imgArea * minAreaRatio;
               const maxA = imgArea * 0.45;
-              const minExtent = 0.25;
+              const minExtent = minExtentT;
               const maxRawCandidates = 1200;
               const maxNmsCandidates = 250;
               const maxOutputBoxes = 120;
               const raw = [];
-              const maxAspectRatio = 2.0;
-              const minAspectRatio = 0.5;
+              const maxAspectRatio = maxArT;
+              const minAspectRatio = minArT;
 
               function pushCandidate(x0, y0, bw, bh, areaEstimate) {
                 const area = bw * bh;
@@ -606,28 +784,8 @@
                 const area = rw * rh;
                 if (area < minA || area > maxA) continue;
                 const ar = rw / Math.max(1, rh);
-                if (ar >= minAspectRatio && ar <= maxAspectRatio) {
-                  pushCandidate(r.x, r.y, rw, rh, contourArea);
-                } else if (ar > maxAspectRatio) {
-                  const parts = Math.min(6, Math.ceil(ar / maxAspectRatio));
-                  for (let p = 0; p < parts; p++) {
-                    const sx0 = r.x + Math.floor((p * rw) / parts);
-                    const sx1 = r.x + Math.floor(((p + 1) * rw) / parts);
-                    const sw = Math.max(1, sx1 - sx0);
-                    pushCandidate(sx0, r.y, sw, rh, contourArea / parts);
-                    if (raw.length >= maxRawCandidates) break;
-                  }
-                } else {
-                  const invAr = rh / Math.max(1, rw);
-                  const parts = Math.min(6, Math.ceil(invAr / maxAspectRatio));
-                  for (let p = 0; p < parts; p++) {
-                    const sy0 = r.y + Math.floor((p * rh) / parts);
-                    const sy1 = r.y + Math.floor(((p + 1) * rh) / parts);
-                    const sh = Math.max(1, sy1 - sy0);
-                    pushCandidate(r.x, sy0, rw, sh, contourArea / parts);
-                    if (raw.length >= maxRawCandidates) break;
-                  }
-                }
+                if (ar < minAspectRatio || ar > maxAspectRatio) continue;
+                pushCandidate(r.x, r.y, rw, rh, contourArea);
                 if (raw.length >= maxRawCandidates) break;
               }
               contours.delete();
@@ -662,7 +820,8 @@
               gray.delete();
               blurred.delete();
               bin.delete();
-              kernel.delete();
+              closeK.delete();
+              openK.delete();
             }
           }
 
@@ -675,8 +834,13 @@
               const cv = cvInstance || self.cv;
               if (!cv || !cv.Mat) throw new Error("OpenCV runtime initialized without usable cv API.");
               notifyReady();
-              dbg("Detect request start", { width: data.width, height: data.height, maxSide: data.maxSide });
-              const boxes = detectBoxes(cv, data.width, data.height, data.rgbaBuffer, data.maxSide);
+              dbg("Detect request start", {
+                width: data.width,
+                height: data.height,
+                maxSide: data.maxSide,
+                tuning: data.tuning || null,
+              });
+              const boxes = detectBoxes(cv, data.width, data.height, data.rgbaBuffer, data.maxSide, data.tuning);
               dbg("Detect request complete", { boxes: boxes.length });
               self.postMessage({ id, ok: true, boxes });
             } catch (err) {
@@ -825,8 +989,8 @@
         return workerReadyPromise;
       }
 
-      async function detectStampBoxesWithWorker(natW, natH, maxSide) {
-        dbg("Detect request", { natW, natH, maxSide });
+      async function detectStampBoxesWithWorker(natW, natH, maxSide, tuning) {
+        dbg("Detect request", { natW, natH, maxSide, tuning });
         await ensureDetectorWorkerReady();
         opencvCanvas.width = natW;
         opencvCanvas.height = natH;
@@ -843,7 +1007,7 @@
           }, WORKER_DETECT_TIMEOUT_MS);
           pendingDetections.set(id, { resolve, reject, timer });
           worker.postMessage(
-            { id, cmd: "detect", width: natW, height: natH, maxSide, rgbaBuffer: imageData.data.buffer },
+            { id, cmd: "detect", width: natW, height: natH, maxSide, tuning, rgbaBuffer: imageData.data.buffer },
             [imageData.data.buffer]
           );
         });
@@ -899,6 +1063,15 @@
 
       const stampFileInput = document.getElementById("stamp-file");
       const maxSideInput = document.getElementById("max-side");
+      const tuneBlurInput = document.getElementById("tune-blur");
+      const tuneThreshBlockInput = document.getElementById("tune-thresh-block");
+      const tuneThreshCInput = document.getElementById("tune-thresh-c");
+      const tuneCloseKInput = document.getElementById("tune-close-k");
+      const tuneOpenKInput = document.getElementById("tune-open-k");
+      const tuneMinAreaInput = document.getElementById("tune-min-area");
+      const tuneMinExtentInput = document.getElementById("tune-min-extent");
+      const tuneArMinInput = document.getElementById("tune-ar-min");
+      const tuneArMaxInput = document.getElementById("tune-ar-max");
       const imageResolutionEl = document.getElementById("image-resolution");
       const previewFrame = document.querySelector(".preview-frame");
       const stampPreview = document.getElementById("stamp-preview");
@@ -1059,6 +1232,38 @@
         });
       }
 
+      function readNumberInput(el, fallback) {
+        if (!el) return fallback;
+        const n = Number(el.value);
+        return Number.isFinite(n) ? n : fallback;
+      }
+
+      function oddAtLeast(v, min) {
+        let n = Math.max(min, Math.round(Number(v) || min));
+        if (n % 2 === 0) n += 1;
+        return n;
+      }
+
+      function clampValue(v, lo, hi) {
+        return Math.min(hi, Math.max(lo, Number(v)));
+      }
+
+      function readDetectionTuning() {
+        const minAr = clampValue(readNumberInput(tuneArMinInput, 0.5), 0.05, 20);
+        const maxAr = clampValue(readNumberInput(tuneArMaxInput, 2.0), minAr, 20);
+        return {
+          blurKernel: oddAtLeast(clampValue(readNumberInput(tuneBlurInput, 5), 1, 31), 1),
+          threshBlock: oddAtLeast(clampValue(readNumberInput(tuneThreshBlockInput, 15), 3, 101), 3),
+          threshC: clampValue(readNumberInput(tuneThreshCInput, 4), -50, 50),
+          closeKernel: oddAtLeast(clampValue(readNumberInput(tuneCloseKInput, 7), 1, 31), 1),
+          openKernel: oddAtLeast(clampValue(readNumberInput(tuneOpenKInput, 7), 1, 31), 1),
+          minAreaRatio: clampValue(readNumberInput(tuneMinAreaInput, 0.0015), 0.00005, 0.5),
+          minExtent: clampValue(readNumberInput(tuneMinExtentInput, 0.25), 0.01, 1),
+          minAspectRatio: minAr,
+          maxAspectRatio: maxAr,
+        };
+      }
+
       function waitForImageReady(imgEl) {
         if (imgEl.complete && imgEl.naturalWidth > 0) return Promise.resolve();
         return new Promise((resolve, reject) => {
@@ -1210,8 +1415,9 @@
 
           const natW = stampPreview.naturalWidth;
           const natH = stampPreview.naturalHeight;
+          const tuning = readDetectionTuning();
           await nextFrame();
-          const boxes = await detectStampBoxesWithWorker(natW, natH, maxSide);
+          const boxes = await detectStampBoxesWithWorker(natW, natH, maxSide, tuning);
 
           const previewList = boxes.map((box, i) => ({
             box,

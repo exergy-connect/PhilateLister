@@ -973,7 +973,7 @@
       function previewImageData(natW, natH) {
         opencvCanvas.width = natW;
         opencvCanvas.height = natH;
-        const ctx2d = opencvCanvas.getContext("2d");
+        const ctx2d = opencvCanvas.getContext("2d", { willReadFrequently: true });
         if (!ctx2d) throw new Error("Canvas is not available in this browser.");
         ctx2d.drawImage(stampPreview, 0, 0, natW, natH);
         return ctx2d.getImageData(0, 0, natW, natH);
@@ -990,7 +990,7 @@
         const dstCanvas = document.createElement("canvas");
         dstCanvas.width = width;
         dstCanvas.height = height;
-        const dstCtx = dstCanvas.getContext("2d");
+        const dstCtx = dstCanvas.getContext("2d", { willReadFrequently: true });
         if (!dstCtx) throw new Error("Canvas is not available in this browser.");
         dstCtx.fillStyle = "#ffffff";
         dstCtx.fillRect(0, 0, width, height);
@@ -1462,7 +1462,14 @@
             maxSide,
             secondInput
           );
-          const stampBox = choosePrimaryStampBox(secondPass.boxes);
+          let chosenBoxes = Array.isArray(secondPass.boxes) ? secondPass.boxes : [];
+          let effectiveRotationDeg = appliedRotationDeg;
+          if (!chosenBoxes.length && Array.isArray(firstPass.boxes) && firstPass.boxes.length) {
+            chosenBoxes = firstPass.boxes;
+            effectiveRotationDeg = 0;
+          }
+
+          const stampBox = choosePrimaryStampBox(chosenBoxes);
           if (!stampBox) {
             throw new Error("Could not detect a clear stamp boundary. Try a tighter crop with clear stamp edges.");
           }
@@ -1470,8 +1477,8 @@
           const previewList = [];
           const report = centeringReportFromBox(stampBox, natW, natH);
           report.alignment.estimated_tilt_deg_before_correction = estimatedTiltDeg;
-          report.alignment.applied_rotation_deg = appliedRotationDeg;
-          setPreviewRotation(appliedRotationDeg);
+          report.alignment.applied_rotation_deg = effectiveRotationDeg;
+          setPreviewRotation(effectiveRotationDeg);
           const jsonStr = JSON.stringify(report, null, 2);
 
           const section = document.getElementById("listing-section");
@@ -1488,8 +1495,8 @@
           renderPreviewBoxes();
           section.setAttribute("aria-busy", "false");
           waitEl.textContent =
-            appliedRotationDeg !== 0
-              ? `Applied deskew rotation of ${appliedRotationDeg.toFixed(2)}° before centering analysis.`
+            effectiveRotationDeg !== 0
+              ? `Applied deskew rotation of ${effectiveRotationDeg.toFixed(2)}° before centering analysis.`
               : "No deskew rotation applied; image already near level.";
           textEl.textContent = jsonStr;
           scrollEl.hidden = false;

@@ -461,6 +461,18 @@
                     />
                   </div>
                   <div class="tune-field">
+                    <label class="tune-label" for="tune-peak-thresh">Peak threshold</label>
+                    <input
+                      id="tune-peak-thresh"
+                      type="number"
+                      min="0.05"
+                      max="0.95"
+                      step="0.01"
+                      value="0.34"
+                      title="Distance-transform peak cutoff used for watershed markers. Lower usually splits more regions; higher merges more."
+                    />
+                  </div>
+                  <div class="tune-field">
                     <label class="tune-label" for="tune-close-k">Close kernel (odd)</label>
                     <input
                       id="tune-close-k"
@@ -733,6 +745,7 @@
             const threshC = clamp(t.threshC ?? 4, -50, 50);
             const closeKernel = oddAtLeast(clamp(t.closeKernel ?? 7, 1, 31), 1);
             const openKernel = oddAtLeast(clamp(t.openKernel ?? 7, 1, 31), 1);
+            const peakThreshold = clamp(t.peakThreshold ?? 0.34, 0.05, 0.95);
             const minAreaRatio = clamp(t.minAreaRatio ?? 0.0015, 0.00005, 0.5);
             const minExtentT = clamp(t.minExtent ?? 0.25, 0.01, 1);
             const minArT = clamp(t.minAspectRatio ?? 0.5, 0.05, 20);
@@ -747,8 +760,19 @@
             const gray = new cv.Mat();
             const blurred = new cv.Mat();
             const bin = new cv.Mat();
+            const dist = new cv.Mat();
+            const distNorm = new cv.Mat();
+            const sureFg = new cv.Mat();
+            const sureFg8 = new cv.Mat();
+            const sureBg = new cv.Mat();
+            const unknown = new cv.Mat();
+            const markers = new cv.Mat();
+            const markersPlusOne = new cv.Mat();
+            const markerOnes = new cv.Mat();
+            const rgb = new cv.Mat();
             const closeK = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(closeKernel, closeKernel));
             const openK = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(openKernel, openKernel));
+            const bgK = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(3, 3));
             try {
               cv.resize(src, scaled, new cv.Size(w, h), 0, 0, cv.INTER_AREA);
               cv.cvtColor(scaled, gray, cv.COLOR_RGBA2GRAY);
@@ -765,9 +789,23 @@
               cv.morphologyEx(bin, bin, cv.MORPH_CLOSE, closeK);
               cv.morphologyEx(bin, bin, cv.MORPH_OPEN, openK);
 
-              const contours = new cv.MatVector();
-              const hierarchy = new cv.Mat();
-              cv.findContours(bin, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+              // Build watershed markers from distance-transform peaks.
+              cv.distanceTransform(bin, dist, cv.DIST_L2, 5);
+              cv.normalize(dist, distNorm, 0, 1.0, cv.NORM_MINMAX);
+              cv.threshold(distNorm, sureFg, peakThreshold, 1.0, cv.THRESH_BINARY);
+              sureFg.convertTo(sureFg8, cv.CV_8U, 255);
+              cv.dilate(bin, sureBg, bgK);
+              cv.subtract(sureBg, sureFg8, unknown);
+              cv.connectedComponents(sureFg8, markers, 8, cv.CV_32S);
+
+              markerOnes.create(markers.rows, markers.cols, cv.CV_32S);
+              markerOnes.setTo(new cv.Scalar(1));
+              cv.add(markers, markerOnes, markersPlusOne);
+              markersPlusOne.copyTo(markers);
+              markers.setTo(new cv.Scalar(0), unknown);
+
+              cv.cvtColor(scaled, rgb, cv.COLOR_RGBA2RGB);
+              cv.watershed(rgb, markers);
 
               const imgArea = w * h;
               const minA = imgArea * minAreaRatio;
@@ -793,22 +831,33 @@
                 raw.push({ x0, y0, x1: x0 + bw, y1: y0 + bh, area, score });
               }
 
-              for (let i = 0; i < contours.size(); i++) {
-                const c = contours.get(i);
-                const contourArea = cv.contourArea(c, false);
-                const r = cv.boundingRect(c);
-                c.delete();
-                const rw = r.width;
-                const rh = r.height;
-                const area = rw * rh;
-                if (area < minA || area > maxA) continue;
-                const ar = rw / Math.max(1, rh);
-                if (ar < minAspectRatio || ar > maxAspectRatio) continue;
-                pushCandidate(r.x, r.y, rw, rh, contourArea);
+              const markerData = markers.data32S;
+              const stats = new Map();
+              for (let y = 0; y < h; y++) {
+                const rowBase = y * w;
+                for (let x = 0; x < w; x++) {
+                  const label = markerData[rowBase + x];
+                  if (label <= 1) continue;
+                  let s = stats.get(label);
+                  if (!s) {
+                    s = { minX: x, minY: y, maxX: x, maxY: y, count: 1 };
+                    stats.set(label, s);
+                  } else {
+                    if (x < s.minX) s.minX = x;
+                    if (y < s.minY) s.minY = y;
+                    if (x > s.maxX) s.maxX = x;
+                    if (y > s.maxY) s.maxY = y;
+                    s.count += 1;
+                  }
+                }
+              }
+
+              for (const s of stats.values()) {
+                const rw = s.maxX - s.minX + 1;
+                const rh = s.maxY - s.minY + 1;
+                pushCandidate(s.minX, s.minY, rw, rh, s.count);
                 if (raw.length >= maxRawCandidates) break;
               }
-              contours.delete();
-              hierarchy.delete();
 
               raw.sort((a, b) => b.score - a.score || b.area - a.area);
               const nmsInput = raw.slice(0, maxNmsCandidates);
@@ -859,8 +908,19 @@
               gray.delete();
               blurred.delete();
               bin.delete();
+              dist.delete();
+              distNorm.delete();
+              sureFg.delete();
+              sureFg8.delete();
+              sureBg.delete();
+              unknown.delete();
+              markers.delete();
+              markersPlusOne.delete();
+              markerOnes.delete();
+              rgb.delete();
               closeK.delete();
               openK.delete();
+              bgK.delete();
             }
           }
 
@@ -1106,6 +1166,7 @@
       const tuneBlurInput = document.getElementById("tune-blur");
       const tuneThreshBlockInput = document.getElementById("tune-thresh-block");
       const tuneThreshCInput = document.getElementById("tune-thresh-c");
+      const tunePeakThreshInput = document.getElementById("tune-peak-thresh");
       const tuneCloseKInput = document.getElementById("tune-close-k");
       const tuneOpenKInput = document.getElementById("tune-open-k");
       const tuneMinAreaInput = document.getElementById("tune-min-area");
@@ -1296,6 +1357,7 @@
           blurKernel: oddAtLeast(clampValue(readNumberInput(tuneBlurInput, 5), 1, 31), 1),
           threshBlock: oddAtLeast(clampValue(readNumberInput(tuneThreshBlockInput, 15), 3, 101), 3),
           threshC: clampValue(readNumberInput(tuneThreshCInput, 4), -50, 50),
+          peakThreshold: clampValue(readNumberInput(tunePeakThreshInput, 0.34), 0.05, 0.95),
           closeKernel: oddAtLeast(clampValue(readNumberInput(tuneCloseKInput, 7), 1, 31), 1),
           openKernel: oddAtLeast(clampValue(readNumberInput(tuneOpenKInput, 7), 1, 31), 1),
           minAreaRatio: clampValue(readNumberInput(tuneMinAreaInput, 0.0015), 0.00005, 0.5),
@@ -1314,6 +1376,7 @@
           blurKernel: oddAtLeast(clampValue(Number(t.blurKernel ?? 5), 1, 31), 1),
           threshBlock: oddAtLeast(clampValue(Number(t.threshBlock ?? 15), 3, 101), 3),
           threshC: clampValue(Number(t.threshC ?? 4), -50, 50),
+          peakThreshold: clampValue(Number(t.peakThreshold ?? 0.34), 0.05, 0.95),
           closeKernel: oddAtLeast(clampValue(Number(t.closeKernel ?? 7), 1, 31), 1),
           openKernel: oddAtLeast(clampValue(Number(t.openKernel ?? 7), 1, 31), 1),
           minAreaRatio: clampValue(Number(t.minAreaRatio ?? 0.0015), 0.00005, 0.5),
@@ -1329,6 +1392,7 @@
           t.blurKernel,
           t.threshBlock,
           Math.round(t.threshC * 10),
+          Math.round(t.peakThreshold * 1000),
           t.closeKernel,
           t.openKernel,
           Math.round(t.minAreaRatio * 1000000),
@@ -1348,6 +1412,7 @@
           minAreaRatio: base.minAreaRatio * (more ? Math.pow(0.78, s) : Math.pow(1.24, s)),
           minExtent: base.minExtent + (more ? -0.035 * s : 0.035 * s),
           threshC: base.threshC + (more ? -1 * s : 1 * s),
+          peakThreshold: base.peakThreshold + (more ? -0.03 * s : 0.03 * s),
           iouThreshold: base.iouThreshold + dir * 0.06 * s,
           openKernel: base.openKernel + (more ? -2 * s : 2 * s),
           minAspectRatio: base.minAspectRatio * (more ? Math.pow(0.9, s) : Math.pow(1.06, s)),

@@ -1014,7 +1014,7 @@
         const dot = basename.lastIndexOf(".");
         const stem = dot >= 1 ? basename.slice(0, dot) : basename;
         const ext = listingExt === "json" ? "json" : "txt";
-        return `listings/${stem}.${ext}`;
+        return `public/listings/${stem}.${ext}`;
       }
 
       const promptSelectEl = document.getElementById("prompt-select");

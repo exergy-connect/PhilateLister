@@ -388,8 +388,15 @@
         dbg("Creating detection worker");
         const source = `
           const OPENCV_URL = "https://docs.opencv.org/4.13.0/opencv.js";
+          const OPENCV_BASE = OPENCV_URL.replace(/[^/]+$/, "");
           const INIT_TIMEOUT_MS = ${WORKER_INIT_TIMEOUT_MS};
+          const DEBUG = ${DEBUG_LOGGING ? "true" : "false"};
           let cvReadyPromise = null;
+
+          function dbg(...args) {
+            if (!DEBUG) return;
+            self.postMessage({ type: "debug", args });
+          }
 
           function clamp01(n) {
             return Math.min(1, Math.max(0, Number(n)));
@@ -411,39 +418,52 @@
             if (cvReadyPromise) return cvReadyPromise;
             cvReadyPromise = new Promise((resolve, reject) => {
               let done = false;
+              let poll = null;
               const timer = setTimeout(() => {
                 if (done) return;
                 done = true;
+                if (poll) clearInterval(poll);
                 reject(new Error("Timed out while initializing OpenCV.js in worker."));
               }, INIT_TIMEOUT_MS);
               const finish = (err, value) => {
                 if (done) return;
                 done = true;
                 clearTimeout(timer);
+                if (poll) clearInterval(poll);
                 if (err) reject(err);
                 else resolve(value);
               };
               self.Module = {
+                locateFile(path) {
+                  return OPENCV_BASE + path;
+                },
                 onRuntimeInitialized() {
+                  dbg("Worker onRuntimeInitialized fired");
                   if (self.cv && self.cv.Mat) finish(null, self.cv);
                 },
               };
-              try {
-                importScripts(OPENCV_URL);
-              } catch (e) {
-                finish(e instanceof Error ? e : new Error(String(e)));
-                return;
-              }
-              const poll = setInterval(() => {
-                if (done) {
-                  clearInterval(poll);
-                  return;
+              (async () => {
+                try {
+                  dbg("Fetching OpenCV.js", OPENCV_URL);
+                  const res = await fetch(OPENCV_URL, { cache: "no-store", mode: "cors" });
+                  if (!res.ok) {
+                    throw new Error("OpenCV.js fetch failed: HTTP " + res.status);
+                  }
+                  const scriptText = await res.text();
+                  dbg("Evaluating OpenCV.js", { bytes: scriptText.length });
+                  (0, eval)(scriptText);
+                  dbg("OpenCV.js evaluated");
+                  poll = setInterval(() => {
+                    if (done) return;
+                    if (self.cv && self.cv.Mat) {
+                      dbg("cv.Mat available");
+                      finish(null, self.cv);
+                    }
+                  }, 120);
+                } catch (e) {
+                  finish(e instanceof Error ? e : new Error(String(e)));
                 }
-                if (self.cv && self.cv.Mat) {
-                  clearInterval(poll);
-                  finish(null, self.cv);
-                }
-              }, 120);
+              })();
             });
             return cvReadyPromise;
           }
@@ -543,10 +563,13 @@
             try {
               const cv = await ensureCvReady();
               if (data.cmd === "init") {
+                dbg("Init request complete");
                 self.postMessage({ id, ok: true, ready: true });
                 return;
               }
+              dbg("Detect request start", { width: data.width, height: data.height, maxSide: data.maxSide });
               const boxes = detectBoxes(cv, data.width, data.height, data.rgbaBuffer, data.maxSide);
+              dbg("Detect request complete", { boxes: boxes.length });
               self.postMessage({ id, ok: true, boxes });
             } catch (err) {
               self.postMessage({
@@ -561,6 +584,10 @@
         detectorWorker = new Worker(detectorWorkerUrl);
         detectorWorker.onmessage = (ev) => {
           const data = ev.data || {};
+          if (data.type === "debug") {
+            dbg("Worker:", ...(Array.isArray(data.args) ? data.args : []));
+            return;
+          }
           const req = pendingDetections.get(data.id);
           if (!req) return;
           pendingDetections.delete(data.id);

@@ -84,13 +84,16 @@
         align-self: stretch;
       }
       .preview-frame {
+        --scan-w: 5100;
+        --scan-h: 7016;
+        --frame-max-h: min(57vh, calc(100vh - 10rem));
+        --frame-w: min(100%, calc(var(--frame-max-h) * var(--scan-w) / var(--scan-h)));
         background: #1c1b18;
         border: 1px solid var(--border);
         border-radius: var(--radius);
-        width: 100%;
-        min-height: 14rem;
-        aspect-ratio: 4 / 5;
-        max-height: min(57vh, 25rem);
+        width: var(--frame-w);
+        height: calc(var(--frame-w) * var(--scan-h) / var(--scan-w));
+        margin-inline: auto;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -374,7 +377,7 @@
           gap: 0.6rem;
         }
         .preview-frame {
-          max-height: min(62vh, 26rem);
+          --frame-max-h: min(62vh, calc(100vh - 8rem));
         }
         button[type="submit"] {
           width: 100%;

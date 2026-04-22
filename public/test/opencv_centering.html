@@ -1850,6 +1850,71 @@
         };
         if (outerPx.x1 <= outerPx.x0 || outerPx.y1 <= outerPx.y0) return seedBox;
 
+        function lineContinuity(axis, fixed, span0, span1) {
+          const start = Math.max(0, Math.min(span0, span1));
+          const end = Math.min((axis === "row" ? imageW : imageH) - 1, Math.max(span0, span1));
+          const len = Math.max(1, end - start + 1);
+          const inset = Math.max(0, Math.round(len * 0.03));
+          const s = Math.min(end, start + inset);
+          const e = Math.max(s, end - inset);
+          let onCount = 0;
+          let longestOffRun = 0;
+          let offRun = 0;
+          for (let major = s; major <= e; major += 1) {
+            const idx = axis === "row" ? fixed * imageW + major : major * imageW + fixed;
+            if (fg[idx]) {
+              onCount += 1;
+              if (offRun > longestOffRun) longestOffRun = offRun;
+              offRun = 0;
+            } else {
+              offRun += 1;
+            }
+          }
+          if (offRun > longestOffRun) longestOffRun = offRun;
+          const testedLen = Math.max(1, e - s + 1);
+          return {
+            coverage: onCount / testedLen,
+            longestOffRun,
+            testedLen,
+          };
+        }
+
+        function isContinuousEdgeLine(axis, fixed, span0, span1) {
+          const stats = lineContinuity(axis, fixed, span0, span1);
+          const maxGap = Math.max(2, Math.round(stats.testedLen * 0.012));
+          const minCoverage = 0.92;
+          return stats.coverage >= minCoverage && stats.longestOffRun <= maxGap;
+        }
+
+        function findFirstContinuousLine(axis, from, to, step, span0, span1) {
+          let i = from;
+          while ((step > 0 && i <= to) || (step < 0 && i >= to)) {
+            if (isContinuousEdgeLine(axis, i, span0, span1)) return i;
+            i += step;
+          }
+          return to;
+        }
+
+        const refinedOuterPx = {
+          x0: findFirstContinuousLine("col", outerPx.x0, seedPx.x0, 1, outerPx.y0, outerPx.y1),
+          x1: findFirstContinuousLine("col", outerPx.x1, seedPx.x1, -1, outerPx.y0, outerPx.y1),
+          y0: findFirstContinuousLine("row", outerPx.y0, seedPx.y0, 1, outerPx.x0, outerPx.x1),
+          y1: findFirstContinuousLine("row", outerPx.y1, seedPx.y1, -1, outerPx.x0, outerPx.x1),
+        };
+        if (
+          refinedOuterPx.x1 > refinedOuterPx.x0 &&
+          refinedOuterPx.y1 > refinedOuterPx.y0 &&
+          refinedOuterPx.x0 <= seedPx.x0 &&
+          refinedOuterPx.x1 >= seedPx.x1 &&
+          refinedOuterPx.y0 <= seedPx.y0 &&
+          refinedOuterPx.y1 >= seedPx.y1
+        ) {
+          outerPx.x0 = refinedOuterPx.x0;
+          outerPx.x1 = refinedOuterPx.x1;
+          outerPx.y0 = refinedOuterPx.y0;
+          outerPx.y1 = refinedOuterPx.y1;
+        }
+
         const outer = toNormBox(outerPx, imageW, imageH);
         const outerArea = boxArea(outer);
         const seedArea = boxArea(seedBox);

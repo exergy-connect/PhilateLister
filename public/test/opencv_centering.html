@@ -1723,6 +1723,30 @@
         return Math.max(0, (box.xMax || 0) - (box.xMin || 0)) * Math.max(0, (box.yMax || 0) - (box.yMin || 0));
       }
 
+      function boxIou(a, b) {
+        if (!a || !b) return 0;
+        const x0 = Math.max(a.xMin || 0, b.xMin || 0);
+        const y0 = Math.max(a.yMin || 0, b.yMin || 0);
+        const x1 = Math.min(a.xMax || 0, b.xMax || 0);
+        const y1 = Math.min(a.yMax || 0, b.yMax || 0);
+        const interW = Math.max(0, x1 - x0);
+        const interH = Math.max(0, y1 - y0);
+        const inter = interW * interH;
+        const aa = boxArea(a);
+        const ab = boxArea(b);
+        const union = aa + ab - inter;
+        return union > 0 ? inter / union : 0;
+      }
+
+      function boxCenterDistance(a, b) {
+        if (!a || !b) return Infinity;
+        const ax = ((a.xMin || 0) + (a.xMax || 0)) * 0.5;
+        const ay = ((a.yMin || 0) + (a.yMax || 0)) * 0.5;
+        const bx = ((b.xMin || 0) + (b.xMax || 0)) * 0.5;
+        const by = ((b.yMin || 0) + (b.yMax || 0)) * 0.5;
+        return Math.hypot(ax - bx, ay - by);
+      }
+
       function isBoxInside(inner, outer, pad = 0) {
         if (!inner || !outer) return false;
         return (
@@ -2016,15 +2040,28 @@
             return rotateImageData(base, natW, natH, effectiveRotationDeg);
           })();
           const outerStampBox = deriveOuterStampBoxFromSeed(analysisImageData, innerSeedBox, natW, natH);
-          let innerDesignBox = detectInnerDesignBoxFromOuter(analysisImageData, outerStampBox, natW, natH);
-          if (!innerDesignBox) {
-            const seedArea = boxArea(innerSeedBox);
-            const outerArea = Math.max(1e-9, boxArea(outerStampBox));
-            const areaRatio = seedArea / outerArea;
-            if (isBoxInside(innerSeedBox, outerStampBox, 0) && areaRatio >= 0.12 && areaRatio <= 0.92) {
-              innerDesignBox = innerSeedBox;
-            } else {
-              throw new Error("Could not determine inner design box from the detected stamp boundary.");
+          const seedArea = boxArea(innerSeedBox);
+          const outerArea = Math.max(1e-9, boxArea(outerStampBox));
+          const seedAreaRatio = seedArea / outerArea;
+          if (!isBoxInside(innerSeedBox, outerStampBox, 0) || seedAreaRatio < 0.12 || seedAreaRatio > 0.92) {
+            throw new Error("Could not determine a stable inner design box from worker detection.");
+          }
+
+          let innerDesignBox = innerSeedBox;
+          const refinedInnerBox = detectInnerDesignBoxFromOuter(analysisImageData, outerStampBox, natW, natH);
+          if (refinedInnerBox) {
+            const refinedArea = boxArea(refinedInnerBox);
+            const areaRatioToSeed = refinedArea / Math.max(1e-9, seedArea);
+            const iouWithSeed = boxIou(refinedInnerBox, innerSeedBox);
+            const centerDelta = boxCenterDistance(refinedInnerBox, innerSeedBox);
+            const looksConsistent =
+              isBoxInside(refinedInnerBox, outerStampBox, 0) &&
+              areaRatioToSeed >= 0.78 &&
+              areaRatioToSeed <= 1.28 &&
+              iouWithSeed >= 0.6 &&
+              centerDelta <= 0.045;
+            if (looksConsistent) {
+              innerDesignBox = refinedInnerBox;
             }
           }
 

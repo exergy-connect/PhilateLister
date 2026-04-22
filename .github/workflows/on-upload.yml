@@ -64,11 +64,21 @@ jobs:
           echo "Appraising: $f"
           node scripts/dist/appraisal.cjs "$f"
 
+      - name: Stage listings under public/
+        run: |
+          mkdir -p public/listings
+          if [ -d listings ]; then
+            find listings -type f -print0 | while IFS= read -r -d '' f; do
+              mv "$f" "public/listings/$(basename "$f")"
+            done
+            rmdir listings 2>/dev/null || true
+          fi
+
       - name: Commit listings
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add listings/
+          git add public/listings/
           if git diff --staged --quiet; then
             echo "No listing files to commit."
           else

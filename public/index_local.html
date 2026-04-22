@@ -473,6 +473,14 @@
                     />
                   </div>
                   <div class="tune-field">
+                    <label class="tune-label" for="tune-use-watershed">Use watershed</label>
+                    <input
+                      id="tune-use-watershed"
+                      type="checkbox"
+                      title="Experimental segmentation mode. Leave off for contour-based detection."
+                    />
+                  </div>
+                  <div class="tune-field">
                     <label class="tune-label" for="tune-close-k">Close kernel (odd)</label>
                     <input
                       id="tune-close-k"
@@ -751,6 +759,7 @@
             const blurKernel = oddAtLeast(clamp(t.blurKernel ?? 5, 1, 31), 1);
             const threshBlock = oddAtLeast(clamp(t.threshBlock ?? 15, 3, 101), 3);
             const threshC = clamp(t.threshC ?? 4, -50, 50);
+            const useWatershed = !!t.useWatershed;
             const closeKernel = oddAtLeast(clamp(t.closeKernel ?? 7, 1, 31), 1);
             const openKernel = oddAtLeast(clamp(t.openKernel ?? 7, 1, 31), 1);
             const peakThreshold = clamp(t.peakThreshold ?? 0.34, 0.05, 0.95);
@@ -780,6 +789,7 @@
             const rgb = new cv.Mat();
             const closeK = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(closeKernel, closeKernel));
             const openK = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(openKernel, openKernel));
+            const splitK = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(5, 5));
             const bgK = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(3, 3));
             try {
               cv.resize(src, scaled, new cv.Size(w, h), 0, 0, cv.INTER_AREA);
@@ -796,24 +806,8 @@
               );
               cv.morphologyEx(bin, bin, cv.MORPH_CLOSE, closeK);
               cv.morphologyEx(bin, bin, cv.MORPH_OPEN, openK);
-
-              // Build watershed markers from distance-transform peaks.
-              cv.distanceTransform(bin, dist, cv.DIST_L2, 5);
-              cv.normalize(dist, distNorm, 0, 1.0, cv.NORM_MINMAX);
-              cv.threshold(distNorm, sureFg, peakThreshold, 1.0, cv.THRESH_BINARY);
-              sureFg.convertTo(sureFg8, cv.CV_8U, 255);
-              cv.dilate(bin, sureBg, bgK);
-              cv.subtract(sureBg, sureFg8, unknown);
-              cv.connectedComponents(sureFg8, markers, 8, cv.CV_32S);
-
-              markerOnes.create(markers.rows, markers.cols, cv.CV_32S);
-              markerOnes.setTo(new cv.Scalar(1));
-              cv.add(markers, markerOnes, markersPlusOne);
-              markersPlusOne.copyTo(markers);
-              markers.setTo(new cv.Scalar(0), unknown);
-
-              cv.cvtColor(scaled, rgb, cv.COLOR_RGBA2RGB);
-              cv.watershed(rgb, markers);
+              // Quick split pass: shrink connected blobs to break thin bridges.
+              cv.erode(bin, bin, splitK, new cv.Point(-1, -1), 2);
 
               const imgArea = w * h;
               const minA = imgArea * minAreaRatio;
@@ -839,32 +833,67 @@
                 raw.push({ x0, y0, x1: x0 + bw, y1: y0 + bh, area, score });
               }
 
-              const markerData = markers.data32S;
-              const stats = new Map();
-              for (let y = 0; y < h; y++) {
-                const rowBase = y * w;
-                for (let x = 0; x < w; x++) {
-                  const label = markerData[rowBase + x];
-                  if (label <= 1) continue;
-                  let s = stats.get(label);
-                  if (!s) {
-                    s = { minX: x, minY: y, maxX: x, maxY: y, count: 1 };
-                    stats.set(label, s);
-                  } else {
-                    if (x < s.minX) s.minX = x;
-                    if (y < s.minY) s.minY = y;
-                    if (x > s.maxX) s.maxX = x;
-                    if (y > s.maxY) s.maxY = y;
-                    s.count += 1;
+              if (useWatershed) {
+                // Watershed markers from distance-transform peaks.
+                cv.distanceTransform(bin, dist, cv.DIST_L2, 5);
+                cv.normalize(dist, distNorm, 0, 1.0, cv.NORM_MINMAX);
+                cv.threshold(distNorm, sureFg, peakThreshold, 1.0, cv.THRESH_BINARY);
+                sureFg.convertTo(sureFg8, cv.CV_8U, 255);
+                cv.dilate(bin, sureBg, bgK);
+                cv.subtract(sureBg, sureFg8, unknown);
+                cv.connectedComponents(sureFg8, markers, 8, cv.CV_32S);
+
+                markerOnes.create(markers.rows, markers.cols, cv.CV_32S);
+                markerOnes.setTo(new cv.Scalar(1));
+                cv.add(markers, markerOnes, markersPlusOne);
+                markersPlusOne.copyTo(markers);
+                markers.setTo(new cv.Scalar(0), unknown);
+
+                cv.cvtColor(scaled, rgb, cv.COLOR_RGBA2RGB);
+                cv.watershed(rgb, markers);
+
+                const markerData = markers.data32S;
+                const stats = new Map();
+                for (let y = 0; y < h; y++) {
+                  const rowBase = y * w;
+                  for (let x = 0; x < w; x++) {
+                    const label = markerData[rowBase + x];
+                    if (label <= 1) continue;
+                    let s = stats.get(label);
+                    if (!s) {
+                      s = { minX: x, minY: y, maxX: x, maxY: y, count: 1 };
+                      stats.set(label, s);
+                    } else {
+                      if (x < s.minX) s.minX = x;
+                      if (y < s.minY) s.minY = y;
+                      if (x > s.maxX) s.maxX = x;
+                      if (y > s.maxY) s.maxY = y;
+                      s.count += 1;
+                    }
                   }
                 }
-              }
 
-              for (const s of stats.values()) {
-                const rw = s.maxX - s.minX + 1;
-                const rh = s.maxY - s.minY + 1;
-                pushCandidate(s.minX, s.minY, rw, rh, s.count);
-                if (raw.length >= maxRawCandidates) break;
+                for (const s of stats.values()) {
+                  const rw = s.maxX - s.minX + 1;
+                  const rh = s.maxY - s.minY + 1;
+                  pushCandidate(s.minX, s.minY, rw, rh, s.count);
+                  if (raw.length >= maxRawCandidates) break;
+                }
+              } else {
+                // Default: contour-based box extraction.
+                const contours = new cv.MatVector();
+                const hierarchy = new cv.Mat();
+                cv.findContours(bin, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+                for (let i = 0; i < contours.size(); i++) {
+                  const c = contours.get(i);
+                  const contourArea = cv.contourArea(c, false);
+                  const r = cv.boundingRect(c);
+                  c.delete();
+                  pushCandidate(r.x, r.y, r.width, r.height, contourArea);
+                  if (raw.length >= maxRawCandidates) break;
+                }
+                contours.delete();
+                hierarchy.delete();
               }
 
               raw.sort((a, b) => b.score - a.score || b.area - a.area);
@@ -941,6 +970,7 @@
               rgb.delete();
               closeK.delete();
               openK.delete();
+              splitK.delete();
               bgK.delete();
             }
           }
@@ -1188,6 +1218,7 @@
       const tuneThreshBlockInput = document.getElementById("tune-thresh-block");
       const tuneThreshCInput = document.getElementById("tune-thresh-c");
       const tunePeakThreshInput = document.getElementById("tune-peak-thresh");
+      const tuneUseWatershedInput = document.getElementById("tune-use-watershed");
       const tuneCloseKInput = document.getElementById("tune-close-k");
       const tuneOpenKInput = document.getElementById("tune-open-k");
       const tuneMinAreaInput = document.getElementById("tune-min-area");
@@ -1207,6 +1238,16 @@
       let previewBoxes = [];
       let stampCropRows = [];
       let previewLoadSeq = 0;
+
+      function syncWatershedTuningUi() {
+        if (!tunePeakThreshInput) return;
+        const on = !!(tuneUseWatershedInput && tuneUseWatershedInput.checked);
+        tunePeakThreshInput.disabled = !on;
+      }
+      if (tuneUseWatershedInput) {
+        tuneUseWatershedInput.addEventListener("change", syncWatershedTuningUi);
+      }
+      syncWatershedTuningUi();
 
       function clamp01(n) {
         return Math.min(1, Math.max(0, Number(n)));
@@ -1375,6 +1416,7 @@
         const minAr = clampValue(readNumberInput(tuneArMinInput, 0.5), 0.05, 20);
         const maxAr = clampValue(readNumberInput(tuneArMaxInput, 2.0), minAr, 20);
         return {
+          useWatershed: !!(tuneUseWatershedInput && tuneUseWatershedInput.checked),
           blurKernel: oddAtLeast(clampValue(readNumberInput(tuneBlurInput, 5), 1, 31), 1),
           threshBlock: oddAtLeast(clampValue(readNumberInput(tuneThreshBlockInput, 15), 3, 101), 3),
           threshC: clampValue(readNumberInput(tuneThreshCInput, 4), -50, 50),
@@ -1394,6 +1436,7 @@
         const minAr = clampValue(Number(t.minAspectRatio ?? 0.5), 0.05, 20);
         const maxAr = clampValue(Number(t.maxAspectRatio ?? 2.0), minAr, 20);
         return {
+          useWatershed: !!t.useWatershed,
           blurKernel: oddAtLeast(clampValue(Number(t.blurKernel ?? 5), 1, 31), 1),
           threshBlock: oddAtLeast(clampValue(Number(t.threshBlock ?? 15), 3, 101), 3),
           threshC: clampValue(Number(t.threshC ?? 4), -50, 50),
@@ -1410,6 +1453,7 @@
 
       function tuningSignature(t) {
         return [
+          t.useWatershed ? 1 : 0,
           t.blurKernel,
           t.threshBlock,
           Math.round(t.threshC * 10),

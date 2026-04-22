@@ -8,6 +8,7 @@ on:
     paths:
       - "public/index.html"
       - "public/index_local.html"
+      - "public/listings/**"
       - "public/aps/index.html"
       - "public/psag/*"
 

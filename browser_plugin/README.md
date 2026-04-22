@@ -6,9 +6,11 @@ This extension adds a right-click action on images:
 
 When clicked, it:
 
-1. Opens `http://localhost:8000/public/test/opencv_centering.html`.
-2. Passes the clicked image as `image_url=...`.
-3. Starts centering analysis in that page.
+1. Fetches the clicked image in the extension.
+2. Converts it to a Base64 data URL and stores it in `chrome.storage.local` as `pendingStamp`.
+3. Opens the analysis page and passes `extension_id=...`.
+4. The analysis page requests the image back via `chrome.runtime.sendMessage(extensionId, { type: "GET_STAMP_DATA" })`.
+5. Starts centering analysis in that page.
 
 ## Load in Chrome
 
@@ -20,6 +22,11 @@ When clicked, it:
 ## Notes
 
 - Uses Manifest V3.
+- Uses `storage` + `unlimitedStorage` permissions for reliable Base64 relay payloads.
 - Run a local server first, for example:
   - `python3 -m http.server 8000`
-- OpenCV runs in the normal web page context (not extension page context), which avoids MV3 CSP `unsafe-eval` restrictions from OpenCV.js.
+- `manifest.json` uses `externally_connectable.matches` for:
+  - `https://exergy-connect.github.io/*`
+  - `http://localhost/*`
+  - `http://127.0.0.1/*`
+- The plugin now only ships the background relay flow (no extension-side analyzer UI or worker bundle).

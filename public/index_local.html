@@ -672,6 +672,14 @@
             return u <= 0 ? 0 : inter / u;
           }
 
+          function overlapArea(a, b) {
+            const x1 = Math.max(a.x0, b.x0);
+            const y1 = Math.max(a.y0, b.y0);
+            const x2 = Math.min(a.x1, b.x1);
+            const y2 = Math.min(a.y1, b.y1);
+            return Math.max(0, x2 - x1) * Math.max(0, y2 - y1);
+          }
+
           function ensureCvReady() {
             if (cvReadyPromise) return cvReadyPromise;
             cvReadyPromise = new Promise((resolve, reject) => {
@@ -896,7 +904,20 @@
                 }
               }
 
-              return filtered.map((b) => ({
+              // Hard constraint: output must contain no overlapping boxes at all.
+              const nonOverlapping = [];
+              for (const b of filtered) {
+                let conflicts = false;
+                for (const k of nonOverlapping) {
+                  if (overlapArea(b, k) > 0) {
+                    conflicts = true;
+                    break;
+                  }
+                }
+                if (!conflicts) nonOverlapping.push(b);
+              }
+
+              return nonOverlapping.map((b) => ({
                 xMin: clamp01(b.x0 / w),
                 xMax: clamp01(b.x1 / w),
                 yMin: clamp01(b.y0 / h),

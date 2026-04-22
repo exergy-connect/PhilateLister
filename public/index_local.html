@@ -372,6 +372,9 @@
       let detectorReqSeq = 0;
       const pendingDetections = new Map();
       let workerReadyPromise = null;
+      let workerReadyTimer = null;
+      let workerReadyResolve = null;
+      let workerReadyReject = null;
 
       function dbg(...args) {
         if (!DEBUG_LOGGING) return;
@@ -392,6 +395,7 @@
           const INIT_TIMEOUT_MS = ${WORKER_INIT_TIMEOUT_MS};
           const DEBUG = ${DEBUG_LOGGING ? "true" : "false"};
           let cvReadyPromise = null;
+          let readySent = false;
 
           function dbg(...args) {
             if (!DEBUG) return;
@@ -466,6 +470,13 @@
               })();
             });
             return cvReadyPromise;
+          }
+
+          function notifyReady() {
+            if (readySent) return;
+            readySent = true;
+            dbg("Worker ready signal");
+            self.postMessage({ type: "ready" });
           }
 
           function detectBoxes(cv, width, height, rgbaBuffer, maxSide) {
@@ -562,11 +573,7 @@
             if (!id) return;
             try {
               const cv = await ensureCvReady();
-              if (data.cmd === "init") {
-                dbg("Init request complete");
-                self.postMessage({ id, ok: true, ready: true });
-                return;
-              }
+              notifyReady();
               dbg("Detect request start", { width: data.width, height: data.height, maxSide: data.maxSide });
               const boxes = detectBoxes(cv, data.width, data.height, data.rgbaBuffer, data.maxSide);
               dbg("Detect request complete", { boxes: boxes.length });
@@ -579,13 +586,60 @@
               });
             }
           };
+
+          // Warm up OpenCV immediately; main thread tracks readiness from this signal.
+          ensureCvReady().then(
+            () => notifyReady(),
+            (err) => {
+              self.postMessage({
+                type: "init_error",
+                error: err instanceof Error ? err.message : String(err),
+              });
+            }
+          );
         `;
         detectorWorkerUrl = URL.createObjectURL(new Blob([source], { type: "text/javascript" }));
         detectorWorker = new Worker(detectorWorkerUrl);
+        workerReadyPromise = new Promise((resolve, reject) => {
+          workerReadyResolve = resolve;
+          workerReadyReject = reject;
+          workerReadyTimer = setTimeout(() => {
+            workerReadyResolve = null;
+            workerReadyReject = null;
+            reject(new Error("Timed out while initializing OpenCV in worker."));
+          }, WORKER_INIT_TIMEOUT_MS);
+        });
         detectorWorker.onmessage = (ev) => {
           const data = ev.data || {};
           if (data.type === "debug") {
             dbg("Worker:", ...(Array.isArray(data.args) ? data.args : []));
+            return;
+          }
+          if (data.type === "ready") {
+            dbg("Worker ready acknowledged");
+            if (workerReadyTimer) {
+              clearTimeout(workerReadyTimer);
+              workerReadyTimer = null;
+            }
+            if (workerReadyResolve) {
+              workerReadyResolve();
+              workerReadyResolve = null;
+              workerReadyReject = null;
+            }
+            return;
+          }
+          if (data.type === "init_error") {
+            const msg = data.error || "Worker OpenCV init failed.";
+            dbg("Worker init error", msg);
+            if (workerReadyTimer) {
+              clearTimeout(workerReadyTimer);
+              workerReadyTimer = null;
+            }
+            if (workerReadyReject) {
+              workerReadyReject(new Error(msg));
+              workerReadyResolve = null;
+              workerReadyReject = null;
+            }
             return;
           }
           const req = pendingDetections.get(data.id);
@@ -606,6 +660,12 @@
           detectorWorker.terminate();
           detectorWorker = null;
           workerReadyPromise = null;
+          if (workerReadyTimer) {
+            clearTimeout(workerReadyTimer);
+            workerReadyTimer = null;
+          }
+          workerReadyResolve = null;
+          workerReadyReject = null;
           if (detectorWorkerUrl) {
             URL.revokeObjectURL(detectorWorkerUrl);
             detectorWorkerUrl = null;
@@ -646,13 +706,12 @@
       }
 
       function ensureDetectorWorkerReady() {
-        if (workerReadyPromise) return workerReadyPromise;
         dbg("Worker init requested");
-        workerReadyPromise = requestWorker(
-          { cmd: "init" },
-          WORKER_INIT_TIMEOUT_MS,
-          "Timed out while initializing OpenCV in worker."
-        )
+        ensureDetectorWorker();
+        if (!workerReadyPromise) {
+          return Promise.reject(new Error("Worker did not create a readiness promise."));
+        }
+        workerReadyPromise = workerReadyPromise
           .then(() => {
             dbg("Worker init ready");
             return undefined;
@@ -695,6 +754,12 @@
           detectorWorker = null;
         }
         workerReadyPromise = null;
+        if (workerReadyTimer) {
+          clearTimeout(workerReadyTimer);
+          workerReadyTimer = null;
+        }
+        workerReadyResolve = null;
+        workerReadyReject = null;
         if (detectorWorkerUrl) {
           URL.revokeObjectURL(detectorWorkerUrl);
           detectorWorkerUrl = null;

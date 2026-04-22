@@ -1,0 +1,29 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "stamp_2026-04-22_10-02-42-072_600dpi_full_detail_single_card_8a9959f1",
+      "country_id": "fiume",
+      "scott": {
+        "number": 104
+      },
+      "title": "1919 Fiume Surcharge 15c on 15c",
+      "summary": "Capitoline Wolf design overprinted 'Valore globale Cent. 15' with 30 X 1918 date.",
+      "issue_year": 1919,
+      "condition_quality": "mint_hinged",
+      "centering_grade": "fine",
+      "image_basename": "stamp_2026-04-22_10-02-42-072_600dpi_full_detail_single_card_8a9959f1.png",
+      "bounding_box": {
+        "x_min": 443,
+        "x_max": 772,
+        "y_min": 286,
+        "y_max": 848
+      },
+      "freeform_keywords": [
+        "capitoline wolf",
+        "overprint",
+        "occupation",
+        "Fiume"
+      ]
+    }
+  ]
+}

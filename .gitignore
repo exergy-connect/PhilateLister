@@ -2,3 +2,7 @@ token.txt
 .venv/
 xframe/output/
 scripts/node_modules/
+
+# Python cache
+__pycache__/
+*.py[cod]

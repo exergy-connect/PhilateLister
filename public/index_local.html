@@ -526,6 +526,18 @@
                       title="Maximum width/height ratio allowed for candidate boxes."
                     />
                   </div>
+                  <div class="tune-field">
+                    <label class="tune-label" for="tune-iou">Overlap IoU</label>
+                    <input
+                      id="tune-iou"
+                      type="number"
+                      min="0.01"
+                      max="0.95"
+                      step="0.01"
+                      value="0.35"
+                      title="NMS overlap threshold. Lower rejects overlapping boxes more aggressively."
+                    />
+                  </div>
                 </div>
               </details>
               <div id="status" role="status" aria-live="polite"></div>
@@ -719,6 +731,7 @@
             const minExtentT = clamp(t.minExtent ?? 0.25, 0.01, 1);
             const minArT = clamp(t.minAspectRatio ?? 0.5, 0.05, 20);
             const maxArT = clamp(t.maxAspectRatio ?? 2.0, minArT, 20);
+            const iouThresholdT = clamp(t.iouThreshold ?? 0.35, 0.01, 0.95);
             const rgba = new Uint8ClampedArray(rgbaBuffer);
             const src = cv.matFromArray(height, width, cv.CV_8UC4, rgba);
             const scale = Math.min(1, maxSide / Math.max(width, height));
@@ -794,7 +807,7 @@
               raw.sort((a, b) => b.score - a.score || b.area - a.area);
               const nmsInput = raw.slice(0, maxNmsCandidates);
               const keep = [];
-              const iouThresh = 0.35;
+              const iouThresh = iouThresholdT;
               for (const b of nmsInput) {
                 let skip = false;
                 for (const k of keep) {
@@ -808,7 +821,27 @@
                   if (keep.length >= maxOutputBoxes) break;
                 }
               }
-              return keep.map((b) => ({
+
+              // Keep boxes near the dominant size so results are roughly uniform.
+              let filtered = keep;
+              if (keep.length >= 4) {
+                const sortedAreas = keep.map((b) => b.area).sort((a, b) => a - b);
+                const mid = Math.floor(sortedAreas.length / 2);
+                const medianArea =
+                  sortedAreas.length % 2 === 0
+                    ? (sortedAreas[mid - 1] + sortedAreas[mid]) / 2
+                    : sortedAreas[mid];
+                const minConsistentArea = medianArea * 0.55;
+                const maxConsistentArea = medianArea * 1.85;
+                const consistent = keep.filter(
+                  (b) => b.area >= minConsistentArea && b.area <= maxConsistentArea
+                );
+                if (consistent.length >= Math.max(3, Math.floor(keep.length * 0.6))) {
+                  filtered = consistent;
+                }
+              }
+
+              return filtered.map((b) => ({
                 xMin: clamp01(b.x0 / w),
                 xMax: clamp01(b.x1 / w),
                 yMin: clamp01(b.y0 / h),
@@ -1072,6 +1105,7 @@
       const tuneMinExtentInput = document.getElementById("tune-min-extent");
       const tuneArMinInput = document.getElementById("tune-ar-min");
       const tuneArMaxInput = document.getElementById("tune-ar-max");
+      const tuneIouInput = document.getElementById("tune-iou");
       const imageResolutionEl = document.getElementById("image-resolution");
       const previewFrame = document.querySelector(".preview-frame");
       const stampPreview = document.getElementById("stamp-preview");
@@ -1261,6 +1295,7 @@
           minExtent: clampValue(readNumberInput(tuneMinExtentInput, 0.25), 0.01, 1),
           minAspectRatio: minAr,
           maxAspectRatio: maxAr,
+          iouThreshold: clampValue(readNumberInput(tuneIouInput, 0.35), 0.01, 0.95),
         };
       }
 

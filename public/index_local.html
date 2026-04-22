@@ -198,7 +198,7 @@
       }
       .controls-row {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) 9rem auto;
+        grid-template-columns: minmax(0, 1fr) 8.6rem 8.6rem auto;
         gap: 0.65rem;
         align-items: end;
         justify-content: center;
@@ -411,6 +411,11 @@
                   <label for="max-side">Max side (px)</label>
                   <input id="max-side" name="maxSide" type="number" min="400" max="2400" step="1" value="1200" />
                   <p class="hint">Higher = slower.</p>
+                </div>
+                <div class="field">
+                  <label for="target-count">Target count</label>
+                  <input id="target-count" name="targetCount" type="number" min="1" max="300" step="1" placeholder="optional" />
+                  <p class="hint">If set, auto-tune toward this count.</p>
                 </div>
                 <button type="submit" id="submit-btn" disabled>Detect</button>
               </div>
@@ -1096,6 +1101,7 @@
 
       const stampFileInput = document.getElementById("stamp-file");
       const maxSideInput = document.getElementById("max-side");
+      const targetCountInput = document.getElementById("target-count");
       const tuneBlurInput = document.getElementById("tune-blur");
       const tuneThreshBlockInput = document.getElementById("tune-thresh-block");
       const tuneThreshCInput = document.getElementById("tune-thresh-c");
@@ -1299,6 +1305,123 @@
         };
       }
 
+      function normalizeDetectionTuning(tuning) {
+        const t = tuning && typeof tuning === "object" ? tuning : {};
+        const minAr = clampValue(Number(t.minAspectRatio ?? 0.5), 0.05, 20);
+        const maxAr = clampValue(Number(t.maxAspectRatio ?? 2.0), minAr, 20);
+        return {
+          blurKernel: oddAtLeast(clampValue(Number(t.blurKernel ?? 5), 1, 31), 1),
+          threshBlock: oddAtLeast(clampValue(Number(t.threshBlock ?? 15), 3, 101), 3),
+          threshC: clampValue(Number(t.threshC ?? 4), -50, 50),
+          closeKernel: oddAtLeast(clampValue(Number(t.closeKernel ?? 7), 1, 31), 1),
+          openKernel: oddAtLeast(clampValue(Number(t.openKernel ?? 7), 1, 31), 1),
+          minAreaRatio: clampValue(Number(t.minAreaRatio ?? 0.0015), 0.00005, 0.5),
+          minExtent: clampValue(Number(t.minExtent ?? 0.25), 0.01, 1),
+          minAspectRatio: minAr,
+          maxAspectRatio: maxAr,
+          iouThreshold: clampValue(Number(t.iouThreshold ?? 0.35), 0.01, 0.95),
+        };
+      }
+
+      function tuningSignature(t) {
+        return [
+          t.blurKernel,
+          t.threshBlock,
+          Math.round(t.threshC * 10),
+          t.closeKernel,
+          t.openKernel,
+          Math.round(t.minAreaRatio * 1000000),
+          Math.round(t.minExtent * 1000),
+          Math.round(t.minAspectRatio * 1000),
+          Math.round(t.maxAspectRatio * 1000),
+          Math.round(t.iouThreshold * 1000),
+        ].join("|");
+      }
+
+      function createTuningVariant(base, mode, strength) {
+        const s = Math.max(1, strength);
+        const more = mode === "more";
+        const dir = more ? 1 : -1;
+        return normalizeDetectionTuning({
+          ...base,
+          minAreaRatio: base.minAreaRatio * (more ? Math.pow(0.78, s) : Math.pow(1.24, s)),
+          minExtent: base.minExtent + (more ? -0.035 * s : 0.035 * s),
+          threshC: base.threshC + (more ? -1 * s : 1 * s),
+          iouThreshold: base.iouThreshold + dir * 0.06 * s,
+          openKernel: base.openKernel + (more ? -2 * s : 2 * s),
+          minAspectRatio: base.minAspectRatio * (more ? Math.pow(0.9, s) : Math.pow(1.06, s)),
+          maxAspectRatio: base.maxAspectRatio * (more ? Math.pow(1.08, s) : Math.pow(0.94, s)),
+        });
+      }
+
+      function buildIterationVariants(seed, targetCount, currentCount) {
+        const needMore = currentCount < targetCount;
+        const mode = needMore ? "more" : "fewer";
+        const out = [
+          createTuningVariant(seed, mode, 1),
+          createTuningVariant(seed, mode, 2),
+          normalizeDetectionTuning({
+            ...seed,
+            minAreaRatio: seed.minAreaRatio * (needMore ? 0.7 : 1.35),
+            minExtent: seed.minExtent + (needMore ? -0.02 : 0.02),
+          }),
+          normalizeDetectionTuning({
+            ...seed,
+            iouThreshold: seed.iouThreshold + (needMore ? 0.08 : -0.08),
+            threshC: seed.threshC + (needMore ? -2 : 2),
+          }),
+        ];
+        return out;
+      }
+
+      async function detectStampBoxesTowardTargetCount(natW, natH, maxSide, baseTuning, targetCount) {
+        const maxAttempts = 18;
+        const seen = new Set();
+
+        async function runOnce(tuning, attemptNum) {
+          const boxes = await detectStampBoxesWithWorker(natW, natH, maxSide, tuning);
+          return {
+            boxes,
+            tuning,
+            count: boxes.length,
+            diff: Math.abs(boxes.length - targetCount),
+            attempt: attemptNum,
+          };
+        }
+
+        let attempts = 1;
+        let best = await runOnce(normalizeDetectionTuning(baseTuning), attempts);
+        seen.add(tuningSignature(best.tuning));
+        if (best.diff === 0) return { ...best, exact: true, attempts };
+
+        /** @type {{ tuning: ReturnType<typeof normalizeDetectionTuning>, count: number, diff: number }[]} */
+        let frontier = [{ tuning: best.tuning, count: best.count, diff: best.diff }];
+
+        while (attempts < maxAttempts && frontier.length) {
+          const nextFrontier = [];
+          for (const node of frontier.slice(0, 3)) {
+            const variants = buildIterationVariants(node.tuning, targetCount, node.count);
+            for (const variant of variants) {
+              const sig = tuningSignature(variant);
+              if (seen.has(sig)) continue;
+              seen.add(sig);
+              attempts += 1;
+              statusEl.textContent = `Iterating tuning… attempt ${attempts}/${maxAttempts} (target ${targetCount})`;
+              const res = await runOnce(variant, attempts);
+              if (res.diff < best.diff) best = res;
+              nextFrontier.push({ tuning: variant, count: res.count, diff: res.diff });
+              if (res.diff === 0) return { ...res, exact: true, attempts };
+              if (attempts >= maxAttempts) break;
+            }
+            if (attempts >= maxAttempts) break;
+          }
+          nextFrontier.sort((a, b) => a.diff - b.diff);
+          frontier = nextFrontier.slice(0, 4);
+        }
+
+        return { ...best, exact: false, attempts };
+      }
+
       function waitForImageReady(imgEl) {
         if (imgEl.complete && imgEl.naturalWidth > 0) return Promise.resolve();
         return new Promise((resolve, reject) => {
@@ -1437,6 +1560,9 @@
 
         const maxSideCeiling = Math.max(400, Number(maxSideInput.max) || 2400);
         const maxSide = Math.max(400, Math.min(maxSideCeiling, Number(maxSideInput.value) || 1200));
+        const rawTargetCount = Number(targetCountInput ? targetCountInput.value : "");
+        const targetCount =
+          Number.isFinite(rawTargetCount) && rawTargetCount >= 1 ? Math.floor(rawTargetCount) : null;
 
         submitBtn.disabled = true;
         statusEl.textContent = "Preparing worker…";
@@ -1452,7 +1578,17 @@
           const natH = stampPreview.naturalHeight;
           const tuning = readDetectionTuning();
           await nextFrame();
-          const boxes = await detectStampBoxesWithWorker(natW, natH, maxSide, tuning);
+          let boxes;
+          let iterationSummary = "";
+          if (targetCount) {
+            const iter = await detectStampBoxesTowardTargetCount(natW, natH, maxSide, tuning, targetCount);
+            boxes = iter.boxes;
+            iterationSummary = iter.exact
+              ? ` Target ${targetCount} reached in ${iter.attempts} attempt(s).`
+              : ` Best match ${iter.count}/${targetCount} after ${iter.attempts} attempt(s).`;
+          } else {
+            boxes = await detectStampBoxesWithWorker(natW, natH, maxSide, tuning);
+          }
 
           const previewList = boxes.map((box, i) => ({
             box,
@@ -1492,7 +1628,7 @@
           statusEl.textContent =
             boxes.length === 0
               ? "Detection finished — no boxes to draw."
-              : `OpenCV found ${boxes.length} candidate region(s).`;
+              : `OpenCV found ${boxes.length} candidate region(s).${iterationSummary}`;
         } catch (err) {
           statusEl.className = "error";
           statusEl.textContent = err instanceof Error ? err.message : String(err);

@@ -572,6 +572,7 @@
             const peakThreshold = clamp(t.peakThreshold ?? 0.34, 0.05, 0.95);
             const minAreaRatio = clamp(t.minAreaRatio ?? 0.0015, 0.00005, 0.5);
             const maxAreaRatio = clamp(t.maxAreaRatio ?? 0.985, 0.1, 0.9995);
+            const boundaryTrimQuantile = clamp(t.boundaryTrimQuantile ?? 0.02, 0, 0.2);
             const minExtentT = clamp(t.minExtent ?? 0.25, 0.01, 1);
             const minArT = clamp(t.minAspectRatio ?? 0.5, 0.05, 20);
             const maxArT = clamp(t.maxAspectRatio ?? 2.0, minArT, 20);
@@ -653,6 +654,44 @@
                 raw.push({ x0, y0, x1: x0 + bw, y1: y0 + bh, area, score, tiltDeg });
               }
 
+              function robustContourRect(contour) {
+                const fallback = cv.boundingRect(contour);
+                if (boundaryTrimQuantile <= 0) return fallback;
+                const pts = contour && contour.data32S ? contour.data32S : null;
+                const pointCount = pts ? Math.floor(pts.length / 2) : 0;
+                if (pointCount < 24) return fallback;
+
+                const xs = new Array(pointCount);
+                const ys = new Array(pointCount);
+                for (let i = 0; i < pointCount; i++) {
+                  xs[i] = pts[i * 2];
+                  ys[i] = pts[i * 2 + 1];
+                }
+                xs.sort((a, b) => a - b);
+                ys.sort((a, b) => a - b);
+
+                const maxIdx = pointCount - 1;
+                const lo = Math.max(0, Math.min(maxIdx, Math.floor(maxIdx * boundaryTrimQuantile)));
+                const hi = Math.max(lo, Math.min(maxIdx, Math.ceil(maxIdx * (1 - boundaryTrimQuantile))));
+                const x0 = clamp(Math.round(xs[lo]), 0, w - 1);
+                const x1 = clamp(Math.round(xs[hi]), 0, w - 1);
+                const y0 = clamp(Math.round(ys[lo]), 0, h - 1);
+                const y1 = clamp(Math.round(ys[hi]), 0, h - 1);
+                if (x1 <= x0 || y1 <= y0) return fallback;
+
+                const trimmed = {
+                  x: x0,
+                  y: y0,
+                  width: x1 - x0 + 1,
+                  height: y1 - y0 + 1,
+                };
+                const trimmedArea = trimmed.width * trimmed.height;
+                const fallbackArea = Math.max(1, fallback.width * fallback.height);
+                // Guardrail: if trimming collapses the box too aggressively, trust the raw bounds.
+                if (trimmedArea < fallbackArea * 0.45) return fallback;
+                return trimmed;
+              }
+
               if (useWatershed) {
                 // Watershed markers from distance-transform peaks.
                 cv.distanceTransform(bin, dist, cv.DIST_L2, 5);
@@ -707,7 +746,7 @@
                 for (let i = 0; i < contours.size(); i++) {
                   const c = contours.get(i);
                   const contourArea = cv.contourArea(c, false);
-                  const r = cv.boundingRect(c);
+                  const r = robustContourRect(c);
                   const rr = cv.minAreaRect(c);
                   const tiltDeg = normalizeTiltDeg(
                     rr && typeof rr.angle === "number" ? rr.angle : 0,
@@ -1396,6 +1435,263 @@
         );
       }
 
+      function quantileSorted(sortedValues, q) {
+        if (!Array.isArray(sortedValues) || !sortedValues.length) return 0;
+        const qq = Math.min(1, Math.max(0, Number(q) || 0));
+        const idx = (sortedValues.length - 1) * qq;
+        const lo = Math.floor(idx);
+        const hi = Math.ceil(idx);
+        if (lo === hi) return sortedValues[lo];
+        const t = idx - lo;
+        return sortedValues[lo] * (1 - t) + sortedValues[hi] * t;
+      }
+
+      function fillMissing1D(values) {
+        const out = values.slice();
+        let firstKnown = -1;
+        for (let i = 0; i < out.length; i += 1) {
+          if (Number.isFinite(out[i])) {
+            firstKnown = i;
+            break;
+          }
+        }
+        if (firstKnown < 0) return null;
+        for (let i = 0; i < firstKnown; i += 1) out[i] = out[firstKnown];
+
+        let prev = firstKnown;
+        for (let i = firstKnown + 1; i < out.length; i += 1) {
+          if (!Number.isFinite(out[i])) continue;
+          const next = i;
+          const startVal = out[prev];
+          const endVal = out[next];
+          const span = next - prev;
+          for (let k = 1; k < span; k += 1) {
+            out[prev + k] = startVal + ((endVal - startVal) * k) / span;
+          }
+          prev = next;
+        }
+        for (let i = prev + 1; i < out.length; i += 1) out[i] = out[prev];
+        return out;
+      }
+
+      function smooth1D(values, radius) {
+        const r = Math.max(0, Math.floor(radius));
+        if (r <= 0 || values.length < 3) return values.slice();
+        const out = new Array(values.length).fill(0);
+        for (let i = 0; i < values.length; i += 1) {
+          let sum = 0;
+          let count = 0;
+          const i0 = Math.max(0, i - r);
+          const i1 = Math.min(values.length - 1, i + r);
+          for (let j = i0; j <= i1; j += 1) {
+            sum += values[j];
+            count += 1;
+          }
+          out[i] = count > 0 ? sum / count : values[i];
+        }
+        return out;
+      }
+
+      function countProminentPeaks(profile, minProminence, minDistance) {
+        if (!Array.isArray(profile) || profile.length < 5) return 0;
+        const peaks = [];
+        for (let i = 2; i < profile.length - 2; i += 1) {
+          const v = profile[i];
+          if (!(v > profile[i - 1] && v >= profile[i + 1] && v >= minProminence)) continue;
+          if (!peaks.length || i - peaks[peaks.length - 1].i >= minDistance) {
+            peaks.push({ i, v });
+            continue;
+          }
+          if (v > peaks[peaks.length - 1].v) peaks[peaks.length - 1] = { i, v };
+        }
+        return peaks.length;
+      }
+
+      function buildStampMaskFromImage(imageData, stampBox, imageW, imageH) {
+        const data = imageData.data;
+        const pixelCount = imageW * imageH;
+        const hist = new Uint32Array(256);
+        let idx = 0;
+        for (let i = 0; i < pixelCount; i += 1) {
+          const r = data[idx];
+          const g = data[idx + 1];
+          const b = data[idx + 2];
+          const y = Math.max(0, Math.min(255, Math.round(0.2126 * r + 0.7152 * g + 0.0722 * b)));
+          hist[y] += 1;
+          idx += 4;
+        }
+
+        let total = pixelCount;
+        let sum = 0;
+        for (let i = 0; i < 256; i += 1) sum += i * hist[i];
+        let sumB = 0;
+        let wB = 0;
+        let bestVar = -1;
+        let threshold = 127;
+        for (let t = 0; t < 256; t += 1) {
+          wB += hist[t];
+          if (wB === 0) continue;
+          const wF = total - wB;
+          if (wF === 0) break;
+          sumB += t * hist[t];
+          const mB = sumB / wB;
+          const mF = (sum - sumB) / wF;
+          const between = wB * wF * (mB - mF) * (mB - mF);
+          if (between > bestVar) {
+            bestVar = between;
+            threshold = t;
+          }
+        }
+
+        const x0 = Math.max(0, Math.min(imageW - 1, Math.floor(stampBox.xMin * imageW)));
+        const x1 = Math.max(0, Math.min(imageW - 1, Math.ceil(stampBox.xMax * imageW) - 1));
+        const y0 = Math.max(0, Math.min(imageH - 1, Math.floor(stampBox.yMin * imageH)));
+        const y1 = Math.max(0, Math.min(imageH - 1, Math.ceil(stampBox.yMax * imageH) - 1));
+
+        const borderPad = Math.max(2, Math.round(Math.min(imageW, imageH) * 0.02));
+        const cx0 = Math.max(0, x0 + borderPad);
+        const cx1 = Math.min(imageW - 1, x1 - borderPad);
+        const cy0 = Math.max(0, y0 + borderPad);
+        const cy1 = Math.min(imageH - 1, y1 - borderPad);
+
+        let borderSum = 0;
+        let borderN = 0;
+        for (let y = 0; y < imageH; y += 1) {
+          for (let x = 0; x < imageW; x += 1) {
+            if (x >= x0 && x <= x1 && y >= y0 && y <= y1) continue;
+            const p = (y * imageW + x) * 4;
+            borderSum += 0.2126 * data[p] + 0.7152 * data[p + 1] + 0.0722 * data[p + 2];
+            borderN += 1;
+          }
+        }
+        const borderMean = borderN > 0 ? borderSum / borderN : threshold;
+
+        let centerSum = 0;
+        let centerN = 0;
+        for (let y = cy0; y <= cy1; y += 1) {
+          for (let x = cx0; x <= cx1; x += 1) {
+            const p = (y * imageW + x) * 4;
+            centerSum += 0.2126 * data[p] + 0.7152 * data[p + 1] + 0.0722 * data[p + 2];
+            centerN += 1;
+          }
+        }
+        const centerMean = centerN > 0 ? centerSum / centerN : threshold;
+        const stampBrighterThanBg = centerMean >= borderMean;
+
+        const mask = new Uint8Array(pixelCount);
+        idx = 0;
+        for (let i = 0; i < pixelCount; i += 1) {
+          const y = 0.2126 * data[idx] + 0.7152 * data[idx + 1] + 0.0722 * data[idx + 2];
+          const isStamp = stampBrighterThanBg ? y >= threshold : y <= threshold;
+          mask[i] = isStamp ? 1 : 0;
+          idx += 4;
+        }
+        return { mask, x0, x1, y0, y1 };
+      }
+
+      function estimatePerforationTeethCount(imageData, stampBox, imageW, imageH) {
+        const { mask, x0, x1, y0, y1 } = buildStampMaskFromImage(imageData, stampBox, imageW, imageH);
+        const boxW = Math.max(1, x1 - x0 + 1);
+        const boxH = Math.max(1, y1 - y0 + 1);
+        const searchOutside = Math.max(3, Math.round(Math.min(boxW, boxH) * 0.07));
+        const searchInside = Math.max(6, Math.round(Math.min(boxW, boxH) * 0.14));
+
+        function topTrace() {
+          const out = new Array(boxW).fill(NaN);
+          for (let dx = 0; dx < boxW; dx += 1) {
+            const x = x0 + dx;
+            const ya = Math.max(0, y0 - searchOutside);
+            const yb = Math.min(imageH - 1, y0 + searchInside);
+            for (let y = ya; y <= yb; y += 1) {
+              if (mask[y * imageW + x]) {
+                out[dx] = y;
+                break;
+              }
+            }
+          }
+          return out;
+        }
+
+        function bottomTrace() {
+          const out = new Array(boxW).fill(NaN);
+          for (let dx = 0; dx < boxW; dx += 1) {
+            const x = x0 + dx;
+            const ya = Math.min(imageH - 1, y1 + searchOutside);
+            const yb = Math.max(0, y1 - searchInside);
+            for (let y = ya; y >= yb; y -= 1) {
+              if (mask[y * imageW + x]) {
+                out[dx] = y;
+                break;
+              }
+            }
+          }
+          return out;
+        }
+
+        function leftTrace() {
+          const out = new Array(boxH).fill(NaN);
+          for (let dy = 0; dy < boxH; dy += 1) {
+            const y = y0 + dy;
+            const xa = Math.max(0, x0 - searchOutside);
+            const xb = Math.min(imageW - 1, x0 + searchInside);
+            for (let x = xa; x <= xb; x += 1) {
+              if (mask[y * imageW + x]) {
+                out[dy] = x;
+                break;
+              }
+            }
+          }
+          return out;
+        }
+
+        function rightTrace() {
+          const out = new Array(boxH).fill(NaN);
+          for (let dy = 0; dy < boxH; dy += 1) {
+            const y = y0 + dy;
+            const xa = Math.min(imageW - 1, x1 + searchOutside);
+            const xb = Math.max(0, x1 - searchInside);
+            for (let x = xa; x >= xb; x -= 1) {
+              if (mask[y * imageW + x]) {
+                out[dy] = x;
+                break;
+              }
+            }
+          }
+          return out;
+        }
+
+        function countSide(rawTrace, kind) {
+          const filled = fillMissing1D(rawTrace);
+          if (!filled || filled.length < 24) return 0;
+          const smoothRadius = Math.max(1, Math.round(filled.length / 180));
+          const smoothed = smooth1D(filled, smoothRadius);
+          const sorted = smoothed.slice().sort((a, b) => a - b);
+          let depth = null;
+          if (kind === "top" || kind === "left") {
+            const ref = quantileSorted(sorted, 0.9);
+            depth = smoothed.map((v) => Math.max(0, ref - v));
+          } else {
+            const ref = quantileSorted(sorted, 0.1);
+            depth = smoothed.map((v) => Math.max(0, v - ref));
+          }
+          const maxDepth = depth.reduce((m, v) => Math.max(m, v), 0);
+          const minProminence = Math.max(1.5, maxDepth * 0.22);
+          const minDistance = Math.max(4, Math.round(depth.length / 36));
+          return countProminentPeaks(depth, minProminence, minDistance);
+        }
+
+        const top = countSide(topTrace(), "top");
+        const bottom = countSide(bottomTrace(), "bottom");
+        const left = countSide(leftTrace(), "left");
+        const right = countSide(rightTrace(), "right");
+        return {
+          top,
+          bottom,
+          left,
+          right,
+        };
+      }
+
       function centeringGrade(scorePct) {
         if (scorePct >= 98) return "Superb";
         if (scorePct >= 95) return "Excellent";
@@ -1520,6 +1816,17 @@
             });
           }
           const report = centeringReportFromBox(stampBox, natW, natH);
+          const countImageData = (() => {
+            const base = previewImageData(natW, natH);
+            if (effectiveRotationDeg === 0) return base;
+            return rotateImageData(base, natW, natH, effectiveRotationDeg);
+          })();
+          report.perforation_teeth_count = estimatePerforationTeethCount(
+            countImageData,
+            stampBox,
+            natW,
+            natH
+          );
           report.alignment.estimated_tilt_deg_before_correction = estimatedTiltDeg;
           report.alignment.applied_rotation_deg = effectiveRotationDeg;
           setPreviewRotation(effectiveRotationDeg);

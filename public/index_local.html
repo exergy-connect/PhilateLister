@@ -387,7 +387,7 @@
         if (detectorWorker) return detectorWorker;
         dbg("Creating detection worker");
         const source = `
-          const OPENCV_URL = "https://docs.opencv.org/4.13.0/opencv.js";
+          const OPENCV_URL = "https://cdn.jsdelivr.net/npm/@techstark/opencv-js@4.12.0-release.1/dist/opencv.min.js";
           const OPENCV_BASE = OPENCV_URL.replace(/[^/]+$/, "");
           const INIT_TIMEOUT_MS = ${WORKER_INIT_TIMEOUT_MS};
           const DEBUG = ${DEBUG_LOGGING ? "true" : "false"};

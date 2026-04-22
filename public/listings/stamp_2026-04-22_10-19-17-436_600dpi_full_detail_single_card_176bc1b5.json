@@ -1,0 +1,29 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "fiume-75-1",
+      "country_id": "fiume",
+      "scott": {
+        "number": 75
+      },
+      "title": "Fiume 15c on 5L Grey-Green and Red",
+      "summary": "1919 surcharge 'Valore globale Cent. 15' on 5L. Commemorates the October 30, 1918 proclamation of annexation to Italy. Features the Roman She-Wolf (Lupa Capitolina). Perforated 11.5.",
+      "issue_year": 1919,
+      "condition_quality": "mint_hinged",
+      "centering_grade": "f_vf",
+      "image_basename": "stamp_2026-04-22_10-19-17-436_600dpi_full_detail_single_card_176bc1b5.png",
+      "bounding_box": {
+        "x_min": 442,
+        "x_max": 774,
+        "y_min": 285,
+        "y_max": 854
+      },
+      "freeform_keywords": [
+        "Roman She-wolf",
+        "annexation",
+        "surcharge",
+        "Fiume"
+      ]
+    }
+  ]
+}

@@ -1885,6 +1885,199 @@
         return outer;
       }
 
+      function perforationMismatchPenalty(counts) {
+        if (!counts) return Infinity;
+        const top = Math.max(0, Number(counts.top) || 0);
+        const bottom = Math.max(0, Number(counts.bottom) || 0);
+        const left = Math.max(0, Number(counts.left) || 0);
+        const right = Math.max(0, Number(counts.right) || 0);
+        const hBase = Math.max(1, (top + bottom) * 0.5);
+        const vBase = Math.max(1, (left + right) * 0.5);
+        const hMismatch = Math.abs(top - bottom) / hBase;
+        const vMismatch = Math.abs(left - right) / vBase;
+        return hMismatch + vMismatch;
+      }
+
+      function makeOuterCandidate(baseOuter, innerBox, dx, dy, expandLeft, expandRight, expandTop, expandBottom) {
+        const xMin = expandLeft ? baseOuter.xMin - dx : baseOuter.xMin;
+        const xMax = expandRight ? baseOuter.xMax + dx : baseOuter.xMax;
+        const yMin = expandTop ? baseOuter.yMin - dy : baseOuter.yMin;
+        const yMax = expandBottom ? baseOuter.yMax + dy : baseOuter.yMax;
+        return {
+          xMin: clamp01(Math.min(xMin, innerBox.xMin)),
+          xMax: clamp01(Math.max(xMax, innerBox.xMax)),
+          yMin: clamp01(Math.min(yMin, innerBox.yMin)),
+          yMax: clamp01(Math.max(yMax, innerBox.yMax)),
+        };
+      }
+
+      function selectOuterBoxByTeethConsistency(imageData, baseOuter, innerBox, imageW, imageH) {
+        const innerW = Math.max(1e-9, (innerBox.xMax || 0) - (innerBox.xMin || 0));
+        const innerH = Math.max(1e-9, (innerBox.yMax || 0) - (innerBox.yMin || 0));
+        const dx = Math.max(2 / imageW, innerW * 0.03);
+        const dy = Math.max(2 / imageH, innerH * 0.03);
+        const baseArea = Math.max(1e-9, boxArea(baseOuter));
+
+        const candidates = [
+          baseOuter,
+          makeOuterCandidate(baseOuter, innerBox, dx, dy, false, true, false, false),
+          makeOuterCandidate(baseOuter, innerBox, dx, dy, true, false, false, false),
+          makeOuterCandidate(baseOuter, innerBox, dx, dy, false, false, true, false),
+          makeOuterCandidate(baseOuter, innerBox, dx, dy, false, false, false, true),
+          makeOuterCandidate(baseOuter, innerBox, dx, dy, true, true, false, false),
+          makeOuterCandidate(baseOuter, innerBox, dx, dy, false, false, true, true),
+          makeOuterCandidate(baseOuter, innerBox, dx, dy, true, true, true, true),
+        ];
+
+        let best = null;
+        for (const cand of candidates) {
+          const counts = estimatePerforationTeethCount(imageData, cand, imageW, imageH);
+          const mismatchPenalty = perforationMismatchPenalty(counts);
+          const sizePenalty = Math.max(0, boxArea(cand) / baseArea - 1) * 0.3;
+          const score = mismatchPenalty + sizePenalty;
+          if (!best || score < best.score) {
+            best = { box: cand, counts, score };
+          }
+        }
+        return best || { box: baseOuter, counts: estimatePerforationTeethCount(imageData, baseOuter, imageW, imageH), score: Infinity };
+      }
+
+      function lineMeanColor(imageData, imageW, imageH, axis, fixed, start, end) {
+        const data = imageData.data;
+        let sumR = 0;
+        let sumG = 0;
+        let sumB = 0;
+        let n = 0;
+        if (axis === "x") {
+          const x = Math.max(0, Math.min(imageW - 1, fixed));
+          const y0 = Math.max(0, Math.min(imageH - 1, start));
+          const y1 = Math.max(0, Math.min(imageH - 1, end));
+          for (let y = y0; y <= y1; y += 1) {
+            const p = (y * imageW + x) * 4;
+            sumR += data[p];
+            sumG += data[p + 1];
+            sumB += data[p + 2];
+            n += 1;
+          }
+        } else {
+          const y = Math.max(0, Math.min(imageH - 1, fixed));
+          const x0 = Math.max(0, Math.min(imageW - 1, start));
+          const x1 = Math.max(0, Math.min(imageW - 1, end));
+          for (let x = x0; x <= x1; x += 1) {
+            const p = (y * imageW + x) * 4;
+            sumR += data[p];
+            sumG += data[p + 1];
+            sumB += data[p + 2];
+            n += 1;
+          }
+        }
+        if (n <= 0) return null;
+        const r = sumR / n;
+        const g = sumG / n;
+        const b = sumB / n;
+        const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        return { r, g, b, luma };
+      }
+
+      function colorDistanceRgb(a, b) {
+        if (!a || !b) return Infinity;
+        return Math.hypot((a.r || 0) - (b.r || 0), (a.g || 0) - (b.g || 0), (a.b || 0) - (b.b || 0));
+      }
+
+      function expandInnerBoxByEdgeColor(imageData, innerBox, outerBox, imageW, imageH) {
+        const innerPx = toPixelBox(innerBox, imageW, imageH);
+        const outerPx = toPixelBox(outerBox, imageW, imageH);
+        let x0 = innerPx.x0;
+        let x1 = innerPx.x1;
+        let y0 = innerPx.y0;
+        let y1 = innerPx.y1;
+        const maxGrowPx = Math.max(2, Math.round(Math.min(imageW, imageH) * 0.03));
+
+        function canGrowLeft() {
+          if (x0 <= outerPx.x0) return false;
+          const inset = Math.max(0, Math.round((y1 - y0 + 1) * 0.06));
+          const s = y0 + inset;
+          const e = y1 - inset;
+          const current = lineMeanColor(imageData, imageW, imageH, "x", x0, s, e);
+          const next = lineMeanColor(imageData, imageW, imageH, "x", x0 - 1, s, e);
+          const dist = colorDistanceRgb(current, next);
+          const currentLuma = current ? current.luma : 0;
+          const nextLuma = next ? next.luma : 0;
+          const lumaDiff = Math.abs(currentLuma - nextLuma);
+          return dist <= 18 && lumaDiff <= 8;
+        }
+
+        function canGrowRight() {
+          if (x1 >= outerPx.x1) return false;
+          const inset = Math.max(0, Math.round((y1 - y0 + 1) * 0.06));
+          const s = y0 + inset;
+          const e = y1 - inset;
+          const current = lineMeanColor(imageData, imageW, imageH, "x", x1, s, e);
+          const next = lineMeanColor(imageData, imageW, imageH, "x", x1 + 1, s, e);
+          const dist = colorDistanceRgb(current, next);
+          const currentLuma = current ? current.luma : 0;
+          const nextLuma = next ? next.luma : 0;
+          const lumaDiff = Math.abs(currentLuma - nextLuma);
+          return dist <= 18 && lumaDiff <= 8;
+        }
+
+        function canGrowTop() {
+          if (y0 <= outerPx.y0) return false;
+          const inset = Math.max(0, Math.round((x1 - x0 + 1) * 0.06));
+          const s = x0 + inset;
+          const e = x1 - inset;
+          const current = lineMeanColor(imageData, imageW, imageH, "y", y0, s, e);
+          const next = lineMeanColor(imageData, imageW, imageH, "y", y0 - 1, s, e);
+          const dist = colorDistanceRgb(current, next);
+          const currentLuma = current ? current.luma : 0;
+          const nextLuma = next ? next.luma : 0;
+          const lumaDiff = Math.abs(currentLuma - nextLuma);
+          return dist <= 18 && lumaDiff <= 8;
+        }
+
+        function canGrowBottom() {
+          if (y1 >= outerPx.y1) return false;
+          const inset = Math.max(0, Math.round((x1 - x0 + 1) * 0.06));
+          const s = x0 + inset;
+          const e = x1 - inset;
+          const current = lineMeanColor(imageData, imageW, imageH, "y", y1, s, e);
+          const next = lineMeanColor(imageData, imageW, imageH, "y", y1 + 1, s, e);
+          const dist = colorDistanceRgb(current, next);
+          const currentLuma = current ? current.luma : 0;
+          const nextLuma = next ? next.luma : 0;
+          const lumaDiff = Math.abs(currentLuma - nextLuma);
+          return dist <= 18 && lumaDiff <= 8;
+        }
+
+        for (let i = 0; i < maxGrowPx; i += 1) {
+          if (!canGrowLeft()) break;
+          x0 -= 1;
+        }
+        for (let i = 0; i < maxGrowPx; i += 1) {
+          if (!canGrowRight()) break;
+          x1 += 1;
+        }
+        for (let i = 0; i < maxGrowPx; i += 1) {
+          if (!canGrowTop()) break;
+          y0 -= 1;
+        }
+        for (let i = 0; i < maxGrowPx; i += 1) {
+          if (!canGrowBottom()) break;
+          y1 += 1;
+        }
+
+        return toNormBox(
+          {
+            x0: Math.max(outerPx.x0, Math.min(outerPx.x1, x0)),
+            x1: Math.max(outerPx.x0, Math.min(outerPx.x1, x1)),
+            y0: Math.max(outerPx.y0, Math.min(outerPx.y1, y0)),
+            y1: Math.max(outerPx.y0, Math.min(outerPx.y1, y1)),
+          },
+          imageW,
+          imageH
+        );
+      }
+
       function centeringGrade(scorePct) {
         if (scorePct >= 98) return "Superb";
         if (scorePct >= 95) return "Excellent";
@@ -2006,7 +2199,7 @@
             return rotateImageData(base, natW, natH, effectiveRotationDeg);
           })();
           const outerStampBoxRaw = deriveOuterStampBoxFromSeed(analysisImageData, innerSeedBox, natW, natH);
-          const outerStampBox = {
+          const outerStampBoxBase = {
             xMin: clamp01(
               Math.min(outerStampBoxRaw.xMin, innerSeedBox.xMin)
             ),
@@ -2020,7 +2213,22 @@
               Math.max(outerStampBoxRaw.yMax, innerSeedBox.yMax)
             ),
           };
-          const innerDesignBox = innerSeedBox;
+          let innerDesignBox = innerSeedBox;
+          const outerSelection = selectOuterBoxByTeethConsistency(
+            analysisImageData,
+            outerStampBoxBase,
+            innerDesignBox,
+            natW,
+            natH
+          );
+          const outerStampBox = outerSelection.box;
+          innerDesignBox = expandInnerBoxByEdgeColor(
+            analysisImageData,
+            innerDesignBox,
+            outerStampBox,
+            natW,
+            natH
+          );
 
           const previewList = [];
           const previewCandidateLimit = 10;
@@ -2052,12 +2260,7 @@
           });
 
           const report = centeringReportFromBoxes(outerStampBox, innerDesignBox, natW, natH);
-          report.perforation_teeth_count = estimatePerforationTeethCount(
-            analysisImageData,
-            outerStampBox,
-            natW,
-            natH
-          );
+          report.perforation_teeth_count = outerSelection.counts;
           report.alignment.estimated_tilt_deg_before_correction = estimatedTiltDeg;
           report.alignment.applied_rotation_deg = effectiveRotationDeg;
           setPreviewRotation(effectiveRotationDeg);

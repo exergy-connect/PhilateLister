@@ -395,6 +395,7 @@
           const INIT_TIMEOUT_MS = ${WORKER_INIT_TIMEOUT_MS};
           const DEBUG = ${DEBUG_LOGGING ? "true" : "false"};
           let cvReadyPromise = null;
+          let cvInstance = null;
           let readySent = false;
 
           function dbg(...args) {
@@ -434,8 +435,13 @@
                 done = true;
                 clearTimeout(timer);
                 if (poll) clearInterval(poll);
-                if (err) reject(err);
-                else resolve(value);
+                if (err) {
+                  reject(err);
+                  return;
+                }
+                // Never resolve a Promise with raw cv; some builds expose thenable-like cv objects.
+                cvInstance = value || self.cv || null;
+                resolve(true);
               };
               self.Module = {
                 locateFile(path) {
@@ -572,7 +578,9 @@
             const id = data.id;
             if (!id) return;
             try {
-              const cv = await ensureCvReady();
+              await ensureCvReady();
+              const cv = cvInstance || self.cv;
+              if (!cv || !cv.Mat) throw new Error("OpenCV runtime initialized without usable cv API.");
               notifyReady();
               dbg("Detect request start", { width: data.width, height: data.height, maxSide: data.maxSide });
               const boxes = detectBoxes(cv, data.width, data.height, data.rgbaBuffer, data.maxSide);

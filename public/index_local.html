@@ -200,7 +200,7 @@
         display: grid;
         grid-template-columns: minmax(0, 1fr) 8.6rem 8.6rem auto;
         gap: 0.65rem;
-        align-items: end;
+        align-items: start;
         justify-content: center;
       }
       h1 {
@@ -259,6 +259,7 @@
         border: none;
         border-radius: 6px;
         cursor: pointer;
+        align-self: end;
       }
       button[type="submit"]:hover:not(:disabled) {
         background: var(--accent-hover);
@@ -1374,17 +1375,54 @@
         return out;
       }
 
+      function areaSpreadCoefficient(boxes) {
+        if (!Array.isArray(boxes) || boxes.length < 2) return 0;
+        const areas = boxes.map((b) => Math.max(0, (b.xMax - b.xMin) * (b.yMax - b.yMin)));
+        const mean = areas.reduce((s, a) => s + a, 0) / areas.length;
+        if (mean <= 0) return 0;
+        const variance = areas.reduce((s, a) => s + (a - mean) * (a - mean), 0) / areas.length;
+        return Math.sqrt(variance) / mean;
+      }
+
+      function enforceSizeConsistency(boxes) {
+        if (!Array.isArray(boxes) || boxes.length < 4) return boxes || [];
+        const withArea = boxes
+          .map((b) => ({
+            box: b,
+            area: Math.max(0, (b.xMax - b.xMin) * (b.yMax - b.yMin)),
+          }))
+          .filter((x) => x.area > 0);
+        if (withArea.length < 4) return boxes;
+        const sorted = withArea.map((x) => x.area).sort((a, b) => a - b);
+        const mid = Math.floor(sorted.length / 2);
+        const median = sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
+        if (!Number.isFinite(median) || median <= 0) return boxes;
+        const lo = median * 0.5;
+        const hi = median * 1.9;
+        const consistent = withArea.filter((x) => x.area >= lo && x.area <= hi).map((x) => x.box);
+        return consistent.length >= Math.max(3, Math.floor(withArea.length * 0.55)) ? consistent : boxes;
+      }
+
+      function betterDetectionCandidate(a, b) {
+        if (!b) return true;
+        if (a.diff !== b.diff) return a.diff < b.diff;
+        if (a.spread !== b.spread) return a.spread < b.spread;
+        return a.count > b.count;
+      }
+
       async function detectStampBoxesTowardTargetCount(natW, natH, maxSide, baseTuning, targetCount) {
         const maxAttempts = 18;
         const seen = new Set();
 
         async function runOnce(tuning, attemptNum) {
-          const boxes = await detectStampBoxesWithWorker(natW, natH, maxSide, tuning);
+          const rawBoxes = await detectStampBoxesWithWorker(natW, natH, maxSide, tuning);
+          const boxes = enforceSizeConsistency(rawBoxes);
           return {
             boxes,
             tuning,
             count: boxes.length,
             diff: Math.abs(boxes.length - targetCount),
+            spread: areaSpreadCoefficient(boxes),
             attempt: attemptNum,
           };
         }
@@ -1392,10 +1430,9 @@
         let attempts = 1;
         let best = await runOnce(normalizeDetectionTuning(baseTuning), attempts);
         seen.add(tuningSignature(best.tuning));
-        if (best.diff === 0) return { ...best, exact: true, attempts };
 
         /** @type {{ tuning: ReturnType<typeof normalizeDetectionTuning>, count: number, diff: number }[]} */
-        let frontier = [{ tuning: best.tuning, count: best.count, diff: best.diff }];
+        let frontier = [{ tuning: best.tuning, count: best.count, diff: best.diff, spread: best.spread }];
 
         while (attempts < maxAttempts && frontier.length) {
           const nextFrontier = [];
@@ -1408,18 +1445,17 @@
               attempts += 1;
               statusEl.textContent = `Iterating tuning… attempt ${attempts}/${maxAttempts} (target ${targetCount})`;
               const res = await runOnce(variant, attempts);
-              if (res.diff < best.diff) best = res;
-              nextFrontier.push({ tuning: variant, count: res.count, diff: res.diff });
-              if (res.diff === 0) return { ...res, exact: true, attempts };
+              if (betterDetectionCandidate(res, best)) best = res;
+              nextFrontier.push({ tuning: variant, count: res.count, diff: res.diff, spread: res.spread });
               if (attempts >= maxAttempts) break;
             }
             if (attempts >= maxAttempts) break;
           }
-          nextFrontier.sort((a, b) => a.diff - b.diff);
+          nextFrontier.sort((a, b) => a.diff - b.diff || a.spread - b.spread || b.count - a.count);
           frontier = nextFrontier.slice(0, 4);
         }
 
-        return { ...best, exact: false, attempts };
+        return { ...best, exact: best.diff === 0, attempts };
       }
 
       function waitForImageReady(imgEl) {
@@ -1587,7 +1623,8 @@
               ? ` Target ${targetCount} reached in ${iter.attempts} attempt(s).`
               : ` Best match ${iter.count}/${targetCount} after ${iter.attempts} attempt(s).`;
           } else {
-            boxes = await detectStampBoxesWithWorker(natW, natH, maxSide, tuning);
+            const rawBoxes = await detectStampBoxesWithWorker(natW, natH, maxSide, tuning);
+            boxes = enforceSizeConsistency(rawBoxes);
           }
 
           const previewList = boxes.map((box, i) => ({

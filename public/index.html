@@ -62,12 +62,16 @@
         top: 1rem;
       }
       .preview-frame {
+        --scan-w: 5100;
+        --scan-h: 7016;
+        --frame-max-h: min(70vh, calc(100vh - 8rem));
+        --frame-w: min(100%, calc(var(--frame-max-h) * var(--scan-w) / var(--scan-h)));
         background: #1c1b18;
         border: 1px solid var(--border);
         border-radius: var(--radius);
-        min-height: 14rem;
-        aspect-ratio: 4 / 5;
-        max-height: min(70vh, 28rem);
+        width: var(--frame-w);
+        height: calc(var(--frame-w) * var(--scan-h) / var(--scan-w));
+        margin-inline: auto;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -405,7 +409,7 @@
        *
        * Repo target: <meta name="philatelister-repo" content="owner/repo"> and
        * <meta name="philatelister-branch"> in <head>, then URL / github.io overrides.
-       * Auth: PHILATELISTER.token in script, same-origin token.txt (http(s) only), or encrypted meta + password field / ?token_password=.
+       * Auth: PHILATELISTER.token in script, or encrypted meta + password field / ?token_password=.
        * Optional: <meta name="philatelister-token-cipher" content="base64..."> with AES-256-GCM
        *   (see HTML comment before script); password: #token-password or ?token_password= (ASCII, URL-encoded).
        * Push to uploads/ can trigger Actions with paths: ['uploads/**'].
@@ -604,12 +608,6 @@
       async function resolveGitHubTokenForUpload() {
         const inline = String(PHILATELISTER.token ?? "").trim();
         if (inline) return inline;
-
-        await ensureTokenFromTokenTxt();
-        syncTokenFieldVisibility();
-
-        const fromTxt = String(PHILATELISTER.token ?? "").trim();
-        if (fromTxt) return fromTxt;
 
         const cipherB64 = getEmbeddedCipherB64();
         if (cipherB64) {
@@ -882,24 +880,6 @@
         });
       }
 
-      let tokenTxtFetchAttempted = false;
-      async function ensureTokenFromTokenTxt() {
-        if (tokenTxtFetchAttempted || PHILATELISTER.token) return;
-        tokenTxtFetchAttempted = true;
-        if (typeof fetch === "undefined" || window.location.protocol === "file:") return;
-        try {
-          const r = await fetch("token.txt", { cache: "no-store" });
-          if (!r.ok) return;
-          const t = (await r.text()).trim();
-          if (t) {
-            PHILATELISTER.token = t;
-            syncTokenFieldVisibility();
-          }
-        } catch (_) {
-          /* no token.txt */
-        }
-      }
-
       function repoTargetSnapshot() {
         return {
           owner: String(PHILATELISTER.owner).trim(),
@@ -1029,7 +1009,7 @@
         return fmt;
       }
 
-      /** Same stem as scripts appraisal output, served from site root: listings/&lt;stem&gt;.&lt;ext&gt; */
+      /** Listing path served by Pages when `public/` is the site root. */
       function listingRelPathFromImageBasename(basename, listingExt) {
         const dot = basename.lastIndexOf(".");
         const stem = dot >= 1 ? basename.slice(0, dot) : basename;
@@ -1188,7 +1168,6 @@
         statusEl.className = "";
 
         applyConfigFromEnvironment();
-        await ensureTokenFromTokenTxt();
         syncTokenFieldVisibility();
         syncTokenPasswordFromUrlIntoField();
 
@@ -1203,7 +1182,7 @@
         if (!token) {
           statusEl.className = "error";
           statusEl.textContent =
-            "This page needs permission to save your upload. Ask whoever set the site up to configure access (encrypted password above, token file on the server, or site script settings).";
+            "This page needs permission to save your upload. Ask whoever set the site up to configure access (encrypted password above or site script settings).";
           return;
         }
 

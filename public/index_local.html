@@ -591,7 +591,7 @@
                 const area = rw * rh;
                 if (area < minA || area > maxA) continue;
                 const ar = rw / Math.max(1, rh);
-                if (ar < 0.2 || ar > 5) continue;
+                if (ar < 0.5 || ar > 2.0) continue;
                 const extent = contourArea / Math.max(1, area);
                 if (extent < minExtent) continue;
                 // Filter long horizontal strips near the bottom edge that are not individual stamps.
@@ -1192,7 +1192,6 @@
             fileStem: `stamp_${String(i + 1).padStart(2, "0")}`,
           }));
 
-          setPreviewBoxes(previewList);
           setStampCropRows(cropRows);
 
           const listing = listingJsonFromBoxes(boxes);
@@ -1206,6 +1205,10 @@
           section.hidden = false;
           if (uploadLayout) uploadLayout.classList.add("listing-open");
           document.querySelector("main")?.classList.add("listing-open");
+          // Layout width changes when listing panel opens; render boxes after reflow.
+          setPreviewBoxes(previewList);
+          await nextFrame();
+          renderPreviewBoxes();
           section.setAttribute("aria-busy", "false");
           waitEl.textContent =
             boxes.length === 0

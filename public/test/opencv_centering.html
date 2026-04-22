@@ -131,6 +131,10 @@
         border-color: #ffd166;
         background: color-mix(in srgb, #ffd166 18%, transparent);
       }
+      .preview-bbox.preview-bbox-inner {
+        border-color: #80ed99;
+        background: color-mix(in srgb, #80ed99 18%, transparent);
+      }
       .preview-bbox-label {
         position: absolute;
         top: -1.2rem;
@@ -1692,6 +1696,200 @@
         };
       }
 
+      function toPixelBox(box, imageW, imageH) {
+        return {
+          x0: Math.max(0, Math.min(imageW - 1, Math.floor((box.xMin || 0) * imageW))),
+          x1: Math.max(0, Math.min(imageW - 1, Math.ceil((box.xMax || 0) * imageW) - 1)),
+          y0: Math.max(0, Math.min(imageH - 1, Math.floor((box.yMin || 0) * imageH))),
+          y1: Math.max(0, Math.min(imageH - 1, Math.ceil((box.yMax || 0) * imageH) - 1)),
+        };
+      }
+
+      function toNormBox(px, imageW, imageH) {
+        return {
+          xMin: clamp01(px.x0 / imageW),
+          xMax: clamp01((px.x1 + 1) / imageW),
+          yMin: clamp01(px.y0 / imageH),
+          yMax: clamp01((px.y1 + 1) / imageH),
+        };
+      }
+
+      function boxArea(box) {
+        return Math.max(0, (box.xMax || 0) - (box.xMin || 0)) * Math.max(0, (box.yMax || 0) - (box.yMin || 0));
+      }
+
+      function isBoxInside(inner, outer, pad = 0) {
+        if (!inner || !outer) return false;
+        return (
+          (inner.xMin || 0) >= (outer.xMin || 0) + pad &&
+          (inner.yMin || 0) >= (outer.yMin || 0) + pad &&
+          (inner.xMax || 0) <= (outer.xMax || 0) - pad &&
+          (inner.yMax || 0) <= (outer.yMax || 0) - pad
+        );
+      }
+
+      function deriveOuterStampBoxFromSeed(imageData, seedBox, imageW, imageH) {
+        const { mask } = buildStampMaskFromImage(imageData, seedBox, imageW, imageH);
+        const seedPx = toPixelBox(seedBox, imageW, imageH);
+        const seedW = Math.max(1, seedPx.x1 - seedPx.x0 + 1);
+        const seedH = Math.max(1, seedPx.y1 - seedPx.y0 + 1);
+        const cx = Math.max(0, Math.min(imageW - 1, Math.round((seedPx.x0 + seedPx.x1) * 0.5)));
+        const cy = Math.max(0, Math.min(imageH - 1, Math.round((seedPx.y0 + seedPx.y1) * 0.5)));
+        const gapTol = Math.max(2, Math.round(Math.min(imageW, imageH) * 0.0035));
+
+        function rowBoundary(y, dir) {
+          let x = cx;
+          let lastOn = -1;
+          let gap = 0;
+          while (x >= 0 && x < imageW) {
+            if (mask[y * imageW + x]) {
+              lastOn = x;
+              gap = 0;
+            } else if (lastOn >= 0) {
+              gap += 1;
+              if (gap > gapTol) break;
+            }
+            x += dir;
+          }
+          return lastOn;
+        }
+
+        function colBoundary(x, dir) {
+          let y = cy;
+          let lastOn = -1;
+          let gap = 0;
+          while (y >= 0 && y < imageH) {
+            if (mask[y * imageW + x]) {
+              lastOn = y;
+              gap = 0;
+            } else if (lastOn >= 0) {
+              gap += 1;
+              if (gap > gapTol) break;
+            }
+            y += dir;
+          }
+          return lastOn;
+        }
+
+        const lefts = [];
+        const rights = [];
+        const tops = [];
+        const bottoms = [];
+
+        const yFrom = Math.max(0, seedPx.y0 - Math.round(seedH * 0.25));
+        const yTo = Math.min(imageH - 1, seedPx.y1 + Math.round(seedH * 0.25));
+        const yStep = Math.max(1, Math.round(seedH / 64));
+        for (let y = yFrom; y <= yTo; y += yStep) {
+          const left = rowBoundary(y, -1);
+          const right = rowBoundary(y, +1);
+          if (left >= 0 && right >= left) {
+            lefts.push(left);
+            rights.push(right);
+          }
+        }
+
+        const xFrom = Math.max(0, seedPx.x0 - Math.round(seedW * 0.25));
+        const xTo = Math.min(imageW - 1, seedPx.x1 + Math.round(seedW * 0.25));
+        const xStep = Math.max(1, Math.round(seedW / 64));
+        for (let x = xFrom; x <= xTo; x += xStep) {
+          const top = colBoundary(x, -1);
+          const bottom = colBoundary(x, +1);
+          if (top >= 0 && bottom >= top) {
+            tops.push(top);
+            bottoms.push(bottom);
+          }
+        }
+
+        if (lefts.length < 5 || rights.length < 5 || tops.length < 5 || bottoms.length < 5) {
+          return seedBox;
+        }
+
+        const leftSorted = lefts.slice().sort((a, b) => a - b);
+        const rightSorted = rights.slice().sort((a, b) => a - b);
+        const topSorted = tops.slice().sort((a, b) => a - b);
+        const bottomSorted = bottoms.slice().sort((a, b) => a - b);
+        const outerPx = {
+          x0: Math.max(0, Math.min(imageW - 1, Math.round(quantileSorted(leftSorted, 0.1)))),
+          x1: Math.max(0, Math.min(imageW - 1, Math.round(quantileSorted(rightSorted, 0.9)))),
+          y0: Math.max(0, Math.min(imageH - 1, Math.round(quantileSorted(topSorted, 0.1)))),
+          y1: Math.max(0, Math.min(imageH - 1, Math.round(quantileSorted(bottomSorted, 0.9)))),
+        };
+        if (outerPx.x1 <= outerPx.x0 || outerPx.y1 <= outerPx.y0) return seedBox;
+
+        const outer = toNormBox(outerPx, imageW, imageH);
+        const outerArea = boxArea(outer);
+        const seedArea = boxArea(seedBox);
+        if (outerArea <= seedArea * 1.05) return seedBox;
+        return outer;
+      }
+
+      function detectInnerDesignBoxFromOuter(imageData, outerBox, imageW, imageH) {
+        const data = imageData.data;
+        const outer = toPixelBox(outerBox, imageW, imageH);
+        const ow = Math.max(1, outer.x1 - outer.x0 + 1);
+        const oh = Math.max(1, outer.y1 - outer.y0 + 1);
+        if (ow < 40 || oh < 40) return null;
+
+        const gray = new Float32Array(ow * oh);
+        for (let y = 0; y < oh; y += 1) {
+          const yy = outer.y0 + y;
+          for (let x = 0; x < ow; x += 1) {
+            const xx = outer.x0 + x;
+            const p = (yy * imageW + xx) * 4;
+            gray[y * ow + x] = 0.2126 * data[p] + 0.7152 * data[p + 1] + 0.0722 * data[p + 2];
+          }
+        }
+
+        const colGrad = new Array(ow).fill(0);
+        const rowGrad = new Array(oh).fill(0);
+        for (let y = 1; y < oh - 1; y += 1) {
+          const row = y * ow;
+          const rowUp = (y - 1) * ow;
+          const rowDown = (y + 1) * ow;
+          for (let x = 1; x < ow - 1; x += 1) {
+            const gx = Math.abs(gray[row + x + 1] - gray[row + x - 1]);
+            const gy = Math.abs(gray[rowDown + x] - gray[rowUp + x]);
+            colGrad[x] += gx;
+            rowGrad[y] += gy;
+          }
+        }
+
+        const colSmooth = smooth1D(colGrad, Math.max(2, Math.round(ow / 140)));
+        const rowSmooth = smooth1D(rowGrad, Math.max(2, Math.round(oh / 140)));
+
+        function argMaxRange(arr, i0, i1) {
+          const lo = Math.max(0, Math.min(arr.length - 1, i0));
+          const hi = Math.max(lo, Math.min(arr.length - 1, i1));
+          let bestI = lo;
+          let bestV = -Infinity;
+          for (let i = lo; i <= hi; i += 1) {
+            if (arr[i] > bestV) {
+              bestV = arr[i];
+              bestI = i;
+            }
+          }
+          return { i: bestI, v: bestV };
+        }
+
+        const left = argMaxRange(colSmooth, Math.round(ow * 0.05), Math.round(ow * 0.42));
+        const right = argMaxRange(colSmooth, Math.round(ow * 0.58), Math.round(ow * 0.95));
+        const top = argMaxRange(rowSmooth, Math.round(oh * 0.05), Math.round(oh * 0.42));
+        const bottom = argMaxRange(rowSmooth, Math.round(oh * 0.58), Math.round(oh * 0.95));
+        if (right.i <= left.i + 6 || bottom.i <= top.i + 6) return null;
+
+        const innerPx = {
+          x0: outer.x0 + left.i,
+          x1: outer.x0 + right.i,
+          y0: outer.y0 + top.i,
+          y1: outer.y0 + bottom.i,
+        };
+        const inner = toNormBox(innerPx, imageW, imageH);
+        if (!isBoxInside(inner, outerBox, 0)) return null;
+        const areaRatio = boxArea(inner) / Math.max(1e-9, boxArea(outerBox));
+        if (areaRatio < 0.12 || areaRatio > 0.92) return null;
+        return inner;
+      }
+
       function centeringGrade(scorePct) {
         if (scorePct >= 98) return "Superb";
         if (scorePct >= 95) return "Excellent";
@@ -1700,11 +1898,13 @@
         return "Off-center";
       }
 
-      function centeringReportFromBox(box, imageW, imageH) {
-        const left = clamp01(box.xMin);
-        const right = clamp01(1 - box.xMax);
-        const top = clamp01(box.yMin);
-        const bottom = clamp01(1 - box.yMax);
+      function centeringReportFromBoxes(outerBox, innerBox, imageW, imageH) {
+        const outerW = Math.max(1e-9, (outerBox.xMax || 0) - (outerBox.xMin || 0));
+        const outerH = Math.max(1e-9, (outerBox.yMax || 0) - (outerBox.yMin || 0));
+        const left = clamp01(((innerBox.xMin || 0) - (outerBox.xMin || 0)) / outerW);
+        const right = clamp01(((outerBox.xMax || 0) - (innerBox.xMax || 0)) / outerW);
+        const top = clamp01(((innerBox.yMin || 0) - (outerBox.yMin || 0)) / outerH);
+        const bottom = clamp01(((outerBox.yMax || 0) - (innerBox.yMax || 0)) / outerH);
 
         const horizontalScore = (Math.min(left, right) / Math.max(1e-9, Math.max(left, right))) * 100;
         const verticalScore = (Math.min(top, bottom) / Math.max(1e-9, Math.max(top, bottom))) * 100;
@@ -1713,15 +1913,23 @@
         return {
           type: "single_stamp_centering_analysis",
           image_size_px: { width: imageW, height: imageH },
-          detected_stamp_box: {
-            x_min: box.xMin,
-            x_max: box.xMax,
-            y_min: box.yMin,
-            y_max: box.yMax,
-            width_pct: (box.xMax - box.xMin) * 100,
-            height_pct: (box.yMax - box.yMin) * 100,
+          detected_outer_stamp_box: {
+            x_min: outerBox.xMin,
+            x_max: outerBox.xMax,
+            y_min: outerBox.yMin,
+            y_max: outerBox.yMax,
+            width_pct: ((outerBox.xMax || 0) - (outerBox.xMin || 0)) * 100,
+            height_pct: ((outerBox.yMax || 0) - (outerBox.yMin || 0)) * 100,
           },
-          border_margins_pct: {
+          detected_inner_design_box: {
+            x_min: innerBox.xMin,
+            x_max: innerBox.xMax,
+            y_min: innerBox.yMin,
+            y_max: innerBox.yMax,
+            width_pct: ((innerBox.xMax || 0) - (innerBox.xMin || 0)) * 100,
+            height_pct: ((innerBox.yMax || 0) - (innerBox.yMin || 0)) * 100,
+          },
+          design_margins_within_stamp_pct: {
             left: left * 100,
             right: right * 100,
             top: top * 100,
@@ -1792,9 +2000,27 @@
             effectiveRotationDeg = 0;
           }
 
-          const stampBox = choosePrimaryStampBox(chosenBoxes);
-          if (!stampBox) {
+          const innerSeedBox = choosePrimaryStampBox(chosenBoxes);
+          if (!innerSeedBox) {
             throw new Error("Could not detect a clear stamp boundary. Try a tighter crop with clear stamp edges.");
+          }
+
+          const analysisImageData = (() => {
+            const base = previewImageData(natW, natH);
+            if (effectiveRotationDeg === 0) return base;
+            return rotateImageData(base, natW, natH, effectiveRotationDeg);
+          })();
+          const outerStampBox = deriveOuterStampBoxFromSeed(analysisImageData, innerSeedBox, natW, natH);
+          let innerDesignBox = detectInnerDesignBoxFromOuter(analysisImageData, outerStampBox, natW, natH);
+          if (!innerDesignBox) {
+            const seedArea = boxArea(innerSeedBox);
+            const outerArea = Math.max(1e-9, boxArea(outerStampBox));
+            const areaRatio = seedArea / outerArea;
+            if (isBoxInside(innerSeedBox, outerStampBox, 0) && areaRatio >= 0.12 && areaRatio <= 0.92) {
+              innerDesignBox = innerSeedBox;
+            } else {
+              throw new Error("Could not determine inner design box from the detected stamp boundary.");
+            }
           }
 
           const previewList = [];
@@ -1804,26 +2030,25 @@
             const box = previewCandidates[i];
             previewList.push({
               box,
-              label: boxesClose(box, stampBox) ? "Selected stamp" : `Candidate ${i + 1}`,
-              className: boxesClose(box, stampBox) ? "preview-bbox-primary" : "",
+              label: boxesClose(box, innerSeedBox) ? "Inner seed" : `Candidate ${i + 1}`,
+              className: boxesClose(box, innerSeedBox) ? "preview-bbox-inner" : "",
             });
           }
-          if (!previewList.some((item) => boxesClose(item.box, stampBox))) {
-            previewList.push({
-              box: stampBox,
-              label: "Selected stamp",
-              className: "preview-bbox-primary",
-            });
-          }
-          const report = centeringReportFromBox(stampBox, natW, natH);
-          const countImageData = (() => {
-            const base = previewImageData(natW, natH);
-            if (effectiveRotationDeg === 0) return base;
-            return rotateImageData(base, natW, natH, effectiveRotationDeg);
-          })();
+          previewList.push({
+            box: outerStampBox,
+            label: "Outer stamp",
+            className: "preview-bbox-primary",
+          });
+          previewList.push({
+            box: innerDesignBox,
+            label: "Inner design",
+            className: "preview-bbox-inner",
+          });
+
+          const report = centeringReportFromBoxes(outerStampBox, innerDesignBox, natW, natH);
           report.perforation_teeth_count = estimatePerforationTeethCount(
-            countImageData,
-            stampBox,
+            analysisImageData,
+            outerStampBox,
             natW,
             natH
           );

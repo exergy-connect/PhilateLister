@@ -135,6 +135,11 @@
         border-color: #80ed99;
         background: color-mix(in srgb, #80ed99 18%, transparent);
       }
+      .preview-bbox.preview-bbox-seed {
+        border-color: #ff9f1c;
+        background: color-mix(in srgb, #ff9f1c 16%, transparent);
+        border-style: dashed;
+      }
       .preview-bbox-label {
         position: absolute;
         top: -1.2rem;
@@ -2030,8 +2035,15 @@
             const box = previewCandidates[i];
             previewList.push({
               box,
-              label: boxesClose(box, innerSeedBox) ? "Inner seed" : `Candidate ${i + 1}`,
-              className: boxesClose(box, innerSeedBox) ? "preview-bbox-inner" : "",
+              label: `Candidate ${i + 1}`,
+              className: "",
+            });
+          }
+          if (!boxesClose(innerSeedBox, innerDesignBox)) {
+            previewList.push({
+              box: innerSeedBox,
+              label: "Inner seed (worker)",
+              className: "preview-bbox-seed",
             });
           }
           previewList.push({

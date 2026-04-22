@@ -1,0 +1,112 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "dk-o_1-1",
+      "country_id": "dk",
+      "scott": {
+        "country_id": "dk",
+        "section": "O",
+        "number": 1
+      },
+      "title": "Denmark Official 2sk Blue, Used",
+      "summary": "1871 Official service stamp (Tjeneste) featuring the coat of arms. Blue on white paper. Circular datestamp cancel. Notation cat val $200.00, net $65.00.",
+      "issue_year": 1871,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "image_basename": "stamp_2026-04-21_22-32-08-827_IMG_1105_ed410e25.jpeg",
+      "bounding_box": {
+        "x_min": 106,
+        "x_max": 378,
+        "y_min": 91,
+        "y_max": 329
+      },
+      "freeform_keywords": [
+        "Tjeneste",
+        "Skilling",
+        "Official",
+        "Coat of Arms"
+      ]
+    },
+    {
+      "stamp_id": "dk-o_2-1",
+      "country_id": "dk",
+      "scott": {
+        "country_id": "dk",
+        "section": "O",
+        "number": 2
+      },
+      "title": "Denmark Official 4sk Carmine, Used",
+      "summary": "1871 Official service stamp (Tjeneste), 4sk denomination in carmine. Heavily cancelled with a numeral or barred obliterator. Notation cat val $40.40, net $12.50.",
+      "issue_year": 1871,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "image_basename": "stamp_2026-04-21_22-32-08-827_IMG_1105_ed410e25.jpeg",
+      "bounding_box": {
+        "x_min": 617,
+        "x_max": 891,
+        "y_min": 97,
+        "y_max": 335
+      },
+      "freeform_keywords": [
+        "Tjeneste",
+        "Skilling",
+        "Official",
+        "Coat of Arms"
+      ]
+    },
+    {
+      "stamp_id": "dk-o_6-1",
+      "country_id": "dk",
+      "scott": {
+        "country_id": "dk",
+        "section": "O",
+        "number": 6
+      },
+      "title": "Denmark Official 3ore Gray-Brown, Used",
+      "summary": "1875 Official service stamp (Tjeneste), 3 ore denomination. Canceled with a large circular numeral '1' or similar killer. Perforation appears somewhat irregular. Notation cat val $55.00, net $17.50.",
+      "issue_year": 1875,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "image_basename": "stamp_2026-04-21_22-32-08-827_IMG_1105_ed410e25.jpeg",
+      "bounding_box": {
+        "x_min": 98,
+        "x_max": 395,
+        "y_min": 546,
+        "y_max": 792
+      },
+      "freeform_keywords": [
+        "Tjeneste",
+        "Ore",
+        "Official",
+        "Coat of Arms"
+      ]
+    },
+    {
+      "stamp_id": "dk-o_7-1",
+      "country_id": "dk",
+      "scott": {
+        "country_id": "dk",
+        "section": "O",
+        "number": 7
+      },
+      "title": "Denmark Official 4ore Blue-Green, Mint",
+      "summary": "1875 Official service stamp (Tjeneste), 4 ore denomination in blue-green. Appears unused/mint with no visible cancel. Notation cat val $18.00, net $6.00.",
+      "issue_year": 1875,
+      "condition_quality": "unknown",
+      "centering_grade": "vf",
+      "image_basename": "stamp_2026-04-21_22-32-08-827_IMG_1105_ed410e25.jpeg",
+      "bounding_box": {
+        "x_min": 612,
+        "x_max": 895,
+        "y_min": 551,
+        "y_max": 796
+      },
+      "freeform_keywords": [
+        "Tjeneste",
+        "Ore",
+        "Official",
+        "Coat of Arms"
+      ]
+    }
+  ]
+}

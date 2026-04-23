@@ -1512,8 +1512,8 @@
         return out;
       }
 
-      function countProminentPeaks(profile, minProminence, minDistance) {
-        if (!Array.isArray(profile) || profile.length < 5) return 0;
+      function detectProminentPeakIndices(profile, minProminence, minDistance) {
+        if (!Array.isArray(profile) || profile.length < 5) return [];
         const peaks = [];
         for (let i = 2; i < profile.length - 2; i += 1) {
           const v = profile[i];
@@ -1524,7 +1524,77 @@
           }
           if (v > peaks[peaks.length - 1].v) peaks[peaks.length - 1] = { i, v };
         }
-        return peaks.length;
+        return peaks.map((p) => p.i);
+      }
+
+      function countProminentPeaks(profile, minProminence, minDistance) {
+        return detectProminentPeakIndices(profile, minProminence, minDistance).length;
+      }
+
+      function peakSpacingRegularity(peakIdx) {
+        if (!Array.isArray(peakIdx) || peakIdx.length < 3) {
+          return { cv: Infinity, meanSpacing: 0 };
+        }
+        const diffs = [];
+        for (let i = 1; i < peakIdx.length; i += 1) diffs.push(peakIdx[i] - peakIdx[i - 1]);
+        const n = diffs.length;
+        let mean = 0;
+        for (const d of diffs) mean += d;
+        mean /= Math.max(1, n);
+        if (mean <= 1e-9) return { cv: Infinity, meanSpacing: 0 };
+        let varSum = 0;
+        for (const d of diffs) {
+          const e = d - mean;
+          varSum += e * e;
+        }
+        const std = Math.sqrt(varSum / Math.max(1, n));
+        return { cv: std / mean, meanSpacing: mean };
+      }
+
+      function estimateToothCountByAutocorr(profile) {
+        if (!Array.isArray(profile) || profile.length < 24) return null;
+        const n = profile.length;
+        let mean = 0;
+        for (let i = 0; i < n; i += 1) mean += profile[i];
+        mean /= n;
+        const centered = new Array(n);
+        let var0 = 0;
+        for (let i = 0; i < n; i += 1) {
+          const v = profile[i] - mean;
+          centered[i] = v;
+          var0 += v * v;
+        }
+        if (var0 <= 1e-9) return null;
+
+        const minLag = Math.max(6, Math.round(n / 40));
+        const maxLag = Math.max(minLag + 2, Math.round(n / 4));
+        let bestLag = -1;
+        let bestCorr = -Infinity;
+
+        for (let lag = minLag; lag <= maxLag; lag += 1) {
+          let num = 0;
+          let denA = 0;
+          let denB = 0;
+          for (let i = 0; i < n - lag; i += 1) {
+            const a = centered[i];
+            const b = centered[i + lag];
+            num += a * b;
+            denA += a * a;
+            denB += b * b;
+          }
+          const den = Math.sqrt(denA * denB);
+          if (den <= 1e-9) continue;
+          const corr = num / den;
+          if (corr > bestCorr) {
+            bestCorr = corr;
+            bestLag = lag;
+          }
+        }
+
+        if (bestLag < 0 || bestCorr < 0.18) return null;
+        const est = Math.round(n / bestLag);
+        if (!Number.isFinite(est) || est < 1) return null;
+        return est;
       }
 
       function buildStampMaskFromImage(imageData, stampBox, imageW, imageH) {
@@ -1648,9 +1718,31 @@
           const invertDepth = rq >= 0.5;
           const depth = depthProfileFromReference(smoothed, rq, invertDepth);
           const maxDepth = depth.reduce((m, v) => Math.max(m, v), 0);
-          const minProminence = Math.max(1.5, maxDepth * 0.22);
-          const minDistance = Math.max(4, Math.round(depth.length / 36));
-          return countProminentPeaks(depth, minProminence, minDistance);
+          const minProminence = Math.max(1.8, maxDepth * 0.28);
+          const minDistance = Math.max(8, Math.round(depth.length / 20));
+          const peakIdx = detectProminentPeakIndices(depth, minProminence, minDistance);
+          let peakCount = peakIdx.length;
+          const reg = peakSpacingRegularity(peakIdx);
+          // Teeth should be near-periodic; very irregular spacing indicates false peaks.
+          if (peakCount >= 4 && reg.cv > 0.35) {
+            peakCount = 0;
+          }
+          const autoCount = estimateToothCountByAutocorr(depth);
+          const regularSpacingCount =
+            reg.meanSpacing > 0 ? Math.max(1, Math.round(depth.length / reg.meanSpacing)) : 0;
+
+          if (peakCount >= 4 && reg.cv <= 0.22) {
+            if (autoCount == null || Math.abs(regularSpacingCount - autoCount) <= 2) {
+              return regularSpacingCount;
+            }
+          }
+          if (autoCount == null) return peakCount;
+          if (!peakCount) return autoCount;
+          // Prefer the periodic estimate; average when both are close.
+          if (Math.abs(autoCount - peakCount) <= 2) {
+            return Math.max(1, Math.round((autoCount + peakCount) / 2));
+          }
+          return autoCount;
         }
 
         const top = countSide(
@@ -1894,30 +1986,43 @@
           let onCount = 0;
           let longestOffRun = 0;
           let offRun = 0;
+          let offRunCount = 0;
           for (let major = s; major <= e; major += 1) {
             const idx = axis === "row" ? fixed * imageW + major : major * imageW + fixed;
             if (fg[idx]) {
               onCount += 1;
-              if (offRun > longestOffRun) longestOffRun = offRun;
+              if (offRun > 0) {
+                offRunCount += 1;
+                if (offRun > longestOffRun) longestOffRun = offRun;
+              }
               offRun = 0;
             } else {
               offRun += 1;
             }
           }
-          if (offRun > longestOffRun) longestOffRun = offRun;
+          if (offRun > 0) {
+            offRunCount += 1;
+            if (offRun > longestOffRun) longestOffRun = offRun;
+          }
           const testedLen = Math.max(1, e - s + 1);
           return {
             coverage: onCount / testedLen,
             longestOffRun,
+            offRunCount,
             testedLen,
           };
         }
 
         function isContinuousEdgeLine(axis, fixed, span0, span1) {
           const stats = lineContinuity(axis, fixed, span0, span1);
-          const maxGap = Math.max(2, Math.round(stats.testedLen * 0.012));
-          const minCoverage = 0.92;
-          return stats.coverage >= minCoverage && stats.longestOffRun <= maxGap;
+          const maxGap = Math.max(2, Math.round(stats.testedLen * 0.009));
+          const minCoverage = 0.95;
+          const maxOffRuns = 2;
+          return (
+            stats.coverage >= minCoverage &&
+            stats.longestOffRun <= maxGap &&
+            stats.offRunCount <= maxOffRuns
+          );
         }
 
         function findFirstContinuousLine(axis, from, to, step, span0, span1) {

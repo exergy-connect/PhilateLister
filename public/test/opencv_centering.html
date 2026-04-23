@@ -1480,25 +1480,58 @@
         });
       }
 
-      function choosePrimaryStampBox(boxes) {
+      function boxAreaNorm(box) {
+        const w = Math.max(0, (box?.xMax ?? 0) - (box?.xMin ?? 0));
+        const h = Math.max(0, (box?.yMax ?? 0) - (box?.yMin ?? 0));
+        return w * h;
+      }
+
+      function primaryBoxScore(box) {
+        if (!box) return -Infinity;
+        const area = boxAreaNorm(box);
+        if (area <= 0) return -Infinity;
+        const cx = (box.xMin + box.xMax) * 0.5;
+        const cy = (box.yMin + box.yMax) * 0.5;
+        const centerDistance = Math.hypot(cx - 0.5, cy - 0.5);
+        // Favor larger boxes strongly; center distance is a tiebreaker only.
+        return area - centerDistance * 0.08;
+      }
+
+      function choosePrimaryStampBox(boxes, minAreaRatio = 0.04) {
         if (!Array.isArray(boxes) || !boxes.length) return null;
+        const valid = boxes.filter((b) => boxAreaNorm(b) > 0);
+        if (!valid.length) return null;
+        const largeEnough = valid.filter((b) => boxAreaNorm(b) >= minAreaRatio);
+        const pool = largeEnough.length ? largeEnough : valid;
+
         let best = null;
         let bestScore = -Infinity;
-        for (const box of boxes) {
-          const w = Math.max(0, box.xMax - box.xMin);
-          const h = Math.max(0, box.yMax - box.yMin);
-          const area = w * h;
-          if (area <= 0) continue;
-          const cx = (box.xMin + box.xMax) / 2;
-          const cy = (box.yMin + box.yMax) / 2;
-          const centerDistance = Math.hypot(cx - 0.5, cy - 0.5);
-          const score = area - centerDistance * 0.2;
+        for (const box of pool) {
+          const score = primaryBoxScore(box);
           if (score > bestScore) {
             bestScore = score;
             best = box;
           }
         }
         return best;
+      }
+
+      function preferDeskewResult(firstBoxes, secondBoxes) {
+        const firstSeed = choosePrimaryStampBox(firstBoxes);
+        const secondSeed = choosePrimaryStampBox(secondBoxes);
+        if (!secondSeed) return false;
+        if (!firstSeed) return true;
+
+        const firstArea = boxAreaNorm(firstSeed);
+        const secondArea = boxAreaNorm(secondSeed);
+        const firstScore = primaryBoxScore(firstSeed);
+        const secondScore = primaryBoxScore(secondSeed);
+
+        // Reject deskew when it collapses to tiny/interior boxes.
+        if (secondArea < firstArea * 0.75) return false;
+        // Keep deskew only if quality is comparable or better.
+        if (secondScore + 1e-9 < firstScore * 0.93) return false;
+        return true;
       }
 
       function boxesClose(a, b, eps = 1e-6) {
@@ -2499,21 +2532,22 @@
           const shouldDeskew = Math.abs(estimatedTiltDeg) >= 0.2 && Math.abs(estimatedTiltDeg) <= maxDeskewDeg;
           const appliedRotationDeg = shouldDeskew ? -estimatedTiltDeg : 0;
 
-          let secondInput = previewImageData(natW, natH);
+          let chosenBoxes = Array.isArray(firstPass.boxes) ? firstPass.boxes : [];
+          let effectiveRotationDeg = 0;
           if (appliedRotationDeg !== 0) {
+            let secondInput = previewImageData(natW, natH);
             secondInput = rotateImageData(secondInput, natW, natH, appliedRotationDeg);
-          }
-          const secondPass = await detectStampBoxesWithWorkerImageData(
-            natW,
-            natH,
-            maxSide,
-            secondInput
-          );
-          let chosenBoxes = Array.isArray(secondPass.boxes) ? secondPass.boxes : [];
-          let effectiveRotationDeg = appliedRotationDeg;
-          if (!chosenBoxes.length && Array.isArray(firstPass.boxes) && firstPass.boxes.length) {
-            chosenBoxes = firstPass.boxes;
-            effectiveRotationDeg = 0;
+            const secondPass = await detectStampBoxesWithWorkerImageData(
+              natW,
+              natH,
+              maxSide,
+              secondInput
+            );
+            const secondBoxes = Array.isArray(secondPass.boxes) ? secondPass.boxes : [];
+            if (preferDeskewResult(chosenBoxes, secondBoxes)) {
+              chosenBoxes = secondBoxes;
+              effectiveRotationDeg = appliedRotationDeg;
+            }
           }
 
           const innerSeedBox = choosePrimaryStampBox(chosenBoxes);

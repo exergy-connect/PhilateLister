@@ -1702,6 +1702,35 @@
       function deriveOuterStampBoxFromSeed(imageData, seedBox, imageW, imageH) {
         const data = imageData.data;
         const pixelCount = imageW * imageH;
+        const lumaHist = new Uint32Array(256);
+        for (let i = 0, p = 0; i < pixelCount; i += 1, p += 4) {
+          const y = Math.max(
+            0,
+            Math.min(255, Math.round(0.2126 * data[p] + 0.7152 * data[p + 1] + 0.0722 * data[p + 2]))
+          );
+          lumaHist[y] += 1;
+        }
+
+        function histPercentile(hist, q) {
+          const qq = clamp01(q);
+          let total = 0;
+          for (let i = 0; i < hist.length; i += 1) total += hist[i];
+          if (total <= 0) return 0;
+          const target = total * qq;
+          let acc = 0;
+          for (let i = 0; i < hist.length; i += 1) {
+            acc += hist[i];
+            if (acc >= target) return i;
+          }
+          return hist.length - 1;
+        }
+
+        const bwLow = histPercentile(lumaHist, 0.01);
+        const bwHigh = histPercentile(lumaHist, 0.99);
+        const bwSpan = Math.max(12, bwHigh - bwLow);
+        function normalizeLuma(rawLuma) {
+          return clamp01((rawLuma - bwLow) / bwSpan);
+        }
 
         function sampleBackgroundStats() {
           const cornerW = Math.max(8, Math.round(imageW * 0.14));
@@ -1710,6 +1739,7 @@
           let sumR = 0;
           let sumG = 0;
           let sumB = 0;
+          let sumLumaNorm = 0;
           for (let y = 0; y < imageH; y += 1) {
             for (let x = 0; x < imageW; x += 1) {
               const inTopLeft = x < cornerW && y < cornerH;
@@ -1721,14 +1751,17 @@
               sumR += data[p];
               sumG += data[p + 1];
               sumB += data[p + 2];
+              const luma = 0.2126 * data[p] + 0.7152 * data[p + 1] + 0.0722 * data[p + 2];
+              sumLumaNorm += normalizeLuma(luma);
               n += 1;
             }
           }
-          if (n <= 0) return { r: 0, g: 0, b: 0, luma: 0, distMean: 0, distStd: 0 };
+          if (n <= 0) return { r: 0, g: 0, b: 0, luma: 0, lumaNorm: 0, distMean: 0, distStd: 0 };
           const r = sumR / n;
           const g = sumG / n;
           const b = sumB / n;
           const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+          const lumaNorm = sumLumaNorm / n;
 
           let sumD = 0;
           let sumD2 = 0;
@@ -1751,20 +1784,21 @@
           const distMean = sumD / n;
           const variance = Math.max(0, sumD2 / n - distMean * distMean);
           const distStd = Math.sqrt(variance);
-          return { r, g, b, luma, distMean, distStd };
+          return { r, g, b, luma, lumaNorm, distMean, distStd };
         }
 
         const bg = sampleBackgroundStats();
         const fg = new Uint8Array(pixelCount);
         const fgDistThresh = Math.max(16, bg.distMean + bg.distStd * 3.0);
-        const fgLumaThresh = Math.min(245, bg.luma + Math.max(14, bg.distStd * 0.9));
+        const fgLumaNormThresh = Math.min(1, bg.lumaNorm + 0.14);
         for (let i = 0, p = 0; i < pixelCount; i += 1, p += 4) {
           const dr = data[p] - bg.r;
           const dg = data[p + 1] - bg.g;
           const db = data[p + 2] - bg.b;
           const luma = 0.2126 * data[p] + 0.7152 * data[p + 1] + 0.0722 * data[p + 2];
+          const lumaNorm = normalizeLuma(luma);
           const byDistance = Math.hypot(dr, dg, db) >= fgDistThresh;
-          const byLuma = luma >= fgLumaThresh;
+          const byLuma = lumaNorm >= fgLumaNormThresh;
           fg[i] = byDistance || byLuma ? 1 : 0;
         }
 

@@ -1501,6 +1501,7 @@
         if (!Array.isArray(boxes) || !boxes.length) return null;
         const valid = boxes.filter((b) => boxAreaNorm(b) > 0);
         if (!valid.length) return null;
+        // Ignore tiny interior fragments when we have larger candidates available.
         const largeEnough = valid.filter((b) => boxAreaNorm(b) >= minAreaRatio);
         const pool = largeEnough.length ? largeEnough : valid;
 
@@ -1532,6 +1533,35 @@
         // Keep deskew only if quality is comparable or better.
         if (secondScore + 1e-9 < firstScore * 0.93) return false;
         return true;
+      }
+
+      function insetNormBox(box, insetRatioX, insetRatioY) {
+        const xMin = clamp01(Number(box?.xMin) || 0);
+        const xMax = clamp01(Number(box?.xMax) || 0);
+        const yMin = clamp01(Number(box?.yMin) || 0);
+        const yMax = clamp01(Number(box?.yMax) || 0);
+        const w = Math.max(0, xMax - xMin);
+        const h = Math.max(0, yMax - yMin);
+        const dx = w * Math.max(0, Number(insetRatioX) || 0);
+        const dy = h * Math.max(0, Number(insetRatioY) || 0);
+        const ix0 = clamp01(xMin + dx);
+        const ix1 = clamp01(xMax - dx);
+        const iy0 = clamp01(yMin + dy);
+        const iy1 = clamp01(yMax - dy);
+        if (ix1 <= ix0 || iy1 <= iy0) return { xMin, xMax, yMin, yMax };
+        return { xMin: ix0, xMax: ix1, yMin: iy0, yMax: iy1 };
+      }
+
+      function deriveFallbackOuterStampBox(imageData, imageW, imageH) {
+        // Broad central seed used only when worker candidate quality is poor.
+        const broadSeed = { xMin: 0.14, xMax: 0.86, yMin: 0.12, yMax: 0.88 };
+        const candidate = deriveOuterStampBoxFromSeed(imageData, broadSeed, imageW, imageH);
+        const area = boxArea(candidate);
+        if (area < 0.12) return null;
+        const w = Math.max(0, (candidate.xMax || 0) - (candidate.xMin || 0));
+        const h = Math.max(0, (candidate.yMax || 0) - (candidate.yMin || 0));
+        if (w < 0.2 || h < 0.2) return null;
+        return candidate;
       }
 
       function boxesClose(a, b, eps = 1e-6) {
@@ -1793,7 +1823,8 @@
       function derivePerforationSamplingBox(outerBox, outlineBox, imageW, imageH) {
         const outerPx = toPixelBox(outerBox, imageW, imageH);
         const outlinePx = outlineBox ? toPixelBox(outlineBox, imageW, imageH) : outerPx;
-        const t = 0.25; // 25% from outer toward outline (closer to stamp).
+        // Sample inside the perforation band, closer to stamp edge than background edge.
+        const t = 0.25; // 25% from outer toward outline.
         const samplePx = {
           x0: Math.round(outerPx.x0 + (outlinePx.x0 - outerPx.x0) * t),
           x1: Math.round(outerPx.x1 + (outlinePx.x1 - outerPx.x1) * t),
@@ -2529,6 +2560,7 @@
           const firstPass = await detectStampBoxesWithWorkerImageData(natW, natH, maxSide, rawImageData);
           const estimatedTiltDeg = Number(firstPass.estimatedTiltDeg) || 0;
           const maxDeskewDeg = 12;
+          // Apply deskew only for plausible tilt ranges; then validate by box quality.
           const shouldDeskew = Math.abs(estimatedTiltDeg) >= 0.2 && Math.abs(estimatedTiltDeg) <= maxDeskewDeg;
           const appliedRotationDeg = shouldDeskew ? -estimatedTiltDeg : 0;
 
@@ -2544,15 +2576,11 @@
               secondInput
             );
             const secondBoxes = Array.isArray(secondPass.boxes) ? secondPass.boxes : [];
+            // Keep rotation only when it improves or preserves seed quality.
             if (preferDeskewResult(chosenBoxes, secondBoxes)) {
               chosenBoxes = secondBoxes;
               effectiveRotationDeg = appliedRotationDeg;
             }
-          }
-
-          const innerSeedBox = choosePrimaryStampBox(chosenBoxes);
-          if (!innerSeedBox) {
-            throw new Error("Could not detect a clear stamp boundary. Try a tighter crop with clear stamp edges.");
           }
 
           const analysisImageData = (() => {
@@ -2560,7 +2588,27 @@
             if (effectiveRotationDeg === 0) return base;
             return rotateImageData(base, natW, natH, effectiveRotationDeg);
           })();
-          const outerStampBoxRaw = deriveOuterStampBoxFromSeed(analysisImageData, innerSeedBox, natW, natH);
+
+          let innerSeedBox = choosePrimaryStampBox(chosenBoxes);
+          let innerSeedSource = "worker";
+          const fallbackOuterCandidate = deriveFallbackOuterStampBox(analysisImageData, natW, natH);
+          const minPlausibleInnerArea = 0.5;
+          // Worker may return small interior text panels; replace with fallback seed when implausible.
+          if (!innerSeedBox || boxArea(innerSeedBox) < minPlausibleInnerArea) {
+            if (fallbackOuterCandidate) {
+              innerSeedBox = insetNormBox(fallbackOuterCandidate, 0.1, 0.1);
+              innerSeedSource = "fallback";
+            }
+          }
+          if (!innerSeedBox) {
+            throw new Error("Could not detect a clear stamp boundary. Try a tighter crop with clear stamp edges.");
+          }
+
+          let outerStampBoxRaw = deriveOuterStampBoxFromSeed(analysisImageData, innerSeedBox, natW, natH);
+          // If seed-based outer collapses, keep broader fallback outer estimate.
+          if (fallbackOuterCandidate && boxArea(outerStampBoxRaw) < boxArea(fallbackOuterCandidate) * 0.85) {
+            outerStampBoxRaw = fallbackOuterCandidate;
+          }
           const outerStampBoxBase = {
             xMin: clamp01(
               Math.min(outerStampBoxRaw.xMin, innerSeedBox.xMin)
@@ -2600,7 +2648,7 @@
           if (!boxesClose(innerSeedBox, innerDesignBox)) {
             previewList.push({
               box: innerSeedBox,
-              label: "Inner seed (worker)",
+              label: innerSeedSource === "worker" ? "Inner seed (worker)" : "Inner seed (fallback)",
               className: "preview-bbox-seed",
             });
           }

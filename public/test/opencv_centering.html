@@ -2361,46 +2361,57 @@
         const maxLumaDiff = 8;
         const getMean = makeLineStatGetter(imageData, imageW, imageH, false);
 
-        function canGrowEdge(axis, currentFixed, nextFixed, spanA, spanB) {
-          const span = trimmedSpan(spanA, spanB, edgeInsetRatio, 0);
-          if (!span) return false;
-          const current = getMean(axis, currentFixed, span.s, span.e);
-          const next = getMean(axis, nextFixed, span.s, span.e);
-          if (!current || !next) return false;
-          const dist = colorDistanceRgb(current, next);
-          const lumaDiff = Math.abs(current.luma - next.luma);
+        function edgesSimilar(a, b) {
+          if (!a || !b) return false;
+          const dist = colorDistanceRgb(a, b);
+          const lumaDiff = Math.abs(a.luma - b.luma);
           return dist <= maxColorDist && lumaDiff <= maxLumaDiff;
         }
 
-        function growSide(canGrowStep, applyStep) {
-          for (let i = 0; i < maxGrowPx; i += 1) {
-            if (!canGrowStep()) break;
-            applyStep();
+        function growthStep(axis, currentFixed, dir, spanA, spanB, minFixed, maxFixed) {
+          const span = trimmedSpan(spanA, spanB, edgeInsetRatio, 0);
+          if (!span) return 0;
+          const nextFixed = currentFixed + dir;
+          if (nextFixed < minFixed || nextFixed > maxFixed) return 0;
+          const current = getMean(axis, currentFixed, span.s, span.e);
+          const next = getMean(axis, nextFixed, span.s, span.e);
+          if (!current || !next) return 0;
+          return edgesSimilar(current, next) ? 1 : 0;
+        }
+
+        function growSide(getStep, applyStep) {
+          let moved = 0;
+          while (moved < maxGrowPx) {
+            const step = getStep();
+            if (step <= 0) break;
+            const allowed = Math.max(1, Math.min(step, maxGrowPx - moved));
+            applyStep(allowed);
+            moved += allowed;
           }
         }
 
         growSide(
-          () => x0 > outerPx.x0 && canGrowEdge("x", x0, x0 - 1, y0, y1),
-          () => {
-            x0 -= 1;
+          () => growthStep("x", x0, -1, y0, y1, outerPx.x0, outerPx.x1),
+          (step) => {
+            x0 -= step;
           }
         );
         growSide(
-          () => x1 < outerPx.x1 && canGrowEdge("x", x1, x1 + 1, y0, y1),
-          () => {
-            x1 += 1;
+          () => growthStep("x", x1, 1, y0, y1, outerPx.x0, outerPx.x1),
+          (step) => {
+            x1 += step;
           }
         );
         growSide(
-          () => y0 > outerPx.y0 && canGrowEdge("y", y0, y0 - 1, x0, x1),
-          () => {
-            y0 -= 1;
+          () => growthStep("y", y0, -1, x0, x1, outerPx.y0, outerPx.y1),
+          (step) => {
+            y0 -= step;
           }
         );
         growSide(
-          () => y1 < outerPx.y1 && canGrowEdge("y", y1, y1 + 1, x0, x1),
-          () => {
-            y1 += 1;
+          () => growthStep("y", y1, 1, x0, x1, outerPx.y0, outerPx.y1),
+          (step) => {
+            y1 += step;
           }
         );
 
@@ -2414,6 +2425,78 @@
           imageW,
           imageH
         );
+      }
+
+      function shrinkInnerBoxFromOuter(imageData, outerBox, hintInnerBox, imageW, imageH) {
+        const outerPx = toPixelBox(outerBox, imageW, imageH);
+        const hintPx = hintInnerBox ? toPixelBox(hintInnerBox, imageW, imageH) : null;
+        const getStats = makeLineStatGetter(imageData, imageW, imageH, false);
+
+        function transitionScore(a, b) {
+          if (!a || !b) return 0;
+          const colorDiff = colorDistanceRgb(a, b);
+          const lumaDiff = Math.abs((a.luma || 0) - (b.luma || 0));
+          return colorDiff + lumaDiff * 0.7;
+        }
+
+        function findEdge(axis, outerFixed, inwardSign, span0, span1, hintFixed) {
+          const span = trimmedSpan(span0, span1, 0.08, 1);
+          if (!span) return outerFixed;
+          const dim = axis === "x" ? imageW : imageH;
+          const hardMaxDepth = Math.max(6, Math.round(dim * 0.24));
+          const hintDepth = Number.isFinite(hintFixed) ? Math.max(4, Math.abs(hintFixed - outerFixed) + 4) : hardMaxDepth;
+          const maxDepth = Math.max(4, Math.min(hardMaxDepth, hintDepth));
+          const limitMin = axis === "x" ? outerPx.x0 : outerPx.y0;
+          const limitMax = axis === "x" ? outerPx.x1 : outerPx.y1;
+
+          const peaks = [];
+          let prevScore = -Infinity;
+          let currScore = -Infinity;
+          for (let d = 1; d < maxDepth; d += 1) {
+            const p0 = outerFixed + inwardSign * (d - 1);
+            const p1 = outerFixed + inwardSign * d;
+            if (p0 < limitMin || p0 > limitMax || p1 < limitMin || p1 > limitMax) break;
+            const a = getStats(axis, p0, span.s, span.e);
+            const b = getStats(axis, p1, span.s, span.e);
+            const score = transitionScore(a, b);
+            if (d >= 2 && currScore >= prevScore && currScore >= score && currScore >= 14) {
+              const peakPos = outerFixed + inwardSign * (d - 1);
+              peaks.push({ pos: peakPos, score: currScore });
+            }
+            prevScore = currScore;
+            currScore = score;
+          }
+          if (!peaks.length) return outerFixed;
+          peaks.sort((a, b) => b.score - a.score);
+          const primary = peaks[0];
+
+          // If a second strong edge is nearby inward, prefer it for double-frame stamps.
+          const inwardGapMax = Math.max(4, Math.round(dim * 0.03));
+          let chosen = primary;
+          for (const p of peaks) {
+            const inwardGap = inwardSign > 0 ? p.pos - primary.pos : primary.pos - p.pos;
+            if (inwardGap >= 2 && inwardGap <= inwardGapMax && p.score >= primary.score * 0.55) {
+              if ((inwardSign > 0 && p.pos > chosen.pos) || (inwardSign < 0 && p.pos < chosen.pos)) {
+                chosen = p;
+              }
+            }
+          }
+          return chosen.pos;
+        }
+
+        const left = findEdge("x", outerPx.x0, 1, outerPx.y0, outerPx.y1, hintPx ? hintPx.x0 : NaN);
+        const right = findEdge("x", outerPx.x1, -1, outerPx.y0, outerPx.y1, hintPx ? hintPx.x1 : NaN);
+        const top = findEdge("y", outerPx.y0, 1, outerPx.x0, outerPx.x1, hintPx ? hintPx.y0 : NaN);
+        const bottom = findEdge("y", outerPx.y1, -1, outerPx.x0, outerPx.x1, hintPx ? hintPx.y1 : NaN);
+
+        const out = {
+          x0: Math.max(outerPx.x0, Math.min(left, right - 1)),
+          x1: Math.min(outerPx.x1, Math.max(right, left + 1)),
+          y0: Math.max(outerPx.y0, Math.min(top, bottom - 1)),
+          y1: Math.min(outerPx.y1, Math.max(bottom, top + 1)),
+        };
+        if (out.x1 <= out.x0 || out.y1 <= out.y0) return hintInnerBox || outerBox;
+        return toNormBox(out, imageW, imageH);
       }
 
       function centeringGrade(scorePct) {
@@ -2633,6 +2716,9 @@
             natW,
             natH
           );
+          // Post-outer refinement: shrink inward from outer edges to lock onto frame lines.
+          // This helps when stamps have double frame lines and the first pass lands on the wrong one.
+          innerDesignBox = shrinkInnerBoxFromOuter(analysisImageData, outerStampBox, innerDesignBox, natW, natH);
 
           const previewList = [];
           const previewCandidateLimit = 10;

@@ -2116,11 +2116,19 @@
       }
 
       function centeringGrade(scorePct) {
-        if (scorePct >= 98) return "Superb";
-        if (scorePct >= 95) return "Excellent";
-        if (scorePct >= 90) return "Very Fine";
-        if (scorePct >= 84) return "Fine";
-        return "Off-center";
+        if (scorePct >= 98) return "Gem 100/Superb";
+        if (scorePct >= 90) return "Extremely Fine (XF)";
+        if (scorePct >= 75) return "Very Fine (VF)";
+        if (scorePct >= 60) return "Fine (F)";
+        if (scorePct >= 50) return "Good/Fair (VG/F)";
+        return "Below Good/Fair";
+      }
+
+      function hasJumboMargins(leftPx, rightPx, topPx, bottomPx, outerWidthPx, outerHeightPx, scorePct) {
+        if ((Number(scorePct) || 0) < 90) return false;
+        const minHMarginPct = (Math.min(leftPx, rightPx) / Math.max(1, outerWidthPx)) * 100;
+        const minVMarginPct = (Math.min(topPx, bottomPx) / Math.max(1, outerHeightPx)) * 100;
+        return minHMarginPct >= 8 && minVMarginPct >= 8;
       }
 
       function symmetryScorePx(aPx, bPx, tolPx) {
@@ -2147,6 +2155,17 @@
         const horizontalScore = symmetryScorePx(leftPx, rightPx, axisTolPx);
         const verticalScore = symmetryScorePx(topPx, bottomPx, axisTolPx);
         const finalCenteringScore = Math.min(horizontalScore, verticalScore);
+        const baseGrade = centeringGrade(finalCenteringScore);
+        const jumbo = hasJumboMargins(
+          leftPx,
+          rightPx,
+          topPx,
+          bottomPx,
+          outerWidthPxInt,
+          outerHeightPxInt,
+          finalCenteringScore
+        );
+        const displayGrade = jumbo ? `${baseGrade} Jumbo` : baseGrade;
 
         return {
           type: "single_stamp_centering_analysis",
@@ -2196,7 +2215,9 @@
             vertical_score_pct: verticalScore,
             final_centering_score_pct: finalCenteringScore,
             dead_centered: horizontalScore >= 99.999 && verticalScore >= 99.999,
-            grade: centeringGrade(finalCenteringScore),
+            jumbo,
+            base_grade: baseGrade,
+            grade: displayGrade,
           },
           alignment: {
             estimated_tilt_deg_before_correction: 0,

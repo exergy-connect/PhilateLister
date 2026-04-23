@@ -872,7 +872,8 @@
 
         await waitForImageReady(stampPreview);
         await new Promise((resolve) => requestAnimationFrame(resolve));
-        form.requestSubmit();
+        statusEl.className = "ok";
+        statusEl.textContent = "Image loaded from extension. Adjust parameters, then click Generate Listing.";
         return true;
       }
 

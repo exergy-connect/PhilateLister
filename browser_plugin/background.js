@@ -5,7 +5,7 @@ const AI_ANALYZE_BASE_URL = "https://exergy-connect.github.io/PhilateLister/";
 const CENTERING_ANALYZE_BASE_URL = "https://exergy-connect.github.io/PhilateLister/test/opencv_centering.html";
 const STORAGE_KEY = "pendingStamp";
 const AI_TOKEN_PASSWORD_KEY = "aiTokenPassword";
-const DEFAULT_AI_TOKEN_PASSWORD = "xxx";
+const DEFAULT_AI_TOKEN_PASSWORD = "<not set>";
 
 function ensureContextMenu() {
   chrome.contextMenus.removeAll(() => {

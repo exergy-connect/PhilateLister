@@ -1749,11 +1749,12 @@
       function derivePerforationSamplingBox(outerBox, outlineBox, imageW, imageH) {
         const outerPx = toPixelBox(outerBox, imageW, imageH);
         const outlinePx = outlineBox ? toPixelBox(outlineBox, imageW, imageH) : outerPx;
+        const t = 0.25; // 25% from outer toward outline (closer to stamp).
         const samplePx = {
-          x0: Math.round((outerPx.x0 + outlinePx.x0) * 0.5),
-          x1: Math.round((outerPx.x1 + outlinePx.x1) * 0.5),
-          y0: Math.round((outerPx.y0 + outlinePx.y0) * 0.5),
-          y1: Math.round((outerPx.y1 + outlinePx.y1) * 0.5),
+          x0: Math.round(outerPx.x0 + (outlinePx.x0 - outerPx.x0) * t),
+          x1: Math.round(outerPx.x1 + (outlinePx.x1 - outerPx.x1) * t),
+          y0: Math.round(outerPx.y0 + (outlinePx.y0 - outerPx.y0) * t),
+          y1: Math.round(outerPx.y1 + (outlinePx.y1 - outerPx.y1) * t),
         };
         if (samplePx.x1 <= samplePx.x0 || samplePx.y1 <= samplePx.y0) {
           return { px: outerPx, norm: toNormBox(outerPx, imageW, imageH) };

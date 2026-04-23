@@ -1,16 +1,29 @@
 # PhilateLister Chrome Plugin
 
-This extension adds a right-click action on images:
+This extension adds a right-click action on images with two options:
 
-- `Analyze stamp centering (PhilateLister)`
+- `AI analysis`
+- `Centering analysis`
 
 When clicked, it:
 
 1. Fetches the clicked image in the extension.
 2. Converts it to a Base64 data URL and stores it in `chrome.storage.local` as `pendingStamp`.
-3. Opens the analysis page and passes `extension_id=...`.
-4. The analysis page requests the image back via `chrome.runtime.sendMessage(extensionId, { type: "GET_STAMP_DATA" })`.
-5. Starts centering analysis in that page.
+3. Opens the selected page and passes `extension_id=...`.
+4. The page requests the image back via `chrome.runtime.sendMessage(extensionId, { type: "GET_STAMP_DATA" })`.
+5. Starts either AI listing analysis or centering analysis in that page.
+
+## Configure token password
+
+The AI analysis option appends `token_password` to the opened URL.
+
+To configure it:
+
+1. Open `chrome://extensions`.
+2. Find **PhilateLister Image Analyzer**.
+3. Click **Details**.
+4. Click **Extension options**.
+5. Set **AI token password** and save.
 
 ## Load in Chrome
 

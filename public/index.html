@@ -782,6 +782,100 @@
         syncDownloadStampZipButton();
       }
 
+      function fileNameFromSourceUrl(sourceUrl) {
+        try {
+          const u = new URL(sourceUrl || "");
+          const name = decodeURIComponent((u.pathname.split("/").pop() || "").trim());
+          return name || "image-from-url.png";
+        } catch (_) {
+          return "image-from-url.png";
+        }
+      }
+
+      async function dataUrlToFile(dataUrl, fallbackName) {
+        const res = await fetch(dataUrl);
+        if (!res.ok) {
+          throw new Error(`Could not decode extension image payload (HTTP ${res.status}).`);
+        }
+        const blob = await res.blob();
+        return new File([blob], fallbackName || "image-from-extension.png", {
+          type: blob.type || "image/png",
+        });
+      }
+
+      function requestExtensionStampData(extensionId) {
+        return new Promise((resolve, reject) => {
+          if (!window.chrome || !chrome.runtime || typeof chrome.runtime.sendMessage !== "function") {
+            reject(new Error("Chrome extension messaging API is not available on this page."));
+            return;
+          }
+          chrome.runtime.sendMessage(extensionId, { type: "GET_STAMP_DATA" }, (response) => {
+            const err = chrome.runtime.lastError;
+            if (err) {
+              reject(new Error(err.message || "Failed to read extension data."));
+              return;
+            }
+            resolve(response || null);
+          });
+        });
+      }
+
+      function waitForImageReady(imgEl) {
+        if (imgEl.complete && imgEl.naturalWidth > 0) return Promise.resolve();
+        return new Promise((resolve, reject) => {
+          const onLoad = () => {
+            cleanup();
+            resolve();
+          };
+          const onError = () => {
+            cleanup();
+            reject(new Error("Could not decode the image."));
+          };
+          const cleanup = () => {
+            imgEl.removeEventListener("load", onLoad);
+            imgEl.removeEventListener("error", onError);
+          };
+          imgEl.addEventListener("load", onLoad, { once: true });
+          imgEl.addEventListener("error", onError, { once: true });
+          if (imgEl.complete && imgEl.naturalWidth > 0) {
+            cleanup();
+            resolve();
+          }
+        });
+      }
+
+      async function loadImageFromExtensionRelay() {
+        const sp = new URLSearchParams(window.location.search);
+        const openError = sp.get("error");
+        if (openError) throw new Error(openError);
+
+        const extensionId = (sp.get("extension_id") || "").trim();
+        if (!extensionId) return false;
+
+        statusEl.className = "";
+        statusEl.textContent = "Loading right-clicked image from extension relay…";
+
+        const response = await requestExtensionStampData(extensionId);
+        if (!response || !response.image) {
+          if (response && response.error) throw new Error(response.error);
+          throw new Error("No image payload came back from the extension.");
+        }
+
+        const file = await dataUrlToFile(response.image, fileNameFromSourceUrl(response.sourceUrl));
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        stampFileInput.files = dt.files;
+        setPreviewBoxes([]);
+        setStampCropRows([]);
+        setStampPreview(file);
+        submitBtn.disabled = false;
+
+        await waitForImageReady(stampPreview);
+        await new Promise((resolve) => requestAnimationFrame(resolve));
+        form.requestSubmit();
+        return true;
+      }
+
       stampFileInput.addEventListener("change", () => {
         setPreviewBoxes([]);
         setStampCropRows([]);
@@ -1235,6 +1329,15 @@
           submitBtn.disabled = false;
         }
       });
+
+      (async () => {
+        try {
+          await loadImageFromExtensionRelay();
+        } catch (err) {
+          statusEl.className = "error";
+          statusEl.textContent = err instanceof Error ? err.message : String(err);
+        }
+      })();
     </script>
   </body>
 </html>

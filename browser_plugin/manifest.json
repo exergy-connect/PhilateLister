@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "PhilateLister Centering Analyzer",
-  "description": "Right-click a stamp image and open a tab for OpenCV-based centering analysis.",
+  "name": "PhilateLister Image Analyzer",
+  "description": "Right-click a stamp image and open AI listing analysis or OpenCV centering analysis.",
   "version": "0.1.0",
   "permissions": ["contextMenus", "tabs", "storage", "unlimitedStorage"],
   "host_permissions": ["<all_urls>"],
@@ -15,5 +15,6 @@
   "background": {
     "service_worker": "background.js",
     "type": "module"
-  }
+  },
+  "options_page": "options.html"
 }

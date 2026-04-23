@@ -1,12 +1,29 @@
-const MENU_ID = "philatelister-centering-analyze-image";
-const ANALYZE_BASE_URL = "https://exergy-connect.github.io/PhilateLister/test/opencv_centering.html";
+const MENU_ROOT_ID = "philatelister-analyze-image-root";
+const MENU_AI_ID = "philatelister-ai-analyze-image";
+const MENU_CENTERING_ID = "philatelister-centering-analyze-image";
+const AI_ANALYZE_BASE_URL = "https://exergy-connect.github.io/PhilateLister/";
+const CENTERING_ANALYZE_BASE_URL = "https://exergy-connect.github.io/PhilateLister/test/opencv_centering.html";
 const STORAGE_KEY = "pendingStamp";
+const AI_TOKEN_PASSWORD_KEY = "aiTokenPassword";
+const DEFAULT_AI_TOKEN_PASSWORD = "pj";
 
 function ensureContextMenu() {
   chrome.contextMenus.removeAll(() => {
     chrome.contextMenus.create({
-      id: MENU_ID,
-      title: "Analyze stamp centering (PhilateLister)",
+      id: MENU_ROOT_ID,
+      title: "Analyze with PhilateLister",
+      contexts: ["image"],
+    });
+    chrome.contextMenus.create({
+      id: MENU_AI_ID,
+      parentId: MENU_ROOT_ID,
+      title: "AI analysis",
+      contexts: ["image"],
+    });
+    chrome.contextMenus.create({
+      id: MENU_CENTERING_ID,
+      parentId: MENU_ROOT_ID,
+      title: "Centering analysis",
       contexts: ["image"],
     });
   });
@@ -46,7 +63,9 @@ chrome.runtime.onStartup.addListener(() => {
 });
 
 chrome.contextMenus.onClicked.addListener(async (info) => {
-  if (info.menuItemId !== MENU_ID) return;
+  const isAi = info.menuItemId === MENU_AI_ID;
+  const isCentering = info.menuItemId === MENU_CENTERING_ID;
+  if (!isAi && !isCentering) return;
   if (!info.srcUrl) return;
 
   let openError = "";
@@ -62,10 +81,25 @@ chrome.contextMenus.onClicked.addListener(async (info) => {
     openError = err instanceof Error ? err.message : String(err);
   }
 
-  const url = new URL(ANALYZE_BASE_URL);
+  let aiTokenPassword = DEFAULT_AI_TOKEN_PASSWORD;
+  if (isAi) {
+    try {
+      const items = await chrome.storage.local.get(AI_TOKEN_PASSWORD_KEY);
+      const fromStorage = String(items?.[AI_TOKEN_PASSWORD_KEY] ?? "").trim();
+      if (fromStorage) aiTokenPassword = fromStorage;
+    } catch (_) {
+      // Fall back to default token password.
+    }
+  }
+
+  const baseUrl = isAi ? AI_ANALYZE_BASE_URL : CENTERING_ANALYZE_BASE_URL;
+  const url = new URL(baseUrl);
   url.searchParams.set("v", chrome.runtime.getManifest().version);
   url.searchParams.set("cb", String(Date.now()));
   url.searchParams.set("extension_id", chrome.runtime.id);
+  if (isAi && aiTokenPassword) {
+    url.searchParams.set("token_password", aiTokenPassword);
+  }
   if (openError) url.searchParams.set("error", openError);
   await chrome.tabs.create({ url: url.toString() });
 });

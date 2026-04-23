@@ -131,6 +131,11 @@
         border-color: #ffd166;
         background: color-mix(in srgb, #ffd166 18%, transparent);
       }
+      .preview-bbox.preview-bbox-outline {
+        border-color: #ff9f1c;
+        background: color-mix(in srgb, #ff9f1c 14%, transparent);
+        border-style: dashed;
+      }
       .preview-bbox.preview-bbox-inner {
         border-color: #80ed99;
         background: color-mix(in srgb, #80ed99 18%, transparent);
@@ -155,6 +160,33 @@
         max-width: 10.5rem;
         overflow: hidden;
         text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .preview-guide-line {
+        position: absolute;
+        box-sizing: border-box;
+        opacity: 0.95;
+      }
+      .preview-guide-line.preview-guide-line-h {
+        border-top: 2px dotted #ff9f1c;
+        height: 0;
+      }
+      .preview-guide-line.preview-guide-line-v {
+        border-left: 2px dotted #ff9f1c;
+        width: 0;
+      }
+      .preview-guide-label {
+        position: absolute;
+        top: 0.2rem;
+        left: 0.2rem;
+        font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
+        font-size: 0.64rem;
+        line-height: 1;
+        color: #1a1300;
+        background: rgba(255, 190, 93, 0.9);
+        border: 1px solid rgba(0, 0, 0, 0.45);
+        border-radius: 4px;
+        padding: 0.16rem 0.26rem;
         white-space: nowrap;
       }
       #preview-placeholder {
@@ -1141,6 +1173,7 @@
       const opencvCanvas = document.getElementById("opencv-canvas");
       let previewObjectUrl = null;
       let previewBoxes = [];
+      let previewGuides = [];
       let previewLoadSeq = 0;
       let previewRotationDeg = 0;
 
@@ -1205,6 +1238,7 @@
         dt.items.add(file);
         stampFileInput.files = dt.files;
         setPreviewBoxes([]);
+        setPreviewGuides([]);
         setStampPreview(file);
         submitBtn.disabled = false;
 
@@ -1239,6 +1273,7 @@
         dt.items.add(file);
         stampFileInput.files = dt.files;
         setPreviewBoxes([]);
+        setPreviewGuides([]);
         setStampPreview(file);
         submitBtn.disabled = false;
 
@@ -1269,7 +1304,7 @@
       function renderPreviewBoxes() {
         previewOverlay.innerHTML = "";
         if (stampPreview.hidden || !stampPreview.src || !previewFrame) return;
-        if (!previewBoxes.length) return;
+        if (!previewBoxes.length && !previewGuides.length) return;
 
         const imgRect = stampPreview.getBoundingClientRect();
         const frameRect = previewFrame.getBoundingClientRect();
@@ -1297,10 +1332,39 @@
           boxEl.appendChild(labelEl);
           previewOverlay.appendChild(boxEl);
         }
+
+        for (const { line, label, className } of previewGuides) {
+          if (!line) continue;
+          const x1 = leftOffset + clamp01(line.x1) * imgRect.width;
+          const y1 = topOffset + clamp01(line.y1) * imgRect.height;
+          const x2 = leftOffset + clamp01(line.x2) * imgRect.width;
+          const y2 = topOffset + clamp01(line.y2) * imgRect.height;
+          const isHorizontal = Math.abs(y2 - y1) <= Math.abs(x2 - x1);
+          const guideEl = document.createElement("div");
+          guideEl.className = `preview-guide-line ${isHorizontal ? "preview-guide-line-h" : "preview-guide-line-v"}${
+            className ? ` ${className}` : ""
+          }`;
+          guideEl.style.left = `${Math.min(x1, x2)}px`;
+          guideEl.style.top = `${Math.min(y1, y2)}px`;
+          guideEl.style.width = `${Math.max(0, Math.abs(x2 - x1))}px`;
+          guideEl.style.height = `${Math.max(0, Math.abs(y2 - y1))}px`;
+          if (label) {
+            const labelEl = document.createElement("span");
+            labelEl.className = "preview-guide-label";
+            labelEl.textContent = label;
+            guideEl.appendChild(labelEl);
+          }
+          previewOverlay.appendChild(guideEl);
+        }
       }
 
       function setPreviewBoxes(boxes) {
         previewBoxes = Array.isArray(boxes) ? boxes : [];
+        renderPreviewBoxes();
+      }
+
+      function setPreviewGuides(guides) {
+        previewGuides = Array.isArray(guides) ? guides : [];
         renderPreviewBoxes();
       }
 
@@ -1317,6 +1381,7 @@
           setPreviewRotation(0);
           previewPlaceholder.hidden = false;
           setPreviewBoxes([]);
+          setPreviewGuides([]);
           if (imageResolutionEl) imageResolutionEl.textContent = "";
           if (file && statusEl) {
             statusEl.className = "error";
@@ -1359,6 +1424,7 @@
           stampPreview.removeAttribute("src");
           previewPlaceholder.hidden = false;
           setPreviewBoxes([]);
+          setPreviewGuides([]);
           if (imageResolutionEl) imageResolutionEl.textContent = "";
           if (statusEl) {
             statusEl.className = "error";
@@ -1371,6 +1437,7 @@
 
       stampFileInput.addEventListener("change", () => {
         setPreviewBoxes([]);
+        setPreviewGuides([]);
         setStampPreview(stampFileInput.files && stampFileInput.files[0] ? stampFileInput.files[0] : null);
       });
       stampPreview.addEventListener("load", () => {
@@ -1679,57 +1746,71 @@
         return { mask, x0, x1, y0, y1 };
       }
 
-      function estimatePerforationTeethCount(imageData, stampBox, imageW, imageH) {
-        const { mask, x0, x1, y0, y1 } = buildStampMaskFromImage(imageData, stampBox, imageW, imageH);
-        const boxW = Math.max(1, x1 - x0 + 1);
-        const boxH = Math.max(1, y1 - y0 + 1);
-        const searchOutside = Math.max(3, Math.round(Math.min(boxW, boxH) * 0.07));
-        const searchInside = Math.max(6, Math.round(Math.min(boxW, boxH) * 0.14));
+      function derivePerforationSamplingBox(outerBox, outlineBox, imageW, imageH) {
+        const outerPx = toPixelBox(outerBox, imageW, imageH);
+        const outlinePx = outlineBox ? toPixelBox(outlineBox, imageW, imageH) : outerPx;
+        const samplePx = {
+          x0: Math.round((outerPx.x0 + outlinePx.x0) * 0.5),
+          x1: Math.round((outerPx.x1 + outlinePx.x1) * 0.5),
+          y0: Math.round((outerPx.y0 + outlinePx.y0) * 0.5),
+          y1: Math.round((outerPx.y1 + outlinePx.y1) * 0.5),
+        };
+        if (samplePx.x1 <= samplePx.x0 || samplePx.y1 <= samplePx.y0) {
+          return { px: outerPx, norm: toNormBox(outerPx, imageW, imageH) };
+        }
+        return { px: samplePx, norm: toNormBox(samplePx, imageW, imageH) };
+      }
 
-        function traceEdge({ majorStart, majorLen, edgeCoord, outwardSign, majorIsX }) {
+      function estimatePerforationTeethCount(imageData, maskBox, sampleBox, imageW, imageH) {
+        const { mask } = buildStampMaskFromImage(imageData, maskBox, imageW, imageH);
+        const samplePx = toPixelBox(sampleBox, imageW, imageH);
+        const boxW = Math.max(1, samplePx.x1 - samplePx.x0 + 1);
+        const boxH = Math.max(1, samplePx.y1 - samplePx.y0 + 1);
+        const outsideBandHalf = 1;
+
+        function sampleLineProfile({ majorStart, majorLen, sampleCoord, majorIsX }) {
           const out = new Array(majorLen).fill(NaN);
-          const minorMin = 0;
           const minorMax = majorIsX ? imageH - 1 : imageW - 1;
-          const outerStartRaw = edgeCoord + outwardSign * searchOutside;
-          const innerEndRaw = edgeCoord - outwardSign * searchInside;
-          const outerStart = Math.max(minorMin, Math.min(minorMax, outerStartRaw));
-          const innerEnd = Math.max(minorMin, Math.min(minorMax, innerEndRaw));
-          const step = outerStart <= innerEnd ? 1 : -1;
+          const sampleMinor = Math.max(0, Math.min(minorMax, sampleCoord));
 
           for (let i = 0; i < majorLen; i += 1) {
             const major = majorStart + i;
-            for (let minor = outerStart; step > 0 ? minor <= innerEnd : minor >= innerEnd; minor += step) {
+            let sum = 0;
+            let n = 0;
+            for (let d = -outsideBandHalf; d <= outsideBandHalf; d += 1) {
+              const minor = sampleMinor + d;
+              if (minor < 0 || minor > minorMax) continue;
               const idx = majorIsX ? minor * imageW + major : major * imageW + minor;
-              if (mask[idx]) {
-                out[i] = minor;
-                break;
-              }
+              sum += mask[idx] ? 1 : 0;
+              n += 1;
             }
+            out[i] = n > 0 ? sum / n : NaN;
           }
           return out;
         }
 
-        function countSide(rawTrace, refQuantile) {
-          const filled = fillMissing1D(rawTrace);
+        function countSide(rawProfile) {
+          const filled = fillMissing1D(rawProfile);
           if (!filled || filled.length < 24) return 0;
           const smoothRadius = Math.max(1, Math.round(filled.length / 180));
           const smoothed = smooth1D(filled, smoothRadius);
-          const rq = clamp01(refQuantile);
-          const invertDepth = rq >= 0.5;
-          const depth = depthProfileFromReference(smoothed, rq, invertDepth);
-          const maxDepth = depth.reduce((m, v) => Math.max(m, v), 0);
-          const minProminence = Math.max(1.8, maxDepth * 0.28);
-          const minDistance = Math.max(8, Math.round(depth.length / 20));
-          const peakIdx = detectProminentPeakIndices(depth, minProminence, minDistance);
+          const minV = smoothed.reduce((m, v) => Math.min(m, v), Infinity);
+          const maxV = smoothed.reduce((m, v) => Math.max(m, v), -Infinity);
+          const amp = Math.max(0, maxV - minV);
+          if (amp < 0.12) return 0;
+          const profile = smoothed.map((v) => (v - minV) / Math.max(1e-9, amp));
+          const minProminence = 0.22;
+          const minDistance = Math.max(8, Math.round(profile.length / 22));
+          const peakIdx = detectProminentPeakIndices(profile, minProminence, minDistance);
           let peakCount = peakIdx.length;
           const reg = peakSpacingRegularity(peakIdx);
           // Teeth should be near-periodic; very irregular spacing indicates false peaks.
           if (peakCount >= 4 && reg.cv > 0.35) {
             peakCount = 0;
           }
-          const autoCount = estimateToothCountByAutocorr(depth);
+          const autoCount = estimateToothCountByAutocorr(profile);
           const regularSpacingCount =
-            reg.meanSpacing > 0 ? Math.max(1, Math.round(depth.length / reg.meanSpacing)) : 0;
+            reg.meanSpacing > 0 ? Math.max(1, Math.round(profile.length / reg.meanSpacing)) : 0;
 
           if (peakCount >= 4 && reg.cv <= 0.22) {
             if (autoCount == null || Math.abs(regularSpacingCount - autoCount) <= 2) {
@@ -1746,20 +1827,16 @@
         }
 
         const top = countSide(
-          traceEdge({ majorStart: x0, majorLen: boxW, edgeCoord: y0, outwardSign: -1, majorIsX: true }),
-          0.9
+          sampleLineProfile({ majorStart: samplePx.x0, majorLen: boxW, sampleCoord: samplePx.y0, majorIsX: true })
         );
         const bottom = countSide(
-          traceEdge({ majorStart: x0, majorLen: boxW, edgeCoord: y1, outwardSign: 1, majorIsX: true }),
-          0.1
+          sampleLineProfile({ majorStart: samplePx.x0, majorLen: boxW, sampleCoord: samplePx.y1, majorIsX: true })
         );
         const left = countSide(
-          traceEdge({ majorStart: y0, majorLen: boxH, edgeCoord: x0, outwardSign: -1, majorIsX: false }),
-          0.9
+          sampleLineProfile({ majorStart: samplePx.y0, majorLen: boxH, sampleCoord: samplePx.x0, majorIsX: false })
         );
         const right = countSide(
-          traceEdge({ majorStart: y0, majorLen: boxH, edgeCoord: x1, outwardSign: 1, majorIsX: false }),
-          0.1
+          sampleLineProfile({ majorStart: samplePx.y0, majorLen: boxH, sampleCoord: samplePx.x1, majorIsX: false })
         );
         return {
           top,
@@ -1767,6 +1844,19 @@
           left,
           right,
         };
+      }
+
+      function buildTeethSamplingGuides(sampleBox) {
+        const xMin = clamp01(sampleBox.xMin);
+        const xMax = clamp01(sampleBox.xMax);
+        const yMin = clamp01(sampleBox.yMin);
+        const yMax = clamp01(sampleBox.yMax);
+        return [
+          { line: { x1: xMin, y1: yMin, x2: xMax, y2: yMin }, label: "Teeth sample top" },
+          { line: { x1: xMin, y1: yMax, x2: xMax, y2: yMax }, label: "Teeth sample bottom" },
+          { line: { x1: xMin, y1: yMin, x2: xMin, y2: yMax }, label: "Teeth sample left" },
+          { line: { x1: xMax, y1: yMin, x2: xMax, y2: yMax }, label: "Teeth sample right" },
+        ];
       }
 
       function toPixelBox(box, imageW, imageH) {
@@ -2061,103 +2151,120 @@
         return outer;
       }
 
-      function perforationMismatchPenalty(counts) {
-        if (!counts) return Infinity;
-        const top = Math.max(0, Number(counts.top) || 0);
-        const bottom = Math.max(0, Number(counts.bottom) || 0);
-        const left = Math.max(0, Number(counts.left) || 0);
-        const right = Math.max(0, Number(counts.right) || 0);
-        const hBase = Math.max(1, (top + bottom) * 0.5);
-        const vBase = Math.max(1, (left + right) * 0.5);
-        const hMismatch = Math.abs(top - bottom) / hBase;
-        const vMismatch = Math.abs(left - right) / vBase;
-        return hMismatch + vMismatch;
-      }
-
-      function makeOuterCandidate(baseOuter, innerBox, dx, dy, expandLeft, expandRight, expandTop, expandBottom) {
-        const xMin = expandLeft ? baseOuter.xMin - dx : baseOuter.xMin;
-        const xMax = expandRight ? baseOuter.xMax + dx : baseOuter.xMax;
-        const yMin = expandTop ? baseOuter.yMin - dy : baseOuter.yMin;
-        const yMax = expandBottom ? baseOuter.yMax + dy : baseOuter.yMax;
-        return {
-          xMin: clamp01(Math.min(xMin, innerBox.xMin)),
-          xMax: clamp01(Math.max(xMax, innerBox.xMax)),
-          yMin: clamp01(Math.min(yMin, innerBox.yMin)),
-          yMax: clamp01(Math.max(yMax, innerBox.yMax)),
-        };
-      }
-
-      function selectOuterBoxByTeethConsistency(imageData, baseOuter, innerBox, imageW, imageH) {
-        const innerW = Math.max(1e-9, (innerBox.xMax || 0) - (innerBox.xMin || 0));
-        const innerH = Math.max(1e-9, (innerBox.yMax || 0) - (innerBox.yMin || 0));
-        const dx = Math.max(2 / imageW, innerW * 0.03);
-        const dy = Math.max(2 / imageH, innerH * 0.03);
-        const baseArea = Math.max(1e-9, boxArea(baseOuter));
-
-        const candidates = [
-          baseOuter,
-          makeOuterCandidate(baseOuter, innerBox, dx, dy, false, true, false, false),
-          makeOuterCandidate(baseOuter, innerBox, dx, dy, true, false, false, false),
-          makeOuterCandidate(baseOuter, innerBox, dx, dy, false, false, true, false),
-          makeOuterCandidate(baseOuter, innerBox, dx, dy, false, false, false, true),
-          makeOuterCandidate(baseOuter, innerBox, dx, dy, true, true, false, false),
-          makeOuterCandidate(baseOuter, innerBox, dx, dy, false, false, true, true),
-          makeOuterCandidate(baseOuter, innerBox, dx, dy, true, true, true, true),
-        ];
-
-        let best = null;
-        for (const cand of candidates) {
-          const counts = estimatePerforationTeethCount(imageData, cand, imageW, imageH);
-          const mismatchPenalty = perforationMismatchPenalty(counts);
-          const sizePenalty = Math.max(0, boxArea(cand) / baseArea - 1) * 0.3;
-          const score = mismatchPenalty + sizePenalty;
-          if (!best || score < best.score) {
-            best = { box: cand, counts, score };
-          }
-        }
-        return best || { box: baseOuter, counts: estimatePerforationTeethCount(imageData, baseOuter, imageW, imageH), score: Infinity };
-      }
-
-      function lineMeanColor(imageData, imageW, imageH, axis, fixed, start, end) {
+      function lineColorMoments(imageData, imageW, imageH, axis, fixed, start, end, includeLumaStd = false) {
         const data = imageData.data;
+        const axisX = axis === "x";
+        const fixedMax = axisX ? imageW - 1 : imageH - 1;
+        const majorMax = axisX ? imageH - 1 : imageW - 1;
+        const fixedClamped = Math.max(0, Math.min(fixedMax, fixed));
+        const majorStart = Math.max(0, Math.min(majorMax, start));
+        const majorEnd = Math.max(0, Math.min(majorMax, end));
+        const major0 = Math.min(majorStart, majorEnd);
+        const major1 = Math.max(majorStart, majorEnd);
+        if (major1 < major0) return null;
+
+        const idxStart = axisX
+          ? (major0 * imageW + fixedClamped) * 4
+          : (fixedClamped * imageW + major0) * 4;
+        const idxStep = axisX ? imageW * 4 : 4;
+        const count = major1 - major0 + 1;
+
         let sumR = 0;
         let sumG = 0;
         let sumB = 0;
-        let n = 0;
-        if (axis === "x") {
-          const x = Math.max(0, Math.min(imageW - 1, fixed));
-          const y0 = Math.max(0, Math.min(imageH - 1, start));
-          const y1 = Math.max(0, Math.min(imageH - 1, end));
-          for (let y = y0; y <= y1; y += 1) {
-            const p = (y * imageW + x) * 4;
-            sumR += data[p];
-            sumG += data[p + 1];
-            sumB += data[p + 2];
-            n += 1;
-          }
-        } else {
-          const y = Math.max(0, Math.min(imageH - 1, fixed));
-          const x0 = Math.max(0, Math.min(imageW - 1, start));
-          const x1 = Math.max(0, Math.min(imageW - 1, end));
-          for (let x = x0; x <= x1; x += 1) {
-            const p = (y * imageW + x) * 4;
-            sumR += data[p];
-            sumG += data[p + 1];
-            sumB += data[p + 2];
-            n += 1;
-          }
+        let sumL = 0;
+        let sumL2 = 0;
+        for (let i = 0, p = idxStart; i < count; i += 1, p += idxStep) {
+          const r = data[p];
+          const g = data[p + 1];
+          const b = data[p + 2];
+          const l = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+          sumR += r;
+          sumG += g;
+          sumB += b;
+          sumL += l;
+          if (includeLumaStd) sumL2 += l * l;
         }
-        if (n <= 0) return null;
-        const r = sumR / n;
-        const g = sumG / n;
-        const b = sumB / n;
-        const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-        return { r, g, b, luma };
+
+        const invN = 1 / count;
+        const r = sumR * invN;
+        const g = sumG * invN;
+        const b = sumB * invN;
+        const luma = sumL * invN;
+        const result = { r, g, b, luma, n: count };
+        if (includeLumaStd) {
+          const lumaVar = Math.max(0, sumL2 * invN - luma * luma);
+          result.lumaStd = Math.sqrt(lumaVar);
+        }
+        return result;
       }
 
       function colorDistanceRgb(a, b) {
         if (!a || !b) return Infinity;
         return Math.hypot((a.r || 0) - (b.r || 0), (a.g || 0) - (b.g || 0), (a.b || 0) - (b.b || 0));
+      }
+
+      function trimmedSpan(spanA, spanB, insetRatio, minInset = 0) {
+        const len = Math.max(1, Math.abs(spanB - spanA) + 1);
+        const inset = Math.max(minInset, Math.round(len * insetRatio));
+        const s = Math.min(spanA, spanB) + inset;
+        const e = Math.max(spanA, spanB) - inset;
+        if (e < s) return null;
+        return { s, e };
+      }
+
+      function makeLineStatGetter(imageData, imageW, imageH, includeLumaStd) {
+        const cache = new Map();
+        return (axis, fixed, start, end) => {
+          const s = Math.min(start, end);
+          const e = Math.max(start, end);
+          const key = `${axis}|${fixed}|${s}|${e}|${includeLumaStd ? 1 : 0}`;
+          if (cache.has(key)) return cache.get(key);
+          const stats = lineColorMoments(imageData, imageW, imageH, axis, fixed, s, e, includeLumaStd);
+          cache.set(key, stats);
+          return stats;
+        };
+      }
+
+      function deriveUninterruptedOutlineBox(imageData, outerBox, imageW, imageH) {
+        const outerPx = toPixelBox(outerBox, imageW, imageH);
+        const searchRange = Math.max(4, Math.round(Math.min(imageW, imageH) * 0.15));
+        const getStats = makeLineStatGetter(imageData, imageW, imageH, true);
+
+        function findSide(axis, baseFixed, span0, span1, outwardSign) {
+          const span = trimmedSpan(span0, span1, 0.05, 1);
+          if (!span) return baseFixed;
+          const base = getStats(axis, baseFixed, span.s, span.e);
+          if (!base) return baseFixed;
+
+          const limitMin = 0;
+          const limitMax = axis === "x" ? imageW - 1 : imageH - 1;
+          const maxStd = Math.max(8, base.lumaStd * 0.55 + 2);
+          for (let d = 1; d <= searchRange; d += 1) {
+            const f = baseFixed + outwardSign * d;
+            if (f < limitMin || f > limitMax) break;
+            const cand = getStats(axis, f, span.s, span.e);
+            if (!cand) continue;
+            const colorDiff = colorDistanceRgb(base, cand);
+            const lumaDiff = Math.abs((base.luma || 0) - (cand.luma || 0));
+            const isContrasting = colorDiff >= 20 || lumaDiff >= 14;
+            const isUninterrupted = cand.lumaStd <= maxStd;
+            if (isContrasting && isUninterrupted) return f;
+          }
+          return baseFixed;
+        }
+
+        const outlinePx = {
+          x0: findSide("x", outerPx.x0, outerPx.y0, outerPx.y1, -1),
+          x1: findSide("x", outerPx.x1, outerPx.y0, outerPx.y1, 1),
+          y0: findSide("y", outerPx.y0, outerPx.x0, outerPx.x1, -1),
+          y1: findSide("y", outerPx.y1, outerPx.x0, outerPx.x1, 1),
+        };
+        if (outlinePx.x1 <= outlinePx.x0 || outlinePx.y1 <= outlinePx.y0) return outerBox;
+        if (outlinePx.x0 > outerPx.x0 || outlinePx.x1 < outerPx.x1 || outlinePx.y0 > outerPx.y0 || outlinePx.y1 < outerPx.y1) {
+          return outerBox;
+        }
+        return toNormBox(outlinePx, imageW, imageH);
       }
 
       function expandInnerBoxByEdgeColor(imageData, innerBox, outerBox, imageW, imageH) {
@@ -2168,79 +2275,53 @@
         let y0 = innerPx.y0;
         let y1 = innerPx.y1;
         const maxGrowPx = Math.max(2, Math.round(Math.min(imageW, imageH) * 0.03));
+        const edgeInsetRatio = 0.06;
+        const maxColorDist = 18;
+        const maxLumaDiff = 8;
+        const getMean = makeLineStatGetter(imageData, imageW, imageH, false);
 
-        function canGrowLeft() {
-          if (x0 <= outerPx.x0) return false;
-          const inset = Math.max(0, Math.round((y1 - y0 + 1) * 0.06));
-          const s = y0 + inset;
-          const e = y1 - inset;
-          const current = lineMeanColor(imageData, imageW, imageH, "x", x0, s, e);
-          const next = lineMeanColor(imageData, imageW, imageH, "x", x0 - 1, s, e);
+        function canGrowEdge(axis, currentFixed, nextFixed, spanA, spanB) {
+          const span = trimmedSpan(spanA, spanB, edgeInsetRatio, 0);
+          if (!span) return false;
+          const current = getMean(axis, currentFixed, span.s, span.e);
+          const next = getMean(axis, nextFixed, span.s, span.e);
+          if (!current || !next) return false;
           const dist = colorDistanceRgb(current, next);
-          const currentLuma = current ? current.luma : 0;
-          const nextLuma = next ? next.luma : 0;
-          const lumaDiff = Math.abs(currentLuma - nextLuma);
-          return dist <= 18 && lumaDiff <= 8;
+          const lumaDiff = Math.abs(current.luma - next.luma);
+          return dist <= maxColorDist && lumaDiff <= maxLumaDiff;
         }
 
-        function canGrowRight() {
-          if (x1 >= outerPx.x1) return false;
-          const inset = Math.max(0, Math.round((y1 - y0 + 1) * 0.06));
-          const s = y0 + inset;
-          const e = y1 - inset;
-          const current = lineMeanColor(imageData, imageW, imageH, "x", x1, s, e);
-          const next = lineMeanColor(imageData, imageW, imageH, "x", x1 + 1, s, e);
-          const dist = colorDistanceRgb(current, next);
-          const currentLuma = current ? current.luma : 0;
-          const nextLuma = next ? next.luma : 0;
-          const lumaDiff = Math.abs(currentLuma - nextLuma);
-          return dist <= 18 && lumaDiff <= 8;
+        function growSide(canGrowStep, applyStep) {
+          for (let i = 0; i < maxGrowPx; i += 1) {
+            if (!canGrowStep()) break;
+            applyStep();
+          }
         }
 
-        function canGrowTop() {
-          if (y0 <= outerPx.y0) return false;
-          const inset = Math.max(0, Math.round((x1 - x0 + 1) * 0.06));
-          const s = x0 + inset;
-          const e = x1 - inset;
-          const current = lineMeanColor(imageData, imageW, imageH, "y", y0, s, e);
-          const next = lineMeanColor(imageData, imageW, imageH, "y", y0 - 1, s, e);
-          const dist = colorDistanceRgb(current, next);
-          const currentLuma = current ? current.luma : 0;
-          const nextLuma = next ? next.luma : 0;
-          const lumaDiff = Math.abs(currentLuma - nextLuma);
-          return dist <= 18 && lumaDiff <= 8;
-        }
-
-        function canGrowBottom() {
-          if (y1 >= outerPx.y1) return false;
-          const inset = Math.max(0, Math.round((x1 - x0 + 1) * 0.06));
-          const s = x0 + inset;
-          const e = x1 - inset;
-          const current = lineMeanColor(imageData, imageW, imageH, "y", y1, s, e);
-          const next = lineMeanColor(imageData, imageW, imageH, "y", y1 + 1, s, e);
-          const dist = colorDistanceRgb(current, next);
-          const currentLuma = current ? current.luma : 0;
-          const nextLuma = next ? next.luma : 0;
-          const lumaDiff = Math.abs(currentLuma - nextLuma);
-          return dist <= 18 && lumaDiff <= 8;
-        }
-
-        for (let i = 0; i < maxGrowPx; i += 1) {
-          if (!canGrowLeft()) break;
-          x0 -= 1;
-        }
-        for (let i = 0; i < maxGrowPx; i += 1) {
-          if (!canGrowRight()) break;
-          x1 += 1;
-        }
-        for (let i = 0; i < maxGrowPx; i += 1) {
-          if (!canGrowTop()) break;
-          y0 -= 1;
-        }
-        for (let i = 0; i < maxGrowPx; i += 1) {
-          if (!canGrowBottom()) break;
-          y1 += 1;
-        }
+        growSide(
+          () => x0 > outerPx.x0 && canGrowEdge("x", x0, x0 - 1, y0, y1),
+          () => {
+            x0 -= 1;
+          }
+        );
+        growSide(
+          () => x1 < outerPx.x1 && canGrowEdge("x", x1, x1 + 1, y0, y1),
+          () => {
+            x1 += 1;
+          }
+        );
+        growSide(
+          () => y0 > outerPx.y0 && canGrowEdge("y", y0, y0 - 1, x0, x1),
+          () => {
+            y0 -= 1;
+          }
+        );
+        growSide(
+          () => y1 < outerPx.y1 && canGrowEdge("y", y1, y1 + 1, x0, x1),
+          () => {
+            y1 += 1;
+          }
+        );
 
         return toNormBox(
           {
@@ -2381,6 +2462,7 @@
         const maxSide = Math.max(400, Math.min(maxSideCeiling, Number(maxSideInput.value) || 1200));
         submitBtn.disabled = true;
         statusEl.textContent = "Preparing worker…";
+        setPreviewGuides([]);
 
         try {
           await ensureDetectorWorkerReady();
@@ -2441,15 +2523,9 @@
               Math.max(outerStampBoxRaw.yMax, innerSeedBox.yMax)
             ),
           };
+          const outerStampBox = outerStampBoxBase;
+          const outlineStampBox = deriveUninterruptedOutlineBox(analysisImageData, outerStampBox, natW, natH);
           let innerDesignBox = innerSeedBox;
-          const outerSelection = selectOuterBoxByTeethConsistency(
-            analysisImageData,
-            outerStampBoxBase,
-            innerDesignBox,
-            natW,
-            natH
-          );
-          const outerStampBox = outerSelection.box;
           innerDesignBox = expandInnerBoxByEdgeColor(
             analysisImageData,
             innerDesignBox,
@@ -2481,6 +2557,13 @@
             label: "Outer stamp",
             className: "preview-bbox-primary",
           });
+          if (!boxesClose(outlineStampBox, outerStampBox)) {
+            previewList.push({
+              box: outlineStampBox,
+              label: "Stamp outline",
+              className: "preview-bbox-outline",
+            });
+          }
           previewList.push({
             box: innerDesignBox,
             label: "Inner design",
@@ -2488,7 +2571,41 @@
           });
 
           const report = centeringReportFromBoxes(outerStampBox, innerDesignBox, natW, natH);
-          report.perforation_teeth_count = outerSelection.counts;
+          const outlinePx = toPixelBox(outlineStampBox, natW, natH);
+          const perfSampling = derivePerforationSamplingBox(outerStampBox, outlineStampBox, natW, natH);
+          const perfSamplePx = perfSampling.px;
+          const perfSampleNorm = perfSampling.norm;
+          report.detected_stamp_outline_box = {
+            x_min: outlineStampBox.xMin,
+            x_max: outlineStampBox.xMax,
+            y_min: outlineStampBox.yMin,
+            y_max: outlineStampBox.yMax,
+            x_min_px: outlinePx.x0,
+            x_max_px: outlinePx.x1,
+            y_min_px: outlinePx.y0,
+            y_max_px: outlinePx.y1,
+            width_pct: ((outlineStampBox.xMax || 0) - (outlineStampBox.xMin || 0)) * 100,
+            height_pct: ((outlineStampBox.yMax || 0) - (outlineStampBox.yMin || 0)) * 100,
+          };
+          report.perforation_sampling_box = {
+            x_min: perfSampleNorm.xMin,
+            x_max: perfSampleNorm.xMax,
+            y_min: perfSampleNorm.yMin,
+            y_max: perfSampleNorm.yMax,
+            x_min_px: perfSamplePx.x0,
+            x_max_px: perfSamplePx.x1,
+            y_min_px: perfSamplePx.y0,
+            y_max_px: perfSamplePx.y1,
+            width_px: Math.max(1, perfSamplePx.x1 - perfSamplePx.x0 + 1),
+            height_px: Math.max(1, perfSamplePx.y1 - perfSamplePx.y0 + 1),
+          };
+          report.perforation_teeth_count = estimatePerforationTeethCount(
+            analysisImageData,
+            outlineStampBox,
+            perfSampleNorm,
+            natW,
+            natH
+          );
           report.alignment.estimated_tilt_deg_before_correction = estimatedTiltDeg;
           report.alignment.applied_rotation_deg = effectiveRotationDeg;
           setPreviewRotation(effectiveRotationDeg);
@@ -2504,6 +2621,7 @@
           document.querySelector("main")?.classList.add("listing-open");
           // Layout width changes when listing panel opens; render boxes after reflow.
           setPreviewBoxes(previewList);
+          setPreviewGuides(buildTeethSamplingGuides(perfSampleNorm));
           await nextFrame();
           renderPreviewBoxes();
           section.setAttribute("aria-busy", "false");
@@ -2517,6 +2635,7 @@
           statusEl.className = "ok";
           statusEl.textContent = `Centering analysis complete. Grade: ${report.centering.grade} (${report.centering.final_centering_score_pct.toFixed(1)}%).`;
         } catch (err) {
+          setPreviewGuides([]);
           statusEl.className = "error";
           statusEl.textContent = err instanceof Error ? err.message : String(err);
         } finally {

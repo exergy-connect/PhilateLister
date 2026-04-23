@@ -1637,6 +1637,7 @@
         const maxLag = Math.max(minLag + 2, Math.round(n / 4));
         let bestLag = -1;
         let bestCorr = -Infinity;
+        const lagCorr = [];
 
         for (let lag = minLag; lag <= maxLag; lag += 1) {
           let num = 0;
@@ -1652,6 +1653,7 @@
           const den = Math.sqrt(denA * denB);
           if (den <= 1e-9) continue;
           const corr = num / den;
+          lagCorr.push({ lag, corr });
           if (corr > bestCorr) {
             bestCorr = corr;
             bestLag = lag;
@@ -1659,6 +1661,15 @@
         }
 
         if (bestLag < 0 || bestCorr < 0.18) return null;
+        // Prevent harmonic lock (e.g., every 2nd tooth): among near-best correlations,
+        // prefer the smallest plausible lag to keep the fundamental spacing.
+        const nearBestMinCorr = bestCorr * 0.94;
+        for (const { lag, corr } of lagCorr) {
+          if (corr >= nearBestMinCorr && corr >= 0.18) {
+            bestLag = lag;
+            break;
+          }
+        }
         const est = Math.round(n / bestLag);
         if (!Number.isFinite(est) || est < 1) return null;
         return est;
@@ -1812,18 +1823,23 @@
           const autoCount = estimateToothCountByAutocorr(profile);
           const regularSpacingCount =
             reg.meanSpacing > 0 ? Math.max(1, Math.round(profile.length / reg.meanSpacing)) : 0;
+          const peakBasedCount = peakCount >= 4 && reg.meanSpacing > 0 ? regularSpacingCount : peakCount;
 
           if (peakCount >= 4 && reg.cv <= 0.22) {
             if (autoCount == null || Math.abs(regularSpacingCount - autoCount) <= 2) {
               return regularSpacingCount;
             }
           }
-          if (autoCount == null) return peakCount;
-          if (!peakCount) return autoCount;
+          if (autoCount == null) return peakBasedCount;
+          if (!peakBasedCount) return autoCount;
+          // If autocorr lands near 2x/0.5x of peak-based spacing, keep peak-based count.
+          if (Math.abs(autoCount * 2 - peakBasedCount) <= 2) return peakBasedCount;
+          if (Math.abs(peakBasedCount * 2 - autoCount) <= 2) return peakBasedCount;
           // Prefer the periodic estimate; average when both are close.
-          if (Math.abs(autoCount - peakCount) <= 2) {
-            return Math.max(1, Math.round((autoCount + peakCount) / 2));
+          if (Math.abs(autoCount - peakBasedCount) <= 2) {
+            return Math.max(1, Math.round((autoCount + peakBasedCount) / 2));
           }
+          if (reg.cv <= 0.25 && peakBasedCount >= 4) return peakBasedCount;
           return autoCount;
         }
 
@@ -2337,7 +2353,8 @@
       }
 
       function centeringGrade(scorePct) {
-        if (scorePct >= 98) return "Gem 100/Superb";
+        if (scorePct >= 99) return "Gem";
+        if (scorePct >= 98) return "Superb";
         if (scorePct >= 90) return "Extremely Fine (XF)";
         if (scorePct >= 75) return "Very Fine (VF)";
         if (scorePct >= 60) return "Fine (F)";

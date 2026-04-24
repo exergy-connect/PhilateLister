@@ -1,0 +1,241 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "it-90-1",
+      "country_id": "italy",
+      "scott": {
+        "number": 90
+      },
+      "title": "Italy Scott 90, 2.50L Victor Emmanuel III",
+      "summary": "Victor Emmanuel III definitive issue, 2.50 Lire orange and blue. Used condition with circular datestamp.",
+      "issue_year": 1901,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 75,
+        "x_max": 205,
+        "y_min": 125,
+        "y_max": 200
+      }
+    },
+    {
+      "stamp_id": "it-85-1",
+      "country_id": "italy",
+      "scott": {
+        "number": 85
+      },
+      "title": "Italy Scott 85, 25c Victor Emmanuel III",
+      "summary": "First of three examples. 25c blue, Victor Emmanuel III definitive. Used with partial circular cancel.",
+      "issue_year": 1901,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 375,
+        "x_max": 490,
+        "y_min": 105,
+        "y_max": 185
+      }
+    },
+    {
+      "stamp_id": "it-85-2",
+      "country_id": "italy",
+      "scott": {
+        "number": 85
+      },
+      "title": "Italy Scott 85, 25c Victor Emmanuel III",
+      "summary": "Second of three examples. 25c blue, Victor Emmanuel III definitive. Used with partial VENEZIA cancel.",
+      "issue_year": 1901,
+      "condition_quality": "used",
+      "cancel": {
+        "city": "VENEZIA"
+      },
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 375,
+        "x_max": 490,
+        "y_min": 180,
+        "y_max": 260
+      }
+    },
+    {
+      "stamp_id": "it-85-3",
+      "country_id": "italy",
+      "scott": {
+        "number": 85
+      },
+      "title": "Italy Scott 85, 25c Victor Emmanuel III",
+      "summary": "Third of three examples. 25c blue, Victor Emmanuel III definitive. Used.",
+      "issue_year": 1901,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 375,
+        "x_max": 490,
+        "y_min": 255,
+        "y_max": 335
+      }
+    },
+    {
+      "stamp_id": "it-35-1",
+      "country_id": "italy",
+      "scott": {
+        "number": 35
+      },
+      "title": "Italy Scott 35, 20c Victor Emmanuel II",
+      "summary": "20c blue Victor Emmanuel II definitive. Used with numeral killer cancel. Orientation is sideways on card.",
+      "issue_year": 1863,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 685,
+        "x_max": 825,
+        "y_min": 195,
+        "y_max": 285
+      }
+    },
+    {
+      "stamp_id": "it-89-1",
+      "country_id": "italy",
+      "scott": {
+        "number": 89
+      },
+      "title": "Italy Scott 89, 2L Victor Emmanuel III",
+      "summary": "First of two examples. 2 Lire red and yellow, Victor Emmanuel III. Used.",
+      "issue_year": 1901,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 100,
+        "x_max": 220,
+        "y_min": 450,
+        "y_max": 530
+      }
+    },
+    {
+      "stamp_id": "it-89-2",
+      "country_id": "italy",
+      "scott": {
+        "number": 89
+      },
+      "title": "Italy Scott 89, 2L Victor Emmanuel III",
+      "summary": "Second of two examples. 2 Lire red and yellow, Victor Emmanuel III. Used.",
+      "issue_year": 1901,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 95,
+        "x_max": 215,
+        "y_min": 545,
+        "y_max": 625
+      }
+    },
+    {
+      "stamp_id": "it-42-1",
+      "country_id": "italy",
+      "scott": {
+        "number": 42
+      },
+      "title": "Italy Scott 42, 2c Numeral",
+      "summary": "2c orange-red Numeral issue. Used with partial STATO cancel.",
+      "issue_year": 1877,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 385,
+        "x_max": 505,
+        "y_min": 495,
+        "y_max": 590
+      }
+    },
+    {
+      "stamp_id": "it-32-1",
+      "country_id": "italy",
+      "scott": {
+        "number": 32
+      },
+      "title": "Italy Scott 32, 10c Victor Emmanuel II",
+      "summary": "10c buff Victor Emmanuel II definitive. Used with circular datestamp.",
+      "issue_year": 1863,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 700,
+        "x_max": 820,
+        "y_min": 480,
+        "y_max": 560
+      }
+    },
+    {
+      "stamp_id": "it-86-1",
+      "country_id": "italy",
+      "scott": {
+        "number": 86
+      },
+      "title": "Italy Scott 86, 1.75L Victor Emmanuel III",
+      "summary": "1.75 Lire brown and orange Victor Emmanuel III definitive. Used.",
+      "issue_year": 1901,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 85,
+        "x_max": 205,
+        "y_min": 825,
+        "y_max": 900
+      }
+    },
+    {
+      "stamp_id": "it-39-1",
+      "country_id": "italy",
+      "scott": {
+        "number": 39
+      },
+      "title": "Italy Scott 39, 2c Numeral",
+      "summary": "2c red Numeral issue. Used with partial STATO cancel.",
+      "issue_year": 1865,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 380,
+        "x_max": 480,
+        "y_min": 795,
+        "y_max": 890
+      }
+    },
+    {
+      "stamp_id": "it-31-1",
+      "country_id": "italy",
+      "scott": {
+        "number": 31
+      },
+      "title": "Italy Scott 31, 40c Victor Emmanuel II",
+      "summary": "First of two examples. 40c rose-carmine Victor Emmanuel II. Used.",
+      "issue_year": 1863,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 670,
+        "x_max": 785,
+        "y_min": 770,
+        "y_max": 845
+      }
+    },
+    {
+      "stamp_id": "it-31-2",
+      "country_id": "italy",
+      "scott": {
+        "number": 31
+      },
+      "title": "Italy Scott 31, 40c Victor Emmanuel II",
+      "summary": "Second of two examples. 40c rose-carmine Victor Emmanuel II. Used.",
+      "issue_year": 1863,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 685,
+        "x_max": 800,
+        "y_min": 875,
+        "y_max": 945
+      }
+    }
+  ]
+}

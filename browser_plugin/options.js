@@ -1,5 +1,5 @@
 const AI_TOKEN_PASSWORD_KEY = "aiTokenPassword";
-const DEFAULT_AI_TOKEN_PASSWORD = "pj";
+const DEFAULT_AI_TOKEN_PASSWORD = "<not set>";
 
 const inputEl = document.getElementById("ai-token-password");
 const saveBtn = document.getElementById("save-btn");

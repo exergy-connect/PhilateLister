@@ -1,6 +1,6 @@
 {
-  "version": 23,
-  "timestamp": "2026-05-06T23:55:52Z",
+  "version": 24,
+  "timestamp": "2026-05-06T23:58:08Z",
   "model": {
     "name": "PhilateLister stamp catalog",
     "version": "26.04.11.1",
@@ -229,6 +229,13 @@
         "author": "jbemmel",
         "note": "Regenerate consolidated outputs from current xframe model and data (prompts, providers, invocations).",
         "git_commit_hash": "baa98fb5b60f51702e09bd53a16c99a40bbacbd1"
+      },
+      "000000000024": {
+        "id": 24,
+        "timestamp": "2026-05-06T23:58:08+00:00",
+        "author": "jbemmel",
+        "note": "(no change) CI consolidate after model/data change (c6a11659447a200bbabde5649f9dd4782e8155d1)",
+        "git_commit_hash": "c6a11659447a200bbabde5649f9dd4782e8155d1"
       }
     },
     "catalog_system": {
@@ -612,8 +619,7 @@
           "[Description]"
         ],
         "c": 23,
-        "v": 23,
-        "f": 12
+        "v": 23
       },
       "jay_smith_listing": {
         "prompt_id": "jay_smith_listing",

@@ -55,6 +55,13 @@
       "provider_id": "openrouter",
       "has_free_tier": false,
       "rate_limits": "OpenRouter account RPM/TPM; see provider dashboard."
+    },
+    {
+      "model_id": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+      "name": "NVIDIA Nemotron 3 Nano Omni 30B A3B Reasoning (free, via OpenRouter)",
+      "provider_id": "openrouter",
+      "has_free_tier": true,
+      "rate_limits": "OpenRouter free-tier route (:free); account RPM/TPM; see https://openrouter.ai/"
     }
   ]
 }

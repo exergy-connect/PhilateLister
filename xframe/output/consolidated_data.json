@@ -1,6 +1,6 @@
 {
-  "version": 20,
-  "timestamp": "2026-04-22T14:58:23Z",
+  "version": 21,
+  "timestamp": "2026-05-06T22:58:27Z",
   "model": {
     "name": "PhilateLister stamp catalog",
     "version": "26.04.11.1",
@@ -204,6 +204,13 @@
         "author": "jbemmel",
         "note": "(no change) CI consolidate after model/data change (79ec72247f5b738b73f91c9d42b73cfa75b22e70)",
         "git_commit_hash": "79ec72247f5b738b73f91c9d42b73cfa75b22e70"
+      },
+      "000000000021": {
+        "id": 21,
+        "timestamp": "2026-05-06T17:58:27-05:00",
+        "author": "root",
+        "note": "Reconsolidate xframe after llm_models.json and prompt_invocations.json updates",
+        "git_commit_hash": "ba759d98111c5ba040d4187e364d656d18bca59a"
       }
     },
     "catalog_system": {
@@ -515,6 +522,15 @@
         "rate_limits": "OpenRouter account RPM/TPM; see provider dashboard.",
         "c": 8,
         "v": 8
+      },
+      "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free": {
+        "model_id": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+        "name": "NVIDIA Nemotron 3 Nano Omni 30B A3B Reasoning (free, via OpenRouter)",
+        "provider_id": "openrouter",
+        "has_free_tier": true,
+        "rate_limits": "OpenRouter free-tier route (:free); account RPM/TPM; see https://openrouter.ai/",
+        "c": 21,
+        "v": 21
       }
     },
     "prompt": {
@@ -693,15 +709,28 @@
         ],
         "v": 8
       },
+      "stamp_listing_openrouter_nemotron": {
+        "invocation_id": "stamp_listing_openrouter_nemotron",
+        "prompt_id": "stamp_listing",
+        "provider_id": "openrouter",
+        "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+        "sort_order": 1,
+        "primary_for_listing": false,
+        "c": 21,
+        "v": 21
+      },
       "stamp_listing_openrouter": {
         "invocation_id": "stamp_listing_openrouter",
         "prompt_id": "stamp_listing",
         "provider_id": "openrouter",
         "model": "openai/gpt-4o-mini",
-        "sort_order": 1,
+        "sort_order": 2,
         "primary_for_listing": false,
         "c": 4,
-        "v": 4
+        "m": [
+          21
+        ],
+        "v": 21
       }
     },
     "provider": {

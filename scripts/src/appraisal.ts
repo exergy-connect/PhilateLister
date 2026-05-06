@@ -22,7 +22,16 @@ const CONSOLIDATED_DATA_PATH = join(repoRoot, 'xframe', 'output', 'consolidated_
 
 const debugAppraisal = debuglog('appraisal');
 
+/** Vision on large inline images can exceed default client limits; allow two minutes when image is over 1 MiB. */
+const LARGE_IMAGE_BYTES = 1024 * 1024;
+const AI_TIMEOUT_LARGE_IMAGE_MS = 2 * 60 * 1000;
+
 const PROMPT_ID_RE = /^[a-zA-Z0-9][a-zA-Z0-9_-]{0,62}$/;
+
+function aiHttpTimeoutMsForImage(imageBytes: number): number | undefined {
+  if (imageBytes > LARGE_IMAGE_BYTES) return AI_TIMEOUT_LARGE_IMAGE_MS;
+  return undefined;
+}
 
 type ListingOutputFormat = 'json' | 'txt';
 
@@ -480,7 +489,12 @@ async function runGeminiInvocation(
   mime: string,
   outputFormat: ListingOutputFormat
 ): Promise<string> {
-  const config = buildGeminiGenerateConfig(model, outputFormat);
+  const baseConfig = buildGeminiGenerateConfig(model, outputFormat);
+  const timeoutMs = aiHttpTimeoutMsForImage(imgBytes.length);
+  const config: GenerateContentConfig =
+    timeoutMs !== undefined
+      ? { ...baseConfig, httpOptions: { timeout: timeoutMs, headers: {} } }
+      : baseConfig;
   const ai = new GoogleGenAI({ apiKey });
   const response = await ai.models.generateContent({
     model,
@@ -552,10 +566,12 @@ async function runOpenRouterInvocation(
     };
   }
 
+  const timeoutMs = aiHttpTimeoutMsForImage(imgBytes.length);
   const res = await fetch(url, {
     method: 'POST',
     headers,
     body: JSON.stringify(body),
+    ...(timeoutMs !== undefined ? { signal: AbortSignal.timeout(timeoutMs) } : {}),
   });
   const raw = await res.text();
   if (!res.ok) {

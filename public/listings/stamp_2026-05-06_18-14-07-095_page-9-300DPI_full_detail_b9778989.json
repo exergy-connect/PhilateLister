@@ -1,0 +1,238 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "it-85-1",
+      "country_id": "italy",
+      "scott": {
+        "number": 85
+      },
+      "title": "Italy #85 (20c purple, top)",
+      "summary": "Handwritten label #85; 20c purple Victor Emmanuel III floral issue. Note: Scott 85 is traditionally 15c, these may be Scott 127 or 147.",
+      "issue_year": 1901,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 374,
+        "x_max": 488,
+        "y_min": 107,
+        "y_max": 180
+      }
+    },
+    {
+      "stamp_id": "it-35-1",
+      "country_id": "italy",
+      "scott": {
+        "number": 35
+      },
+      "title": "Italy #35 (20c blue)",
+      "summary": "Italy Scott #35, 20c blue Victor Emmanuel II. Circular datestamp cancel. Sideways orientation in mount.",
+      "issue_year": 1867,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 82,
+        "x_max": 192,
+        "y_min": 126,
+        "y_max": 285
+      }
+    },
+    {
+      "stamp_id": "it-85-2",
+      "country_id": "italy",
+      "scott": {
+        "number": 85
+      },
+      "title": "Italy #85 (20c purple, middle)",
+      "summary": "Second of three 20c purple stamps in the #85 labeled lot.",
+      "issue_year": 1901,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 374,
+        "x_max": 488,
+        "y_min": 180,
+        "y_max": 252
+      }
+    },
+    {
+      "stamp_id": "it-90-1",
+      "country_id": "italy",
+      "scott": {
+        "number": 90
+      },
+      "title": "Italy #90 (2.50 Lire)",
+      "summary": "Italy Scott #90, 2.50 Lire brown and orange Victor Emmanuel III. Sideways in mount.",
+      "issue_year": 1901,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 706,
+        "x_max": 815,
+        "y_min": 128,
+        "y_max": 219
+      }
+    },
+    {
+      "stamp_id": "it-85-3",
+      "country_id": "italy",
+      "scott": {
+        "number": 85
+      },
+      "title": "Italy #85 (20c purple, bottom)",
+      "summary": "Third of three 20c purple stamps in the #85 labeled lot.",
+      "issue_year": 1901,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 378,
+        "x_max": 491,
+        "y_min": 259,
+        "y_max": 331
+      }
+    },
+    {
+      "stamp_id": "it-89-1",
+      "country_id": "italy",
+      "scott": {
+        "number": 89
+      },
+      "title": "Italy #89 (2 Lire, top)",
+      "summary": "Italy Scott #89, 2 Lire brown Victor Emmanuel III. Top stamp in the pair.",
+      "issue_year": 1901,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 105,
+        "x_max": 216,
+        "y_min": 454,
+        "y_max": 524
+      }
+    },
+    {
+      "stamp_id": "it-32-1",
+      "country_id": "italy",
+      "scott": {
+        "number": 32
+      },
+      "title": "Italy #32 (Surcharge)",
+      "summary": "Labeled #32, which is 15c blue; stamp is a greyish-purple surcharge variety. Slogan cancel visible.",
+      "issue_year": 1863,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 704,
+        "x_max": 814,
+        "y_min": 484,
+        "y_max": 554
+      }
+    },
+    {
+      "stamp_id": "it-42-1",
+      "country_id": "italy",
+      "scott": {
+        "number": 42
+      },
+      "title": "Italy #42 (20c on 30c)",
+      "summary": "Italy Scott #42, 20c on 30c brown, surcharge with wavy lines.",
+      "issue_year": 1878,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 388,
+        "x_max": 504,
+        "y_min": 496,
+        "y_max": 585
+      }
+    },
+    {
+      "stamp_id": "it-89-2",
+      "country_id": "italy",
+      "scott": {
+        "number": 89
+      },
+      "title": "Italy #89 (2 Lire, bottom)",
+      "summary": "Italy Scott #89, 2 Lire brown Victor Emmanuel III. Bottom stamp in the pair.",
+      "issue_year": 1901,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 95,
+        "x_max": 205,
+        "y_min": 545,
+        "y_max": 615
+      }
+    },
+    {
+      "stamp_id": "it-31-1",
+      "country_id": "italy",
+      "scott": {
+        "number": 31
+      },
+      "title": "Italy #31 (40c carmine, top)",
+      "summary": "Italy Scott #31, 40c carmine Victor Emmanuel II. Heavy circular cancel.",
+      "issue_year": 1863,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 673,
+        "x_max": 782,
+        "y_min": 773,
+        "y_max": 843
+      }
+    },
+    {
+      "stamp_id": "it-31-2",
+      "country_id": "italy",
+      "scott": {
+        "number": 31
+      },
+      "title": "Italy #31 (40c carmine, bottom)",
+      "summary": "Italy Scott #31, 40c carmine Victor Emmanuel II. Bottom stamp in the pair.",
+      "issue_year": 1863,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 678,
+        "x_max": 796,
+        "y_min": 874,
+        "y_max": 946
+      }
+    },
+    {
+      "stamp_id": "it-39-1",
+      "country_id": "italy",
+      "scott": {
+        "number": 39
+      },
+      "title": "Italy #39 (20c on 15c)",
+      "summary": "Italy Scott #39, 20c on 15c blue, surcharge with wavy lines. Used with heavy black cancel.",
+      "issue_year": 1877,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 383,
+        "x_max": 477,
+        "y_min": 801,
+        "y_max": 881
+      }
+    },
+    {
+      "stamp_id": "it-86-1",
+      "country_id": "italy",
+      "scott": {
+        "number": 86
+      },
+      "title": "Italy #86 (15c red/pink)",
+      "summary": "Labeled #86 (traditionally 20c orange); stamp is 15c red Victor Emmanuel III. Likely Scott 75 or 85.",
+      "issue_year": 1901,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 85,
+        "x_max": 195,
+        "y_min": 825,
+        "y_max": 890
+      }
+    }
+  ]
+}

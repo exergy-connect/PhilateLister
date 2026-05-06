@@ -32,6 +32,7 @@ jobs:
       # dist/appraisal.cjs is the esbuild bundle (committed by scripts-build); no npm install here.
       - name: Run appraisal (Gemini / OpenRouter per prompt_invocation)
         env:
+          NODE_DEBUG: appraisal
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           OPENROUTER_HTTP_REFERER: ${{ vars.OPENROUTER_HTTP_REFERER }}

@@ -2,9 +2,10 @@
  * Stamp listing / xFrame catalog JSON from a local image (Gemini, OpenRouter, parallel invocations).
  */
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, statSync } from 'node:fs';
 import { basename, extname, join } from 'node:path';
 import process from 'node:process';
+import { debuglog } from 'node:util';
 import {
   GoogleGenAI,
   type GenerateContentConfig,
@@ -18,6 +19,8 @@ const repoRoot = process.cwd();
 const CONSOLIDATED_SCHEMA_PATH = join(repoRoot, 'xframe', 'output', 'consolidated.schema.json');
 /** Single source for prompts, providers, prompt_invocation (no xframe/data/*.json reads). */
 const CONSOLIDATED_DATA_PATH = join(repoRoot, 'xframe', 'output', 'consolidated_data.json');
+
+const debugAppraisal = debuglog('appraisal');
 
 const PROMPT_ID_RE = /^[a-zA-Z0-9][a-zA-Z0-9_-]{0,62}$/;
 
@@ -78,6 +81,13 @@ function loadConsolidatedDataRoot(): ConsolidatedDataRoot {
       `Missing ${CONSOLIDATED_DATA_PATH}; run the xFrame consolidator with --working-dir pointing at this repo's xframe/ directory first.`
     );
   }
+  const st = statSync(CONSOLIDATED_DATA_PATH);
+  debugAppraisal(
+    'load consolidated_data path=%s mtime=%s size=%d',
+    CONSOLIDATED_DATA_PATH,
+    st.mtime.toISOString(),
+    st.size
+  );
   try {
     consolidatedDataRoot = JSON.parse(readFileSync(CONSOLIDATED_DATA_PATH, 'utf-8')) as ConsolidatedDataRoot;
   } catch (e) {
@@ -108,14 +118,19 @@ function parseOutputFormat(row: Record<string, unknown>, promptPath: string): Li
 }
 
 function loadProvidersMap(): Map<string, ProviderRow> {
-  if (providersCache) return providersCache;
+  if (providersCache) {
+    debugAppraisal('loadProvidersMap cache hit count=%d ids=%s', providersCache.size, [...providersCache.keys()].join(', '));
+    return providersCache;
+  }
   const map = new Map<string, ProviderRow>();
   const store = getEntityStore();
   const bucket = store.provider;
   if (!bucket || typeof bucket !== 'object') {
+    debugAppraisal('loadProvidersMap no provider bucket in consolidated data');
     providersCache = map;
     return map;
   }
+  const skippedUnsupported: string[] = [];
   for (const row of Object.values(bucket)) {
     if (!row || typeof row !== 'object' || Array.isArray(row)) continue;
     const r = row as Record<string, unknown>;
@@ -124,6 +139,7 @@ function loadProvidersMap(): Map<string, ProviderRow> {
     try {
       clientKindForProviderId(id);
     } catch {
+      skippedUnsupported.push(id);
       continue;
     }
     map.set(id, {
@@ -131,6 +147,12 @@ function loadProvidersMap(): Map<string, ProviderRow> {
       api_base_url: String(r.api_base_url ?? '').trim(),
     });
   }
+  debugAppraisal(
+    'loadProvidersMap loaded count=%d ids=%s skipped_unsupported=%s',
+    map.size,
+    [...map.keys()].join(', '),
+    skippedUnsupported.length ? skippedUnsupported.join(', ') : '(none)'
+  );
   providersCache = map;
   return map;
 }
@@ -574,22 +596,41 @@ async function runOneInvocation(
 ): Promise<{ invocationId: string; text: string; error?: string }> {
   try {
     const kind = clientKindForProviderId(inv.provider.provider_id);
+    debugAppraisal(
+      'runOneInvocation start invocationId=%s provider_id=%s kind=%s model=%s mime=%s outputFormat=%s imageBytes=%d userPromptChars=%d',
+      inv.invocationId,
+      inv.provider.provider_id,
+      kind,
+      inv.model,
+      mime,
+      outputFormat,
+      imgBytes.length,
+      userPrompt.length
+    );
+    let text: string;
     if (kind === 'google_gemini') {
       const key = String(process.env.GEMINI_API_KEY ?? '').trim();
       if (!key) throw new Error('GEMINI_API_KEY not set');
-      const text = await runGeminiInvocation(inv.model, key, userPrompt, imgBytes, mime, outputFormat);
-      return { invocationId: inv.invocationId, text };
-    }
-    if (kind === 'openrouter') {
+      text = await runGeminiInvocation(inv.model, key, userPrompt, imgBytes, mime, outputFormat);
+    } else if (kind === 'openrouter') {
       const key = String(process.env.OPENROUTER_API_KEY ?? '').trim();
       if (!key) throw new Error('OPENROUTER_API_KEY not set');
       const base = inv.provider.api_base_url || 'https://openrouter.ai/api/v1';
-      const text = await runOpenRouterInvocation(base, key, inv.model, userPrompt, imgBytes, mime, outputFormat);
-      return { invocationId: inv.invocationId, text };
+      debugAppraisal('runOneInvocation openrouter api_base=%s', base);
+      text = await runOpenRouterInvocation(base, key, inv.model, userPrompt, imgBytes, mime, outputFormat);
+    } else {
+      throw new Error(`Unreachable: unknown client for ${JSON.stringify(inv.provider.provider_id)}`);
     }
-    throw new Error(`Unreachable: unknown client for ${JSON.stringify(inv.provider.provider_id)}`);
+    debugAppraisal(
+      'runOneInvocation ok invocationId=%s kind=%s responseChars=%d',
+      inv.invocationId,
+      kind,
+      text.length
+    );
+    return { invocationId: inv.invocationId, text };
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
+    debugAppraisal('runOneInvocation error invocationId=%s: %s', inv.invocationId, msg);
     return { invocationId: inv.invocationId, text: '', error: msg };
   }
 }

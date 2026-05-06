@@ -1,6 +1,6 @@
 {
-  "version": 22,
-  "timestamp": "2026-05-06T22:59:41Z",
+  "version": 23,
+  "timestamp": "2026-05-06T23:55:52Z",
   "model": {
     "name": "PhilateLister stamp catalog",
     "version": "26.04.11.1",
@@ -65,6 +65,10 @@
     "000000000011": {
       "id": 11,
       "path": "data/scott_us_catalog_up_to_200.json"
+    },
+    "000000000012": {
+      "id": 12,
+      "path": "data/prompts/chatgpt_suggested_stamp_listing.json"
     }
   },
   "data": {
@@ -218,6 +222,13 @@
         "author": "jbemmel",
         "note": "(no change) CI consolidate after model/data change (896490f6def3492f0e473bb219e73f7a8679e9c7)",
         "git_commit_hash": "896490f6def3492f0e473bb219e73f7a8679e9c7"
+      },
+      "000000000023": {
+        "id": 23,
+        "timestamp": "2026-05-06T18:55:52-05:00",
+        "author": "jbemmel",
+        "note": "Regenerate consolidated outputs from current xframe model and data (prompts, providers, invocations).",
+        "git_commit_hash": "baa98fb5b60f51702e09bd53a16c99a40bbacbd1"
       }
     },
     "catalog_system": {
@@ -541,6 +552,69 @@
       }
     },
     "prompt": {
+      "stamp_listing_chatgpt": {
+        "prompt_id": "stamp_listing_chatgpt",
+        "brief": "eBay-style single-stamp listing (plain text, evidence-based, low hallucination)",
+        "preferred_model": "gemini-3-flash-preview",
+        "output_format": "txt",
+        "template_lines": [
+          "You are helping a stamp dealer prepare an eBay listing for this upload.",
+          "Your top priority is accuracy. Do NOT guess or invent details.",
+          "",
+          "STRICT RULES:",
+          "- Only state facts that are directly visible in the image or clearly supported by the provided metadata.",
+          "- If something is uncertain, explicitly say 'uncertain' or 'not clearly visible'.",
+          "- Do NOT infer specific catalog numbers, printings, watermark orientation, or cancel locations unless you have strong visual evidence.",
+          "- Do NOT fabricate town names, dates, or historical facts.",
+          "- Treat the file name and notes as hints only — they may be wrong.",
+          "",
+          "Image file name: __IMAGE_BASENAME____FILE_MISMATCH_GAP__",
+          "",
+          "Commit summary line (from uploader):",
+          "__FIRST_LINE__",
+          "",
+          "Full structured parameters from the upload form (JSON — use only fields that are relevant and reliable):",
+          "__META_JSON__",
+          "",
+          "Dealer target listing price (context only; do not infer catalog value): __TARGET_JSON__",
+          "Dealer notes and hints (may be incomplete or incorrect): __NOTES_JSON__",
+          "",
+          "STEP 1 — OBSERVATIONS (from the image only):",
+          "- Describe visible design elements (country, denomination, colors, symbols, numerals).",
+          "- Describe condition (centering, margins, tears, creases, thins, cancel clarity).",
+          "- Describe the cancel exactly as seen (numbers, letters, shapes). Do NOT interpret unless certain.",
+          "- Describe perforations qualitatively (e.g., intact, uneven, missing tips). Only give counts if clearly measurable.",
+          "",
+          "STEP 2 — IDENTIFICATION (cautious):",
+          "- Suggest country and issue if reasonably supported.",
+          "- Provide catalog number ONLY if you are confident. Otherwise state 'uncertain'.",
+          "- Do NOT assert watermark type, printing number, or rare varieties unless clearly proven.",
+          "- If cancel numerals are visible, report the number only. Do NOT assign a city unless certain.",
+          "",
+          "STEP 3 — EBAY TITLE:",
+          "- Concise, factual, no speculation.",
+          "",
+          "STEP 4 — CONDITION SUMMARY:",
+          "- Based only on visible evidence.",
+          "",
+          "STEP 5 — LISTING DESCRIPTION:",
+          "- Write a professional, neutral listing.",
+          "- Include useful observed details.",
+          "- If uncertainty exists, phrase it transparently (e.g., 'appears to be', 'not verified').",
+          "- Respect dealer notes only where consistent with evidence.",
+          "",
+          "OUTPUT FORMAT:",
+          "Use clear sections:",
+          "[Title]",
+          "[Identification]",
+          "[Condition]",
+          "[Observations]",
+          "[Description]"
+        ],
+        "c": 23,
+        "v": 23,
+        "f": 12
+      },
       "jay_smith_listing": {
         "prompt_id": "jay_smith_listing",
         "brief": "Jay Smith–style dealer listing (plain text)",

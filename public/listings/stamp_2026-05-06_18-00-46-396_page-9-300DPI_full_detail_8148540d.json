@@ -1,0 +1,251 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "it-90-1",
+      "country_id": "it",
+      "scott": {
+        "country_id": "it",
+        "number": 90
+      },
+      "title": "Italy Scott 90, 2.50 Lire King VE III (1901)",
+      "summary": "King Victor Emmanuel III definitive from the 1901 series. Appears mint hinged.",
+      "issue_year": 1901,
+      "condition_quality": "mint_hinged",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 81,
+        "x_max": 194,
+        "y_min": 126,
+        "y_max": 201
+      }
+    },
+    {
+      "stamp_id": "it-83-1",
+      "country_id": "it",
+      "scott": {
+        "country_id": "it",
+        "number": 83
+      },
+      "title": "Italy Scott 83, 10c Claret King VE III (1901)",
+      "summary": "Top stamp in the 1901 definitive group (card #85). Used with circular datestamp.",
+      "issue_year": 1901,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 375,
+        "x_max": 489,
+        "y_min": 108,
+        "y_max": 179
+      }
+    },
+    {
+      "stamp_id": "it-83-2",
+      "country_id": "it",
+      "scott": {
+        "country_id": "it",
+        "number": 83
+      },
+      "title": "Italy Scott 83, 10c Claret King VE III (1901)",
+      "summary": "Middle stamp in the 1901 definitive group (card #85). Used with circular datestamp.",
+      "issue_year": 1901,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 377,
+        "x_max": 492,
+        "y_min": 181,
+        "y_max": 252
+      }
+    },
+    {
+      "stamp_id": "it-85-1",
+      "country_id": "it",
+      "scott": {
+        "country_id": "it",
+        "number": 85
+      },
+      "title": "Italy Scott 85, 50c Violet King VE III (1901)",
+      "summary": "Bottom stamp in the 1901 definitive group (card #85). Used with circular datestamp.",
+      "issue_year": 1901,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 379,
+        "x_max": 493,
+        "y_min": 259,
+        "y_max": 332
+      }
+    },
+    {
+      "stamp_id": "it-35-1",
+      "country_id": "it",
+      "scott": {
+        "country_id": "it",
+        "number": 35
+      },
+      "title": "Italy Scott 35, 20c Blue King VE II (1867)",
+      "summary": "King Victor Emmanuel II definitive, perforated. Used with partial cancel.",
+      "issue_year": 1867,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 691,
+        "x_max": 824,
+        "y_min": 197,
+        "y_max": 281
+      }
+    },
+    {
+      "stamp_id": "it-89-1",
+      "country_id": "it",
+      "scott": {
+        "country_id": "it",
+        "number": 89
+      },
+      "title": "Italy Scott 89, 2 Lire King VE III (1901)",
+      "summary": "Top copy of 2 Lire definitive. Used with light circular cancel.",
+      "issue_year": 1901,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 105,
+        "x_max": 218,
+        "y_min": 454,
+        "y_max": 524
+      }
+    },
+    {
+      "stamp_id": "it-89-2",
+      "country_id": "it",
+      "scott": {
+        "country_id": "it",
+        "number": 89
+      },
+      "title": "Italy Scott 89, 2 Lire King VE III (1901)",
+      "summary": "Bottom copy of 2 Lire definitive. Used with light circular cancel.",
+      "issue_year": 1901,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 95,
+        "x_max": 210,
+        "y_min": 547,
+        "y_max": 617
+      }
+    },
+    {
+      "stamp_id": "it-42-1",
+      "country_id": "it",
+      "scott": {
+        "country_id": "it",
+        "number": 42
+      },
+      "title": "Italy Scott 42, 2c Surcharge on 10c (1877)",
+      "summary": "Red 2 centesimi surcharge on King Victor Emmanuel II definitive. Listed as #42 per dealer note.",
+      "issue_year": 1877,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 389,
+        "x_max": 503,
+        "y_min": 498,
+        "y_max": 587
+      }
+    },
+    {
+      "stamp_id": "it-32-1",
+      "country_id": "it",
+      "scott": {
+        "country_id": "it",
+        "number": 32
+      },
+      "title": "Italy Scott 32, 20c Greyish-Lilac King VE II (1863)",
+      "summary": "King Victor Emmanuel II definitive, identified as #32 per card. Used.",
+      "issue_year": 1863,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 704,
+        "x_max": 815,
+        "y_min": 483,
+        "y_max": 552
+      }
+    },
+    {
+      "stamp_id": "it-86-1",
+      "country_id": "it",
+      "scott": {
+        "country_id": "it",
+        "number": 86
+      },
+      "title": "Italy Scott 86, 75c Red King VE III (1901)",
+      "summary": "King Victor Emmanuel III 75c definitive. Appears mint and well-centered.",
+      "issue_year": 1901,
+      "condition_quality": "mint_never_hinged",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 86,
+        "x_max": 203,
+        "y_min": 824,
+        "y_max": 888
+      }
+    },
+    {
+      "stamp_id": "it-39-1",
+      "country_id": "it",
+      "scott": {
+        "country_id": "it",
+        "number": 39
+      },
+      "title": "Italy Scott 39, 2c surcharge on 10c (1877)",
+      "summary": "2c surcharge on orange-brown King VE II definitive. Used with circular cancel.",
+      "issue_year": 1877,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 384,
+        "x_max": 477,
+        "y_min": 801,
+        "y_max": 878
+      }
+    },
+    {
+      "stamp_id": "it-31-1",
+      "country_id": "it",
+      "scott": {
+        "country_id": "it",
+        "number": 31
+      },
+      "title": "Italy Scott 31, 40c Carmine King VE II (1863)",
+      "summary": "Top stamp in pair. Used with heavy circular datestamp.",
+      "issue_year": 1863,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 672,
+        "x_max": 781,
+        "y_min": 772,
+        "y_max": 841
+      }
+    },
+    {
+      "stamp_id": "it-31-2",
+      "country_id": "it",
+      "scott": {
+        "country_id": "it",
+        "number": 31
+      },
+      "title": "Italy Scott 31, 40c Carmine King VE II (1863)",
+      "summary": "Bottom stamp in pair. Used with portrait profile clear.",
+      "issue_year": 1863,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 688,
+        "x_max": 796,
+        "y_min": 875,
+        "y_max": 944
+      }
+    }
+  ]
+}

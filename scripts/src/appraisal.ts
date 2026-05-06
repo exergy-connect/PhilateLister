@@ -22,15 +22,18 @@ const CONSOLIDATED_DATA_PATH = join(repoRoot, 'xframe', 'output', 'consolidated_
 
 const debugAppraisal = debuglog('appraisal');
 
-/** Vision on large inline images can exceed default client limits; allow two minutes when image is over 1 MiB. */
+/** Vision on large inline images can exceed default client limits; allow longer than the default window. */
 const LARGE_IMAGE_BYTES = 1024 * 1024;
+/** Every appraisal HTTP call gets a bounded wait so CI does not hang on a stuck or very slow upstream. */
+const AI_TIMEOUT_DEFAULT_MS = 1 * 60 * 1000;
+/** Same ceiling as before this file had a default for small payloads (>1 MiB inline vision). */
 const AI_TIMEOUT_LARGE_IMAGE_MS = 2 * 60 * 1000;
 
 const PROMPT_ID_RE = /^[a-zA-Z0-9][a-zA-Z0-9_-]{0,62}$/;
 
-function aiHttpTimeoutMsForImage(imageBytes: number): number | undefined {
+function aiHttpTimeoutMsForImage(imageBytes: number): number {
   if (imageBytes > LARGE_IMAGE_BYTES) return AI_TIMEOUT_LARGE_IMAGE_MS;
-  return undefined;
+  return AI_TIMEOUT_DEFAULT_MS;
 }
 
 type ListingOutputFormat = 'json' | 'txt';
@@ -491,10 +494,10 @@ async function runGeminiInvocation(
 ): Promise<string> {
   const baseConfig = buildGeminiGenerateConfig(model, outputFormat);
   const timeoutMs = aiHttpTimeoutMsForImage(imgBytes.length);
-  const config: GenerateContentConfig =
-    timeoutMs !== undefined
-      ? { ...baseConfig, httpOptions: { timeout: timeoutMs, headers: {} } }
-      : baseConfig;
+  const config: GenerateContentConfig = {
+    ...baseConfig,
+    httpOptions: { timeout: timeoutMs, headers: {} },
+  };
   const ai = new GoogleGenAI({ apiKey });
   const response = await ai.models.generateContent({
     model,
@@ -571,7 +574,7 @@ async function runOpenRouterInvocation(
     method: 'POST',
     headers,
     body: JSON.stringify(body),
-    ...(timeoutMs !== undefined ? { signal: AbortSignal.timeout(timeoutMs) } : {}),
+    signal: AbortSignal.timeout(timeoutMs),
   });
   const raw = await res.text();
   if (!res.ok) {

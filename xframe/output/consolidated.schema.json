@@ -67,6 +67,13 @@
           "items": {
             "type": "string"
           }
+        },
+        "numeral_cancels": {
+          "type": "array",
+          "description": "Optional nested numeral killer / obliterator-to-town mappings (pairs with numeral_cancel.country_id, parent_array numeral_cancels).",
+          "items": {
+            "$ref": "#/$defs/numeral_cancel"
+          }
         }
       },
       "description": "Normalized territory for cataloging, filtering, and joins; identifiers should remain stable across inventory and listings.",
@@ -176,6 +183,60 @@
         "name",
         "provider_id",
         "has_free_tier"
+      ]
+    },
+    "numeral_cancel": {
+      "type": "object",
+      "properties": {
+        "numeral_cancel_key": {
+          "type": "object",
+          "properties": {
+            "country_id": {
+              "type": "string",
+              "description": "Issuing country or postal administration for this numeral assignment."
+            },
+            "numeral": {
+              "type": "integer",
+              "description": "Integer shown in the numeral cancel or killer; strictly less than 999."
+            },
+            "period_start": {
+              "type": "string",
+              "format": "date",
+              "description": "First date (inclusive) for which this mapping is valid."
+            }
+          },
+          "required": [
+            "country_id",
+            "numeral",
+            "period_start"
+          ],
+          "additionalProperties": false,
+          "description": "Composite primary key (country, numeral, period start)."
+        },
+        "country_id": {
+          "type": "string",
+          "description": "Issuing country (must match numeral_cancel_key.country_id; scalar FK enables nesting under country.numeral_cancels during consolidation)."
+        },
+        "period_end": {
+          "type": "string",
+          "format": "date",
+          "description": "Last date (inclusive) for which this mapping is valid; must be on or after period_start in the key."
+        },
+        "town_name": {
+          "type": "string",
+          "description": "Town, city, or post office name corresponding to the numeral for the given period."
+        },
+        "history": {
+          "type": "string",
+          "description": "Optional provenance or reassignment notes (e.g. territorial changes, postal renumbering)."
+        }
+      },
+      "description": "Each row ties one integer numeral from a postal cancel (1–998) to a town or office name for a given country; the primary key is country, numeral, and period start—period_end is the inclusive end of the validity window when resolving a strike date.",
+      "required": [
+        "numeral_cancel_key",
+        "country_id",
+        "period_end",
+        "town_name"
       ]
     },
     "prompt": {
@@ -817,6 +878,12 @@
       "type": "array",
       "items": {
         "$ref": "#/$defs/llm_model"
+      }
+    },
+    "numeral_cancel": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/numeral_cancel"
       }
     },
     "prompt": {

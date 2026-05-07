@@ -1,0 +1,28 @@
+{
+  "country": [
+    {
+      "country_id": "dk",
+      "display_name": "Denmark",
+      "numeral_cancels": [
+        {
+          "numeral_cancel_key": {
+            "numeral": 152,
+            "period_start": "1851-04-01"
+          },
+          "period_end": "1864-04-01",
+          "town_name": "Flensborg",
+          "history": "Original assignment to Flensborg. Following the defeat in the Second Schleswig War (1864), the town was ceded to Prussia/Austria, and the Danish numeral cancel was retired from this location."
+        },
+        {
+          "numeral_cancel_key": {
+            "numeral": 152,
+            "period_start": "1864-10-01"
+          },
+          "period_end": "1884-12-31",
+          "town_name": "Skibby",
+          "history": "Reassigned to the Sjælland town of Skibby during the post-war reorganization of the postal system to fill the gaps left by lost Schleswig territories."
+        }
+      ]
+    }
+  ]
+}

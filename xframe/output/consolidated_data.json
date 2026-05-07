@@ -1,6 +1,6 @@
 {
-  "version": 25,
-  "timestamp": "2026-05-07T00:16:03Z",
+  "version": 30,
+  "timestamp": "2026-05-07T19:27:13Z",
   "model": {
     "name": "PhilateLister stamp catalog",
     "version": "26.04.11.1",
@@ -69,6 +69,14 @@
     "000000000012": {
       "id": 12,
       "path": "data/prompts/chatgpt_suggested_stamp_listing.json"
+    },
+    "000000000013": {
+      "id": 13,
+      "path": "data/numeral_cancel.json"
+    },
+    "000000000014": {
+      "id": 14,
+      "path": "data/numeral_cancels_denmark.json"
     }
   },
   "data": {
@@ -243,6 +251,39 @@
         "author": "jbemmel",
         "note": "CI consolidate after model/data change (4a72c31a921ed37c04609d5d3d6c4f868884c36d)",
         "git_commit_hash": "4a72c31a921ed37c04609d5d3d6c4f868884c36d"
+      },
+      "000000000026": {
+        "id": 26,
+        "timestamp": "2026-05-07T13:03:05-05:00",
+        "author": "jbemmel",
+        "note": "numeral_cancel data in separate data/numeral_cancel.json; parent_array merges under country"
+      },
+      "000000000027": {
+        "id": 27,
+        "timestamp": "2026-05-07T13:03:48-05:00",
+        "author": "jbemmel",
+        "note": "numeral_cancel: scalar country_id for parent_array nesting; data in data/numeral_cancel.json"
+      },
+      "000000000028": {
+        "id": 28,
+        "timestamp": "2026-05-07T14:09:51-05:00",
+        "author": "jbemmel",
+        "note": "Restructure Denmark numeral cancel data: country dk with nested numeral_cancels in numeral_cancels_denmark.json",
+        "git_commit_hash": "14404f367ca2578914fd73bcdb71d630f4788ab9"
+      },
+      "000000000029": {
+        "id": 29,
+        "timestamp": "2026-05-07T14:10:12-05:00",
+        "author": "jbemmel",
+        "note": "(no change) Drop redundant nested country_id from numeral_cancels_denmark.json",
+        "git_commit_hash": "14404f367ca2578914fd73bcdb71d630f4788ab9"
+      },
+      "000000000030": {
+        "id": 30,
+        "timestamp": "2026-05-07T14:27:13-05:00",
+        "author": "jbemmel",
+        "note": "Reconsolidate after numeral_cancel composite FK parent_array and Denmark nested data",
+        "git_commit_hash": "14404f367ca2578914fd73bcdb71d630f4788ab9"
       }
     },
     "catalog_system": {
@@ -272,7 +313,6 @@
       "dk": {
         "country_id": "dk",
         "display_name": "Denmark",
-        "ebay_category": 35289,
         "issue_series": [
           {
             "series_id": "dk-bicolors-classic",
@@ -280,14 +320,44 @@
             "description": "Perforated bicolor definitives and numeral designs, late 19th century.",
             "year_from": 1870,
             "year_to": 1905,
+            "m": [
+              10
+            ],
             "v": 1
+          }
+        ],
+        "numeral_cancels": [
+          {
+            "numeral_cancel_key": {
+              "numeral": 152,
+              "period_start": "1851-04-01",
+              "country_id": "dk"
+            },
+            "period_end": "1864-04-01",
+            "town_name": "Flensborg",
+            "history": "Original assignment to Flensborg. Following the defeat in the Second Schleswig War (1864), the town was ceded to Prussia/Austria, and the Danish numeral cancel was retired from this location.",
+            "c": 30,
+            "v": 30
+          },
+          {
+            "numeral_cancel_key": {
+              "numeral": 152,
+              "period_start": "1864-10-01",
+              "country_id": "dk"
+            },
+            "period_end": "1884-12-31",
+            "town_name": "Skibby",
+            "history": "Reassigned to the Sjælland town of Skibby during the post-war reorganization of the postal system to fill the gaps left by lost Schleswig territories.",
+            "c": 30,
+            "v": 30
           }
         ],
         "c": 1,
         "m": [
-          10
+          10,
+          28
         ],
-        "v": 10
+        "v": 28
       },
       "se": {
         "country_id": "se",

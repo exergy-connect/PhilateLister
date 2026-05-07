@@ -337,13 +337,13 @@
 
             <div class="field">
               <label for="prompt-select">What to generate</label>
-              <select id="prompt-select" name="prompt">
-                <option value="stamp_listing" selected>Short sale listing (good for online auctions)</option>
-                <option value="jay_smith_listing">Rich dealer-style write-up</option>
-                <option value="xframe">Catalog-style details for one stamp in the photo</option>
-                <option value="multi_stamp_sheet_xframe">Catalog-style details when the photo shows many stamps</option>
+              <select id="prompt-select" name="prompt" disabled aria-busy="true">
+                <option value="">Loading prompts…</option>
               </select>
-              <p class="hint">Choose the first option unless you want a longer story or a structured catalog. Use the last option for a whole sheet or stock page.</p>
+              <p class="hint">
+                Options are loaded from bundled xFrame data (<code>consolidated_data.js</code>). Default is the short listing when available; pick a JSON prompt for catalog-style output or a
+                multi-stamp prompt for a whole sheet. If data is missing, a small built-in list is used.
+              </p>
             </div>
 
             <div class="field" id="token-password-field" hidden>
@@ -1047,6 +1047,17 @@
         return `${COMMIT_PREFIX}: ${imageBasename}\n\n${JSON.stringify(meta)}`;
       }
 
+      /** Last-resort labels when consolidated_data.js is missing or has no data.prompt bucket (e.g. file://). */
+      const FALLBACK_PROMPT_OPTIONS = [
+        { id: "stamp_listing", label: "Short sale listing (good for online auctions)" },
+        { id: "jay_smith_listing", label: "Rich dealer-style write-up" },
+        { id: "xframe", label: "Catalog-style details for one stamp in the photo" },
+        {
+          id: "multi_stamp_sheet_xframe",
+          label: "Catalog-style details when the photo shows many stamps",
+        },
+      ];
+
       /** Cache: prompt id → "json" | "txt" (from consolidated_data.js or xframe/data/prompts). */
       const promptOutputFormatCache = new Map();
 
@@ -1078,7 +1089,18 @@
         const root = await loadConsolidatedDataRoot();
         const data = root && typeof root === "object" && root.data && typeof root.data === "object" ? root.data : null;
         const prompts = data && typeof data.prompt === "object" && data.prompt !== null ? data.prompt : null;
-        const row = prompts && typeof prompts[id] === "object" && prompts[id] !== null ? prompts[id] : null;
+        let row =
+          prompts && typeof prompts[id] === "object" && prompts[id] !== null ? /** @type {Record<string, unknown>} */ (prompts[id]) : null;
+        if (!row && prompts) {
+          for (const v of Object.values(prompts)) {
+            if (!v || typeof v !== "object" || Array.isArray(v)) continue;
+            const r = /** @type {Record<string, unknown>} */ (v);
+            if (String(r.prompt_id ?? "").trim() === id) {
+              row = r;
+              break;
+            }
+          }
+        }
         if (row && "output_format" in row) {
           const raw = String(/** @type {{ output_format?: string }} */ (row).output_format ?? "txt")
             .trim()
@@ -1104,6 +1126,57 @@
         return fmt;
       }
 
+      /**
+       * Fills #prompt-select from xFrame consolidated data.prompt (prompt_id + brief per row).
+       * @param {HTMLSelectElement} sel
+       */
+      async function populatePromptSelectFromConsolidated(sel) {
+        const root = await loadConsolidatedDataRoot();
+        const data = root && typeof root === "object" && root.data && typeof root.data === "object" ? root.data : null;
+        const bucket = data && typeof data.prompt === "object" && data.prompt !== null ? data.prompt : null;
+        /** @type {{ id: string, label: string }[]} */
+        let items = [];
+        if (bucket) {
+          const byId = new Map();
+          for (const [storageKey, row] of Object.entries(bucket)) {
+            if (!row || typeof row !== "object" || Array.isArray(row)) continue;
+            const r = /** @type {Record<string, unknown>} */ (row);
+            const id = String(r.prompt_id ?? storageKey).trim();
+            if (!id) continue;
+            const brief = String(r.brief ?? "").trim();
+            byId.set(id, { id, label: brief || id });
+          }
+          items = [...byId.values()];
+        }
+        if (!items.length) items = [...FALLBACK_PROMPT_OPTIONS];
+        items.sort((a, b) => {
+          if (a.id === "stamp_listing" && b.id !== "stamp_listing") return -1;
+          if (b.id === "stamp_listing" && a.id !== "stamp_listing") return 1;
+          return a.label.localeCompare(b.label, undefined, { sensitivity: "base" });
+        });
+        sel.textContent = "";
+        for (const { id, label } of items) {
+          const opt = document.createElement("option");
+          opt.value = id;
+          opt.textContent = label;
+          sel.appendChild(opt);
+        }
+        const prefer = "stamp_listing";
+        sel.value = items.some((x) => x.id === prefer) ? prefer : items[0].id;
+        sel.disabled = false;
+        sel.removeAttribute("aria-busy");
+      }
+
+      async function initPromptSelect() {
+        const promptSelectEl = document.getElementById("prompt-select");
+        if (!(promptSelectEl instanceof HTMLSelectElement)) return;
+        await populatePromptSelectFromConsolidated(promptSelectEl);
+        promptSelectEl.addEventListener("change", () => {
+          void fetchPromptOutputFormat(promptSelectEl.value.trim() || "stamp_listing");
+        });
+        void fetchPromptOutputFormat(promptSelectEl.value.trim() || "stamp_listing");
+      }
+
       /** Listing path served by Pages when `public/` is the site root. */
       function listingRelPathFromImageBasename(basename, listingExt) {
         const dot = basename.lastIndexOf(".");
@@ -1112,11 +1185,7 @@
         return `public/listings/${stem}.${ext}`;
       }
 
-      const promptSelectEl = document.getElementById("prompt-select");
-      promptSelectEl.addEventListener("change", () => {
-        void fetchPromptOutputFormat(promptSelectEl.value.trim() || "stamp_listing");
-      });
-      void fetchPromptOutputFormat(promptSelectEl.value.trim() || "stamp_listing");
+      void initPromptSelect();
 
       function decodeGitHubContentBase64(b64) {
         const clean = String(b64).replace(/\s/g, "");

@@ -530,14 +530,17 @@ async function runGeminiInvocation(
         .join(', ')}`
     );
 
+    const replayModelParts = geminiFunctionRuntime.functionCallModelPartsForReplay(response);
     contents.push({
       role: 'model',
-      parts: calls.map((call) => ({
-        functionCall: {
-          name: call.name,
-          args: call.args ?? {},
-        },
-      })),
+      parts:
+        replayModelParts ??
+        (calls.map((call) => ({
+          functionCall: {
+            name: call.name,
+            args: call.args ?? {},
+          },
+        })) as unknown[]),
     });
     contents.push({
       role: 'user',

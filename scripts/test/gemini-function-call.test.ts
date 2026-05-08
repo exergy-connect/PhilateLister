@@ -94,6 +94,40 @@ test('gemini function workflow: declarations → LLM functionCall → local tool
   assert.deepEqual(periodStarts, ['1851-04-01', '1864-10-01']);
 });
 
+test('functionCallModelPartsForReplay preserves thoughtSignature on function call parts', () => {
+  const store = loadEntityStoreFromConsolidated();
+  const runtime = new XFrameGeminiFunctionRuntime({
+    consolidatedSchemaPath: CONSOLIDATED_SCHEMA_PATH,
+    getEntityStore: () => store,
+    providerId: 'google_gemini',
+    functionCallEntity: 'gemini_function_call',
+    functionParameterEntity: 'gemini_function_parameter',
+  });
+
+  const response = {
+    candidates: [
+      {
+        content: {
+          parts: [
+            { functionCall: { name: 'lookup_stamp_catalog', args: { q: 'a' } }, thoughtSignature: 'sig1' },
+            { functionCall: { name: 'lookup_numeral_cancel', args: { country: 'dk', number: 1 } }, thoughtSignature: 'sig2' },
+          ],
+        },
+      },
+    ],
+  };
+
+  const replay = runtime.functionCallModelPartsForReplay(response);
+  assert.ok(replay);
+  assert.equal(replay.length, 2);
+  const p0 = replay[0] as { thoughtSignature?: string; functionCall?: { name?: string } };
+  const p1 = replay[1] as { thoughtSignature?: string; functionCall?: { name?: string } };
+  assert.equal(p0.thoughtSignature, 'sig1');
+  assert.equal(p0.functionCall?.name, 'lookup_stamp_catalog');
+  assert.equal(p1.thoughtSignature, 'sig2');
+  assert.equal(p1.functionCall?.name, 'lookup_numeral_cancel');
+});
+
 test('gemini function workflow resolves referenced parameter rows without function_name in the key', () => {
   const store = structuredClone(loadEntityStoreFromConsolidated());
   const calls = store.gemini_function_call;

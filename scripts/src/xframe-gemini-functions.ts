@@ -86,6 +86,26 @@ export class XFrameGeminiFunctionRuntime {
     return calls;
   }
 
+  /**
+   * Returns a deep copy of `candidates[i].content.parts` for the first candidate that contains a
+   * functionCall. Gemini thinking / tool chains require these parts (including `thoughtSignature`
+   * on each part) to be replayed verbatim on the next `generateContent` request.
+   */
+  functionCallModelPartsForReplay(response: GeminiResponseLike): unknown[] | null {
+    for (const candidate of response.candidates ?? []) {
+      const parts = candidate.content?.parts;
+      if (!Array.isArray(parts) || parts.length === 0) continue;
+      const hasCall = parts.some((p) => {
+        if (!p || typeof p !== 'object' || Array.isArray(p)) return false;
+        const fc = (p as { functionCall?: { name?: string } }).functionCall;
+        return Boolean(fc?.name);
+      });
+      if (!hasCall) continue;
+      return structuredClone(parts) as unknown[];
+    }
+    return null;
+  }
+
   executeFunctionCall(call: GeminiFunctionCall): Record<string, unknown> {
     const name = String(call.name ?? '').trim();
     const row = this.loadGeminiFunctionCalls().find((candidate) => candidate.enabled && candidate.functionName === name);

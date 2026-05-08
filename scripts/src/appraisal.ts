@@ -363,6 +363,8 @@ const geminiFunctionRuntime = new XFrameGeminiFunctionRuntime({
   consolidatedSchemaPath: CONSOLIDATED_SCHEMA_PATH,
   getEntityStore,
   providerId: 'google_gemini',
+  functionCallEntity: 'gemini_function_call',
+  functionParameterEntity: 'gemini_function_parameter',
 });
 
 /**

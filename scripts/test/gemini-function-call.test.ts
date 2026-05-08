@@ -58,6 +58,8 @@ test('gemini function workflow: declarations → LLM functionCall → local tool
     consolidatedSchemaPath: CONSOLIDATED_SCHEMA_PATH,
     getEntityStore: () => store,
     providerId: 'google_gemini',
+    functionCallEntity: 'gemini_function_call',
+    functionParameterEntity: 'gemini_function_parameter',
   });
 
   const declarations = runtime.functionDeclarations();
@@ -90,4 +92,43 @@ test('gemini function workflow: declarations → LLM functionCall → local tool
     .map((r) => (r.numeral_cancel_key as Record<string, unknown>)?.period_start)
     .sort();
   assert.deepEqual(periodStarts, ['1851-04-01', '1864-10-01']);
+});
+
+test('gemini function workflow resolves referenced parameter rows without function_name in the key', () => {
+  const store = structuredClone(loadEntityStoreFromConsolidated());
+  const calls = store.gemini_function_call;
+  assert.ok(calls, 'expected gemini_function_call bucket');
+  const lookup = calls.lookup_numeral_cancel;
+  assert.ok(lookup, 'expected lookup_numeral_cancel row');
+  const parameters = lookup.parameters;
+  assert.ok(Array.isArray(parameters), 'expected nested parameters');
+
+  store.gemini_function_parameter = {};
+  for (const p of parameters) {
+    assert.ok(p && typeof p === 'object' && !Array.isArray(p), 'expected object parameter');
+    const name = ((p as Record<string, unknown>).parameter_key as Record<string, unknown> | undefined)?.name;
+    assert.ok(typeof name === 'string');
+    store.gemini_function_parameter[name] = p as Record<string, unknown>;
+  }
+  lookup.parameters = ['country', 'number', 'scott_number'];
+
+  const runtime = new XFrameGeminiFunctionRuntime({
+    consolidatedSchemaPath: CONSOLIDATED_SCHEMA_PATH,
+    getEntityStore: () => store,
+    providerId: 'google_gemini',
+    functionCallEntity: 'gemini_function_call',
+    functionParameterEntity: 'gemini_function_parameter',
+  });
+
+  const toolResult = runtime.executeFunctionCall({
+    name: 'lookup_numeral_cancel',
+    args: {
+      country: 'dk',
+      number: 152,
+    },
+  });
+
+  const rows = toolResult.numeral_cancel;
+  assert.ok(Array.isArray(rows), 'expected numeral_cancel to be an array of consolidated rows');
+  assert.equal(rows.length, 2);
 });

@@ -33,6 +33,10 @@ type GeminiFunctionRuntimeOptions = {
   consolidatedSchemaPath: string;
   getEntityStore: () => EntityStore;
   providerId: string;
+  /** Entity-store bucket containing Gemini function declaration rows. */
+  functionCallEntity: string;
+  /** Entity-store bucket containing flattened Gemini function parameter rows. */
+  functionParameterEntity: string;
 };
 
 type GeminiResponseLike = {
@@ -541,9 +545,59 @@ export class XFrameGeminiFunctionRuntime {
     };
   }
 
+  private parameterFunctionNameFromRow(row: Record<string, unknown>): string {
+    const pk = row.parameter_key;
+    if (pk && typeof pk === 'object' && !Array.isArray(pk)) {
+      return String((pk as Record<string, unknown>).function_name ?? '').trim();
+    }
+    return String(row.function_name ?? '').trim();
+  }
+
+  private parameterRowWithImpliedParent(
+    row: Record<string, unknown>,
+    functionName: string
+  ): Record<string, unknown> {
+    if (!functionName || this.parameterFunctionNameFromRow(row)) return row;
+    const pk = row.parameter_key;
+    if (pk && typeof pk === 'object' && !Array.isArray(pk)) {
+      return {
+        ...row,
+        parameter_key: {
+          ...pk,
+          function_name: functionName,
+        },
+      };
+    }
+    return {
+      ...row,
+      function_name: functionName,
+    };
+  }
+
+  private findReferencedParameterRow(
+    paramBucket: Record<string, Record<string, unknown>> | undefined,
+    functionName: string,
+    parameterRef: string
+  ): Record<string, unknown> | null {
+    if (!paramBucket) return null;
+    const direct = paramBucket[parameterRef];
+    if (direct && typeof direct === 'object' && !Array.isArray(direct)) return direct;
+
+    let fallback: Record<string, unknown> | null = null;
+    for (const cand of Object.values(paramBucket)) {
+      if (!cand || typeof cand !== 'object' || Array.isArray(cand)) continue;
+      if (this.parameterNameFromRow(cand as Record<string, unknown>) !== parameterRef) continue;
+      const ownerFunction = this.parameterFunctionNameFromRow(cand as Record<string, unknown>);
+      if (ownerFunction === functionName) return cand as Record<string, unknown>;
+      if (!ownerFunction && !fallback) fallback = cand as Record<string, unknown>;
+    }
+    return fallback;
+  }
+
   private loadGeminiFunctionCalls(): GeminiFunctionCallRow[] {
     if (this.cachedGeminiFunctionCalls) return this.cachedGeminiFunctionCalls;
-    const bucket = this.options.getEntityStore().gemini_function_call;
+    const store = this.options.getEntityStore();
+    const bucket = store[this.options.functionCallEntity];
     if (!bucket || typeof bucket !== 'object') {
       this.cachedGeminiFunctionCalls = [];
       return this.cachedGeminiFunctionCalls;
@@ -555,27 +609,16 @@ export class XFrameGeminiFunctionRuntime {
       const functionName = String(r.function_name ?? '').trim();
       const providerId = String(r.provider_id ?? '').trim();
       const nestedParameters = Array.isArray(r.parameters) ? r.parameters : [];
-      const paramBucket = this.options.getEntityStore().gemini_function_parameter;
+      const rawParamBucket = store[this.options.functionParameterEntity];
+      const paramBucket =
+        rawParamBucket && typeof rawParamBucket === 'object' && !Array.isArray(rawParamBucket)
+          ? (rawParamBucket as Record<string, Record<string, unknown>>)
+          : undefined;
       const parameters = nestedParameters
         .map((p) => {
           if (typeof p === 'string' && p.trim()) {
             const id = p.trim();
-            let row = paramBucket?.[id];
-            if (!row && paramBucket) {
-              for (const cand of Object.values(paramBucket)) {
-                if (!cand || typeof cand !== 'object' || Array.isArray(cand)) continue;
-                if (this.parameterNameFromRow(cand as Record<string, unknown>) !== id) continue;
-                const pk = (cand as Record<string, unknown>).parameter_key;
-                const fn =
-                  pk && typeof pk === 'object' && !Array.isArray(pk)
-                    ? String((pk as Record<string, unknown>).function_name ?? '').trim()
-                    : '';
-                if (fn === functionName) {
-                  row = cand as Record<string, unknown>;
-                  break;
-                }
-              }
-            }
+            const row = this.findReferencedParameterRow(paramBucket, functionName, id);
             return row && typeof row === 'object' && !Array.isArray(row)
               ? (row as Record<string, unknown>)
               : null;
@@ -584,6 +627,7 @@ export class XFrameGeminiFunctionRuntime {
           return null;
         })
         .filter((p): p is Record<string, unknown> => Boolean(p))
+        .map((p) => this.parameterRowWithImpliedParent(p, functionName))
         .map((p) => this.readGeminiFunctionParameter(p))
         .filter((p): p is GeminiFunctionParameterRow => Boolean(p));
       const output = this.parseFunctionOutput(r);

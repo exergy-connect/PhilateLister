@@ -66,7 +66,7 @@
           "type": "array",
           "description": "Optional nested catalog listings for this country (pairs with scott.country_id on scott_catalog_entry, parent_array scott_catalog_entries).",
           "items": {
-            "type": "string"
+            "$ref": "#/$defs/scott_catalog_entry"
           }
         },
         "numeral_cancels": {
@@ -111,7 +111,7 @@
           "type": "array",
           "description": "Parameters in declaration order.",
           "items": {
-            "type": "string"
+            "$ref": "#/$defs/gemini_function_parameter"
           }
         },
         "output": {
@@ -181,7 +181,19 @@
             "name"
           ],
           "additionalProperties": false,
-          "description": "Composite primary key (function_name, parameter name)."
+          "description": "Composite primary key (function_name, parameter name).",
+          "x-foreignKeys": [
+            {
+              "entity": "gemini_function_call",
+              "parent_array": "parameters"
+            }
+          ],
+          "x-parents": [
+            {
+              "entity": "gemini_function_call",
+              "parent_array": "parameters"
+            }
+          ]
         },
         "description": {
           "type": "string",
@@ -401,7 +413,19 @@
             "period_start"
           ],
           "additionalProperties": false,
-          "description": "Composite primary key (country, numeral, period start)."
+          "description": "Composite primary key (country, numeral, period start).",
+          "x-foreignKeys": [
+            {
+              "entity": "country",
+              "parent_array": "numeral_cancels"
+            }
+          ],
+          "x-parents": [
+            {
+              "entity": "country",
+              "parent_array": "numeral_cancels"
+            }
+          ]
         },
         "country_id": {
           "type": "string",
@@ -643,7 +667,22 @@
             "number"
           ],
           "additionalProperties": false,
-          "description": "Structured Scott listing (primary key)."
+          "description": "Structured Scott listing (primary key).",
+          "x-foreignKeys": [
+            {
+              "entity": "country",
+              "parent_array": "scott_catalog_entries"
+            },
+            {
+              "entity": "scott_catalog_section"
+            }
+          ],
+          "x-parents": [
+            {
+              "entity": "country",
+              "parent_array": "scott_catalog_entries"
+            }
+          ]
         },
         "issue_series_id": {
           "type": "string",
@@ -825,6 +864,19 @@
           "x-foreignKeys": [
             {
               "entity": "scott_catalog_entry"
+            },
+            {
+              "entity": "country",
+              "parent_array": "scott_catalog_entries"
+            },
+            {
+              "entity": "scott_catalog_section"
+            }
+          ],
+          "x-parents": [
+            {
+              "entity": "country",
+              "parent_array": "scott_catalog_entries"
             }
           ]
         },

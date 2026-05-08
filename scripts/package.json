@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "build": "tsc --noEmit && node esbuild.config.mjs",
-    "appraisal": "cd .. && node scripts/dist/appraisal.cjs"
+    "appraisal": "cd .. && node scripts/dist/appraisal.cjs",
+    "test": "tsx --test test/**/*.test.ts"
   },
   "dependencies": {
     "@google/genai": "^1.49.0"
@@ -12,6 +13,7 @@
   "devDependencies": {
     "@types/node": "^24.0.0",
     "esbuild": "^0.27.0",
+    "tsx": "^4.19.2",
     "typescript": "^5.9.0"
   },
   "engines": {

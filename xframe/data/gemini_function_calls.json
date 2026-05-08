@@ -1,0 +1,44 @@
+{
+  "gemini_function_call": [
+    {
+      "function_name": "lookup_numeral_cancel",
+      "description": "Look up a postal numeral cancel assignment by country and numeral. Returns matching town/date-window rows from the local xFrame consolidated data; optional Scott number helps infer the stamp issue date.",
+      "provider_id": "google_gemini",
+      "enabled": true,
+      "sort_order": 10,
+      "parameters": [
+        {
+          "parameter_key": { "name": "country" },
+          "description": "Issuer whose numeral-cancel table applies.",
+          "schema_entity": "country",
+          "required": true
+        },
+        {
+          "parameter_key": { "name": "number" },
+          "description": "Cancel digits only (integer < 999): the numeral in the cancel, not year/codes/letters.",
+          "schema_entity": "numeral_cancel",
+          "composite_key": [
+            { "component": "country_id", "parameter_name": "country" },
+            { "component": "numeral", "parameter_name": "number" }
+          ],
+          "required": true,
+          "enum": false
+        },
+        {
+          "parameter_key": { "name": "scott_number" },
+          "description": "Scott # if known for this stamp; omit otherwise.",
+          "schema_entity": "scott_catalog_entry",
+          "composite_key": [
+            { "component": "country_id", "parameter_name": "country" },
+            { "component": "number", "parameter_name": "scott_number" }
+          ],
+          "required": false,
+          "enum": false
+        }
+      ],
+      "output": [
+        { "response_key": "numeral_cancel", "anchor_parameter": "number" }
+      ]
+    }
+  ]
+}

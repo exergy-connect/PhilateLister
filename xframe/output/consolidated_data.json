@@ -1,12 +1,12 @@
 {
-  "version": 31,
-  "timestamp": "2026-05-07T19:28:40Z",
+  "version": 34,
+  "timestamp": "2026-05-08T19:46:03Z",
   "model": {
     "name": "PhilateLister stamp catalog",
     "version": "26.04.11.1",
     "author": "Exergy ∞ LLC",
     "description": "Dealer and collector catalog for stamps: issuing country, catalog numbers across systems, issue series, year of issue, condition, centering, perforation on catalog listings, and thematic tags.",
-    "include_x_fields": false,
+    "include_x_fields": true,
     "track_source_files": true,
     "max_name_underscores": 2,
     "exclude": null
@@ -77,6 +77,10 @@
     "000000000014": {
       "id": 14,
       "path": "data/numeral_cancels_denmark.json"
+    },
+    "000000000015": {
+      "id": 15,
+      "path": "data/gemini_function_calls.json"
     }
   },
   "data": {
@@ -287,10 +291,29 @@
       },
       "000000000031": {
         "id": 31,
-        "timestamp": "2026-05-07T19:28:40+00:00",
+        "timestamp": "2026-05-08T10:56:47-05:00",
         "author": "jbemmel",
-        "note": "(no change) CI consolidate after model/data change (d8342e7a56182aff6dc9fd880e9a956a0855de53)",
+        "note": "Add gemini_function_parameter parent_array FK; reconsolidate Gemini tools and catalog data",
         "git_commit_hash": "d8342e7a56182aff6dc9fd880e9a956a0855de53"
+      },
+      "000000000032": {
+        "id": 32,
+        "timestamp": "2026-05-08T12:34:18-05:00",
+        "author": "jbemmel",
+        "note": "(no change) Enable include_x_fields in model metadata so consolidated schema emits x-primaryKey, x-foreignKeys, and related extensions.",
+        "git_commit_hash": "d8342e7a56182aff6dc9fd880e9a956a0855de53"
+      },
+      "000000000033": {
+        "id": 33,
+        "timestamp": "2026-05-08T14:07:26-05:00",
+        "author": "jbemmel",
+        "note": "gemini_function_parameter composite primary key"
+      },
+      "000000000034": {
+        "id": 34,
+        "timestamp": "2026-05-08T14:46:03-05:00",
+        "author": "jbemmel",
+        "note": "(no change) remove duplicate function_name on gemini_function_parameter"
       }
     },
     "catalog_system": {
@@ -331,6 +354,40 @@
               10
             ],
             "v": 1
+          }
+        ],
+        "scott_catalog_entries": [
+          {
+            "stamp_id": "stamp_2026-04-11_example_001",
+            "country_id": "dk",
+            "scott": {
+              "section": "M",
+              "number": 45
+            },
+            "title": "Denmark 20 øre bicolor used",
+            "summary": "VF used, numeral cancel; printing variety per dealer notes.",
+            "issue_year": 1895,
+            "condition_quality": "used",
+            "centering_grade": "fine",
+            "image_basename": "stamp_2026-04-11_example_001.jpg",
+            "bounding_box": {
+              "x_min": 0,
+              "x_max": 1000,
+              "y_min": 0,
+              "y_max": 1000
+            },
+            "freeform_keywords": [
+              "Facit",
+              "numeral",
+              "cancel"
+            ],
+            "c": 1,
+            "m": [
+              7,
+              12,
+              13
+            ],
+            "v": 13
           }
         ],
         "numeral_cancels": [
@@ -435,6 +492,1413 @@
             "year_from": 1867,
             "year_to": 1868,
             "c": 15
+          }
+        ],
+        "scott_catalog_entries": [
+          {
+            "scott": {
+              "number": 1
+            },
+            "issue_date": "1847-07-01",
+            "denomination": "5c",
+            "perforation": "imperforate",
+            "primary_color": "red brown",
+            "description": "First United States adhesive postage stamp (1847 general issue): 5¢ Benjamin Franklin line engraving on bluish wove paper; imperforate, for the domestic single-rate up to 300 miles.",
+            "issue_series_id": "us-1847-first-general-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 2
+            },
+            "issue_date": "1847-07-01",
+            "denomination": "10c",
+            "perforation": "imperforate",
+            "primary_color": "black",
+            "description": "1847 first general issue: 10¢ George Washington line engraving; imperforate, for higher domestic letter rates and some foreign mail.",
+            "issue_series_id": "us-1847-first-general-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 3
+            },
+            "issue_date": "1875-01-01",
+            "denomination": "5c",
+            "perforation": "imperforate",
+            "primary_color": "blue",
+            "description": "1875 Bureau of Engraving and Printing hard-paper reprint of the 1847 5¢ Franklin (original Scott 1); imperforate special printing for collectors and archives.",
+            "issue_series_id": "us-1875-reprints-of-1847",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 4
+            },
+            "issue_date": "1875-01-01",
+            "denomination": "10c",
+            "perforation": "imperforate",
+            "primary_color": "black",
+            "description": "1875 BEP hard-paper reprint of the 1847 10¢ Washington (original Scott 2); imperforate line-engraved reissue.",
+            "issue_series_id": "us-1875-reprints-of-1847",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 5
+            },
+            "issue_date": "1851-07-01",
+            "denomination": "1c",
+            "perforation": "imperforate",
+            "primary_color": "blue, pale blue, dark blue",
+            "description": "1851 1¢ Benjamin Franklin Type I blue shades; imperforate line-engraved stamp from the first U.S. denominationally complete issue.",
+            "issue_series_id": "us-1851-1856-imperforate-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 6
+            },
+            "issue_date": "1857-04-19",
+            "denomination": "1c",
+            "perforation": "imperforate",
+            "primary_color": "blue, dark blue",
+            "description": "1851 1¢ Franklin Type Ia; imperforate stamp with fuller outer framelines than the later Type II printings.",
+            "issue_series_id": "us-1851-1856-imperforate-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 7
+            },
+            "issue_date": "1851-07-01",
+            "denomination": "1c",
+            "perforation": "imperforate",
+            "primary_color": "blue, dark blue",
+            "description": "1851 1¢ Franklin Type II blue shades; imperforate workhorse 1¢ from multiple early plates with reduced or broken outer frame lines.",
+            "issue_series_id": "us-1851-1856-imperforate-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 8
+            },
+            "issue_date": "1857-07-07",
+            "denomination": "1c",
+            "perforation": "imperforate",
+            "primary_color": "light blue, blue, dark blue",
+            "description": "1851 1¢ Franklin Type III; imperforate stamp distinguished by breaks in the top and bottom outer frame lines.",
+            "issue_series_id": "us-1851-1856-imperforate-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 9
+            },
+            "issue_date": "1852-06-05",
+            "denomination": "1c",
+            "perforation": "imperforate",
+            "primary_color": "pale blue, blue, dark blue",
+            "description": "1851 1¢ Franklin Type IV; imperforate late-plate state with heavy recutting along the frame lines.",
+            "issue_series_id": "us-1851-1856-imperforate-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 10
+            },
+            "issue_date": "1851-07-01",
+            "denomination": "3c",
+            "perforation": "imperforate",
+            "primary_color": "orange brown",
+            "description": "1851 3¢ George Washington Type I orange brown; imperforate standard domestic letter-rate denomination of the 1851 series.",
+            "issue_series_id": "us-1851-1856-imperforate-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 11
+            },
+            "issue_date": "1851-10-06",
+            "denomination": "3c",
+            "perforation": "imperforate",
+            "primary_color": "dull red, pinkish, claret, brownish carmine and shades in between",
+            "description": "1851 3¢ Washington Type I in dull red, claret, and related shades; imperforate line-engraved domestic letter stamp.",
+            "issue_series_id": "us-1851-1856-imperforate-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 12
+            },
+            "issue_date": "1856-03-01",
+            "denomination": "5c",
+            "perforation": "imperforate",
+            "primary_color": "red brown, dark red brown",
+            "description": "1855–56 5¢ Thomas Jefferson Type I red brown shades; imperforate stamp from the 1855–61 middle-value issue.",
+            "issue_series_id": "us-1851-1856-imperforate-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 13
+            },
+            "issue_date": "1855-05-01",
+            "denomination": "10c",
+            "perforation": "imperforate",
+            "primary_color": "green, dark green or yellowish green",
+            "description": "1855 10¢ George Washington Type I green; imperforate line-engraved stamp for the long-haul domestic ten-cent letter rate.",
+            "issue_series_id": "us-1851-1856-imperforate-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 14
+            },
+            "issue_date": "1855-05-01",
+            "denomination": "10c",
+            "perforation": "imperforate",
+            "primary_color": "green, dark green or yellowish green",
+            "description": "1855 10¢ Washington Type II green; imperforate issue differing from Type I in recutting and frame-line details around the portrait.",
+            "issue_series_id": "us-1851-1856-imperforate-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 15
+            },
+            "issue_date": "1855-05-01",
+            "denomination": "10c",
+            "perforation": "imperforate",
+            "primary_color": "green, dark green or yellowish green",
+            "description": "1855 10¢ Washington Type III green; imperforate intermediate plate state of the 1855 ten-cent engraving.",
+            "issue_series_id": "us-1851-1856-imperforate-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 16
+            },
+            "issue_date": "1855-05-01",
+            "denomination": "10c",
+            "perforation": "imperforate",
+            "primary_color": "green, dark green or yellowish green",
+            "description": "1855 10¢ Washington Type IV green; imperforate late state of the 1855 ten-cent design with extensive plate wear and recutting.",
+            "issue_series_id": "us-1851-1856-imperforate-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 17
+            },
+            "issue_date": "1851-07-01",
+            "denomination": "12c",
+            "perforation": "imperforate",
+            "primary_color": "black, intense black or gray black",
+            "description": "1851 12¢ George Washington black; imperforate high-value line engraving for registered or heavy domestic postage.",
+            "issue_series_id": "us-1851-1856-imperforate-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 18
+            },
+            "issue_date": "1861-01-25",
+            "denomination": "1c",
+            "perforation": "15 to 15½",
+            "primary_color": "blue, pale blue, dark blue",
+            "description": "1861 1¢ Benjamin Franklin Type I blue; first National Bank Note Company perforated issue (15–15½) of the Civil War-era letter-rate design.",
+            "issue_series_id": "us-1857-1860-perforated-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 19
+            },
+            "issue_date": "1857-09-09",
+            "denomination": "1c",
+            "perforation": "15 to 15½",
+            "primary_color": "blue, pale blue, dark blue",
+            "description": "1857–61 1¢ Franklin Type Ia blue; perforated 15–15½ stamp retaining complete outer framelines like Type I.",
+            "issue_series_id": "us-1857-1860-perforated-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 20
+            },
+            "issue_date": "1857-07-26",
+            "denomination": "1c",
+            "perforation": "15 to 15½",
+            "primary_color": "blue, pale blue, dark blue",
+            "description": "1857–61 1¢ Franklin Type II blue; perforated 15–15½ issue with cropped or incomplete outer frame lines compared with Type I.",
+            "issue_series_id": "us-1857-1860-perforated-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 21
+            },
+            "issue_date": "1857-09-18",
+            "denomination": "1c",
+            "perforation": "15 to 15½",
+            "primary_color": "blue, pale blue, dark blue",
+            "description": "1857–61 1¢ Franklin Type III blue; perforated 15–15½ stamp with characteristic breaks in the outer top and bottom frame lines.",
+            "issue_series_id": "us-1857-1860-perforated-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 22
+            },
+            "issue_date": "1857-07-26",
+            "denomination": "1c",
+            "perforation": "15 to 15½",
+            "primary_color": "blue, pale blue, dark blue",
+            "description": "1857–61 1¢ Franklin Type IIIa blue; perforated 15–15½ intermediate plate state between Types III and IV.",
+            "issue_series_id": "us-1857-1860-perforated-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 23
+            },
+            "issue_date": "1857-07-26",
+            "denomination": "1c",
+            "perforation": "15 to 15½",
+            "primary_color": "blue, pale blue, dark blue",
+            "description": "1857–61 1¢ Franklin Type IV blue; perforated 15–15½ issue with pronounced recutting along the top and bottom frame lines.",
+            "issue_series_id": "us-1857-1860-perforated-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 24
+            },
+            "issue_date": "1857-11-17",
+            "denomination": "1c",
+            "perforation": "15 to 15½",
+            "primary_color": "blue, pale blue, dark blue",
+            "description": "1857–61 1¢ Franklin Type V blue; most common perforated 1¢ Franklin, with side ornaments trimmed for tight perforation spacing.",
+            "issue_series_id": "us-1857-1860-perforated-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 25
+            },
+            "issue_date": "1857-02-28",
+            "denomination": "3c",
+            "perforation": "15 or 15½",
+            "primary_color": "rose, dull rose",
+            "description": "1857 3¢ George Washington Type I rose shades; perforated 15 or 15½ domestic letter stamp from the first U.S. perforated issue.",
+            "issue_series_id": "us-1857-1860-perforated-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 26
+            },
+            "issue_date": "1857-09-09",
+            "denomination": "3c",
+            "perforation": "15 or 15½",
+            "primary_color": "dull red, brownish-claret, plum, and brownish-carmine",
+            "description": "1857 3¢ Washington Type II dull red through plum shades; perforated 15 or 15½ stamp with plate work that removes portions of the outer frame lines.",
+            "issue_series_id": "us-1857-1860-perforated-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 27
+            },
+            "issue_date": "1858-10-06",
+            "denomination": "5c",
+            "perforation": "15 or 15½",
+            "primary_color": "brick red",
+            "description": "1858 5¢ Thomas Jefferson Type I brick red; perforated 15 or 15½ line-engraved Jefferson from the 1857 perforated series.",
+            "issue_series_id": "us-1857-1860-perforated-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 28
+            },
+            "issue_date": "1857-08-23",
+            "denomination": "5c",
+            "perforation": "15 or 15½",
+            "primary_color": "red brown, pale red brown",
+            "description": "1857 5¢ Jefferson Type I red brown and pale red brown shades; perforated 15 or 15½ early Jefferson of the perforated issue.",
+            "issue_series_id": "us-1857-1860-perforated-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 29
+            },
+            "issue_date": "1859-03-21",
+            "denomination": "5c",
+            "perforation": "15 or 15½",
+            "primary_color": "brown, pale brown or deep brown",
+            "description": "1859 5¢ Jefferson Type I brown shades; perforated 15 or 15½ late Type I plate printing before adoption of the Type II frame layout.",
+            "issue_series_id": "us-1857-1860-perforated-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 30
+            },
+            "issue_date": "1861-05-08",
+            "denomination": "5c",
+            "perforation": "15 or 15½",
+            "primary_color": "orange brown",
+            "description": "1861 5¢ Jefferson Type II orange brown; perforated 15 or 15½ design without the small projections at top and bottom of the earlier Type I.",
+            "issue_series_id": "us-1857-1860-perforated-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 30,
+              "variation": "a"
+            },
+            "issue_date": "1861-05-04",
+            "denomination": "5c",
+            "perforation": "15 or 15½",
+            "primary_color": "brown",
+            "description": "1861 5¢ Jefferson Type II brown (listed variety \"A\"); perforated 15 or 15½ companion shade to the orange brown Type II printing.",
+            "issue_series_id": "us-1857-1860-perforated-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 31
+            },
+            "issue_date": "1857-07-25",
+            "denomination": "10c",
+            "perforation": "15½",
+            "primary_color": "dark green, green, bluish green, yellowish green",
+            "description": "1857–61 10¢ George Washington Type I green; perforated 15½ line engraving for the transcontinental ten-cent letter rate.",
+            "issue_series_id": "us-1857-1860-perforated-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 32
+            },
+            "issue_date": "1857-07-25",
+            "denomination": "10c",
+            "perforation": "15½",
+            "primary_color": "dark green, green, bluish green, yellowish green",
+            "description": "1857–61 10¢ Washington Type II green; perforated 15½ issue with plate alterations distinct from the Type I frame line pattern.",
+            "issue_series_id": "us-1857-1860-perforated-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 33
+            },
+            "issue_date": "1857-07-25",
+            "denomination": "10c",
+            "perforation": "15½",
+            "primary_color": "dark green, green, bluish green, yellowish green",
+            "description": "1857–61 10¢ Washington Type III green; perforated 15½ intermediate recut state of the perforated ten-cent Washington.",
+            "issue_series_id": "us-1857-1860-perforated-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 34
+            },
+            "issue_date": "1857-07-25",
+            "denomination": "10c",
+            "perforation": "15½",
+            "primary_color": "dark green, green, bluish green, yellowish green",
+            "description": "1857–61 10¢ Washington Type IV green; perforated 15½ late-plate characteristics of the green Washington design.",
+            "issue_series_id": "us-1857-1860-perforated-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 35
+            },
+            "issue_date": "1859-04-29",
+            "denomination": "10c",
+            "perforation": "15½",
+            "primary_color": "dark green, green, bluish green, yellowish green",
+            "description": "1857–61 10¢ Washington Type V green; perforated 15½ final major plate state of the perforated ten-cent issue.",
+            "issue_series_id": "us-1857-1860-perforated-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 36
+            },
+            "issue_date": "1857-07-30",
+            "denomination": "12c",
+            "perforation": "15½",
+            "primary_color": "black, gray black, intense black",
+            "description": "1857 12¢ George Washington black; perforated 15½ high-value line engraving for registry and heavy postage.",
+            "issue_series_id": "us-1857-1860-perforated-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 37
+            },
+            "issue_date": "1860-07-07",
+            "denomination": "24c",
+            "perforation": "15½",
+            "primary_color": "gray lilac",
+            "description": "1860 24¢ Washington gray lilac; perforated 15½ stamp for large domestic frankings and some international rates.",
+            "issue_series_id": "us-1857-1860-perforated-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 38
+            },
+            "issue_date": "1860-07-09",
+            "denomination": "30c",
+            "perforation": "15½",
+            "primary_color": "orange, yellow orange, reddish orange",
+            "description": "1860 30¢ Benjamin Franklin orange shades; perforated 15½ high-denomination line engraving.",
+            "issue_series_id": "us-1857-1860-perforated-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 39
+            },
+            "issue_date": "1860-09-11",
+            "denomination": "90c",
+            "perforation": "15½",
+            "primary_color": "blue",
+            "description": "1860 90¢ George Washington deep blue; perforated 15½ rare high value for very heavy letter postage and certain steamship uses.",
+            "issue_series_id": "us-1857-1860-perforated-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 40
+            },
+            "issue_date": "1875-01-01",
+            "denomination": "1c",
+            "perforation": "12 (the original is 15½)",
+            "primary_color": "bright blue",
+            "description": "1875 BEP hard-paper reprint of the perforated 1¢ Franklin, perf 12 (original 1861–67 printings were 15–15½).",
+            "issue_series_id": "us-1857-reprints",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 41
+            },
+            "issue_date": "1875-01-01",
+            "denomination": "3c",
+            "perforation": "12 (the original is 15½)",
+            "primary_color": "scarlet",
+            "description": "1875 BEP hard-paper reprint of the 3¢ Washington, perf 12 (original perforated issue was 15–15½).",
+            "issue_series_id": "us-1857-reprints",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 42
+            },
+            "issue_date": "1875-01-01",
+            "denomination": "5c",
+            "perforation": "12 (the original is 15½)",
+            "primary_color": "orange brown",
+            "description": "1875 BEP hard-paper reprint of the 5¢ Jefferson, perf 12 (original perforated issue was 15–15½).",
+            "issue_series_id": "us-1857-reprints",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 43
+            },
+            "issue_date": "1875-01-01",
+            "denomination": "10c",
+            "perforation": "12 (the original is 15½)",
+            "primary_color": "blue-green",
+            "description": "1875 BEP hard-paper reprint of the 10¢ Washington, perf 12 (original perforated issue was 15½).",
+            "issue_series_id": "us-1857-reprints",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 44
+            },
+            "issue_date": "1875-01-01",
+            "denomination": "12c",
+            "perforation": "12 (the original is 15½)",
+            "primary_color": "greenish black",
+            "description": "1875 BEP hard-paper reprint of the 12¢ Washington, perf 12 (original perforated issue was 15½).",
+            "issue_series_id": "us-1857-reprints",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 45
+            },
+            "issue_date": "1875-01-01",
+            "denomination": "24c",
+            "perforation": "12 (the original is 15½)",
+            "primary_color": "blackish violet",
+            "description": "1875 BEP hard-paper reprint of the 24¢ Washington, perf 12 (original perforated issue was 15½).",
+            "issue_series_id": "us-1857-reprints",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 46
+            },
+            "issue_date": "1875-01-01",
+            "denomination": "30c",
+            "perforation": "12 (the original is 15½)",
+            "primary_color": "yellow orange",
+            "description": "1875 BEP hard-paper reprint of the 30¢ Franklin, perf 12 (original perforated issue was 15½).",
+            "issue_series_id": "us-1857-reprints",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 47
+            },
+            "issue_date": "1875-01-01",
+            "denomination": "90c",
+            "perforation": "12 (the original is 15½)",
+            "primary_color": "deep blue",
+            "description": "1875 BEP hard-paper reprint of the 90¢ Washington, perf 12 (original perforated issue was 15½).",
+            "issue_series_id": "us-1857-reprints",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 48
+            },
+            "issue_date": "1858-08-01",
+            "denomination": "5c",
+            "perforation": "15",
+            "primary_color": "Brick Red",
+            "description": "5c Thomas Jefferson. 1857-61 Issue. Printed by Toppan, Carpenter & Co. This variety (Type II) features the 'Brick Red' color and is distinguished by the projections at the top and bottom being partially cut away to accommodate the perforation 15.",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 49
+            },
+            "issue_date": "1860-03-01",
+            "denomination": "5c",
+            "perforation": "15",
+            "primary_color": "Bright Brown",
+            "description": "5c Thomas Jefferson. 1857-61 Issue. Type II. Distinguishable from #48 by its lighter, warmer brown shade. The design features the same 'Type II' characteristics where top and bottom ornaments are partially cut away to accommodate the perfs.",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 50
+            },
+            "issue_date": "1861-01-01",
+            "denomination": "5c",
+            "perforation": "15",
+            "primary_color": "Dark Brown",
+            "description": "5c Thomas Jefferson. 1857-61 Issue. Type II. This is the rarest color variety of the perforated 5c Jefferson. The deep, dark brown shade is distinct from the 'Bright Brown' of #49. Design features partially cut away ornaments at top and bottom.",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 51
+            },
+            "issue_date": "1857-07-27",
+            "denomination": "10c",
+            "perforation": "15",
+            "primary_color": "Green",
+            "description": "10c George Washington. 1857-61 Issue. Type II. The design is complete at the top (top line and lines above X are full), but the bottom shell ornaments are partially cut away and the bottom line is broken in the center.",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 52
+            },
+            "issue_date": "1857-07-01",
+            "denomination": "10c",
+            "perforation": "15",
+            "primary_color": "Green",
+            "description": "10c George Washington. 1857-61 Issue. Type III. Both the top and bottom lines are broken. The shells at the top and bottom are also partially missing. A key identification point for your AI's edge-detection logic.",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 53
+            },
+            "issue_date": "1857-01-01",
+            "denomination": "10c",
+            "perforation": "15",
+            "primary_color": "Green",
+            "description": "10c George Washington. 1857-61 Issue. Type IV. This variety occurs when the top or bottom lines (or both) have been recut. Your OpenCV model should look for a 'stronger' or thicker line compared to the original engraving.",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 54
+            },
+            "issue_date": "1859-05-01",
+            "denomination": "10c",
+            "perforation": "15",
+            "primary_color": "Green",
+            "description": "10c George Washington. 1857-61 Issue. Type V. The most common type. The side ornaments are partially trimmed to allow for more space between stamps during the perforation process. Side pearls are typically missing or incomplete.",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 55
+            },
+            "issue_date": "1861-01-01",
+            "denomination": "1c",
+            "perforation": "12 (the original is 15½)",
+            "primary_color": "indigo",
+            "description": "1861 1¢ Benjamin Franklin indigo; National Bank Note Company issue on tinted paper, perf 12, opening value of the 1861 general issue.",
+            "issue_series_id": "us-1861-1866-civil-war-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 56
+            },
+            "issue_date": "1861-01-01",
+            "denomination": "3c",
+            "perforation": "12 (the original is 15½)",
+            "primary_color": "brown rose, dim deep red",
+            "description": "1861 3¢ George Washington brown rose to deep red; National Bank Note Company perf 12 Civil War letter-rate stamp.",
+            "issue_series_id": "us-1861-1866-civil-war-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 57
+            },
+            "issue_date": "1861-01-01",
+            "denomination": "5c",
+            "perforation": "12 (the original is 15½)",
+            "primary_color": "brown",
+            "description": "1861 5¢ Thomas Jefferson brown; National Bank Note Company perf 12 middle denomination.",
+            "issue_series_id": "us-1861-1866-civil-war-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 58
+            },
+            "issue_date": "1861-09-17",
+            "denomination": "10c",
+            "perforation": "12 (the original is 15½)",
+            "primary_color": "dark green or dark yellow green",
+            "description": "1861 10¢ George Washington dark green; National Bank Note Company perf 12 ten-cent letter rate.",
+            "issue_series_id": "us-1861-1866-civil-war-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 59
+            },
+            "issue_date": "1861-01-01",
+            "denomination": "12c",
+            "perforation": "12 (the original is 15½)",
+            "primary_color": "intense black",
+            "description": "1861 12¢ George Washington intense black; National Bank Note Company perf 12 high value.",
+            "issue_series_id": "us-1861-1866-civil-war-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 60
+            },
+            "issue_date": "1861-01-01",
+            "denomination": "24c",
+            "perforation": "12 (the original is 15½)",
+            "primary_color": "dark violet",
+            "description": "1861 24¢ George Washington dark violet; National Bank Note Company perf 12.",
+            "issue_series_id": "us-1861-1866-civil-war-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 61
+            },
+            "issue_date": "1861-01-01",
+            "denomination": "30c",
+            "perforation": "12 (the original is 15½)",
+            "primary_color": "red orange",
+            "description": "1861 30¢ Benjamin Franklin red orange; National Bank Note Company perf 12.",
+            "issue_series_id": "us-1861-1866-civil-war-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 62
+            },
+            "issue_date": "1861-01-01",
+            "denomination": "90c",
+            "perforation": "12 (the original is 15½)",
+            "primary_color": "blue",
+            "description": "1861 90¢ George Washington blue; National Bank Note Company perf 12 rare high denomination.",
+            "issue_series_id": "us-1861-1866-civil-war-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 62,
+              "variation": "b"
+            },
+            "issue_date": "1861-09-17",
+            "denomination": "10c",
+            "perforation": "12 (the original is 15½)",
+            "primary_color": "dark green or dark yellow green",
+            "description": "1861 10¢ George Washington dark green, listed variety \"B\" under the Scott 62 grouping; National Bank Note Company perf 12.",
+            "issue_series_id": "us-1861-1866-civil-war-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 63
+            },
+            "issue_date": "1861-08-17",
+            "denomination": "1c",
+            "perforation": "12",
+            "primary_color": "blue (for more shades see below)",
+            "description": "1861 1¢ Benjamin Franklin blue on white wove; Continental Bank Note Company first perf 12 printing of the new paper stock.",
+            "issue_series_id": "us-1861-1866-civil-war-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 64
+            },
+            "issue_date": "1861-08-17",
+            "denomination": "3c",
+            "perforation": "12",
+            "primary_color": "pink",
+            "description": "1861 3¢ George Washington pink; Continental Bank Note Company perf 12.",
+            "issue_series_id": "us-1861-1866-civil-war-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 65
+            },
+            "issue_date": "1861-08-19",
+            "denomination": "3c",
+            "perforation": "12",
+            "primary_color": "rose, brown red",
+            "description": "1861 3¢ Washington rose to brown red; Continental Bank Note Company perf 12.",
+            "issue_series_id": "us-1861-1866-civil-war-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 66
+            },
+            "issue_date": "1900-01-01",
+            "denomination": "3c",
+            "perforation": "unknown",
+            "primary_color": "unknown",
+            "description": "Catalog placeholder for Scott U.S. 66; confirm denomination and design against specialized catalog before use in listings.",
+            "issue_series_id": "us-1861-1866-civil-war-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 67
+            },
+            "issue_date": "1861-08-19",
+            "denomination": "5c",
+            "perforation": "12",
+            "primary_color": "buff",
+            "description": "1861 5¢ Thomas Jefferson buff; Continental Bank Note Company perf 12.",
+            "issue_series_id": "us-1861-1866-civil-war-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 68
+            },
+            "issue_date": "1861-08-20",
+            "denomination": "10c",
+            "perforation": "12",
+            "primary_color": "green",
+            "description": "1861 10¢ George Washington green; Continental Bank Note Company perf 12.",
+            "issue_series_id": "us-1861-1866-civil-war-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 69
+            },
+            "issue_date": "1861-08-30",
+            "denomination": "12c",
+            "perforation": "12",
+            "primary_color": "black",
+            "description": "1861 12¢ George Washington black; Continental Bank Note Company perf 12.",
+            "issue_series_id": "us-1861-1866-civil-war-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 70
+            },
+            "issue_date": "1862-07-01",
+            "denomination": "70c",
+            "perforation": "12",
+            "primary_color": "red lilac",
+            "description": "1862 70¢ George Washington red lilac; Continental Bank Note Company perf 12 rare high value.",
+            "issue_series_id": "us-1861-1866-civil-war-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 71
+            },
+            "issue_date": "1861-08-20",
+            "denomination": "30c",
+            "perforation": "12",
+            "primary_color": "orange",
+            "description": "1861 30¢ Benjamin Franklin orange; Continental Bank Note Company perf 12.",
+            "issue_series_id": "us-1861-1866-civil-war-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 72
+            },
+            "issue_date": "1861-11-27",
+            "denomination": "90c",
+            "perforation": "12",
+            "primary_color": "blue",
+            "description": "1861 90¢ George Washington blue; Continental Bank Note Company perf 12.",
+            "issue_series_id": "us-1861-1866-civil-war-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 73
+            },
+            "issue_date": "1863-07-01",
+            "denomination": "2c",
+            "perforation": "12",
+            "primary_color": "black",
+            "description": "1863 2¢ Andrew Jackson black (\"Black Jack\"); Continental Bank Note Company perf 12 stamp for the double-weight domestic rate.",
+            "issue_series_id": "us-1861-1866-civil-war-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 74
+            },
+            "issue_date": "1900-01-01",
+            "denomination": "3c",
+            "perforation": "unknown",
+            "primary_color": "unknown",
+            "description": "Catalog placeholder for Scott U.S. 74; confirm denomination and design against specialized catalog before use in listings.",
+            "issue_series_id": "us-1861-1866-civil-war-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 75
+            },
+            "issue_date": "1862-01-02",
+            "denomination": "5c",
+            "perforation": "12",
+            "primary_color": "red brown",
+            "description": "1862 5¢ Thomas Jefferson red brown; Continental Bank Note Company perf 12.",
+            "issue_series_id": "us-1861-1866-civil-war-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 76
+            },
+            "issue_date": "1863-02-03",
+            "denomination": "5c",
+            "perforation": "12",
+            "primary_color": "brown",
+            "description": "1863 5¢ Jefferson brown; Continental Bank Note Company perf 12 later brown shade.",
+            "issue_series_id": "us-1861-1866-civil-war-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 77
+            },
+            "issue_date": "1863-07-01",
+            "denomination": "15c",
+            "perforation": "12",
+            "primary_color": "black",
+            "description": "1863 15¢ Abraham Lincoln black; Continental Bank Note Company perf 12 registry and heavy-postage denomination.",
+            "issue_series_id": "us-1861-1866-civil-war-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 78
+            },
+            "issue_date": "1866-02-20",
+            "denomination": "24c",
+            "perforation": "12",
+            "primary_color": "lilac",
+            "description": "1866 24¢ George Washington lilac; National Bank Note Company printing on silk-fiber security paper, perf 12.",
+            "issue_series_id": "us-1861-1866-civil-war-definitives",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 79
+            },
+            "issue_date": "1867-10-22",
+            "denomination": "3c",
+            "perforation": "12",
+            "primary_color": "rose",
+            "description": "1867 3¢ George Washington rose; National Bank Note Company perf 12 stamp from the ungrilled late-1860s letter-rate series.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 80
+            },
+            "issue_date": "1867-09-01",
+            "denomination": "5c",
+            "perforation": "12",
+            "primary_color": "brown",
+            "description": "1867 5¢ Thomas Jefferson brown; perf 12 Bank Note-era Jefferson without grill.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 81
+            },
+            "issue_date": "1867-09-01",
+            "denomination": "30c",
+            "perforation": "12",
+            "primary_color": "orange",
+            "description": "1867 30¢ Benjamin Franklin orange; perf 12 high denomination without grill.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 82
+            },
+            "issue_date": "1867-09-01",
+            "denomination": "3c",
+            "perforation": "12",
+            "primary_color": "rose",
+            "description": "1867 3¢ Washington rose; perf 12 printing from the late 1860s regular issue.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 83
+            },
+            "issue_date": "1867-11-01",
+            "denomination": "3c",
+            "perforation": "12",
+            "primary_color": "rose",
+            "description": "1867 3¢ Washington rose; perf 12 later shipment or shade grouping of the ungrilled 3¢ design.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 84
+            },
+            "issue_date": "1868-02-08",
+            "denomination": "2c",
+            "perforation": "12",
+            "primary_color": "black",
+            "description": "1868 2¢ Andrew Jackson black; perf 12 line engraving from the late 1860s regular issue.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 85
+            },
+            "issue_date": "1868-02-02",
+            "denomination": "3c",
+            "perforation": "12",
+            "primary_color": "rose",
+            "description": "1868 3¢ George Washington rose; perf 12 parent design for several denominated varieties and minor listings in specialized catalogs.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 85,
+              "variation": "a"
+            },
+            "issue_date": "1868-03-01",
+            "denomination": "1c",
+            "perforation": "12",
+            "primary_color": "blue",
+            "description": "Listed variety \"A\": 1868 1¢ Benjamin Franklin blue; perf 12 stamp grouped under the Scott 85 design family in this dataset.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 85,
+              "variation": "b"
+            },
+            "issue_date": "1868-02-08",
+            "denomination": "2c",
+            "perforation": "12",
+            "primary_color": "black",
+            "description": "Listed variety \"B\": 1868 2¢ Andrew Jackson black; perf 12 stamp grouped under the Scott 85 design family in this dataset.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 85,
+              "variation": "c"
+            },
+            "issue_date": "1868-01-01",
+            "denomination": "85c",
+            "perforation": "12",
+            "primary_color": "rose",
+            "description": "Listed variety \"C\": 1868 85¢ George Washington rose; perf 12 unusual denomination—verify status (regular issue, essay, or provisional) in a specialized catalog.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 85,
+              "variation": "d"
+            },
+            "issue_date": "1868-03-01",
+            "denomination": "10c",
+            "perforation": "12",
+            "primary_color": "green",
+            "description": "Listed variety \"D\": 1868 10¢ George Washington green; perf 12 stamp grouped under the Scott 85 design family in this dataset.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 85,
+              "variation": "e"
+            },
+            "issue_date": "1868-02-01",
+            "denomination": "12c",
+            "perforation": "12",
+            "primary_color": "black",
+            "description": "Listed variety \"E\": 1868 12¢ George Washington black; perf 12 stamp grouped under the Scott 85 design family in this dataset.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 85,
+              "variation": "f"
+            },
+            "issue_date": "1868-01-01",
+            "denomination": "15c",
+            "perforation": "12",
+            "primary_color": "black",
+            "description": "Listed variety \"F\": 1868 15¢ Abraham Lincoln black; perf 12 stamp grouped under the Scott 85 design family in this dataset.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 86
+            },
+            "issue_date": "1868-03-01",
+            "denomination": "1c",
+            "perforation": "12",
+            "primary_color": "blue",
+            "description": "1868 1¢ Benjamin Franklin blue; perf 12 National Bank Note printing of the ungrilled late-1860s series.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 87
+            },
+            "issue_date": "1868-02-01",
+            "denomination": "2c",
+            "perforation": "12",
+            "primary_color": "black",
+            "description": "1868 2¢ Andrew Jackson black; perf 12 ungrilled \"Black Jack\" design of the late-1860s issue.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 88
+            },
+            "issue_date": "1868-02-01",
+            "denomination": "3c",
+            "perforation": "12",
+            "primary_color": "rose",
+            "description": "1868 3¢ George Washington rose; perf 12 ungrilled line-engraved letter rate.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 89
+            },
+            "issue_date": "1868-02-01",
+            "denomination": "10c",
+            "perforation": "12",
+            "primary_color": "green",
+            "description": "1868 10¢ George Washington green; perf 12 ungrilled ten-cent denomination.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 90
+            },
+            "issue_date": "1868-02-01",
+            "denomination": "12c",
+            "perforation": "12",
+            "primary_color": "black",
+            "description": "1868 12¢ George Washington black; perf 12 ungrilled twelve-cent value.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 91
+            },
+            "issue_date": "1868-02-01",
+            "denomination": "15c",
+            "perforation": "12",
+            "primary_color": "black",
+            "description": "1868 15¢ Abraham Lincoln black; perf 12 ungrilled fifteen-cent stamp.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 92
+            },
+            "issue_date": "1868-08-01",
+            "denomination": "1c",
+            "perforation": "12",
+            "primary_color": "blue, pale blue",
+            "description": "1868 1¢ Franklin blue shades; perf 12 later printing or shade grouping of the ungrilled 1¢ design.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 93
+            },
+            "issue_date": "1868-03-01",
+            "denomination": "2c",
+            "perforation": "12",
+            "primary_color": "black",
+            "description": "1868 2¢ Andrew Jackson black; perf 12 stamp from the same ungrilled series as the 1868 2¢ regular issue.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 94
+            },
+            "issue_date": "1868-03-01",
+            "denomination": "3c",
+            "perforation": "12",
+            "primary_color": "red",
+            "description": "1868 3¢ George Washington carmine red; perf 12 distinctive red ink variety of the ungrilled 3¢ design.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 95
+            },
+            "issue_date": "1868-07-01",
+            "denomination": "5c",
+            "perforation": "12",
+            "primary_color": "black, black brown",
+            "description": "1868 5¢ Thomas Jefferson black (\"Black Jefferson\"); perf 12 striking monochrome Jefferson design.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 96
+            },
+            "issue_date": "1868-08-13",
+            "denomination": "10c",
+            "perforation": "12",
+            "primary_color": "green, dark green (#96a)",
+            "description": "1868 10¢ George Washington green; perf 12 late-1860s ungrilled ten-cent including minor listed shade differences.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 97
+            },
+            "issue_date": "1868-08-13",
+            "denomination": "12c",
+            "perforation": "12",
+            "primary_color": "black",
+            "description": "1868 12¢ George Washington black; perf 12 late-1860s ungrilled twelve-cent.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 98
+            },
+            "issue_date": "1868-08-13",
+            "denomination": "15c",
+            "perforation": "12",
+            "primary_color": "black",
+            "description": "1868 15¢ Abraham Lincoln black; perf 12 late-1860s ungrilled fifteen-cent.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 99
+            },
+            "issue_date": "1868-08-13",
+            "denomination": "24c",
+            "perforation": "12",
+            "primary_color": "gray lilac",
+            "description": "1868 24¢ George Washington gray lilac; perf 12 ungrilled twenty-four-cent value.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
+          },
+          {
+            "scott": {
+              "number": 100
+            },
+            "issue_date": "1868-08-13",
+            "denomination": "30c",
+            "perforation": "12",
+            "primary_color": "orange",
+            "description": "1868 30¢ Benjamin Franklin orange; perf 12 ungrilled thirty-cent denomination.",
+            "issue_series_id": "us-1867-1868-grilled-issue",
+            "c": 15,
+            "v": 15
           }
         ],
         "c": 10,
@@ -547,6 +2011,77 @@
         "ebay_category": 181423,
         "c": 10,
         "v": 10
+      }
+    },
+    "gemini_function_call": {
+      "lookup_numeral_cancel": {
+        "function_name": "lookup_numeral_cancel",
+        "description": "Look up a postal numeral cancel assignment by country and numeral. Returns matching town/date-window rows from the local xFrame consolidated data; optional Scott number helps infer the stamp issue date.",
+        "provider_id": "google_gemini",
+        "enabled": true,
+        "sort_order": 10,
+        "parameters": [
+          {
+            "parameter_key": {
+              "name": "country"
+            },
+            "description": "Issuer whose numeral-cancel table applies.",
+            "schema_entity": "country",
+            "required": true,
+            "c": 33,
+            "v": 33
+          },
+          {
+            "parameter_key": {
+              "name": "number"
+            },
+            "description": "Cancel digits only (integer < 999): the numeral in the cancel, not year/codes/letters.",
+            "schema_entity": "numeral_cancel",
+            "composite_key": [
+              {
+                "component": "country_id",
+                "parameter_name": "country"
+              },
+              {
+                "component": "numeral",
+                "parameter_name": "number"
+              }
+            ],
+            "required": true,
+            "enum": false,
+            "c": 33,
+            "v": 33
+          },
+          {
+            "parameter_key": {
+              "name": "scott_number"
+            },
+            "description": "Scott # if known for this stamp; omit otherwise.",
+            "schema_entity": "scott_catalog_entry",
+            "composite_key": [
+              {
+                "component": "country_id",
+                "parameter_name": "country"
+              },
+              {
+                "component": "number",
+                "parameter_name": "scott_number"
+              }
+            ],
+            "required": false,
+            "enum": false,
+            "c": 33,
+            "v": 33
+          }
+        ],
+        "output": [
+          {
+            "response_key": "numeral_cancel",
+            "anchor_parameter": "number"
+          }
+        ],
+        "c": 31,
+        "v": 31
       }
     },
     "listing": {
@@ -966,1540 +2501,6 @@
         "v": 4
       }
     },
-    "scott_catalog_entry": {
-      "dk|M|45": {
-        "scott": {
-          "country_id": "dk",
-          "section": "M",
-          "number": 45
-        },
-        "issue_series_id": "dk-bicolors-classic",
-        "issue_date": "1895-01-01",
-        "denomination": "20ø",
-        "perforation": "Perforated 13",
-        "primary_color": "carmine and blue (bicolor)",
-        "description": "Illustrative Denmark bicolor definitive tied to sample inventory; see stamp_catalog_number for Michel cross-reference.",
-        "notes": "Illustrative primary listing for the sample stamp; see stamp_catalog_number for Michel cross-ref.",
-        "c": 13,
-        "m": [
-          15
-        ],
-        "v": 15
-      },
-      "1|us": {
-        "scott": {
-          "number": 1,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1847-first-general-issue",
-        "issue_date": "1847-07-01",
-        "denomination": "5c",
-        "perforation": "imperforate",
-        "primary_color": "red brown",
-        "description": "First United States adhesive postage stamp (1847 general issue): 5¢ Benjamin Franklin line engraving on bluish wove paper; imperforate, for the domestic single-rate up to 300 miles.",
-        "c": 15,
-        "v": 15
-      },
-      "2|us": {
-        "scott": {
-          "number": 2,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1847-first-general-issue",
-        "issue_date": "1847-07-01",
-        "denomination": "10c",
-        "perforation": "imperforate",
-        "primary_color": "black",
-        "description": "1847 first general issue: 10¢ George Washington line engraving; imperforate, for higher domestic letter rates and some foreign mail.",
-        "c": 15,
-        "v": 15
-      },
-      "3|us": {
-        "scott": {
-          "number": 3,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1875-reprints-of-1847",
-        "issue_date": "1875-01-01",
-        "denomination": "5c",
-        "perforation": "imperforate",
-        "primary_color": "blue",
-        "description": "1875 Bureau of Engraving and Printing hard-paper reprint of the 1847 5¢ Franklin (original Scott 1); imperforate special printing for collectors and archives.",
-        "c": 15,
-        "v": 15
-      },
-      "4|us": {
-        "scott": {
-          "number": 4,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1875-reprints-of-1847",
-        "issue_date": "1875-01-01",
-        "denomination": "10c",
-        "perforation": "imperforate",
-        "primary_color": "black",
-        "description": "1875 BEP hard-paper reprint of the 1847 10¢ Washington (original Scott 2); imperforate line-engraved reissue.",
-        "c": 15,
-        "v": 15
-      },
-      "5|us": {
-        "scott": {
-          "number": 5,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1851-1856-imperforate-definitives",
-        "issue_date": "1851-07-01",
-        "denomination": "1c",
-        "perforation": "imperforate",
-        "primary_color": "blue, pale blue, dark blue",
-        "description": "1851 1¢ Benjamin Franklin Type I blue shades; imperforate line-engraved stamp from the first U.S. denominationally complete issue.",
-        "c": 15,
-        "v": 15
-      },
-      "6|us": {
-        "scott": {
-          "number": 6,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1851-1856-imperforate-definitives",
-        "issue_date": "1857-04-19",
-        "denomination": "1c",
-        "perforation": "imperforate",
-        "primary_color": "blue, dark blue",
-        "description": "1851 1¢ Franklin Type Ia; imperforate stamp with fuller outer framelines than the later Type II printings.",
-        "c": 15,
-        "v": 15
-      },
-      "7|us": {
-        "scott": {
-          "number": 7,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1851-1856-imperforate-definitives",
-        "issue_date": "1851-07-01",
-        "denomination": "1c",
-        "perforation": "imperforate",
-        "primary_color": "blue, dark blue",
-        "description": "1851 1¢ Franklin Type II blue shades; imperforate workhorse 1¢ from multiple early plates with reduced or broken outer frame lines.",
-        "c": 15,
-        "v": 15
-      },
-      "8|us": {
-        "scott": {
-          "number": 8,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1851-1856-imperforate-definitives",
-        "issue_date": "1857-07-07",
-        "denomination": "1c",
-        "perforation": "imperforate",
-        "primary_color": "light blue, blue, dark blue",
-        "description": "1851 1¢ Franklin Type III; imperforate stamp distinguished by breaks in the top and bottom outer frame lines.",
-        "c": 15,
-        "v": 15
-      },
-      "9|us": {
-        "scott": {
-          "number": 9,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1851-1856-imperforate-definitives",
-        "issue_date": "1852-06-05",
-        "denomination": "1c",
-        "perforation": "imperforate",
-        "primary_color": "pale blue, blue, dark blue",
-        "description": "1851 1¢ Franklin Type IV; imperforate late-plate state with heavy recutting along the frame lines.",
-        "c": 15,
-        "v": 15
-      },
-      "10|us": {
-        "scott": {
-          "number": 10,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1851-1856-imperforate-definitives",
-        "issue_date": "1851-07-01",
-        "denomination": "3c",
-        "perforation": "imperforate",
-        "primary_color": "orange brown",
-        "description": "1851 3¢ George Washington Type I orange brown; imperforate standard domestic letter-rate denomination of the 1851 series.",
-        "c": 15,
-        "v": 15
-      },
-      "11|us": {
-        "scott": {
-          "number": 11,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1851-1856-imperforate-definitives",
-        "issue_date": "1851-10-06",
-        "denomination": "3c",
-        "perforation": "imperforate",
-        "primary_color": "dull red, pinkish, claret, brownish carmine and shades in between",
-        "description": "1851 3¢ Washington Type I in dull red, claret, and related shades; imperforate line-engraved domestic letter stamp.",
-        "c": 15,
-        "v": 15
-      },
-      "12|us": {
-        "scott": {
-          "number": 12,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1851-1856-imperforate-definitives",
-        "issue_date": "1856-03-01",
-        "denomination": "5c",
-        "perforation": "imperforate",
-        "primary_color": "red brown, dark red brown",
-        "description": "1855–56 5¢ Thomas Jefferson Type I red brown shades; imperforate stamp from the 1855–61 middle-value issue.",
-        "c": 15,
-        "v": 15
-      },
-      "13|us": {
-        "scott": {
-          "number": 13,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1851-1856-imperforate-definitives",
-        "issue_date": "1855-05-01",
-        "denomination": "10c",
-        "perforation": "imperforate",
-        "primary_color": "green, dark green or yellowish green",
-        "description": "1855 10¢ George Washington Type I green; imperforate line-engraved stamp for the long-haul domestic ten-cent letter rate.",
-        "c": 15,
-        "v": 15
-      },
-      "14|us": {
-        "scott": {
-          "number": 14,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1851-1856-imperforate-definitives",
-        "issue_date": "1855-05-01",
-        "denomination": "10c",
-        "perforation": "imperforate",
-        "primary_color": "green, dark green or yellowish green",
-        "description": "1855 10¢ Washington Type II green; imperforate issue differing from Type I in recutting and frame-line details around the portrait.",
-        "c": 15,
-        "v": 15
-      },
-      "15|us": {
-        "scott": {
-          "number": 15,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1851-1856-imperforate-definitives",
-        "issue_date": "1855-05-01",
-        "denomination": "10c",
-        "perforation": "imperforate",
-        "primary_color": "green, dark green or yellowish green",
-        "description": "1855 10¢ Washington Type III green; imperforate intermediate plate state of the 1855 ten-cent engraving.",
-        "c": 15,
-        "v": 15
-      },
-      "16|us": {
-        "scott": {
-          "number": 16,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1851-1856-imperforate-definitives",
-        "issue_date": "1855-05-01",
-        "denomination": "10c",
-        "perforation": "imperforate",
-        "primary_color": "green, dark green or yellowish green",
-        "description": "1855 10¢ Washington Type IV green; imperforate late state of the 1855 ten-cent design with extensive plate wear and recutting.",
-        "c": 15,
-        "v": 15
-      },
-      "17|us": {
-        "scott": {
-          "number": 17,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1851-1856-imperforate-definitives",
-        "issue_date": "1851-07-01",
-        "denomination": "12c",
-        "perforation": "imperforate",
-        "primary_color": "black, intense black or gray black",
-        "description": "1851 12¢ George Washington black; imperforate high-value line engraving for registered or heavy domestic postage.",
-        "c": 15,
-        "v": 15
-      },
-      "18|us": {
-        "scott": {
-          "number": 18,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-1860-perforated-definitives",
-        "issue_date": "1861-01-25",
-        "denomination": "1c",
-        "perforation": "15 to 15½",
-        "primary_color": "blue, pale blue, dark blue",
-        "description": "1861 1¢ Benjamin Franklin Type I blue; first National Bank Note Company perforated issue (15–15½) of the Civil War-era letter-rate design.",
-        "c": 15,
-        "v": 15
-      },
-      "19|us": {
-        "scott": {
-          "number": 19,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-1860-perforated-definitives",
-        "issue_date": "1857-09-09",
-        "denomination": "1c",
-        "perforation": "15 to 15½",
-        "primary_color": "blue, pale blue, dark blue",
-        "description": "1857–61 1¢ Franklin Type Ia blue; perforated 15–15½ stamp retaining complete outer framelines like Type I.",
-        "c": 15,
-        "v": 15
-      },
-      "20|us": {
-        "scott": {
-          "number": 20,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-1860-perforated-definitives",
-        "issue_date": "1857-07-26",
-        "denomination": "1c",
-        "perforation": "15 to 15½",
-        "primary_color": "blue, pale blue, dark blue",
-        "description": "1857–61 1¢ Franklin Type II blue; perforated 15–15½ issue with cropped or incomplete outer frame lines compared with Type I.",
-        "c": 15,
-        "v": 15
-      },
-      "21|us": {
-        "scott": {
-          "number": 21,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-1860-perforated-definitives",
-        "issue_date": "1857-09-18",
-        "denomination": "1c",
-        "perforation": "15 to 15½",
-        "primary_color": "blue, pale blue, dark blue",
-        "description": "1857–61 1¢ Franklin Type III blue; perforated 15–15½ stamp with characteristic breaks in the outer top and bottom frame lines.",
-        "c": 15,
-        "v": 15
-      },
-      "22|us": {
-        "scott": {
-          "number": 22,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-1860-perforated-definitives",
-        "issue_date": "1857-07-26",
-        "denomination": "1c",
-        "perforation": "15 to 15½",
-        "primary_color": "blue, pale blue, dark blue",
-        "description": "1857–61 1¢ Franklin Type IIIa blue; perforated 15–15½ intermediate plate state between Types III and IV.",
-        "c": 15,
-        "v": 15
-      },
-      "23|us": {
-        "scott": {
-          "number": 23,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-1860-perforated-definitives",
-        "issue_date": "1857-07-26",
-        "denomination": "1c",
-        "perforation": "15 to 15½",
-        "primary_color": "blue, pale blue, dark blue",
-        "description": "1857–61 1¢ Franklin Type IV blue; perforated 15–15½ issue with pronounced recutting along the top and bottom frame lines.",
-        "c": 15,
-        "v": 15
-      },
-      "24|us": {
-        "scott": {
-          "number": 24,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-1860-perforated-definitives",
-        "issue_date": "1857-11-17",
-        "denomination": "1c",
-        "perforation": "15 to 15½",
-        "primary_color": "blue, pale blue, dark blue",
-        "description": "1857–61 1¢ Franklin Type V blue; most common perforated 1¢ Franklin, with side ornaments trimmed for tight perforation spacing.",
-        "c": 15,
-        "v": 15
-      },
-      "25|us": {
-        "scott": {
-          "number": 25,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-1860-perforated-definitives",
-        "issue_date": "1857-02-28",
-        "denomination": "3c",
-        "perforation": "15 or 15½",
-        "primary_color": "rose, dull rose",
-        "description": "1857 3¢ George Washington Type I rose shades; perforated 15 or 15½ domestic letter stamp from the first U.S. perforated issue.",
-        "c": 15,
-        "v": 15
-      },
-      "26|us": {
-        "scott": {
-          "number": 26,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-1860-perforated-definitives",
-        "issue_date": "1857-09-09",
-        "denomination": "3c",
-        "perforation": "15 or 15½",
-        "primary_color": "dull red, brownish-claret, plum, and brownish-carmine",
-        "description": "1857 3¢ Washington Type II dull red through plum shades; perforated 15 or 15½ stamp with plate work that removes portions of the outer frame lines.",
-        "c": 15,
-        "v": 15
-      },
-      "27|us": {
-        "scott": {
-          "number": 27,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-1860-perforated-definitives",
-        "issue_date": "1858-10-06",
-        "denomination": "5c",
-        "perforation": "15 or 15½",
-        "primary_color": "brick red",
-        "description": "1858 5¢ Thomas Jefferson Type I brick red; perforated 15 or 15½ line-engraved Jefferson from the 1857 perforated series.",
-        "c": 15,
-        "v": 15
-      },
-      "28|us": {
-        "scott": {
-          "number": 28,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-1860-perforated-definitives",
-        "issue_date": "1857-08-23",
-        "denomination": "5c",
-        "perforation": "15 or 15½",
-        "primary_color": "red brown, pale red brown",
-        "description": "1857 5¢ Jefferson Type I red brown and pale red brown shades; perforated 15 or 15½ early Jefferson of the perforated issue.",
-        "c": 15,
-        "v": 15
-      },
-      "29|us": {
-        "scott": {
-          "number": 29,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-1860-perforated-definitives",
-        "issue_date": "1859-03-21",
-        "denomination": "5c",
-        "perforation": "15 or 15½",
-        "primary_color": "brown, pale brown or deep brown",
-        "description": "1859 5¢ Jefferson Type I brown shades; perforated 15 or 15½ late Type I plate printing before adoption of the Type II frame layout.",
-        "c": 15,
-        "v": 15
-      },
-      "30|us": {
-        "scott": {
-          "number": 30,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-1860-perforated-definitives",
-        "issue_date": "1861-05-08",
-        "denomination": "5c",
-        "perforation": "15 or 15½",
-        "primary_color": "orange brown",
-        "description": "1861 5¢ Jefferson Type II orange brown; perforated 15 or 15½ design without the small projections at top and bottom of the earlier Type I.",
-        "c": 15,
-        "v": 15
-      },
-      "30|a|us": {
-        "scott": {
-          "number": 30,
-          "variation": "a",
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-1860-perforated-definitives",
-        "issue_date": "1861-05-04",
-        "denomination": "5c",
-        "perforation": "15 or 15½",
-        "primary_color": "brown",
-        "description": "1861 5¢ Jefferson Type II brown (listed variety \"A\"); perforated 15 or 15½ companion shade to the orange brown Type II printing.",
-        "c": 15,
-        "v": 15
-      },
-      "31|us": {
-        "scott": {
-          "number": 31,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-1860-perforated-definitives",
-        "issue_date": "1857-07-25",
-        "denomination": "10c",
-        "perforation": "15½",
-        "primary_color": "dark green, green, bluish green, yellowish green",
-        "description": "1857–61 10¢ George Washington Type I green; perforated 15½ line engraving for the transcontinental ten-cent letter rate.",
-        "c": 15,
-        "v": 15
-      },
-      "32|us": {
-        "scott": {
-          "number": 32,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-1860-perforated-definitives",
-        "issue_date": "1857-07-25",
-        "denomination": "10c",
-        "perforation": "15½",
-        "primary_color": "dark green, green, bluish green, yellowish green",
-        "description": "1857–61 10¢ Washington Type II green; perforated 15½ issue with plate alterations distinct from the Type I frame line pattern.",
-        "c": 15,
-        "v": 15
-      },
-      "33|us": {
-        "scott": {
-          "number": 33,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-1860-perforated-definitives",
-        "issue_date": "1857-07-25",
-        "denomination": "10c",
-        "perforation": "15½",
-        "primary_color": "dark green, green, bluish green, yellowish green",
-        "description": "1857–61 10¢ Washington Type III green; perforated 15½ intermediate recut state of the perforated ten-cent Washington.",
-        "c": 15,
-        "v": 15
-      },
-      "34|us": {
-        "scott": {
-          "number": 34,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-1860-perforated-definitives",
-        "issue_date": "1857-07-25",
-        "denomination": "10c",
-        "perforation": "15½",
-        "primary_color": "dark green, green, bluish green, yellowish green",
-        "description": "1857–61 10¢ Washington Type IV green; perforated 15½ late-plate characteristics of the green Washington design.",
-        "c": 15,
-        "v": 15
-      },
-      "35|us": {
-        "scott": {
-          "number": 35,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-1860-perforated-definitives",
-        "issue_date": "1859-04-29",
-        "denomination": "10c",
-        "perforation": "15½",
-        "primary_color": "dark green, green, bluish green, yellowish green",
-        "description": "1857–61 10¢ Washington Type V green; perforated 15½ final major plate state of the perforated ten-cent issue.",
-        "c": 15,
-        "v": 15
-      },
-      "36|us": {
-        "scott": {
-          "number": 36,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-1860-perforated-definitives",
-        "issue_date": "1857-07-30",
-        "denomination": "12c",
-        "perforation": "15½",
-        "primary_color": "black, gray black, intense black",
-        "description": "1857 12¢ George Washington black; perforated 15½ high-value line engraving for registry and heavy postage.",
-        "c": 15,
-        "v": 15
-      },
-      "37|us": {
-        "scott": {
-          "number": 37,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-1860-perforated-definitives",
-        "issue_date": "1860-07-07",
-        "denomination": "24c",
-        "perforation": "15½",
-        "primary_color": "gray lilac",
-        "description": "1860 24¢ Washington gray lilac; perforated 15½ stamp for large domestic frankings and some international rates.",
-        "c": 15,
-        "v": 15
-      },
-      "38|us": {
-        "scott": {
-          "number": 38,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-1860-perforated-definitives",
-        "issue_date": "1860-07-09",
-        "denomination": "30c",
-        "perforation": "15½",
-        "primary_color": "orange, yellow orange, reddish orange",
-        "description": "1860 30¢ Benjamin Franklin orange shades; perforated 15½ high-denomination line engraving.",
-        "c": 15,
-        "v": 15
-      },
-      "39|us": {
-        "scott": {
-          "number": 39,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-1860-perforated-definitives",
-        "issue_date": "1860-09-11",
-        "denomination": "90c",
-        "perforation": "15½",
-        "primary_color": "blue",
-        "description": "1860 90¢ George Washington deep blue; perforated 15½ rare high value for very heavy letter postage and certain steamship uses.",
-        "c": 15,
-        "v": 15
-      },
-      "40|us": {
-        "scott": {
-          "number": 40,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-reprints",
-        "issue_date": "1875-01-01",
-        "denomination": "1c",
-        "perforation": "12 (the original is 15½)",
-        "primary_color": "bright blue",
-        "description": "1875 BEP hard-paper reprint of the perforated 1¢ Franklin, perf 12 (original 1861–67 printings were 15–15½).",
-        "c": 15,
-        "v": 15
-      },
-      "41|us": {
-        "scott": {
-          "number": 41,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-reprints",
-        "issue_date": "1875-01-01",
-        "denomination": "3c",
-        "perforation": "12 (the original is 15½)",
-        "primary_color": "scarlet",
-        "description": "1875 BEP hard-paper reprint of the 3¢ Washington, perf 12 (original perforated issue was 15–15½).",
-        "c": 15,
-        "v": 15
-      },
-      "42|us": {
-        "scott": {
-          "number": 42,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-reprints",
-        "issue_date": "1875-01-01",
-        "denomination": "5c",
-        "perforation": "12 (the original is 15½)",
-        "primary_color": "orange brown",
-        "description": "1875 BEP hard-paper reprint of the 5¢ Jefferson, perf 12 (original perforated issue was 15–15½).",
-        "c": 15,
-        "v": 15
-      },
-      "43|us": {
-        "scott": {
-          "number": 43,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-reprints",
-        "issue_date": "1875-01-01",
-        "denomination": "10c",
-        "perforation": "12 (the original is 15½)",
-        "primary_color": "blue-green",
-        "description": "1875 BEP hard-paper reprint of the 10¢ Washington, perf 12 (original perforated issue was 15½).",
-        "c": 15,
-        "v": 15
-      },
-      "44|us": {
-        "scott": {
-          "number": 44,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-reprints",
-        "issue_date": "1875-01-01",
-        "denomination": "12c",
-        "perforation": "12 (the original is 15½)",
-        "primary_color": "greenish black",
-        "description": "1875 BEP hard-paper reprint of the 12¢ Washington, perf 12 (original perforated issue was 15½).",
-        "c": 15,
-        "v": 15
-      },
-      "45|us": {
-        "scott": {
-          "number": 45,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-reprints",
-        "issue_date": "1875-01-01",
-        "denomination": "24c",
-        "perforation": "12 (the original is 15½)",
-        "primary_color": "blackish violet",
-        "description": "1875 BEP hard-paper reprint of the 24¢ Washington, perf 12 (original perforated issue was 15½).",
-        "c": 15,
-        "v": 15
-      },
-      "46|us": {
-        "scott": {
-          "number": 46,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-reprints",
-        "issue_date": "1875-01-01",
-        "denomination": "30c",
-        "perforation": "12 (the original is 15½)",
-        "primary_color": "yellow orange",
-        "description": "1875 BEP hard-paper reprint of the 30¢ Franklin, perf 12 (original perforated issue was 15½).",
-        "c": 15,
-        "v": 15
-      },
-      "47|us": {
-        "scott": {
-          "number": 47,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1857-reprints",
-        "issue_date": "1875-01-01",
-        "denomination": "90c",
-        "perforation": "12 (the original is 15½)",
-        "primary_color": "deep blue",
-        "description": "1875 BEP hard-paper reprint of the 90¢ Washington, perf 12 (original perforated issue was 15½).",
-        "c": 15,
-        "v": 15
-      },
-      "48|us": {
-        "scott": {
-          "number": 48,
-          "country_id": "us"
-        },
-        "issue_date": "1858-08-01",
-        "denomination": "5c",
-        "perforation": "15",
-        "primary_color": "Brick Red",
-        "description": "5c Thomas Jefferson. 1857-61 Issue. Printed by Toppan, Carpenter & Co. This variety (Type II) features the 'Brick Red' color and is distinguished by the projections at the top and bottom being partially cut away to accommodate the perforation 15.",
-        "c": 15,
-        "v": 15
-      },
-      "49|us": {
-        "scott": {
-          "number": 49,
-          "country_id": "us"
-        },
-        "issue_date": "1860-03-01",
-        "denomination": "5c",
-        "perforation": "15",
-        "primary_color": "Bright Brown",
-        "description": "5c Thomas Jefferson. 1857-61 Issue. Type II. Distinguishable from #48 by its lighter, warmer brown shade. The design features the same 'Type II' characteristics where top and bottom ornaments are partially cut away to accommodate the perfs.",
-        "c": 15,
-        "v": 15
-      },
-      "50|us": {
-        "scott": {
-          "number": 50,
-          "country_id": "us"
-        },
-        "issue_date": "1861-01-01",
-        "denomination": "5c",
-        "perforation": "15",
-        "primary_color": "Dark Brown",
-        "description": "5c Thomas Jefferson. 1857-61 Issue. Type II. This is the rarest color variety of the perforated 5c Jefferson. The deep, dark brown shade is distinct from the 'Bright Brown' of #49. Design features partially cut away ornaments at top and bottom.",
-        "c": 15,
-        "v": 15
-      },
-      "51|us": {
-        "scott": {
-          "number": 51,
-          "country_id": "us"
-        },
-        "issue_date": "1857-07-27",
-        "denomination": "10c",
-        "perforation": "15",
-        "primary_color": "Green",
-        "description": "10c George Washington. 1857-61 Issue. Type II. The design is complete at the top (top line and lines above X are full), but the bottom shell ornaments are partially cut away and the bottom line is broken in the center.",
-        "c": 15,
-        "v": 15
-      },
-      "52|us": {
-        "scott": {
-          "number": 52,
-          "country_id": "us"
-        },
-        "issue_date": "1857-07-01",
-        "denomination": "10c",
-        "perforation": "15",
-        "primary_color": "Green",
-        "description": "10c George Washington. 1857-61 Issue. Type III. Both the top and bottom lines are broken. The shells at the top and bottom are also partially missing. A key identification point for your AI's edge-detection logic.",
-        "c": 15,
-        "v": 15
-      },
-      "53|us": {
-        "scott": {
-          "number": 53,
-          "country_id": "us"
-        },
-        "issue_date": "1857-01-01",
-        "denomination": "10c",
-        "perforation": "15",
-        "primary_color": "Green",
-        "description": "10c George Washington. 1857-61 Issue. Type IV. This variety occurs when the top or bottom lines (or both) have been recut. Your OpenCV model should look for a 'stronger' or thicker line compared to the original engraving.",
-        "c": 15,
-        "v": 15
-      },
-      "54|us": {
-        "scott": {
-          "number": 54,
-          "country_id": "us"
-        },
-        "issue_date": "1859-05-01",
-        "denomination": "10c",
-        "perforation": "15",
-        "primary_color": "Green",
-        "description": "10c George Washington. 1857-61 Issue. Type V. The most common type. The side ornaments are partially trimmed to allow for more space between stamps during the perforation process. Side pearls are typically missing or incomplete.",
-        "c": 15,
-        "v": 15
-      },
-      "55|us": {
-        "scott": {
-          "number": 55,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1861-1866-civil-war-definitives",
-        "issue_date": "1861-01-01",
-        "denomination": "1c",
-        "perforation": "12 (the original is 15½)",
-        "primary_color": "indigo",
-        "description": "1861 1¢ Benjamin Franklin indigo; National Bank Note Company issue on tinted paper, perf 12, opening value of the 1861 general issue.",
-        "c": 15,
-        "v": 15
-      },
-      "56|us": {
-        "scott": {
-          "number": 56,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1861-1866-civil-war-definitives",
-        "issue_date": "1861-01-01",
-        "denomination": "3c",
-        "perforation": "12 (the original is 15½)",
-        "primary_color": "brown rose, dim deep red",
-        "description": "1861 3¢ George Washington brown rose to deep red; National Bank Note Company perf 12 Civil War letter-rate stamp.",
-        "c": 15,
-        "v": 15
-      },
-      "57|us": {
-        "scott": {
-          "number": 57,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1861-1866-civil-war-definitives",
-        "issue_date": "1861-01-01",
-        "denomination": "5c",
-        "perforation": "12 (the original is 15½)",
-        "primary_color": "brown",
-        "description": "1861 5¢ Thomas Jefferson brown; National Bank Note Company perf 12 middle denomination.",
-        "c": 15,
-        "v": 15
-      },
-      "58|us": {
-        "scott": {
-          "number": 58,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1861-1866-civil-war-definitives",
-        "issue_date": "1861-09-17",
-        "denomination": "10c",
-        "perforation": "12 (the original is 15½)",
-        "primary_color": "dark green or dark yellow green",
-        "description": "1861 10¢ George Washington dark green; National Bank Note Company perf 12 ten-cent letter rate.",
-        "c": 15,
-        "v": 15
-      },
-      "59|us": {
-        "scott": {
-          "number": 59,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1861-1866-civil-war-definitives",
-        "issue_date": "1861-01-01",
-        "denomination": "12c",
-        "perforation": "12 (the original is 15½)",
-        "primary_color": "intense black",
-        "description": "1861 12¢ George Washington intense black; National Bank Note Company perf 12 high value.",
-        "c": 15,
-        "v": 15
-      },
-      "60|us": {
-        "scott": {
-          "number": 60,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1861-1866-civil-war-definitives",
-        "issue_date": "1861-01-01",
-        "denomination": "24c",
-        "perforation": "12 (the original is 15½)",
-        "primary_color": "dark violet",
-        "description": "1861 24¢ George Washington dark violet; National Bank Note Company perf 12.",
-        "c": 15,
-        "v": 15
-      },
-      "61|us": {
-        "scott": {
-          "number": 61,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1861-1866-civil-war-definitives",
-        "issue_date": "1861-01-01",
-        "denomination": "30c",
-        "perforation": "12 (the original is 15½)",
-        "primary_color": "red orange",
-        "description": "1861 30¢ Benjamin Franklin red orange; National Bank Note Company perf 12.",
-        "c": 15,
-        "v": 15
-      },
-      "62|us": {
-        "scott": {
-          "number": 62,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1861-1866-civil-war-definitives",
-        "issue_date": "1861-01-01",
-        "denomination": "90c",
-        "perforation": "12 (the original is 15½)",
-        "primary_color": "blue",
-        "description": "1861 90¢ George Washington blue; National Bank Note Company perf 12 rare high denomination.",
-        "c": 15,
-        "v": 15
-      },
-      "62|b|us": {
-        "scott": {
-          "number": 62,
-          "variation": "b",
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1861-1866-civil-war-definitives",
-        "issue_date": "1861-09-17",
-        "denomination": "10c",
-        "perforation": "12 (the original is 15½)",
-        "primary_color": "dark green or dark yellow green",
-        "description": "1861 10¢ George Washington dark green, listed variety \"B\" under the Scott 62 grouping; National Bank Note Company perf 12.",
-        "c": 15,
-        "v": 15
-      },
-      "63|us": {
-        "scott": {
-          "number": 63,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1861-1866-civil-war-definitives",
-        "issue_date": "1861-08-17",
-        "denomination": "1c",
-        "perforation": "12",
-        "primary_color": "blue (for more shades see below)",
-        "description": "1861 1¢ Benjamin Franklin blue on white wove; Continental Bank Note Company first perf 12 printing of the new paper stock.",
-        "c": 15,
-        "v": 15
-      },
-      "64|us": {
-        "scott": {
-          "number": 64,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1861-1866-civil-war-definitives",
-        "issue_date": "1861-08-17",
-        "denomination": "3c",
-        "perforation": "12",
-        "primary_color": "pink",
-        "description": "1861 3¢ George Washington pink; Continental Bank Note Company perf 12.",
-        "c": 15,
-        "v": 15
-      },
-      "65|us": {
-        "scott": {
-          "number": 65,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1861-1866-civil-war-definitives",
-        "issue_date": "1861-08-19",
-        "denomination": "3c",
-        "perforation": "12",
-        "primary_color": "rose, brown red",
-        "description": "1861 3¢ Washington rose to brown red; Continental Bank Note Company perf 12.",
-        "c": 15,
-        "v": 15
-      },
-      "66|us": {
-        "scott": {
-          "number": 66,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1861-1866-civil-war-definitives",
-        "issue_date": "1900-01-01",
-        "denomination": "3c",
-        "perforation": "unknown",
-        "primary_color": "unknown",
-        "description": "Catalog placeholder for Scott U.S. 66; confirm denomination and design against specialized catalog before use in listings.",
-        "c": 15,
-        "v": 15
-      },
-      "67|us": {
-        "scott": {
-          "number": 67,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1861-1866-civil-war-definitives",
-        "issue_date": "1861-08-19",
-        "denomination": "5c",
-        "perforation": "12",
-        "primary_color": "buff",
-        "description": "1861 5¢ Thomas Jefferson buff; Continental Bank Note Company perf 12.",
-        "c": 15,
-        "v": 15
-      },
-      "68|us": {
-        "scott": {
-          "number": 68,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1861-1866-civil-war-definitives",
-        "issue_date": "1861-08-20",
-        "denomination": "10c",
-        "perforation": "12",
-        "primary_color": "green",
-        "description": "1861 10¢ George Washington green; Continental Bank Note Company perf 12.",
-        "c": 15,
-        "v": 15
-      },
-      "69|us": {
-        "scott": {
-          "number": 69,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1861-1866-civil-war-definitives",
-        "issue_date": "1861-08-30",
-        "denomination": "12c",
-        "perforation": "12",
-        "primary_color": "black",
-        "description": "1861 12¢ George Washington black; Continental Bank Note Company perf 12.",
-        "c": 15,
-        "v": 15
-      },
-      "70|us": {
-        "scott": {
-          "number": 70,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1861-1866-civil-war-definitives",
-        "issue_date": "1862-07-01",
-        "denomination": "70c",
-        "perforation": "12",
-        "primary_color": "red lilac",
-        "description": "1862 70¢ George Washington red lilac; Continental Bank Note Company perf 12 rare high value.",
-        "c": 15,
-        "v": 15
-      },
-      "71|us": {
-        "scott": {
-          "number": 71,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1861-1866-civil-war-definitives",
-        "issue_date": "1861-08-20",
-        "denomination": "30c",
-        "perforation": "12",
-        "primary_color": "orange",
-        "description": "1861 30¢ Benjamin Franklin orange; Continental Bank Note Company perf 12.",
-        "c": 15,
-        "v": 15
-      },
-      "72|us": {
-        "scott": {
-          "number": 72,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1861-1866-civil-war-definitives",
-        "issue_date": "1861-11-27",
-        "denomination": "90c",
-        "perforation": "12",
-        "primary_color": "blue",
-        "description": "1861 90¢ George Washington blue; Continental Bank Note Company perf 12.",
-        "c": 15,
-        "v": 15
-      },
-      "73|us": {
-        "scott": {
-          "number": 73,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1861-1866-civil-war-definitives",
-        "issue_date": "1863-07-01",
-        "denomination": "2c",
-        "perforation": "12",
-        "primary_color": "black",
-        "description": "1863 2¢ Andrew Jackson black (\"Black Jack\"); Continental Bank Note Company perf 12 stamp for the double-weight domestic rate.",
-        "c": 15,
-        "v": 15
-      },
-      "74|us": {
-        "scott": {
-          "number": 74,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1861-1866-civil-war-definitives",
-        "issue_date": "1900-01-01",
-        "denomination": "3c",
-        "perforation": "unknown",
-        "primary_color": "unknown",
-        "description": "Catalog placeholder for Scott U.S. 74; confirm denomination and design against specialized catalog before use in listings.",
-        "c": 15,
-        "v": 15
-      },
-      "75|us": {
-        "scott": {
-          "number": 75,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1861-1866-civil-war-definitives",
-        "issue_date": "1862-01-02",
-        "denomination": "5c",
-        "perforation": "12",
-        "primary_color": "red brown",
-        "description": "1862 5¢ Thomas Jefferson red brown; Continental Bank Note Company perf 12.",
-        "c": 15,
-        "v": 15
-      },
-      "76|us": {
-        "scott": {
-          "number": 76,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1861-1866-civil-war-definitives",
-        "issue_date": "1863-02-03",
-        "denomination": "5c",
-        "perforation": "12",
-        "primary_color": "brown",
-        "description": "1863 5¢ Jefferson brown; Continental Bank Note Company perf 12 later brown shade.",
-        "c": 15,
-        "v": 15
-      },
-      "77|us": {
-        "scott": {
-          "number": 77,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1861-1866-civil-war-definitives",
-        "issue_date": "1863-07-01",
-        "denomination": "15c",
-        "perforation": "12",
-        "primary_color": "black",
-        "description": "1863 15¢ Abraham Lincoln black; Continental Bank Note Company perf 12 registry and heavy-postage denomination.",
-        "c": 15,
-        "v": 15
-      },
-      "78|us": {
-        "scott": {
-          "number": 78,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1861-1866-civil-war-definitives",
-        "issue_date": "1866-02-20",
-        "denomination": "24c",
-        "perforation": "12",
-        "primary_color": "lilac",
-        "description": "1866 24¢ George Washington lilac; National Bank Note Company printing on silk-fiber security paper, perf 12.",
-        "c": 15,
-        "v": 15
-      },
-      "79|us": {
-        "scott": {
-          "number": 79,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1867-10-22",
-        "denomination": "3c",
-        "perforation": "12",
-        "primary_color": "rose",
-        "description": "1867 3¢ George Washington rose; National Bank Note Company perf 12 stamp from the ungrilled late-1860s letter-rate series.",
-        "c": 15,
-        "v": 15
-      },
-      "80|us": {
-        "scott": {
-          "number": 80,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1867-09-01",
-        "denomination": "5c",
-        "perforation": "12",
-        "primary_color": "brown",
-        "description": "1867 5¢ Thomas Jefferson brown; perf 12 Bank Note-era Jefferson without grill.",
-        "c": 15,
-        "v": 15
-      },
-      "81|us": {
-        "scott": {
-          "number": 81,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1867-09-01",
-        "denomination": "30c",
-        "perforation": "12",
-        "primary_color": "orange",
-        "description": "1867 30¢ Benjamin Franklin orange; perf 12 high denomination without grill.",
-        "c": 15,
-        "v": 15
-      },
-      "82|us": {
-        "scott": {
-          "number": 82,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1867-09-01",
-        "denomination": "3c",
-        "perforation": "12",
-        "primary_color": "rose",
-        "description": "1867 3¢ Washington rose; perf 12 printing from the late 1860s regular issue.",
-        "c": 15,
-        "v": 15
-      },
-      "83|us": {
-        "scott": {
-          "number": 83,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1867-11-01",
-        "denomination": "3c",
-        "perforation": "12",
-        "primary_color": "rose",
-        "description": "1867 3¢ Washington rose; perf 12 later shipment or shade grouping of the ungrilled 3¢ design.",
-        "c": 15,
-        "v": 15
-      },
-      "84|us": {
-        "scott": {
-          "number": 84,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1868-02-08",
-        "denomination": "2c",
-        "perforation": "12",
-        "primary_color": "black",
-        "description": "1868 2¢ Andrew Jackson black; perf 12 line engraving from the late 1860s regular issue.",
-        "c": 15,
-        "v": 15
-      },
-      "85|us": {
-        "scott": {
-          "number": 85,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1868-02-02",
-        "denomination": "3c",
-        "perforation": "12",
-        "primary_color": "rose",
-        "description": "1868 3¢ George Washington rose; perf 12 parent design for several denominated varieties and minor listings in specialized catalogs.",
-        "c": 15,
-        "v": 15
-      },
-      "85|a|us": {
-        "scott": {
-          "number": 85,
-          "variation": "a",
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1868-03-01",
-        "denomination": "1c",
-        "perforation": "12",
-        "primary_color": "blue",
-        "description": "Listed variety \"A\": 1868 1¢ Benjamin Franklin blue; perf 12 stamp grouped under the Scott 85 design family in this dataset.",
-        "c": 15,
-        "v": 15
-      },
-      "85|b|us": {
-        "scott": {
-          "number": 85,
-          "variation": "b",
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1868-02-08",
-        "denomination": "2c",
-        "perforation": "12",
-        "primary_color": "black",
-        "description": "Listed variety \"B\": 1868 2¢ Andrew Jackson black; perf 12 stamp grouped under the Scott 85 design family in this dataset.",
-        "c": 15,
-        "v": 15
-      },
-      "85|c|us": {
-        "scott": {
-          "number": 85,
-          "variation": "c",
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1868-01-01",
-        "denomination": "85c",
-        "perforation": "12",
-        "primary_color": "rose",
-        "description": "Listed variety \"C\": 1868 85¢ George Washington rose; perf 12 unusual denomination—verify status (regular issue, essay, or provisional) in a specialized catalog.",
-        "c": 15,
-        "v": 15
-      },
-      "85|d|us": {
-        "scott": {
-          "number": 85,
-          "variation": "d",
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1868-03-01",
-        "denomination": "10c",
-        "perforation": "12",
-        "primary_color": "green",
-        "description": "Listed variety \"D\": 1868 10¢ George Washington green; perf 12 stamp grouped under the Scott 85 design family in this dataset.",
-        "c": 15,
-        "v": 15
-      },
-      "85|e|us": {
-        "scott": {
-          "number": 85,
-          "variation": "e",
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1868-02-01",
-        "denomination": "12c",
-        "perforation": "12",
-        "primary_color": "black",
-        "description": "Listed variety \"E\": 1868 12¢ George Washington black; perf 12 stamp grouped under the Scott 85 design family in this dataset.",
-        "c": 15,
-        "v": 15
-      },
-      "85|f|us": {
-        "scott": {
-          "number": 85,
-          "variation": "f",
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1868-01-01",
-        "denomination": "15c",
-        "perforation": "12",
-        "primary_color": "black",
-        "description": "Listed variety \"F\": 1868 15¢ Abraham Lincoln black; perf 12 stamp grouped under the Scott 85 design family in this dataset.",
-        "c": 15,
-        "v": 15
-      },
-      "86|us": {
-        "scott": {
-          "number": 86,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1868-03-01",
-        "denomination": "1c",
-        "perforation": "12",
-        "primary_color": "blue",
-        "description": "1868 1¢ Benjamin Franklin blue; perf 12 National Bank Note printing of the ungrilled late-1860s series.",
-        "c": 15,
-        "v": 15
-      },
-      "87|us": {
-        "scott": {
-          "number": 87,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1868-02-01",
-        "denomination": "2c",
-        "perforation": "12",
-        "primary_color": "black",
-        "description": "1868 2¢ Andrew Jackson black; perf 12 ungrilled \"Black Jack\" design of the late-1860s issue.",
-        "c": 15,
-        "v": 15
-      },
-      "88|us": {
-        "scott": {
-          "number": 88,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1868-02-01",
-        "denomination": "3c",
-        "perforation": "12",
-        "primary_color": "rose",
-        "description": "1868 3¢ George Washington rose; perf 12 ungrilled line-engraved letter rate.",
-        "c": 15,
-        "v": 15
-      },
-      "89|us": {
-        "scott": {
-          "number": 89,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1868-02-01",
-        "denomination": "10c",
-        "perforation": "12",
-        "primary_color": "green",
-        "description": "1868 10¢ George Washington green; perf 12 ungrilled ten-cent denomination.",
-        "c": 15,
-        "v": 15
-      },
-      "90|us": {
-        "scott": {
-          "number": 90,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1868-02-01",
-        "denomination": "12c",
-        "perforation": "12",
-        "primary_color": "black",
-        "description": "1868 12¢ George Washington black; perf 12 ungrilled twelve-cent value.",
-        "c": 15,
-        "v": 15
-      },
-      "91|us": {
-        "scott": {
-          "number": 91,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1868-02-01",
-        "denomination": "15c",
-        "perforation": "12",
-        "primary_color": "black",
-        "description": "1868 15¢ Abraham Lincoln black; perf 12 ungrilled fifteen-cent stamp.",
-        "c": 15,
-        "v": 15
-      },
-      "92|us": {
-        "scott": {
-          "number": 92,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1868-08-01",
-        "denomination": "1c",
-        "perforation": "12",
-        "primary_color": "blue, pale blue",
-        "description": "1868 1¢ Franklin blue shades; perf 12 later printing or shade grouping of the ungrilled 1¢ design.",
-        "c": 15,
-        "v": 15
-      },
-      "93|us": {
-        "scott": {
-          "number": 93,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1868-03-01",
-        "denomination": "2c",
-        "perforation": "12",
-        "primary_color": "black",
-        "description": "1868 2¢ Andrew Jackson black; perf 12 stamp from the same ungrilled series as the 1868 2¢ regular issue.",
-        "c": 15,
-        "v": 15
-      },
-      "94|us": {
-        "scott": {
-          "number": 94,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1868-03-01",
-        "denomination": "3c",
-        "perforation": "12",
-        "primary_color": "red",
-        "description": "1868 3¢ George Washington carmine red; perf 12 distinctive red ink variety of the ungrilled 3¢ design.",
-        "c": 15,
-        "v": 15
-      },
-      "95|us": {
-        "scott": {
-          "number": 95,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1868-07-01",
-        "denomination": "5c",
-        "perforation": "12",
-        "primary_color": "black, black brown",
-        "description": "1868 5¢ Thomas Jefferson black (\"Black Jefferson\"); perf 12 striking monochrome Jefferson design.",
-        "c": 15,
-        "v": 15
-      },
-      "96|us": {
-        "scott": {
-          "number": 96,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1868-08-13",
-        "denomination": "10c",
-        "perforation": "12",
-        "primary_color": "green, dark green (#96a)",
-        "description": "1868 10¢ George Washington green; perf 12 late-1860s ungrilled ten-cent including minor listed shade differences.",
-        "c": 15,
-        "v": 15
-      },
-      "97|us": {
-        "scott": {
-          "number": 97,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1868-08-13",
-        "denomination": "12c",
-        "perforation": "12",
-        "primary_color": "black",
-        "description": "1868 12¢ George Washington black; perf 12 late-1860s ungrilled twelve-cent.",
-        "c": 15,
-        "v": 15
-      },
-      "98|us": {
-        "scott": {
-          "number": 98,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1868-08-13",
-        "denomination": "15c",
-        "perforation": "12",
-        "primary_color": "black",
-        "description": "1868 15¢ Abraham Lincoln black; perf 12 late-1860s ungrilled fifteen-cent.",
-        "c": 15,
-        "v": 15
-      },
-      "99|us": {
-        "scott": {
-          "number": 99,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1868-08-13",
-        "denomination": "24c",
-        "perforation": "12",
-        "primary_color": "gray lilac",
-        "description": "1868 24¢ George Washington gray lilac; perf 12 ungrilled twenty-four-cent value.",
-        "c": 15,
-        "v": 15
-      },
-      "100|us": {
-        "scott": {
-          "number": 100,
-          "country_id": "us"
-        },
-        "issue_series_id": "us-1867-1868-grilled-issue",
-        "issue_date": "1868-08-13",
-        "denomination": "30c",
-        "perforation": "12",
-        "primary_color": "orange",
-        "description": "1868 30¢ Benjamin Franklin orange; perf 12 ungrilled thirty-cent denomination.",
-        "c": 15,
-        "v": 15
-      }
-    },
     "scott_catalog_section": {
       "B": {
         "section_prefix": "B",
@@ -2652,41 +2653,6 @@
         "sort_order": 190,
         "c": 4,
         "v": 4
-      }
-    },
-    "stamp": {
-      "stamp_2026-04-11_example_001": {
-        "stamp_id": "stamp_2026-04-11_example_001",
-        "country_id": "dk",
-        "scott": {
-          "country_id": "dk",
-          "section": "M",
-          "number": 45
-        },
-        "title": "Denmark 20 øre bicolor used",
-        "summary": "VF used, numeral cancel; printing variety per dealer notes.",
-        "issue_year": 1895,
-        "condition_quality": "used",
-        "centering_grade": "fine",
-        "image_basename": "stamp_2026-04-11_example_001.jpg",
-        "bounding_box": {
-          "x_min": 0,
-          "x_max": 1000,
-          "y_min": 0,
-          "y_max": 1000
-        },
-        "freeform_keywords": [
-          "Facit",
-          "numeral",
-          "cancel"
-        ],
-        "c": 1,
-        "m": [
-          7,
-          12,
-          13
-        ],
-        "v": 13
       }
     },
     "stamp_catalog_number": {

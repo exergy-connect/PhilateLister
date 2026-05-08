@@ -12,6 +12,7 @@ import {
   type GenerateContentResponse,
   ThinkingLevel,
 } from '@google/genai';
+import { XFrameGeminiFunctionRuntime, type EntityStore } from './xframe-gemini-functions.js';
 
 /** Repository root: GitHub Actions and `node scripts/dist/appraisal.cjs` use repo cwd; `npm run appraisal` uses `cd ..` first. */
 const repoRoot = process.cwd();
@@ -83,7 +84,7 @@ let invocationsCache: PromptInvocationRow[] | null = null;
 let consolidatedDataRoot: ConsolidatedDataRoot | null = null;
 
 type ConsolidatedDataRoot = {
-  data?: Record<string, Record<string, Record<string, unknown>>>;
+  data?: EntityStore;
 };
 
 function loadConsolidatedDataRoot(): ConsolidatedDataRoot {
@@ -109,7 +110,7 @@ function loadConsolidatedDataRoot(): ConsolidatedDataRoot {
   return consolidatedDataRoot;
 }
 
-function getEntityStore(): Record<string, Record<string, Record<string, unknown>>> {
+function getEntityStore(): EntityStore {
   const root = loadConsolidatedDataRoot();
   const d = root.data;
   if (!d || typeof d !== 'object') {
@@ -358,6 +359,11 @@ function fileMismatchGap(imageBasename: string, meta: Meta): string {
 }
 
 let cachedStampCatalogResponseJsonSchema: Record<string, unknown> | null = null;
+const geminiFunctionRuntime = new XFrameGeminiFunctionRuntime({
+  consolidatedSchemaPath: CONSOLIDATED_SCHEMA_PATH,
+  getEntityStore,
+  providerId: 'google_gemini',
+});
 
 /**
  * Shared JSON Schema root for catalog JSON: `{ "stamp": [ …$defs.stamp… ] }`.
@@ -366,24 +372,7 @@ let cachedStampCatalogResponseJsonSchema: Record<string, unknown> | null = null;
  */
 function stampCatalogResponseJsonSchema(): Record<string, unknown> {
   if (cachedStampCatalogResponseJsonSchema) return cachedStampCatalogResponseJsonSchema;
-  if (!existsSync(CONSOLIDATED_SCHEMA_PATH)) {
-    throw new Error(
-      `Missing ${CONSOLIDATED_SCHEMA_PATH}; run the xFrame consolidator with --working-dir pointing at this repo's xframe/ directory first.`
-    );
-  }
-  let parsed: Record<string, unknown>;
-  try {
-    parsed = JSON.parse(readFileSync(CONSOLIDATED_SCHEMA_PATH, 'utf-8')) as Record<string, unknown>;
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e);
-    throw new Error(`Invalid JSON in ${CONSOLIDATED_SCHEMA_PATH}: ${msg}`);
-  }
-  const defs = parsed.$defs as Record<string, unknown> | undefined;
-  const stamp = defs?.stamp;
-  if (!stamp || typeof stamp !== 'object' || Array.isArray(stamp)) {
-    throw new Error(`${CONSOLIDATED_SCHEMA_PATH} missing object $defs.stamp`);
-  }
-  const stampSchema = JSON.parse(JSON.stringify(stamp)) as Record<string, unknown>;
+  const stampSchema = JSON.parse(JSON.stringify(geminiFunctionRuntime.schemaDef('stamp'))) as Record<string, unknown>;
   stampSchema.additionalProperties = false;
   const root: Record<string, unknown> = {
     type: 'object',
@@ -484,6 +473,14 @@ function responseText(response: GenerateContentResponse): string {
   return parts.join('\n');
 }
 
+function logGeminiFunctionResult(name: unknown, response: Record<string, unknown>): Record<string, unknown> {
+  const matchCount = typeof response.match_count === 'number' ? ` match_count=${response.match_count}` : '';
+  const ok = typeof response.ok === 'boolean' ? ` ok=${response.ok}` : '';
+  const error = typeof response.error === 'string' ? ` error=${JSON.stringify(response.error)}` : '';
+  console.error(`Gemini function response ${String(name ?? '(unnamed)')}:${ok}${matchCount}${error}`);
+  return response;
+}
+
 async function runGeminiInvocation(
   model: string,
   apiKey: string,
@@ -494,29 +491,67 @@ async function runGeminiInvocation(
 ): Promise<string> {
   const baseConfig = buildGeminiGenerateConfig(model, outputFormat);
   const timeoutMs = aiHttpTimeoutMsForImage(imgBytes.length);
+  const functionDeclarations = geminiFunctionRuntime.functionDeclarations();
   const config: GenerateContentConfig = {
     ...baseConfig,
+    ...(functionDeclarations.length ? { tools: [{ functionDeclarations }] } : {}),
     httpOptions: { timeout: timeoutMs, headers: {} },
-  };
+  } as GenerateContentConfig;
   const ai = new GoogleGenAI({ apiKey });
-  const response = await ai.models.generateContent({
-    model,
-    contents: [
-      {
-        role: 'user',
-        parts: [
-          {
-            inlineData: {
-              mimeType: mime,
-              data: imgBytes.toString('base64'),
-            },
+  const contents: unknown[] = [
+    {
+      role: 'user',
+      parts: [
+        {
+          inlineData: {
+            mimeType: mime,
+            data: imgBytes.toString('base64'),
           },
-          { text: userPrompt },
-        ],
-      },
-    ],
+        },
+        { text: userPrompt },
+      ],
+    },
+  ];
+
+  let response = await ai.models.generateContent({
+    model,
+    contents: contents as never,
     config,
   });
+
+  for (let turn = 0; turn < 4; turn += 1) {
+    const calls = geminiFunctionRuntime.functionCalls(response);
+    if (calls.length === 0) return responseText(response);
+    console.error(
+      `Gemini requested ${calls.length} function call${calls.length === 1 ? '' : 's'} on turn ${turn + 1}: ${calls
+        .map((call) => String(call.name ?? '(unnamed)'))
+        .join(', ')}`
+    );
+
+    contents.push({
+      role: 'model',
+      parts: calls.map((call) => ({
+        functionCall: {
+          name: call.name,
+          args: call.args ?? {},
+        },
+      })),
+    });
+    contents.push({
+      role: 'user',
+      parts: calls.map((call) => ({
+        functionResponse: {
+          name: call.name,
+          response: logGeminiFunctionResult(call.name, geminiFunctionRuntime.executeFunctionCall(call)),
+        },
+      })),
+    });
+    response = await ai.models.generateContent({
+      model,
+      contents: contents as never,
+      config,
+    });
+  }
   return responseText(response);
 }
 

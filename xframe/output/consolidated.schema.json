@@ -33,7 +33,8 @@
       "required": [
         "catalog_system_abbreviation",
         "name"
-      ]
+      ],
+      "x-primaryKey": "catalog_system_abbreviation"
     },
     "country": {
       "type": "object",
@@ -80,7 +81,154 @@
       "required": [
         "country_id",
         "display_name"
-      ]
+      ],
+      "x-primaryKey": "country_id"
+    },
+    "gemini_function_call": {
+      "type": "object",
+      "properties": {
+        "function_name": {
+          "type": "string",
+          "description": "Function name in the provider API."
+        },
+        "description": {
+          "type": "string",
+          "description": "Function description for the model."
+        },
+        "provider_id": {
+          "type": "string",
+          "description": "Provider id (e.g. google_gemini)."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether appraisal exposes this function."
+        },
+        "sort_order": {
+          "type": "integer",
+          "description": "Declaration order."
+        },
+        "parameters": {
+          "type": "array",
+          "description": "Parameters in declaration order.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "output": {
+          "type": "array",
+          "description": "Maps each response property to the anchor parameter whose composite_key builds that object.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "response_key": {
+                "type": "string",
+                "description": "Property name on the function result."
+              },
+              "anchor_parameter": {
+                "type": "string",
+                "description": "Parameter name with composite_key for that assembly."
+              }
+            },
+            "required": [
+              "response_key",
+              "anchor_parameter"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "description": "One row per tool exposed to Gemini (see xframe/data/gemini_function_calls.json).",
+      "required": [
+        "function_name",
+        "description",
+        "provider_id",
+        "enabled",
+        "sort_order",
+        "parameters",
+        "output"
+      ],
+      "x-primaryKey": "function_name"
+    },
+    "gemini_function_parameter": {
+      "type": "object",
+      "properties": {
+        "parameter_key": {
+          "type": "object",
+          "properties": {
+            "function_name": {
+              "type": "string",
+              "description": "Parent Gemini function (nesting under gemini_function_call.parameters).",
+              "x-foreignKeys": [
+                {
+                  "entity": "gemini_function_call",
+                  "parent_array": "parameters"
+                }
+              ],
+              "x-parents": [
+                {
+                  "entity": "gemini_function_call",
+                  "parent_array": "parameters"
+                }
+              ]
+            },
+            "name": {
+              "type": "string",
+              "description": "Parameter name in the tool schema."
+            }
+          },
+          "required": [
+            "function_name",
+            "name"
+          ],
+          "additionalProperties": false,
+          "description": "Composite primary key (function_name, parameter name)."
+        },
+        "description": {
+          "type": "string",
+          "description": "Parameter description for the model."
+        },
+        "schema_entity": {
+          "type": "string",
+          "description": "Consolidated $defs entity used for JSON Schema typing."
+        },
+        "composite_key": {
+          "type": "array",
+          "description": "Maps PK components on schema_entity to sibling parameter names.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "component": {
+                "type": "string",
+                "description": "PK component name (e.g. country_id, numeral)."
+              },
+              "parameter_name": {
+                "type": "string",
+                "description": "Sibling parameter supplying that component."
+              }
+            },
+            "required": [
+              "component",
+              "parameter_name"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Whether the parameter is required on the tool."
+        },
+        "enum": {
+          "type": "boolean",
+          "description": "If true, restrict to enum from consolidated data where applicable."
+        }
+      },
+      "description": "Declaration field for a single parameter. Primary key is function_name plus parameter name so flattened rows are globally unique.",
+      "required": [
+        "parameter_key",
+        "schema_entity",
+        "required"
+      ],
+      "x-primaryKey": "parameter_key"
     },
     "issue_series": {
       "type": "object",
@@ -91,7 +239,19 @@
         },
         "country_id": {
           "type": "string",
-          "description": "Primary issuing country or administration for this series."
+          "description": "Primary issuing country or administration for this series.",
+          "x-foreignKeys": [
+            {
+              "entity": "country",
+              "parent_array": "issue_series"
+            }
+          ],
+          "x-parents": [
+            {
+              "entity": "country",
+              "parent_array": "issue_series"
+            }
+          ]
         },
         "name": {
           "type": "string",
@@ -111,7 +271,12 @@
         },
         "parent_series_id": {
           "type": "string",
-          "description": "Optional parent series for nested grouping (e.g. country definitives under a broad program)."
+          "description": "Optional parent series for nested grouping (e.g. country definitives under a broad program).",
+          "x-foreignKeys": [
+            {
+              "entity": "issue_series"
+            }
+          ]
         }
       },
       "description": "Groups stamps into sets, definitive series, commemoratives, or specialized series for browsing and pricing context.",
@@ -119,7 +284,8 @@
         "series_id",
         "country_id",
         "name"
-      ]
+      ],
+      "x-primaryKey": "series_id"
     },
     "listing": {
       "type": "object",
@@ -130,7 +296,12 @@
         },
         "stamp_id": {
           "type": "string",
-          "description": "Stamp this listing prices."
+          "description": "Stamp this listing prices.",
+          "x-foreignKeys": [
+            {
+              "entity": "stamp"
+            }
+          ]
         },
         "target_price": {
           "type": "number",
@@ -151,7 +322,8 @@
         "stamp_id",
         "target_price",
         "listing_currency"
-      ]
+      ],
+      "x-primaryKey": "listing_id"
     },
     "llm_model": {
       "type": "object",
@@ -166,7 +338,12 @@
         },
         "provider_id": {
           "type": "string",
-          "description": "Upstream provider that serves this model."
+          "description": "Upstream provider that serves this model.",
+          "x-foreignKeys": [
+            {
+              "entity": "provider"
+            }
+          ]
         },
         "has_free_tier": {
           "type": "boolean",
@@ -183,7 +360,8 @@
         "name",
         "provider_id",
         "has_free_tier"
-      ]
+      ],
+      "x-primaryKey": "model_id"
     },
     "numeral_cancel": {
       "type": "object",
@@ -193,7 +371,19 @@
           "properties": {
             "country_id": {
               "type": "string",
-              "description": "Issuing country or postal administration for this numeral assignment."
+              "description": "Issuing country or postal administration for this numeral assignment.",
+              "x-foreignKeys": [
+                {
+                  "entity": "country",
+                  "parent_array": "numeral_cancels"
+                }
+              ],
+              "x-parents": [
+                {
+                  "entity": "country",
+                  "parent_array": "numeral_cancels"
+                }
+              ]
             },
             "numeral": {
               "type": "integer",
@@ -215,7 +405,19 @@
         },
         "country_id": {
           "type": "string",
-          "description": "Issuing country (must match numeral_cancel_key.country_id; scalar FK enables nesting under country.numeral_cancels during consolidation)."
+          "description": "Issuing country (must match numeral_cancel_key.country_id; scalar FK enables nesting under country.numeral_cancels during consolidation).",
+          "x-foreignKeys": [
+            {
+              "entity": "country",
+              "parent_array": "numeral_cancels"
+            }
+          ],
+          "x-parents": [
+            {
+              "entity": "country",
+              "parent_array": "numeral_cancels"
+            }
+          ]
         },
         "period_end": {
           "type": "string",
@@ -237,7 +439,8 @@
         "country_id",
         "period_end",
         "town_name"
-      ]
+      ],
+      "x-primaryKey": "numeral_cancel_key"
     },
     "prompt": {
       "type": "object",
@@ -283,7 +486,8 @@
         "preferred_model",
         "output_format",
         "template_lines"
-      ]
+      ],
+      "x-primaryKey": "prompt_id"
     },
     "prompt_invocation": {
       "type": "object",
@@ -294,11 +498,21 @@
         },
         "prompt_id": {
           "type": "string",
-          "description": "Prompt template this invocation belongs to."
+          "description": "Prompt template this invocation belongs to.",
+          "x-foreignKeys": [
+            {
+              "entity": "prompt"
+            }
+          ]
         },
         "provider_id": {
           "type": "string",
-          "description": "Provider row (provider_id selects the appraisal client; see provider entity)."
+          "description": "Provider row (provider_id selects the appraisal client; see provider entity).",
+          "x-foreignKeys": [
+            {
+              "entity": "provider"
+            }
+          ]
         },
         "model": {
           "type": "string",
@@ -321,7 +535,8 @@
         "model",
         "sort_order",
         "primary_for_listing"
-      ]
+      ],
+      "x-primaryKey": "invocation_id"
     },
     "provider": {
       "type": "object",
@@ -351,7 +566,8 @@
       "required": [
         "provider_id",
         "api_base_url"
-      ]
+      ],
+      "x-primaryKey": "provider_id"
     },
     "scott_catalog_entry": {
       "type": "object",
@@ -361,7 +577,19 @@
           "properties": {
             "country_id": {
               "type": "string",
-              "description": "Issuing country or postal administration for this listing (denormalized; use with country.scott_catalog_entries nesting)."
+              "description": "Issuing country or postal administration for this listing (denormalized; use with country.scott_catalog_entries nesting).",
+              "x-foreignKeys": [
+                {
+                  "entity": "country",
+                  "parent_array": "scott_catalog_entries"
+                }
+              ],
+              "x-parents": [
+                {
+                  "entity": "country",
+                  "parent_array": "scott_catalog_entries"
+                }
+              ]
             },
             "section": {
               "type": "string",
@@ -386,6 +614,11 @@
                 "QE",
                 "R",
                 "RW"
+              ],
+              "x-foreignKeys": [
+                {
+                  "entity": "scott_catalog_section"
+                }
               ]
             },
             "number": {
@@ -450,7 +683,8 @@
         "perforation",
         "primary_color",
         "description"
-      ]
+      ],
+      "x-primaryKey": "scott"
     },
     "scott_catalog_section": {
       "type": "object",
@@ -498,7 +732,8 @@
         "section_prefix",
         "category_name",
         "description"
-      ]
+      ],
+      "x-primaryKey": "section_prefix"
     },
     "stamp": {
       "type": "object",
@@ -509,14 +744,31 @@
         },
         "country_id": {
           "type": "string",
-          "description": "Issuing country or postal administration."
+          "description": "Issuing country or postal administration.",
+          "x-foreignKeys": [
+            {
+              "entity": "country"
+            }
+          ]
         },
         "scott": {
           "type": "object",
           "properties": {
             "country_id": {
               "type": "string",
-              "description": "Issuing country or postal administration for this listing (denormalized; use with country.scott_catalog_entries nesting)."
+              "description": "Issuing country or postal administration for this listing (denormalized; use with country.scott_catalog_entries nesting).",
+              "x-foreignKeys": [
+                {
+                  "entity": "country",
+                  "parent_array": "scott_catalog_entries"
+                }
+              ],
+              "x-parents": [
+                {
+                  "entity": "country",
+                  "parent_array": "scott_catalog_entries"
+                }
+              ]
             },
             "section": {
               "type": "string",
@@ -541,6 +793,11 @@
                 "QE",
                 "R",
                 "RW"
+              ],
+              "x-foreignKeys": [
+                {
+                  "entity": "scott_catalog_section"
+                }
               ]
             },
             "number": {
@@ -564,7 +821,12 @@
             "number"
           ],
           "additionalProperties": false,
-          "description": "Optional primary catalog listing for this stamp (same composite key as scott_catalog_entry.scott). Cross-catalog lines remain on stamp_catalog_number."
+          "description": "Optional primary catalog listing for this stamp (same composite key as scott_catalog_entry.scott). Cross-catalog lines remain on stamp_catalog_number.",
+          "x-foreignKeys": [
+            {
+              "entity": "scott_catalog_entry"
+            }
+          ]
         },
         "title": {
           "type": "string",
@@ -699,7 +961,8 @@
         "condition_quality",
         "centering_grade",
         "bounding_box"
-      ]
+      ],
+      "x-primaryKey": "stamp_id"
     },
     "stamp_catalog_number": {
       "type": "object",
@@ -710,7 +973,12 @@
         },
         "stamp_id": {
           "type": "string",
-          "description": "Stamp this number refers to."
+          "description": "Stamp this number refers to.",
+          "x-foreignKeys": [
+            {
+              "entity": "stamp"
+            }
+          ]
         },
         "catalog_system_abbreviation": {
           "type": "string",
@@ -724,6 +992,11 @@
             "Yv",
             "NVPH",
             "Zu"
+          ],
+          "x-foreignKeys": [
+            {
+              "entity": "catalog_system"
+            }
           ]
         },
         "catalog_number": {
@@ -741,7 +1014,8 @@
         "stamp_id",
         "catalog_system_abbreviation",
         "catalog_number"
-      ]
+      ],
+      "x-primaryKey": "catalog_line_id"
     },
     "stamp_thematic_tag": {
       "type": "object",
@@ -752,11 +1026,21 @@
         },
         "stamp_id": {
           "type": "string",
-          "description": "Stamp receiving the thematic tag."
+          "description": "Stamp receiving the thematic tag.",
+          "x-foreignKeys": [
+            {
+              "entity": "stamp"
+            }
+          ]
         },
         "tag_id": {
           "type": "string",
-          "description": "Thematic tag applied."
+          "description": "Thematic tag applied.",
+          "x-foreignKeys": [
+            {
+              "entity": "thematic_tag"
+            }
+          ]
         },
         "role": {
           "type": "string",
@@ -782,7 +1066,8 @@
         "thematic_link_id",
         "stamp_id",
         "tag_id"
-      ]
+      ],
+      "x-primaryKey": "thematic_link_id"
     },
     "thematic_tag": {
       "type": "object",
@@ -801,7 +1086,12 @@
         },
         "parent_tag_id": {
           "type": "string",
-          "description": "Optional parent tag for subtopics."
+          "description": "Optional parent tag for subtopics.",
+          "x-foreignKeys": [
+            {
+              "entity": "thematic_tag"
+            }
+          ]
         },
         "sort_order": {
           "type": "integer",
@@ -813,7 +1103,8 @@
         "tag_id",
         "name",
         "description"
-      ]
+      ],
+      "x-primaryKey": "tag_id"
     },
     "change": {
       "type": "object",
@@ -860,6 +1151,18 @@
       "type": "array",
       "items": {
         "$ref": "#/$defs/country"
+      }
+    },
+    "gemini_function_call": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/gemini_function_call"
+      }
+    },
+    "gemini_function_parameter": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/gemini_function_parameter"
       }
     },
     "issue_series": {

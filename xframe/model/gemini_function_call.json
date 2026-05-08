@@ -1,0 +1,164 @@
+{
+  "name": "PhilateLister stamp catalog",
+  "version": "26.05.08.2",
+  "author": "Exergy ∞ LLC",
+  "description": "Entity shard: Gemini function-calling tools exposed by appraisal.",
+  "source": "PhilateLister",
+  "entities": [
+    {
+      "name": "gemini_function_call",
+      "brief": "Gemini function declaration for appraisal.",
+      "description": "One row per tool exposed to Gemini (see xframe/data/gemini_function_calls.json).",
+      "primary_key": "function_name",
+      "fields": [
+        {
+          "name": "function_name",
+          "description": "Function name in the provider API.",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "description",
+          "description": "Function description for the model.",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "provider_id",
+          "description": "Provider id (e.g. google_gemini).",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "enabled",
+          "description": "Whether appraisal exposes this function.",
+          "type": { "primitive": "boolean" },
+          "required": true
+        },
+        {
+          "name": "sort_order",
+          "description": "Declaration order.",
+          "type": { "primitive": "integer" },
+          "required": true
+        },
+        {
+          "name": "parameters",
+          "description": "Parameters in declaration order.",
+          "type": { "array": { "entity": "gemini_function_parameter" } },
+          "required": true
+        },
+        {
+          "name": "output",
+          "description": "Maps each response property to the anchor parameter whose composite_key builds that object.",
+          "type": {
+            "array": {
+              "composite": [
+                {
+                  "name": "response_key",
+                  "description": "Property name on the function result.",
+                  "type": { "primitive": "string" },
+                  "required": true
+                },
+                {
+                  "name": "anchor_parameter",
+                  "description": "Parameter name with composite_key for that assembly.",
+                  "type": { "primitive": "string" },
+                  "required": true
+                }
+              ]
+            }
+          },
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "gemini_function_parameter",
+      "brief": "One Gemini function parameter.",
+      "description": "Declaration field for a single parameter. Primary key is function_name plus parameter name so flattened rows are globally unique.",
+      "primary_key": "parameter_key",
+      "field_definitions": [
+        {
+          "name": "gemini_function_parameter_key",
+          "description": "Natural key: owning function and parameter name in the tool schema.",
+          "type": {
+            "composite": [
+              {
+                "name": "function_name",
+                "description": "Parent Gemini function (nesting under gemini_function_call.parameters).",
+                "type": {
+                  "primitive": "string",
+                  "foreignKeys": [
+                    { "entity": "gemini_function_call", "parent_array": "parameters" }
+                  ]
+                },
+                "required": true
+              },
+              {
+                "name": "name",
+                "description": "Parameter name in the tool schema.",
+                "type": { "primitive": "string" },
+                "required": true
+              }
+            ]
+          }
+        }
+      ],
+      "fields": [
+        {
+          "name": "parameter_key",
+          "description": "Composite primary key (function_name, parameter name).",
+          "type": { "definition": "gemini_function_parameter_key" },
+          "required": true
+        },
+        {
+          "name": "description",
+          "description": "Parameter description for the model.",
+          "type": { "primitive": "string" },
+          "required": false
+        },
+        {
+          "name": "schema_entity",
+          "description": "Consolidated $defs entity used for JSON Schema typing.",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "composite_key",
+          "description": "Maps PK components on schema_entity to sibling parameter names.",
+          "type": {
+            "array": {
+              "composite": [
+                {
+                  "name": "component",
+                  "description": "PK component name (e.g. country_id, numeral).",
+                  "type": { "primitive": "string" },
+                  "required": true
+                },
+                {
+                  "name": "parameter_name",
+                  "description": "Sibling parameter supplying that component.",
+                  "type": { "primitive": "string" },
+                  "required": true
+                }
+              ]
+            }
+          },
+          "required": false
+        },
+        {
+          "name": "required",
+          "description": "Whether the parameter is required on the tool.",
+          "type": { "primitive": "boolean" },
+          "required": true
+        },
+        {
+          "name": "enum",
+          "description": "If true, restrict to enum from consolidated data where applicable.",
+          "type": { "primitive": "boolean" },
+          "required": false
+        }
+      ]
+    }
+  ]
+}

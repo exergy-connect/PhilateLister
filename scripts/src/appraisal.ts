@@ -29,6 +29,8 @@ const LARGE_IMAGE_BYTES = 1024 * 1024;
 const AI_TIMEOUT_DEFAULT_MS = 1 * 60 * 1000;
 /** Same ceiling as before this file had a default for small payloads (>1 MiB inline vision). */
 const AI_TIMEOUT_LARGE_IMAGE_MS = 2 * 60 * 1000;
+/** Gemini should produce a final response quickly after tool lookups; repeated tool-only turns are a failed invocation. */
+const GEMINI_FUNCTION_CALL_MAX_TURNS = 4;
 
 const PROMPT_ID_RE = /^[a-zA-Z0-9][a-zA-Z0-9_-]{0,62}$/;
 
@@ -548,7 +550,7 @@ async function runGeminiInvocation(
     config,
   });
 
-  for (let turn = 0; turn < 4; turn += 1) {
+  for (let turn = 0; turn < GEMINI_FUNCTION_CALL_MAX_TURNS; turn += 1) {
     const calls = geminiFunctionRuntime.functionCalls(response);
     if (calls.length === 0) return responseText(response);
     console.error(
@@ -583,6 +585,14 @@ async function runGeminiInvocation(
       contents: contents as never,
       config,
     });
+  }
+  const pendingCalls = geminiFunctionRuntime.functionCalls(response);
+  if (pendingCalls.length > 0) {
+    throw new Error(
+      `Gemini requested function calls for ${GEMINI_FUNCTION_CALL_MAX_TURNS} consecutive turns without producing a final response; last requested: ${pendingCalls
+        .map((call) => String(call.name ?? '(unnamed)'))
+        .join(', ')}`
+    );
   }
   return responseText(response);
 }
@@ -1009,16 +1019,6 @@ async function runAppraisal(imagePath: string, commitMessage: string | undefined
   if (ok.length === 0) {
     for (const r of failed) {
       console.error(`Invocation ${r.invocationId} failed: ${r.error ?? 'empty response'}`);
-    }
-    process.exit(1);
-  }
-
-  const primaryId = primaries[0]!.invocationId;
-  const primaryResult = results.find((r) => r.invocationId === primaryId);
-  if (!primaryResult || primaryResult.error || !String(primaryResult.text).trim()) {
-    console.error(`Error: Primary invocation ${primaryId} failed; refusing to write listing.`);
-    for (const r of failed) {
-      console.error(`  ${r.invocationId}: ${r.error ?? 'empty'}`);
     }
     process.exit(1);
   }

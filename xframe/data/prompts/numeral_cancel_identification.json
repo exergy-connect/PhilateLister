@@ -3,7 +3,7 @@
     {
       "prompt_id": "numeral_cancel_identification",
       "brief": "Numeral cancel identification with cautious eBay-style listing (plain text)",
-      "preferred_model": "gemini-3.1-pro",
+      "preferred_model": "gemini-3.1-pro-preview",
       "output_format": "txt",
       "template_lines": [
         "You are helping a stamp dealer prepare an accurate eBay listing for this upload.",

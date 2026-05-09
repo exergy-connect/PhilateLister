@@ -29,8 +29,6 @@ const LARGE_IMAGE_BYTES = 1024 * 1024;
 const AI_TIMEOUT_DEFAULT_MS = 1 * 60 * 1000;
 /** Same ceiling as before this file had a default for small payloads (>1 MiB inline vision). */
 const AI_TIMEOUT_LARGE_IMAGE_MS = 2 * 60 * 1000;
-/** Gemini should produce a final response quickly after tool lookups; repeated tool-only turns are a failed invocation. */
-const GEMINI_FUNCTION_CALL_MAX_TURNS = 4;
 
 const PROMPT_ID_RE = /^[a-zA-Z0-9][a-zA-Z0-9_-]{0,62}$/;
 
@@ -523,12 +521,14 @@ async function runGeminiInvocation(
   const baseConfig = buildGeminiGenerateConfig(model, outputFormat);
   const timeoutMs = aiHttpTimeoutMsForImage(imgBytes.length);
   const functionDeclarations = geminiFunctionRuntime.functionDeclarations();
-  const config: GenerateContentConfig = {
+  const initialConfig: GenerateContentConfig = {
     ...baseConfig,
     ...(functionDeclarations.length ? { tools: [{ functionDeclarations }] } : {}),
     httpOptions: { timeout: timeoutMs, headers: {} },
   } as GenerateContentConfig;
   const ai = new GoogleGenAI({ apiKey });
+  /** Declarations for tools the model has not yet received a `functionResponse` for this session. */
+  const excludedFunctionNames = new Set<string>();
   const contents: unknown[] = [
     {
       role: 'user',
@@ -547,14 +547,14 @@ async function runGeminiInvocation(
   let response = await ai.models.generateContent({
     model,
     contents: contents as never,
-    config,
+    config: initialConfig,
   });
 
-  for (let turn = 0; turn < GEMINI_FUNCTION_CALL_MAX_TURNS; turn += 1) {
+  for (let toolRound = 0; ; toolRound += 1) {
     const calls = geminiFunctionRuntime.functionCalls(response);
     if (calls.length === 0) return responseText(response);
     console.error(
-      `Gemini requested ${calls.length} function call${calls.length === 1 ? '' : 's'} on turn ${turn + 1}: ${calls
+      `Gemini requested ${calls.length} function call${calls.length === 1 ? '' : 's'} on turn ${toolRound + 1}: ${calls
         .map((call) => String(call.name ?? '(unnamed)'))
         .join(', ')}`
     );
@@ -580,21 +580,25 @@ async function runGeminiInvocation(
         },
       })),
     });
+    for (const call of calls) {
+      const n = String(call.name ?? '').trim();
+      if (n) excludedFunctionNames.add(n);
+    }
+    const declarationsForNext = functionDeclarations.filter((decl) => {
+      const name = String((decl as { name?: unknown }).name ?? '').trim();
+      return name && !excludedFunctionNames.has(name);
+    });
+    const followUpConfig: GenerateContentConfig = {
+      ...baseConfig,
+      ...(declarationsForNext.length ? { tools: [{ functionDeclarations: declarationsForNext }] } : {}),
+      httpOptions: { timeout: timeoutMs, headers: {} },
+    } as GenerateContentConfig;
     response = await ai.models.generateContent({
       model,
       contents: contents as never,
-      config,
+      config: followUpConfig,
     });
   }
-  const pendingCalls = geminiFunctionRuntime.functionCalls(response);
-  if (pendingCalls.length > 0) {
-    throw new Error(
-      `Gemini requested function calls for ${GEMINI_FUNCTION_CALL_MAX_TURNS} consecutive turns without producing a final response; last requested: ${pendingCalls
-        .map((call) => String(call.name ?? '(unnamed)'))
-        .join(', ')}`
-    );
-  }
-  return responseText(response);
 }
 
 function openRouterMessageContent(text: string, dataUrl: string): unknown[] {
@@ -768,6 +772,7 @@ async function runOpenRouterInvocation(
   ];
   const functionDeclarations = geminiFunctionRuntime.functionDeclarations();
   const tools = openRouterToolsFromGeminiDeclarations(functionDeclarations);
+  const excludedFunctionNames = new Set<string>();
   const body: Record<string, unknown> = {
     model,
     messages,
@@ -788,7 +793,7 @@ async function runOpenRouterInvocation(
   const timeoutMs = aiHttpTimeoutMsForImage(imgBytes.length);
   let response = await postOpenRouterChatCompletion(url, headers, body, timeoutMs);
 
-  for (let turn = 0; turn < 4; turn += 1) {
+  for (let toolRound = 0; ; toolRound += 1) {
     const msg = firstOpenRouterMessage(response);
     const calls = openRouterToolCalls(msg);
     if (calls.length === 0) {
@@ -797,7 +802,7 @@ async function runOpenRouterInvocation(
       throw new Error('OpenRouter response missing message content');
     }
     console.error(
-      `OpenRouter requested ${calls.length} function call${calls.length === 1 ? '' : 's'} on turn ${turn + 1}: ${calls
+      `OpenRouter requested ${calls.length} function call${calls.length === 1 ? '' : 's'} on turn ${toolRound + 1}: ${calls
         .map((call) => call.name)
         .join(', ')}`
     );
@@ -821,11 +826,20 @@ async function runOpenRouterInvocation(
         content: JSON.stringify(responsePayload),
       });
     }
+    for (const call of calls) {
+      const n = String(call.name ?? '').trim();
+      if (n) excludedFunctionNames.add(n);
+    }
+    const declarationsForNext = functionDeclarations.filter((decl) => {
+      const name = String((decl as { name?: unknown }).name ?? '').trim();
+      return name && !excludedFunctionNames.has(name);
+    });
+    const nextTools = openRouterToolsFromGeminiDeclarations(declarationsForNext);
+    if (nextTools.length) body.tools = nextTools;
+    else delete body.tools;
+
     response = await postOpenRouterChatCompletion(url, headers, body, timeoutMs);
   }
-
-  const text = openRouterMessageText(firstOpenRouterMessage(response));
-  return { text, responseModel: openRouterResponseModelField(response, model) };
 }
 
 async function runOneInvocation(

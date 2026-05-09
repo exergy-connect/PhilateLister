@@ -1,6 +1,6 @@
 {
-  "version": 36,
-  "timestamp": "2026-05-09T00:19:56Z",
+  "version": 37,
+  "timestamp": "2026-05-09T00:21:14Z",
   "model": {
     "name": "PhilateLister stamp catalog",
     "version": "26.04.11.1",
@@ -332,6 +332,13 @@
         "author": "jbemmel",
         "note": "Add numeral_cancel_identification prompt shard; prompt_invocation enabled flags and disabled OpenRouter rows in data; align consolidated schema/data and JS bundles.",
         "git_commit_hash": "fe4388c2d7abaa31ed6b69377af328ebc06bbdb6"
+      },
+      "000000000037": {
+        "id": 37,
+        "timestamp": "2026-05-09T00:21:14+00:00",
+        "author": "jbemmel",
+        "note": "CI consolidate after model/data change (5b3c998e4382df3c524a19165ccd449352716f0c)",
+        "git_commit_hash": "5b3c998e4382df3c524a19165ccd449352716f0c"
       }
     },
     "catalog_system": {
@@ -380,8 +387,8 @@
               "section": "M",
               "number": 45
             },
-            "c": 36,
-            "v": 36,
+            "c": 37,
+            "v": 37,
             "stamp_id": "stamp_2026-04-11_example_001",
             "country_id": "dk",
             "title": "Denmark 20 øre bicolor used",
@@ -2345,8 +2352,7 @@
           "Prefer cautious accuracy over confident speculation."
         ],
         "c": 36,
-        "v": 36,
-        "f": 16
+        "v": 36
       },
       "stamp_listing": {
         "prompt_id": "stamp_listing",

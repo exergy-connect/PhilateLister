@@ -65,6 +65,8 @@ type PromptInvocationRow = {
   model: string;
   sort_order: number;
   primary_for_listing: boolean;
+  /** Normalized: false only when data has enabled === false; missing field is true. */
+  enabled: boolean;
 };
 
 type EffectiveInvocation = {
@@ -189,6 +191,7 @@ function loadPromptInvocations(): PromptInvocationRow[] {
       model: String(r.model ?? '').trim(),
       sort_order: typeof r.sort_order === 'number' ? r.sort_order : Number(r.sort_order) || 0,
       primary_for_listing: Boolean(r.primary_for_listing),
+      enabled: r.enabled !== false,
     });
   }
   invocationsCache = out;
@@ -197,9 +200,13 @@ function loadPromptInvocations(): PromptInvocationRow[] {
 
 function getEffectiveInvocations(promptId: string, preferredModel: string): EffectiveInvocation[] {
   const providers = loadProvidersMap();
-  const rows = loadPromptInvocations()
-    .filter((r) => r.prompt_id === promptId && r.invocation_id)
-    .sort((a, b) => a.sort_order - b.sort_order);
+  const forPrompt = loadPromptInvocations().filter((r) => r.prompt_id === promptId && r.invocation_id);
+  for (const r of forPrompt) {
+    if (!r.enabled) {
+      console.error(`Skipping invocation ${r.invocation_id}: prompt_invocation enabled is false.`);
+    }
+  }
+  const rows = forPrompt.filter((r) => r.enabled).sort((a, b) => a.sort_order - b.sort_order);
 
   if (rows.length === 0) {
     const gem = providers.get('google_gemini');
@@ -244,7 +251,7 @@ function getEffectiveInvocations(promptId: string, preferredModel: string): Effe
   const primaries = effective.filter((e) => e.primary);
   if (primaries.length !== 1) {
     throw new Error(
-      `prompt_invocation for prompt_id ${JSON.stringify(promptId)}: expected exactly one primary_for_listing true, got ${primaries.length}`
+      `prompt_invocation for prompt_id ${JSON.stringify(promptId)}: among enabled rows, expected exactly one primary_for_listing true, got ${primaries.length}`
     );
   }
   return effective;
@@ -479,7 +486,9 @@ function logGeminiFunctionResult(name: unknown, response: Record<string, unknown
   const matchCount = typeof response.match_count === 'number' ? ` match_count=${response.match_count}` : '';
   const ok = typeof response.ok === 'boolean' ? ` ok=${response.ok}` : '';
   const error = typeof response.error === 'string' ? ` error=${JSON.stringify(response.error)}` : '';
-  console.error(`Gemini function response ${String(name ?? '(unnamed)')}:${ok}${matchCount}${error}`);
+  const payload = JSON.stringify(response);
+  const preview = payload.length > 2000 ? `${payload.slice(0, 2000)}...<truncated ${payload.length - 2000} chars>` : payload;
+  console.error(`Gemini function response ${String(name ?? '(unnamed)')}:${ok}${matchCount}${error} payload=${preview}`);
   return response;
 }
 

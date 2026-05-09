@@ -1,6 +1,6 @@
 {
-  "version": 37,
-  "timestamp": "2026-05-09T00:21:14Z",
+  "version": 38,
+  "timestamp": "2026-05-09T02:14:59Z",
   "model": {
     "name": "PhilateLister stamp catalog",
     "version": "26.04.11.1",
@@ -85,6 +85,10 @@
     "000000000016": {
       "id": 16,
       "path": "data/prompts/numeral_cancel_identification.json"
+    },
+    "000000000017": {
+      "id": 17,
+      "path": "data/prompts/stamp_numeral_cancel_identification.json"
     }
   },
   "data": {
@@ -339,6 +343,13 @@
         "author": "jbemmel",
         "note": "CI consolidate after model/data change (5b3c998e4382df3c524a19165ccd449352716f0c)",
         "git_commit_hash": "5b3c998e4382df3c524a19165ccd449352716f0c"
+      },
+      "000000000038": {
+        "id": 38,
+        "timestamp": "2026-05-09T02:14:59+00:00",
+        "author": "jbemmel",
+        "note": "CI consolidate after model/data change (8dcb6a78be55fa32671a16329032adbc53f71b17)",
+        "git_commit_hash": "8dcb6a78be55fa32671a16329032adbc53f71b17"
       }
     },
     "catalog_system": {
@@ -387,8 +398,8 @@
               "section": "M",
               "number": 45
             },
-            "c": 37,
-            "v": 37,
+            "c": 38,
+            "v": 38,
             "stamp_id": "stamp_2026-04-11_example_001",
             "country_id": "dk",
             "title": "Denmark 20 øre bicolor used",
@@ -2388,6 +2399,76 @@
           9
         ],
         "v": 9
+      },
+      "stamp_numeral_cancel_identification": {
+        "prompt_id": "stamp_numeral_cancel_identification",
+        "brief": "Focused numeral-cancel identification from stamp image",
+        "preferred_model": "gemini-3-flash-preview",
+        "output_format": "json",
+        "template_lines": [
+          "You are identifying the numeral cancel on a single stamp image.",
+          "",
+          "Primary task: determine the FULL numeral cancel, not merely the clearest digit.",
+          "Try very hard to recover all visible digits.",
+          "Do not stop at a single digit if the strike may contain adjacent digits.",
+          "",
+          "Image file name, uploader notes, and commit text are weak hints only. Do not let them determine the numeral.",
+          "",
+          "Structured upload metadata:",
+          "__META_JSON__",
+          "",
+          "Dealer notes:",
+          "__NOTES_JSON__",
+          "",
+          "Instructions:",
+          "- Inspect the entire cancel impression, especially faint digits to the left and right of the darkest digit.",
+          "- Consider whether the apparent digit is only the center, left, or right part of a longer numeral.",
+          "- Look for partial loops, stems, serifs, tops, bottoms, and spacing consistent with adjacent digits.",
+          "- Prefer full multi-digit readings when the geometry supports them.",
+          "- Produce multiple candidates when uncertain.",
+          "- Assign confidence to each candidate.",
+          "- Do not identify a town from the numeral unless a lookup tool supports it.",
+          "- If a lookup for a candidate returns zero matches, treat that as negative evidence and reconsider partial or longer readings.",
+          "- If the stamp issue date is known, use it only after numeral candidates are generated, to rank period-compatible matches.",
+          "",
+          "Required output JSON:",
+          "{",
+          "  \"visible_cancel_type\": \"numeral | barred_numeral | circular_date_stamp | unclear | none\",",
+          "  \"full_numeral_best_reading\": \"string or null\",",
+          "  \"digit_analysis\": {",
+          "    \"left_side\": \"what digits or partial marks may be present\",",
+          "    \"center\": \"what the clearest digit(s) appear to be\",",
+          "    \"right_side\": \"what digits or partial marks may be present\",",
+          "    \"spacing_geometry\": \"why the reading is one digit or multiple digits\"",
+          "  },",
+          "  \"candidates\": [",
+          "    {",
+          "      \"numeral\": \"string\",",
+          "      \"confidence\": 0.0,",
+          "      \"visual_basis\": \"specific visible evidence\",",
+          "      \"uncertainties\": \"specific doubts\"",
+          "    }",
+          "  ],",
+          "  \"lookup_requests\": [",
+          "    {",
+          "      \"country\": \"dk\",",
+          "      \"number\": \"candidate numeral as integer when applicable\"",
+          "    }",
+          "  ],",
+          "  \"do_not_claim\": [",
+          "    \"town name unless lookup confirms it\",",
+          "    \"single-digit numeral if adjacent marks plausibly form a longer number\",",
+          "    \"catalog variety from cancel alone\"",
+          "  ],",
+          "  \"short_human_summary\": \"plain-English summary of the best numeral reading and uncertainty\"",
+          "}",
+          "",
+          "Important failure rule:",
+          "If the clearest visible digit is only part of a larger centered strike, the answer must identify the larger candidate, not just the clearest digit."
+        ],
+        "c": 38,
+        "v": 38,
+        "f": 17
       },
       "xframe": {
         "prompt_id": "xframe",

@@ -1,0 +1,24 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "stamp_2026-05-08_21-53-49-719_test_dc8b538c",
+      "country_id": "dk",
+      "title": "Denmark 20 øre grey and red",
+      "summary": "Denmark bicolor 20 øre stamp with concentric rings numeral cancel 24.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "cancel": {
+        "type": "barred_numeral",
+        "numeral": "24"
+      },
+      "centering_grade": "vg_f",
+      "image_basename": "stamp_2026-05-08_21-53-49-719_test_dc8b538c.jpg",
+      "bounding_box": {
+        "x_min": 51,
+        "x_max": 952,
+        "y_min": 49,
+        "y_max": 950
+      }
+    }
+  ]
+}

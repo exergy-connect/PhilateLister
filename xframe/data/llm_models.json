@@ -15,6 +15,13 @@
       "rate_limits": "Text-out caps (max RPM / TPM / RPD): 1K RPM, 2M TPM, 10K RPD. Token pricing: https://ai.google.dev/gemini-api/docs/pricing#standard"
     },
     {
+      "model_id": "gemini-3.1-flash-lite",
+      "name": "Gemini 3.1 Flash-Lite",
+      "provider_id": "google_gemini",
+      "has_free_tier": true,
+      "rate_limits": "Text-out models (max RPM / TPM / RPD from usage vs limit UI): 4K RPM, 4M TPM, 150K RPD. Token pricing: https://ai.google.dev/gemini-api/docs/pricing#standard"
+    },
+    {
       "model_id": "gemini-2.5-pro",
       "name": "Gemini 2.5 Pro",
       "provider_id": "google_gemini",

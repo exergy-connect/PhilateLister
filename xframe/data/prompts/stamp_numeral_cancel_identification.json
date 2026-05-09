@@ -3,7 +3,7 @@
     {
       "prompt_id": "stamp_numeral_cancel_identification",
       "brief": "Focused numeral-cancel identification from stamp image",
-      "preferred_model": "gemini-3-flash-preview",
+      "preferred_model": "gemini-3.1-flash-lite",
       "output_format": "json",
       "template_lines": [
         "You are identifying the numeral cancel on a single stamp image.",

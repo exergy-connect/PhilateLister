@@ -1,0 +1,28 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "stamp_2026-05-08_21-49-09-822_test_96854186",
+      "country_id": "dk",
+      "scott": {
+        "number": 23
+      },
+      "title": "Denmark Numeral Cancel",
+      "summary": "Danish postage stamp with a ring-type numeral cancel, center shows digits 19.",
+      "issue_year": 1875,
+      "issue_year_to": 1903,
+      "condition_quality": "used",
+      "cancel": {
+        "type": "numeral",
+        "numeral": "19"
+      },
+      "centering_grade": "fine",
+      "image_basename": "stamp_2026-05-08_21-49-09-822_test_96854186.jpg",
+      "bounding_box": {
+        "x_min": 120,
+        "x_max": 880,
+        "y_min": 100,
+        "y_max": 900
+      }
+    }
+  ]
+}

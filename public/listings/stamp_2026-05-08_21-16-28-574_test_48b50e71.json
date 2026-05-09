@@ -1,0 +1,27 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "stamp_2026-05-08_21-16-28-574_test_48b50e71.jpg",
+      "country_id": "dk",
+      "scott": {
+        "number": 29
+      },
+      "title": "Denmark 1875 20ø Bicolor, Numeral Cancel 21",
+      "summary": "Denmark 20ø gray and red bicolor stamp (Scott #29) featuring a three-ring numeral cancel, identified as 21.",
+      "issue_year": 1875,
+      "condition_quality": "used",
+      "cancel": {
+        "type": "barred_numeral",
+        "numeral": "21"
+      },
+      "centering_grade": "vf",
+      "image_basename": "stamp_2026-05-08_21-16-28-574_test_48b50e71.jpg",
+      "bounding_box": {
+        "x_min": 50,
+        "x_max": 950,
+        "y_min": 50,
+        "y_max": 950
+      }
+    }
+  ]
+}

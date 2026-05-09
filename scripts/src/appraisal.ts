@@ -18,7 +18,7 @@ import { XFrameGeminiFunctionRuntime, type EntityStore } from './xframe-gemini-f
 const repoRoot = process.cwd();
 
 const CONSOLIDATED_SCHEMA_PATH = join(repoRoot, 'xframe', 'output', 'consolidated.schema.json');
-/** Single source for prompts, providers, prompt_invocation (no xframe/data/*.json reads). */
+/** Single source for prompts (incl. nested prompt_invocations), providers (no xframe/data/*.json reads). */
 const CONSOLIDATED_DATA_PATH = join(repoRoot, 'xframe', 'output', 'consolidated_data.json');
 
 const debugAppraisal = debuglog('appraisal');
@@ -172,28 +172,36 @@ function loadProvidersMap(): Map<string, ProviderRow> {
   return map;
 }
 
+function pushPromptInvocationRowsFromNestedPrompts(store: EntityStore, out: PromptInvocationRow[]): void {
+  const promptBucket = store.prompt;
+  if (!promptBucket || typeof promptBucket !== 'object' || Array.isArray(promptBucket)) return;
+  for (const [promptKey, row] of Object.entries(promptBucket)) {
+    if (!row || typeof row !== 'object' || Array.isArray(row)) continue;
+    const r = row as Record<string, unknown>;
+    const parentPromptId = String(r.prompt_id ?? promptKey ?? '').trim();
+    const invocations = r.prompt_invocations;
+    if (!Array.isArray(invocations)) continue;
+    for (const inv of invocations) {
+      if (!inv || typeof inv !== 'object' || Array.isArray(inv)) continue;
+      const ir = inv as Record<string, unknown>;
+      out.push({
+        invocation_id: String(ir.invocation_id ?? '').trim(),
+        prompt_id: String(ir.prompt_id ?? parentPromptId).trim(),
+        provider_id: String(ir.provider_id ?? '').trim(),
+        model: String(ir.model ?? '').trim(),
+        sort_order: typeof ir.sort_order === 'number' ? ir.sort_order : Number(ir.sort_order) || 0,
+        primary_for_listing: Boolean(ir.primary_for_listing),
+        enabled: ir.enabled !== false,
+      });
+    }
+  }
+}
+
 function loadPromptInvocations(): PromptInvocationRow[] {
   if (invocationsCache) return invocationsCache;
   const store = getEntityStore();
-  const bucket = store.prompt_invocation;
-  if (!bucket || typeof bucket !== 'object') {
-    invocationsCache = [];
-    return invocationsCache;
-  }
   const out: PromptInvocationRow[] = [];
-  for (const row of Object.values(bucket)) {
-    if (!row || typeof row !== 'object' || Array.isArray(row)) continue;
-    const r = row as Record<string, unknown>;
-    out.push({
-      invocation_id: String(r.invocation_id ?? '').trim(),
-      prompt_id: String(r.prompt_id ?? '').trim(),
-      provider_id: String(r.provider_id ?? '').trim(),
-      model: String(r.model ?? '').trim(),
-      sort_order: typeof r.sort_order === 'number' ? r.sort_order : Number(r.sort_order) || 0,
-      primary_for_listing: Boolean(r.primary_for_listing),
-      enabled: r.enabled !== false,
-    });
-  }
+  pushPromptInvocationRowsFromNestedPrompts(store, out);
   invocationsCache = out;
   return invocationsCache;
 }
@@ -492,6 +500,16 @@ function logGeminiFunctionResult(name: unknown, response: Record<string, unknown
   return response;
 }
 
+function logOpenRouterFunctionResult(name: unknown, response: Record<string, unknown>): Record<string, unknown> {
+  const matchCount = typeof response.match_count === 'number' ? ` match_count=${response.match_count}` : '';
+  const ok = typeof response.ok === 'boolean' ? ` ok=${response.ok}` : '';
+  const error = typeof response.error === 'string' ? ` error=${JSON.stringify(response.error)}` : '';
+  const payload = JSON.stringify(response);
+  const preview = payload.length > 2000 ? `${payload.slice(0, 2000)}...<truncated ${payload.length - 2000} chars>` : payload;
+  console.error(`OpenRouter function response ${String(name ?? '(unnamed)')}:${ok}${matchCount}${error} payload=${preview}`);
+  return response;
+}
+
 async function runGeminiInvocation(
   model: string,
   apiKey: string,
@@ -576,6 +594,141 @@ function openRouterMessageContent(text: string, dataUrl: string): unknown[] {
   ];
 }
 
+function openRouterJsonSchema(schema: unknown): unknown {
+  if (!schema || typeof schema !== 'object') return schema;
+  if (Array.isArray(schema)) return schema.map((item) => openRouterJsonSchema(item));
+  const out: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(schema as Record<string, unknown>)) {
+    if (key === 'type' && typeof value === 'string') {
+      out.type = value.toLowerCase();
+    } else {
+      out[key] = openRouterJsonSchema(value);
+    }
+  }
+  return out;
+}
+
+function openRouterToolsFromGeminiDeclarations(declarations: Record<string, unknown>[]): Record<string, unknown>[] {
+  const tools: Record<string, unknown>[] = [];
+  for (const declaration of declarations) {
+    const name = String(declaration.name ?? '').trim();
+    if (!name) continue;
+    const fn: Record<string, unknown> = {
+      name,
+      parameters: openRouterJsonSchema(declaration.parameters),
+    };
+    const description = String(declaration.description ?? '').trim();
+    if (description) fn.description = description;
+    tools.push({
+      type: 'function',
+      function: fn,
+    });
+  }
+  return tools;
+}
+
+type OpenRouterToolCall = {
+  id: string;
+  name: string;
+  args: Record<string, unknown>;
+  raw: Record<string, unknown>;
+};
+
+function parseOpenRouterFunctionArgs(rawArgs: unknown, name: string): Record<string, unknown> {
+  if (rawArgs && typeof rawArgs === 'object' && !Array.isArray(rawArgs)) return rawArgs as Record<string, unknown>;
+  if (typeof rawArgs !== 'string' || !rawArgs.trim()) return {};
+  try {
+    const parsed = JSON.parse(rawArgs) as unknown;
+    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) return parsed as Record<string, unknown>;
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    return { __parse_error: `Invalid JSON arguments for ${name}: ${msg}`, __raw_arguments: rawArgs };
+  }
+  return {};
+}
+
+function openRouterToolCalls(message: Record<string, unknown> | undefined): OpenRouterToolCall[] {
+  const rawCalls = message?.tool_calls;
+  if (!Array.isArray(rawCalls)) return [];
+  const calls: OpenRouterToolCall[] = [];
+  for (const raw of rawCalls) {
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) continue;
+    const rec = raw as Record<string, unknown>;
+    const fn = rec.function;
+    if (!fn || typeof fn !== 'object' || Array.isArray(fn)) continue;
+    const fnRec = fn as Record<string, unknown>;
+    const name = String(fnRec.name ?? '').trim();
+    if (!name) continue;
+    const id = String(rec.id ?? '').trim() || `call_${calls.length + 1}`;
+    calls.push({
+      id,
+      name,
+      args: parseOpenRouterFunctionArgs(fnRec.arguments, name),
+      raw: rec,
+    });
+  }
+  return calls;
+}
+
+async function postOpenRouterChatCompletion(
+  url: string,
+  headers: Record<string, string>,
+  body: Record<string, unknown>,
+  timeoutMs: number
+): Promise<Record<string, unknown>> {
+  const res = await fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(timeoutMs),
+  });
+  const raw = await res.text();
+  if (!res.ok) {
+    throw new Error(`OpenRouter HTTP ${res.status}: ${raw.slice(0, 500)}`);
+  }
+  try {
+    const json = JSON.parse(raw) as unknown;
+    if (json && typeof json === 'object' && !Array.isArray(json)) return json as Record<string, unknown>;
+  } catch {
+    throw new Error('OpenRouter response is not JSON');
+  }
+  throw new Error('OpenRouter response is not a JSON object');
+}
+
+function openRouterMessageText(message: Record<string, unknown> | undefined): string {
+  const content = message?.content;
+  if (typeof content === 'string') return content;
+  if (Array.isArray(content)) {
+    const texts = content
+      .map((part) => {
+        if (part && typeof part === 'object' && !Array.isArray(part) && 'text' in part) {
+          return String((part as { text?: unknown }).text ?? '');
+        }
+        return '';
+      })
+      .filter(Boolean);
+    if (texts.length) return texts.join('\n');
+  }
+  return '';
+}
+
+function firstOpenRouterMessage(response: Record<string, unknown>): Record<string, unknown> | undefined {
+  const choices = response.choices as unknown[] | undefined;
+  const c0 = choices?.[0] as Record<string, unknown> | undefined;
+  const msg = c0?.message as Record<string, unknown> | undefined;
+  return msg;
+}
+
+/** Top-level `model` on the chat/completions JSON body — actual model served (e.g. after `openrouter/free` routing). */
+function openRouterResponseModelField(
+  response: Record<string, unknown>,
+  requestModel: string
+): string {
+  const m = response.model;
+  if (typeof m === 'string' && m.trim()) return m.trim();
+  return requestModel;
+}
+
 async function runOpenRouterInvocation(
   baseUrl: string,
   apiKey: string,
@@ -584,7 +737,7 @@ async function runOpenRouterInvocation(
   imgBytes: Buffer,
   mime: string,
   outputFormat: ListingOutputFormat
-): Promise<string> {
+): Promise<{ text: string; responseModel: string }> {
   const root = baseUrl.replace(/\/$/, '');
   const url = `${root}/chat/completions`;
   const dataUrl = `data:${mime};base64,${imgBytes.toString('base64')}`;
@@ -597,15 +750,19 @@ async function runOpenRouterInvocation(
   if (referer) headers['HTTP-Referer'] = referer;
   if (title) headers['X-OpenRouter-Title'] = title;
 
+  const messages: Record<string, unknown>[] = [
+    {
+      role: 'user',
+      content: openRouterMessageContent(userPrompt, dataUrl),
+    },
+  ];
+  const functionDeclarations = geminiFunctionRuntime.functionDeclarations();
+  const tools = openRouterToolsFromGeminiDeclarations(functionDeclarations);
   const body: Record<string, unknown> = {
     model,
-    messages: [
-      {
-        role: 'user',
-        content: openRouterMessageContent(userPrompt, dataUrl),
-      },
-    ],
+    messages,
   };
+  if (tools.length) body.tools = tools;
 
   if (outputFormat === 'json') {
     body.response_format = {
@@ -619,40 +776,46 @@ async function runOpenRouterInvocation(
   }
 
   const timeoutMs = aiHttpTimeoutMsForImage(imgBytes.length);
-  const res = await fetch(url, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify(body),
-    signal: AbortSignal.timeout(timeoutMs),
-  });
-  const raw = await res.text();
-  if (!res.ok) {
-    throw new Error(`OpenRouter HTTP ${res.status}: ${raw.slice(0, 500)}`);
+  let response = await postOpenRouterChatCompletion(url, headers, body, timeoutMs);
+
+  for (let turn = 0; turn < 4; turn += 1) {
+    const msg = firstOpenRouterMessage(response);
+    const calls = openRouterToolCalls(msg);
+    if (calls.length === 0) {
+      const text = openRouterMessageText(msg);
+      if (text) return { text, responseModel: openRouterResponseModelField(response, model) };
+      throw new Error('OpenRouter response missing message content');
+    }
+    console.error(
+      `OpenRouter requested ${calls.length} function call${calls.length === 1 ? '' : 's'} on turn ${turn + 1}: ${calls
+        .map((call) => call.name)
+        .join(', ')}`
+    );
+
+    messages.push({
+      role: 'assistant',
+      content: msg?.content ?? null,
+      tool_calls: calls.map((call) => call.raw),
+    });
+    for (const call of calls) {
+      const responsePayload = call.args.__parse_error
+        ? { ok: false, error: String(call.args.__parse_error), raw_arguments: call.args.__raw_arguments }
+        : logOpenRouterFunctionResult(
+            call.name,
+            geminiFunctionRuntime.executeFunctionCall({ name: call.name, args: call.args })
+          );
+      messages.push({
+        role: 'tool',
+        tool_call_id: call.id,
+        name: call.name,
+        content: JSON.stringify(responsePayload),
+      });
+    }
+    response = await postOpenRouterChatCompletion(url, headers, body, timeoutMs);
   }
-  let json: unknown;
-  try {
-    json = JSON.parse(raw) as unknown;
-  } catch {
-    throw new Error('OpenRouter response is not JSON');
-  }
-  const o = json as Record<string, unknown>;
-  const choices = o.choices as unknown[] | undefined;
-  const c0 = choices?.[0] as Record<string, unknown> | undefined;
-  const msg = c0?.message as Record<string, unknown> | undefined;
-  const content = msg?.content;
-  if (typeof content === 'string') return content;
-  if (Array.isArray(content)) {
-    const texts = content
-      .map((part) => {
-        if (part && typeof part === 'object' && !Array.isArray(part) && 'text' in part) {
-          return String((part as { text?: unknown }).text ?? '');
-        }
-        return '';
-      })
-      .filter(Boolean);
-    if (texts.length) return texts.join('\n');
-  }
-  throw new Error('OpenRouter response missing message content');
+
+  const text = openRouterMessageText(firstOpenRouterMessage(response));
+  return { text, responseModel: openRouterResponseModelField(response, model) };
 }
 
 async function runOneInvocation(
@@ -661,7 +824,7 @@ async function runOneInvocation(
   imgBytes: Buffer,
   mime: string,
   outputFormat: ListingOutputFormat
-): Promise<{ invocationId: string; text: string; error?: string }> {
+): Promise<{ invocationId: string; text: string; error?: string; openRouterResponseModel?: string }> {
   try {
     const kind = clientKindForProviderId(inv.provider.provider_id);
     debugAppraisal(
@@ -676,6 +839,7 @@ async function runOneInvocation(
       userPrompt.length
     );
     let text: string;
+    let openRouterResponseModel: string | undefined;
     if (kind === 'google_gemini') {
       const key = String(process.env.GEMINI_API_KEY ?? '').trim();
       if (!key) throw new Error('GEMINI_API_KEY not set');
@@ -685,7 +849,22 @@ async function runOneInvocation(
       if (!key) throw new Error('OPENROUTER_API_KEY not set');
       const base = inv.provider.api_base_url || 'https://openrouter.ai/api/v1';
       debugAppraisal('runOneInvocation openrouter api_base=%s', base);
-      text = await runOpenRouterInvocation(base, key, inv.model, userPrompt, imgBytes, mime, outputFormat);
+      const openRouterResult = await runOpenRouterInvocation(
+        base,
+        key,
+        inv.model,
+        userPrompt,
+        imgBytes,
+        mime,
+        outputFormat
+      );
+      text = openRouterResult.text;
+      openRouterResponseModel = openRouterResult.responseModel;
+      debugAppraisal(
+        'runOneInvocation openrouter responseModel=%s (request was %s)',
+        openRouterResponseModel,
+        inv.model
+      );
     } else {
       throw new Error(`Unreachable: unknown client for ${JSON.stringify(inv.provider.provider_id)}`);
     }
@@ -695,7 +874,7 @@ async function runOneInvocation(
       kind,
       text.length
     );
-    return { invocationId: inv.invocationId, text };
+    return { invocationId: inv.invocationId, text, openRouterResponseModel };
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     debugAppraisal('runOneInvocation error invocationId=%s: %s', inv.invocationId, msg);
@@ -703,17 +882,32 @@ async function runOneInvocation(
   }
 }
 
+function sanitizeListingFileToken(s: string): string {
+  return s.replace(/[^a-zA-Z0-9._-]+/g, '_');
+}
+
 function writeListingOutput(
   baseName: string,
   outputFormat: ListingOutputFormat,
   text: string,
   invocationId: string,
-  primary: boolean
+  primary: boolean,
+  listingFileContext?: { providerId: string; model: string; openRouterResponseModel?: string }
 ): string {
   const listingsDir = join(process.cwd(), 'listings');
   mkdirSync(listingsDir, { recursive: true });
   const ext = outputFormat === 'json' ? 'json' : 'txt';
-  const fileName = primary ? `${baseName}.${ext}` : `${baseName}__${invocationId.replace(/[^a-zA-Z0-9._-]+/g, '_')}.${ext}`;
+  const openRouterSlug =
+    listingFileContext && clientKindForProviderId(listingFileContext.providerId) === 'openrouter'
+      ? listingFileContext.openRouterResponseModel?.trim() || listingFileContext.model.trim()
+      : '';
+  const openRouterModelSuffix =
+    listingFileContext && clientKindForProviderId(listingFileContext.providerId) === 'openrouter' && openRouterSlug
+      ? `__${sanitizeListingFileToken(openRouterSlug)}`
+      : '';
+  const fileName = primary
+    ? `${baseName}${openRouterModelSuffix}.${ext}`
+    : `${baseName}__${sanitizeListingFileToken(invocationId)}${openRouterModelSuffix}.${ext}`;
   const outPath = join(listingsDir, fileName);
 
   if (outputFormat === 'json') {
@@ -833,8 +1027,16 @@ async function runAppraisal(imagePath: string, commitMessage: string | undefined
   for (const inv of invocations) {
     const r = results.find((x) => x.invocationId === inv.invocationId);
     if (!r || r.error || !String(r.text).trim()) continue;
-    const out = writeListingOutput(baseName, outputFormat, r.text, inv.invocationId, inv.primary);
-    console.log(`Written: ${out} (${inv.invocationId}, ${inv.provider.provider_id}, ${inv.model})`);
+    const out = writeListingOutput(baseName, outputFormat, r.text, inv.invocationId, inv.primary, {
+      providerId: inv.provider.provider_id,
+      model: inv.model,
+      openRouterResponseModel: r.openRouterResponseModel,
+    });
+    const modelNote =
+      r.openRouterResponseModel && r.openRouterResponseModel !== inv.model
+        ? `${inv.model} → ${r.openRouterResponseModel}`
+        : inv.model;
+    console.log(`Written: ${out} (${inv.invocationId}, ${inv.provider.provider_id}, ${modelNote})`);
   }
 
   for (const r of failed) {

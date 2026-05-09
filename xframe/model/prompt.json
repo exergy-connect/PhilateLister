@@ -1,6 +1,6 @@
 {
   "name": "PhilateLister stamp catalog",
-  "version": "26.04.13.3",
+  "version": "26.05.09.1",
   "author": "Exergy ∞ LLC",
   "description": "Entity shard: Gemini appraisal prompt template (model id, output shape, template lines).",
   "source": "PhilateLister",
@@ -8,7 +8,7 @@
     {
       "name": "prompt",
       "brief": "LLM prompt pack for stamp image appraisal (listing text or catalog JSON).",
-      "description": "One row per prompt id; template_lines are joined with newlines for the model. Files live under xframe/data/prompts/<prompt_id>.json in entity-store shape { \"prompt\": [ { ... } ] }.",
+      "description": "One row per prompt id; template_lines are joined with newlines for the model. Files live under xframe/data/prompts/<prompt_id>.json in entity-store shape { \"prompt\": [ { ... optional prompt_invocations: [...] } ] }.",
       "primary_key": "prompt_id",
       "fields": [
         {
@@ -25,7 +25,7 @@
         },
         {
           "name": "preferred_model",
-          "description": "Default Gemini model id when this prompt has no prompt_invocation rows, or when GEMINI_MODEL overrides only the fallback path.",
+          "description": "Default Gemini model id when this prompt has no prompt_invocations entries (or none enabled), or when GEMINI_MODEL overrides only the fallback path.",
           "type": { "primitive": "string" },
           "required": true
         },
@@ -58,6 +58,16 @@
               "primitive": "string",
               "min": 0,
               "max": 512
+            }
+          },
+          "required": false
+        },
+        {
+          "name": "prompt_invocations",
+          "description": "Optional nested appraisal targets (provider + model) for this prompt. When omitted or empty, appraisal uses a single Gemini call with preferred_model. Exactly one enabled row should have primary_for_listing true when any are present.",
+          "type": {
+            "array": {
+              "entity": "prompt_invocation"
             }
           },
           "required": false

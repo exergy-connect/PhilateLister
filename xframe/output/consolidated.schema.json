@@ -479,7 +479,7 @@
         },
         "preferred_model": {
           "type": "string",
-          "description": "Default Gemini model id when this prompt has no prompt_invocation rows, or when GEMINI_MODEL overrides only the fallback path."
+          "description": "Default Gemini model id when this prompt has no prompt_invocations entries (or none enabled), or when GEMINI_MODEL overrides only the fallback path."
         },
         "output_format": {
           "type": "string",
@@ -502,9 +502,16 @@
           "items": {
             "type": "string"
           }
+        },
+        "prompt_invocations": {
+          "type": "array",
+          "description": "Optional nested appraisal targets (provider + model) for this prompt. When omitted or empty, appraisal uses a single Gemini call with preferred_model. Exactly one enabled row should have primary_for_listing true when any are present.",
+          "items": {
+            "$ref": "#/$defs/prompt_invocation"
+          }
         }
       },
-      "description": "One row per prompt id; template_lines are joined with newlines for the model. Files live under xframe/data/prompts/<prompt_id>.json in entity-store shape { \"prompt\": [ { ... } ] }.",
+      "description": "One row per prompt id; template_lines are joined with newlines for the model. Files live under xframe/data/prompts/<prompt_id>.json in entity-store shape { \"prompt\": [ { ... optional prompt_invocations: [...] } ] }.",
       "required": [
         "prompt_id",
         "preferred_model",
@@ -522,10 +529,17 @@
         },
         "prompt_id": {
           "type": "string",
-          "description": "Prompt template this invocation belongs to.",
+          "description": "Prompt template this invocation belongs to. Omit in nested source rows under prompt.prompt_invocations (implied by parent).",
           "x-foreignKeys": [
             {
-              "entity": "prompt"
+              "entity": "prompt",
+              "parent_array": "prompt_invocations"
+            }
+          ],
+          "x-parents": [
+            {
+              "entity": "prompt",
+              "parent_array": "prompt_invocations"
             }
           ]
         },
@@ -555,7 +569,7 @@
           "description": "If false, appraisal skips this invocation. When omitted, treated as true."
         }
       },
-      "description": "Rows live in xframe/data/prompt_invocations.json. All enabled invocations for a prompt_id run in parallel. Set enabled false to skip a row without deleting it. Exactly one enabled row per prompt should have primary_for_listing true; that output is listings/<stem>.{txt|json}. Others are listings/<stem>__<invocation_id>.{txt|json}. If a prompt_id has no enabled rows, appraisal falls back to a single Gemini call using prompt.preferred_model.",
+      "description": "Nested under prompt.prompt_invocations in xframe/data/prompts/<prompt_id>.json. All enabled invocations for a prompt run in parallel. Set enabled false to skip a row without deleting it. Exactly one enabled row per prompt should have primary_for_listing true; that output is listings/<stem>.{txt|json}. Others are listings/<stem>__<invocation_id>.{txt|json}. If none are enabled, appraisal falls back to a single Gemini call using prompt.preferred_model.",
       "required": [
         "invocation_id",
         "prompt_id",

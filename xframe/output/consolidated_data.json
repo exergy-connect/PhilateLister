@@ -1,6 +1,6 @@
 {
-  "version": 41,
-  "timestamp": "2026-05-09T02:52:24Z",
+  "version": 6,
+  "timestamp": "2026-05-09T15:44:52Z",
   "model": {
     "name": "PhilateLister stamp catalog",
     "version": "26.04.11.1",
@@ -16,7 +16,7 @@
       "id": 1,
       "path": "data/catalog_sample.json",
       "dependencies": [
-        2
+        5
       ]
     },
     "000000000002": {
@@ -25,352 +25,100 @@
     },
     "000000000003": {
       "id": 3,
-      "path": "data/llm_models.json",
-      "dependencies": [
-        9
-      ]
+      "path": "data/gemini_function_calls.json"
     },
     "000000000004": {
       "id": 4,
-      "path": "data/prompt_invocations.json",
+      "path": "data/llm_models.json",
       "dependencies": [
-        7,
-        9
+        13
       ]
     },
     "000000000005": {
       "id": 5,
-      "path": "data/prompts/jay_smith_listing.json"
+      "path": "data/numeral_cancels_denmark.json"
     },
     "000000000006": {
       "id": 6,
-      "path": "data/prompts/multi_stamp_sheet_xframe.json"
+      "path": "data/prompts/chatgpt_suggested_stamp_listing.json"
     },
     "000000000007": {
       "id": 7,
-      "path": "data/prompts/stamp_listing.json"
+      "path": "data/prompts/jay_smith_listing.json"
     },
     "000000000008": {
       "id": 8,
-      "path": "data/prompts/xframe.json"
+      "path": "data/prompts/multi_stamp_sheet_xframe.json"
     },
     "000000000009": {
       "id": 9,
-      "path": "data/providers.json"
+      "path": "data/prompts/numeral_cancel_identification.json"
     },
     "000000000010": {
       "id": 10,
-      "path": "data/scott_catalog_sections.json"
+      "path": "data/prompts/stamp_listing.json",
+      "dependencies": [
+        13
+      ]
     },
     "000000000011": {
       "id": 11,
-      "path": "data/scott_us_catalog_up_to_200.json"
+      "path": "data/prompts/stamp_numeral_cancel_identification.json"
     },
     "000000000012": {
       "id": 12,
-      "path": "data/prompts/chatgpt_suggested_stamp_listing.json"
+      "path": "data/prompts/xframe.json"
     },
     "000000000013": {
       "id": 13,
-      "path": "data/numeral_cancel.json"
+      "path": "data/providers.json"
     },
     "000000000014": {
       "id": 14,
-      "path": "data/numeral_cancels_denmark.json"
+      "path": "data/scott_catalog_sections.json"
     },
     "000000000015": {
       "id": 15,
-      "path": "data/gemini_function_calls.json"
-    },
-    "000000000016": {
-      "id": 16,
-      "path": "data/prompts/numeral_cancel_identification.json"
-    },
-    "000000000017": {
-      "id": 17,
-      "path": "data/prompts/stamp_numeral_cancel_identification.json"
+      "path": "data/scott_us_catalog_up_to_200.json"
     }
   },
   "data": {
     "change": {
       "000000000001": {
         "id": 1,
-        "timestamp": "2026-04-11T19:41:16+00:00",
+        "timestamp": "2026-05-09T10:22:34-05:00",
         "author": "jbemmel",
-        "note": "CI consolidate after model/data change (f6d7c8a47496c7005984185018d6201277434951)",
-        "git_commit_hash": "f6d7c8a47496c7005984185018d6201277434951"
+        "note": "Reconsolidate after removing prompt_invocations.json; refresh sourcefiles"
       },
       "000000000002": {
         "id": 2,
-        "timestamp": "2026-04-11T15:04:40-05:00",
-        "author": "root",
-        "note": "(no change) stamp issue_series_id type.entity"
+        "timestamp": "2026-05-09T10:24:08-05:00",
+        "author": "jbemmel",
+        "note": "Add openrouter/free invocation for numeral_cancel_identification"
       },
       "000000000003": {
         "id": 3,
-        "timestamp": "2026-04-11T20:14:52+00:00",
+        "timestamp": "2026-05-09T10:24:49-05:00",
         "author": "jbemmel",
-        "note": "(no change) CI consolidate after model/data change (e0d66cbcb5c48e2bc52131ac867507332e6dd7f3)",
-        "git_commit_hash": "e0d66cbcb5c48e2bc52131ac867507332e6dd7f3"
+        "note": "Omit prompt_id on nested prompt_invocation source rows"
       },
       "000000000004": {
         "id": 4,
-        "timestamp": "2026-04-13T16:38:54-05:00",
-        "author": "root",
-        "note": "Consolidate PhilateLister xFrame model and data; fix scott_catalog_entry composite + allow_unlimited_fields",
-        "git_commit_hash": "358515e7de2ebb415fc0c4bede03172845a035e3"
+        "timestamp": "2026-05-09T10:24:53-05:00",
+        "author": "jbemmel",
+        "note": "prompt_invocation model doc version bump"
       },
       "000000000005": {
         "id": 5,
-        "timestamp": "2026-04-13T16:54:48-05:00",
-        "author": "root",
-        "note": "(no change) PhilateLister: composite section subfield references scott_catalog_section_prefix definition",
-        "git_commit_hash": "358515e7de2ebb415fc0c4bede03172845a035e3"
+        "timestamp": "2026-05-09T10:28:04-05:00",
+        "author": "jbemmel",
+        "note": "Restore numeral_cancel_key in Denmark numeral cancels; reconsolidate schema and data"
       },
       "000000000006": {
         "id": 6,
-        "timestamp": "2026-04-13T21:56:12+00:00",
+        "timestamp": "2026-05-09T10:44:52-05:00",
         "author": "jbemmel",
-        "note": "(no change) CI consolidate after model/data change (31354a87b0d4f7e374243bdcef069c16a361d275)",
-        "git_commit_hash": "31354a87b0d4f7e374243bdcef069c16a361d275"
-      },
-      "000000000007": {
-        "id": 7,
-        "timestamp": "2026-04-13T23:05:41+00:00",
-        "author": "jbemmel",
-        "note": "CI consolidate after model/data change (35e004cde82e4558a39478b5dbf5f2e9fe17618e)",
-        "git_commit_hash": "35e004cde82e4558a39478b5dbf5f2e9fe17618e"
-      },
-      "000000000008": {
-        "id": 8,
-        "timestamp": "2026-04-14T05:29:51+00:00",
-        "author": "jbemmel",
-        "note": "CI consolidate after model/data change (7061aa5ecfd31c44c7f9b6d4c9cbc682b1d5e0a6)",
-        "git_commit_hash": "7061aa5ecfd31c44c7f9b6d4c9cbc682b1d5e0a6"
-      },
-      "000000000009": {
-        "id": 9,
-        "timestamp": "2026-04-14T06:12:43+00:00",
-        "author": "jbemmel",
-        "note": "CI consolidate after model/data change (99ead5657f27698c78e104332c575cfd43282857)",
-        "git_commit_hash": "99ead5657f27698c78e104332c575cfd43282857"
-      },
-      "000000000010": {
-        "id": 10,
-        "timestamp": "2026-04-14T19:31:55-05:00",
-        "author": "PhilateLister",
-        "note": "PhilateLister: reconsolidate xFrame model and data",
-        "git_commit_hash": "54b87d2b8654fea3736c2a52348411c69bbf1131"
-      },
-      "000000000011": {
-        "id": 11,
-        "timestamp": "2026-04-15T14:36:26+00:00",
-        "author": "jbemmel",
-        "note": "(no change) CI consolidate after model/data change (e31f14309056a7f64d0cf6ac6bab5956f3714eeb)",
-        "git_commit_hash": "e31f14309056a7f64d0cf6ac6bab5956f3714eeb"
-      },
-      "000000000012": {
-        "id": 12,
-        "timestamp": "2026-04-21T15:24:14-05:00",
-        "author": "jeroen",
-        "note": "Sample data: stamp bounding_box; omit optional stamp.scott (FK check vs composite PK mismatch in consolidator)."
-      },
-      "000000000013": {
-        "id": 13,
-        "timestamp": "2026-04-21T15:27:56-05:00",
-        "author": "jeroen",
-        "note": "Verify stamp.scott FK after composite PK loader fix."
-      },
-      "000000000014": {
-        "id": 14,
-        "timestamp": "2026-04-21T20:29:55+00:00",
-        "author": "jbemmel",
-        "note": "(no change) CI consolidate after model/data change (a3afe1f9a3fbb683eec499d9c60dea096391155f)",
-        "git_commit_hash": "a3afe1f9a3fbb683eec499d9c60dea096391155f"
-      },
-      "000000000015": {
-        "id": 15,
-        "timestamp": "2026-04-21T21:27:21+00:00",
-        "author": "jbemmel",
-        "note": "CI consolidate after model/data change (838f8691b202dde91f042d80e691fd37061c14ff)",
-        "git_commit_hash": "838f8691b202dde91f042d80e691fd37061c14ff"
-      },
-      "000000000016": {
-        "id": 16,
-        "timestamp": "2026-04-21T16:51:33-05:00",
-        "author": "jeroen",
-        "note": "Refresh bundles after rebase onto origin/main"
-      },
-      "000000000017": {
-        "id": 17,
-        "timestamp": "2026-04-21T21:52:00+00:00",
-        "author": "jbemmel",
-        "note": "(no change) CI consolidate after model/data change (5050d75b7b3d4599fc0bb9cdd75b8462c5cabc7d)",
-        "git_commit_hash": "5050d75b7b3d4599fc0bb9cdd75b8462c5cabc7d"
-      },
-      "000000000018": {
-        "id": 18,
-        "timestamp": "2026-04-21T22:00:41+00:00",
-        "author": "jbemmel",
-        "note": "CI consolidate after model/data change (26c25555e6b658640a8aa97c03a676a33b13d697)",
-        "git_commit_hash": "26c25555e6b658640a8aa97c03a676a33b13d697"
-      },
-      "000000000019": {
-        "id": 19,
-        "timestamp": "2026-04-21T22:10:15+00:00",
-        "author": "jbemmel",
-        "note": "CI consolidate after model/data change (604f075c86be9bdfd9205ec60610610e8b4625ad)",
-        "git_commit_hash": "604f075c86be9bdfd9205ec60610610e8b4625ad"
-      },
-      "000000000020": {
-        "id": 20,
-        "timestamp": "2026-04-22T14:58:23+00:00",
-        "author": "jbemmel",
-        "note": "(no change) CI consolidate after model/data change (79ec72247f5b738b73f91c9d42b73cfa75b22e70)",
-        "git_commit_hash": "79ec72247f5b738b73f91c9d42b73cfa75b22e70"
-      },
-      "000000000021": {
-        "id": 21,
-        "timestamp": "2026-05-06T17:58:27-05:00",
-        "author": "root",
-        "note": "Reconsolidate xframe after llm_models.json and prompt_invocations.json updates",
-        "git_commit_hash": "ba759d98111c5ba040d4187e364d656d18bca59a"
-      },
-      "000000000022": {
-        "id": 22,
-        "timestamp": "2026-05-06T22:59:41+00:00",
-        "author": "jbemmel",
-        "note": "(no change) CI consolidate after model/data change (896490f6def3492f0e473bb219e73f7a8679e9c7)",
-        "git_commit_hash": "896490f6def3492f0e473bb219e73f7a8679e9c7"
-      },
-      "000000000023": {
-        "id": 23,
-        "timestamp": "2026-05-06T18:55:52-05:00",
-        "author": "jbemmel",
-        "note": "Regenerate consolidated outputs from current xframe model and data (prompts, providers, invocations).",
-        "git_commit_hash": "baa98fb5b60f51702e09bd53a16c99a40bbacbd1"
-      },
-      "000000000024": {
-        "id": 24,
-        "timestamp": "2026-05-06T23:58:08+00:00",
-        "author": "jbemmel",
-        "note": "(no change) CI consolidate after model/data change (c6a11659447a200bbabde5649f9dd4782e8155d1)",
-        "git_commit_hash": "c6a11659447a200bbabde5649f9dd4782e8155d1"
-      },
-      "000000000025": {
-        "id": 25,
-        "timestamp": "2026-05-07T00:16:03+00:00",
-        "author": "jbemmel",
-        "note": "CI consolidate after model/data change (4a72c31a921ed37c04609d5d3d6c4f868884c36d)",
-        "git_commit_hash": "4a72c31a921ed37c04609d5d3d6c4f868884c36d"
-      },
-      "000000000026": {
-        "id": 26,
-        "timestamp": "2026-05-07T13:03:05-05:00",
-        "author": "jbemmel",
-        "note": "numeral_cancel data in separate data/numeral_cancel.json; parent_array merges under country"
-      },
-      "000000000027": {
-        "id": 27,
-        "timestamp": "2026-05-07T13:03:48-05:00",
-        "author": "jbemmel",
-        "note": "numeral_cancel: scalar country_id for parent_array nesting; data in data/numeral_cancel.json"
-      },
-      "000000000028": {
-        "id": 28,
-        "timestamp": "2026-05-07T14:09:51-05:00",
-        "author": "jbemmel",
-        "note": "Restructure Denmark numeral cancel data: country dk with nested numeral_cancels in numeral_cancels_denmark.json",
-        "git_commit_hash": "14404f367ca2578914fd73bcdb71d630f4788ab9"
-      },
-      "000000000029": {
-        "id": 29,
-        "timestamp": "2026-05-07T14:10:12-05:00",
-        "author": "jbemmel",
-        "note": "(no change) Drop redundant nested country_id from numeral_cancels_denmark.json",
-        "git_commit_hash": "14404f367ca2578914fd73bcdb71d630f4788ab9"
-      },
-      "000000000030": {
-        "id": 30,
-        "timestamp": "2026-05-07T14:27:13-05:00",
-        "author": "jbemmel",
-        "note": "Reconsolidate after numeral_cancel composite FK parent_array and Denmark nested data",
-        "git_commit_hash": "14404f367ca2578914fd73bcdb71d630f4788ab9"
-      },
-      "000000000031": {
-        "id": 31,
-        "timestamp": "2026-05-08T10:56:47-05:00",
-        "author": "jbemmel",
-        "note": "Add gemini_function_parameter parent_array FK; reconsolidate Gemini tools and catalog data",
-        "git_commit_hash": "d8342e7a56182aff6dc9fd880e9a956a0855de53"
-      },
-      "000000000032": {
-        "id": 32,
-        "timestamp": "2026-05-08T12:34:18-05:00",
-        "author": "jbemmel",
-        "note": "(no change) Enable include_x_fields in model metadata so consolidated schema emits x-primaryKey, x-foreignKeys, and related extensions.",
-        "git_commit_hash": "d8342e7a56182aff6dc9fd880e9a956a0855de53"
-      },
-      "000000000033": {
-        "id": 33,
-        "timestamp": "2026-05-08T14:07:26-05:00",
-        "author": "jbemmel",
-        "note": "gemini_function_parameter composite primary key"
-      },
-      "000000000034": {
-        "id": 34,
-        "timestamp": "2026-05-08T14:46:03-05:00",
-        "author": "jbemmel",
-        "note": "(no change) remove duplicate function_name on gemini_function_parameter"
-      },
-      "000000000035": {
-        "id": 35,
-        "timestamp": "2026-05-08T23:36:19+00:00",
-        "author": "jbemmel",
-        "note": "CI consolidate after model/data change (f699e831318ff9e1297ae3e1aacf010f3d63a88c)",
-        "git_commit_hash": "f699e831318ff9e1297ae3e1aacf010f3d63a88c"
-      },
-      "000000000036": {
-        "id": 36,
-        "timestamp": "2026-05-08T19:19:56-05:00",
-        "author": "jbemmel",
-        "note": "Add numeral_cancel_identification prompt shard; prompt_invocation enabled flags and disabled OpenRouter rows in data; align consolidated schema/data and JS bundles.",
-        "git_commit_hash": "fe4388c2d7abaa31ed6b69377af328ebc06bbdb6"
-      },
-      "000000000037": {
-        "id": 37,
-        "timestamp": "2026-05-09T00:21:14+00:00",
-        "author": "jbemmel",
-        "note": "CI consolidate after model/data change (5b3c998e4382df3c524a19165ccd449352716f0c)",
-        "git_commit_hash": "5b3c998e4382df3c524a19165ccd449352716f0c"
-      },
-      "000000000038": {
-        "id": 38,
-        "timestamp": "2026-05-09T02:14:59+00:00",
-        "author": "jbemmel",
-        "note": "CI consolidate after model/data change (8dcb6a78be55fa32671a16329032adbc53f71b17)",
-        "git_commit_hash": "8dcb6a78be55fa32671a16329032adbc53f71b17"
-      },
-      "000000000039": {
-        "id": 39,
-        "timestamp": "2026-05-09T02:31:35+00:00",
-        "author": "jbemmel",
-        "note": "CI consolidate after model/data change (b75d7e7599a2c58a66b79ea22ec1935f24992d8d)",
-        "git_commit_hash": "b75d7e7599a2c58a66b79ea22ec1935f24992d8d"
-      },
-      "000000000040": {
-        "id": 40,
-        "timestamp": "2026-05-09T02:37:26+00:00",
-        "author": "jbemmel",
-        "note": "CI consolidate after model/data change (b26f3c58882f04935a847857b2ab81d6ddb3d802)",
-        "git_commit_hash": "b26f3c58882f04935a847857b2ab81d6ddb3d802"
-      },
-      "000000000041": {
-        "id": 41,
-        "timestamp": "2026-05-09T02:52:24+00:00",
-        "author": "jbemmel",
-        "note": "CI consolidate after model/data change (91e518a81325988c0f5ed6786caa90ed27d77719)",
-        "git_commit_hash": "91e518a81325988c0f5ed6786caa90ed27d77719"
+        "note": "Reconsolidate after prompt, model, and llm_models data edits"
       }
     },
     "catalog_system": {
@@ -378,22 +126,22 @@
         "catalog_system_abbreviation": "Mi",
         "name": "Michel Deutschland-Spezial",
         "notes": "Example European specialized catalog.",
-        "c": 4,
-        "v": 4
+        "c": 1,
+        "v": 1
       },
       "Sc": {
         "catalog_system_abbreviation": "Sc",
         "name": "Scott Standard Postage Stamp Catalogue",
         "notes": "US-oriented numbering.",
-        "c": 4,
-        "v": 4
+        "c": 1,
+        "v": 1
       },
       "Facit": {
         "catalog_system_abbreviation": "Facit",
         "name": "Facit Nordic Countries",
         "notes": "Scandinavian specialized.",
-        "c": 4,
-        "v": 4
+        "c": 1,
+        "v": 1
       }
     },
     "country": {
@@ -406,11 +154,7 @@
             "name": "Denmark classic bicolors",
             "description": "Perforated bicolor definitives and numeral designs, late 19th century.",
             "year_from": 1870,
-            "year_to": 1905,
-            "m": [
-              10
-            ],
-            "v": 1
+            "year_to": 1905
           }
         ],
         "scott_catalog_entries": [
@@ -419,8 +163,8 @@
               "section": "M",
               "number": 45
             },
-            "c": 41,
-            "v": 41,
+            "c": 6,
+            "v": 6,
             "stamp_id": "stamp_2026-04-11_example_001",
             "country_id": "dk",
             "title": "Denmark 20 øre bicolor used",
@@ -451,9 +195,7 @@
             },
             "period_end": "1864-04-01",
             "town_name": "Flensborg",
-            "history": "Original assignment to Flensborg. Following the defeat in the Second Schleswig War (1864), the town was ceded to Prussia/Austria, and the Danish numeral cancel was retired from this location.",
-            "c": 30,
-            "v": 30
+            "history": "Original assignment to Flensborg. Following the defeat in the Second Schleswig War (1864), the town was ceded to Prussia/Austria, and the Danish numeral cancel was retired from this location."
           },
           {
             "numeral_cancel_key": {
@@ -463,27 +205,18 @@
             },
             "period_end": "1884-12-31",
             "town_name": "Skibby",
-            "history": "Reassigned to the Sjælland town of Skibby during the post-war reorganization of the postal system to fill the gaps left by lost Schleswig territories.",
-            "c": 30,
-            "v": 30
+            "history": "Reassigned to the Sjælland town of Skibby during the post-war reorganization of the postal system to fill the gaps left by lost Schleswig territories."
           }
         ],
         "c": 1,
-        "m": [
-          10,
-          28
-        ],
-        "v": 28
+        "v": 1
       },
       "se": {
         "country_id": "se",
         "display_name": "Sweden",
         "ebay_category": 47171,
         "c": 1,
-        "m": [
-          10
-        ],
-        "v": 10
+        "v": 1
       },
       "us": {
         "country_id": "us",
@@ -494,56 +227,49 @@
             "name": "1847 First General Issue",
             "description": "First U.S. nationwide adhesive postage issue (Franklin and Washington).",
             "year_from": 1847,
-            "year_to": 1847,
-            "c": 15
+            "year_to": 1847
           },
           {
             "series_id": "us-1875-reprints-of-1847",
             "name": "1875 Reprints of 1847 Issue",
             "description": "BEP reprints of the original 1847 designs, produced mainly for collectors and archives.",
             "year_from": 1875,
-            "year_to": 1875,
-            "c": 15
+            "year_to": 1875
           },
           {
             "series_id": "us-1851-1856-imperforate-definitives",
             "name": "1851-1856 Imperforate Definitives",
             "description": "Imperforate 1851-era definitive issue and related early denominations/types.",
             "year_from": 1851,
-            "year_to": 1856,
-            "c": 15
+            "year_to": 1856
           },
           {
             "series_id": "us-1857-1860-perforated-definitives",
             "name": "1857-1860 Perforated Definitives",
             "description": "Perforated continuation of classic 1851 designs with type and plate distinctions.",
             "year_from": 1857,
-            "year_to": 1860,
-            "c": 15
+            "year_to": 1860
           },
           {
             "series_id": "us-1857-reprints",
             "name": "1857 Reprints",
             "description": "Reprint-related classic listings in the 40-47 block.",
             "year_from": 1857,
-            "year_to": 1857,
-            "c": 15
+            "year_to": 1857
           },
           {
             "series_id": "us-1861-1866-civil-war-definitives",
             "name": "1861-1866 Civil War Definitives",
             "description": "National Bank Note Company issue replacing prior designs during and after Civil War contract changes.",
             "year_from": 1861,
-            "year_to": 1866,
-            "c": 15
+            "year_to": 1866
           },
           {
             "series_id": "us-1867-1868-grilled-issue",
             "name": "1867-1868 Grilled Issue",
             "description": "D/E/F and Z grill-era classic definitives and related varieties.",
             "year_from": 1867,
-            "year_to": 1868,
-            "c": 15
+            "year_to": 1868
           }
         ],
         "scott_catalog_entries": [
@@ -556,8 +282,7 @@
             "denomination": "5c",
             "perforation": "imperforate",
             "primary_color": "red brown",
-            "description": "First United States adhesive postage stamp (1847 general issue): 5¢ Benjamin Franklin line engraving on bluish wove paper; imperforate, for the domestic single-rate up to 300 miles.",
-            "c": 15
+            "description": "First United States adhesive postage stamp (1847 general issue): 5¢ Benjamin Franklin line engraving on bluish wove paper; imperforate, for the domestic single-rate up to 300 miles."
           },
           {
             "scott": {
@@ -568,8 +293,7 @@
             "denomination": "10c",
             "perforation": "imperforate",
             "primary_color": "black",
-            "description": "1847 first general issue: 10¢ George Washington line engraving; imperforate, for higher domestic letter rates and some foreign mail.",
-            "c": 15
+            "description": "1847 first general issue: 10¢ George Washington line engraving; imperforate, for higher domestic letter rates and some foreign mail."
           },
           {
             "scott": {
@@ -580,8 +304,7 @@
             "denomination": "5c",
             "perforation": "imperforate",
             "primary_color": "blue",
-            "description": "1875 Bureau of Engraving and Printing hard-paper reprint of the 1847 5¢ Franklin (original Scott 1); imperforate special printing for collectors and archives.",
-            "c": 15
+            "description": "1875 Bureau of Engraving and Printing hard-paper reprint of the 1847 5¢ Franklin (original Scott 1); imperforate special printing for collectors and archives."
           },
           {
             "scott": {
@@ -592,8 +315,7 @@
             "denomination": "10c",
             "perforation": "imperforate",
             "primary_color": "black",
-            "description": "1875 BEP hard-paper reprint of the 1847 10¢ Washington (original Scott 2); imperforate line-engraved reissue.",
-            "c": 15
+            "description": "1875 BEP hard-paper reprint of the 1847 10¢ Washington (original Scott 2); imperforate line-engraved reissue."
           },
           {
             "scott": {
@@ -604,8 +326,7 @@
             "denomination": "1c",
             "perforation": "imperforate",
             "primary_color": "blue, pale blue, dark blue",
-            "description": "1851 1¢ Benjamin Franklin Type I blue shades; imperforate line-engraved stamp from the first U.S. denominationally complete issue.",
-            "c": 15
+            "description": "1851 1¢ Benjamin Franklin Type I blue shades; imperforate line-engraved stamp from the first U.S. denominationally complete issue."
           },
           {
             "scott": {
@@ -616,8 +337,7 @@
             "denomination": "1c",
             "perforation": "imperforate",
             "primary_color": "blue, dark blue",
-            "description": "1851 1¢ Franklin Type Ia; imperforate stamp with fuller outer framelines than the later Type II printings.",
-            "c": 15
+            "description": "1851 1¢ Franklin Type Ia; imperforate stamp with fuller outer framelines than the later Type II printings."
           },
           {
             "scott": {
@@ -628,8 +348,7 @@
             "denomination": "1c",
             "perforation": "imperforate",
             "primary_color": "blue, dark blue",
-            "description": "1851 1¢ Franklin Type II blue shades; imperforate workhorse 1¢ from multiple early plates with reduced or broken outer frame lines.",
-            "c": 15
+            "description": "1851 1¢ Franklin Type II blue shades; imperforate workhorse 1¢ from multiple early plates with reduced or broken outer frame lines."
           },
           {
             "scott": {
@@ -640,8 +359,7 @@
             "denomination": "1c",
             "perforation": "imperforate",
             "primary_color": "light blue, blue, dark blue",
-            "description": "1851 1¢ Franklin Type III; imperforate stamp distinguished by breaks in the top and bottom outer frame lines.",
-            "c": 15
+            "description": "1851 1¢ Franklin Type III; imperforate stamp distinguished by breaks in the top and bottom outer frame lines."
           },
           {
             "scott": {
@@ -652,8 +370,7 @@
             "denomination": "1c",
             "perforation": "imperforate",
             "primary_color": "pale blue, blue, dark blue",
-            "description": "1851 1¢ Franklin Type IV; imperforate late-plate state with heavy recutting along the frame lines.",
-            "c": 15
+            "description": "1851 1¢ Franklin Type IV; imperforate late-plate state with heavy recutting along the frame lines."
           },
           {
             "scott": {
@@ -664,8 +381,7 @@
             "denomination": "3c",
             "perforation": "imperforate",
             "primary_color": "orange brown",
-            "description": "1851 3¢ George Washington Type I orange brown; imperforate standard domestic letter-rate denomination of the 1851 series.",
-            "c": 15
+            "description": "1851 3¢ George Washington Type I orange brown; imperforate standard domestic letter-rate denomination of the 1851 series."
           },
           {
             "scott": {
@@ -676,8 +392,7 @@
             "denomination": "3c",
             "perforation": "imperforate",
             "primary_color": "dull red, pinkish, claret, brownish carmine and shades in between",
-            "description": "1851 3¢ Washington Type I in dull red, claret, and related shades; imperforate line-engraved domestic letter stamp.",
-            "c": 15
+            "description": "1851 3¢ Washington Type I in dull red, claret, and related shades; imperforate line-engraved domestic letter stamp."
           },
           {
             "scott": {
@@ -688,8 +403,7 @@
             "denomination": "5c",
             "perforation": "imperforate",
             "primary_color": "red brown, dark red brown",
-            "description": "1855–56 5¢ Thomas Jefferson Type I red brown shades; imperforate stamp from the 1855–61 middle-value issue.",
-            "c": 15
+            "description": "1855–56 5¢ Thomas Jefferson Type I red brown shades; imperforate stamp from the 1855–61 middle-value issue."
           },
           {
             "scott": {
@@ -700,8 +414,7 @@
             "denomination": "10c",
             "perforation": "imperforate",
             "primary_color": "green, dark green or yellowish green",
-            "description": "1855 10¢ George Washington Type I green; imperforate line-engraved stamp for the long-haul domestic ten-cent letter rate.",
-            "c": 15
+            "description": "1855 10¢ George Washington Type I green; imperforate line-engraved stamp for the long-haul domestic ten-cent letter rate."
           },
           {
             "scott": {
@@ -712,8 +425,7 @@
             "denomination": "10c",
             "perforation": "imperforate",
             "primary_color": "green, dark green or yellowish green",
-            "description": "1855 10¢ Washington Type II green; imperforate issue differing from Type I in recutting and frame-line details around the portrait.",
-            "c": 15
+            "description": "1855 10¢ Washington Type II green; imperforate issue differing from Type I in recutting and frame-line details around the portrait."
           },
           {
             "scott": {
@@ -724,8 +436,7 @@
             "denomination": "10c",
             "perforation": "imperforate",
             "primary_color": "green, dark green or yellowish green",
-            "description": "1855 10¢ Washington Type III green; imperforate intermediate plate state of the 1855 ten-cent engraving.",
-            "c": 15
+            "description": "1855 10¢ Washington Type III green; imperforate intermediate plate state of the 1855 ten-cent engraving."
           },
           {
             "scott": {
@@ -736,8 +447,7 @@
             "denomination": "10c",
             "perforation": "imperforate",
             "primary_color": "green, dark green or yellowish green",
-            "description": "1855 10¢ Washington Type IV green; imperforate late state of the 1855 ten-cent design with extensive plate wear and recutting.",
-            "c": 15
+            "description": "1855 10¢ Washington Type IV green; imperforate late state of the 1855 ten-cent design with extensive plate wear and recutting."
           },
           {
             "scott": {
@@ -748,8 +458,7 @@
             "denomination": "12c",
             "perforation": "imperforate",
             "primary_color": "black, intense black or gray black",
-            "description": "1851 12¢ George Washington black; imperforate high-value line engraving for registered or heavy domestic postage.",
-            "c": 15
+            "description": "1851 12¢ George Washington black; imperforate high-value line engraving for registered or heavy domestic postage."
           },
           {
             "scott": {
@@ -760,8 +469,7 @@
             "denomination": "1c",
             "perforation": "15 to 15½",
             "primary_color": "blue, pale blue, dark blue",
-            "description": "1861 1¢ Benjamin Franklin Type I blue; first National Bank Note Company perforated issue (15–15½) of the Civil War-era letter-rate design.",
-            "c": 15
+            "description": "1861 1¢ Benjamin Franklin Type I blue; first National Bank Note Company perforated issue (15–15½) of the Civil War-era letter-rate design."
           },
           {
             "scott": {
@@ -772,8 +480,7 @@
             "denomination": "1c",
             "perforation": "15 to 15½",
             "primary_color": "blue, pale blue, dark blue",
-            "description": "1857–61 1¢ Franklin Type Ia blue; perforated 15–15½ stamp retaining complete outer framelines like Type I.",
-            "c": 15
+            "description": "1857–61 1¢ Franklin Type Ia blue; perforated 15–15½ stamp retaining complete outer framelines like Type I."
           },
           {
             "scott": {
@@ -784,8 +491,7 @@
             "denomination": "1c",
             "perforation": "15 to 15½",
             "primary_color": "blue, pale blue, dark blue",
-            "description": "1857–61 1¢ Franklin Type II blue; perforated 15–15½ issue with cropped or incomplete outer frame lines compared with Type I.",
-            "c": 15
+            "description": "1857–61 1¢ Franklin Type II blue; perforated 15–15½ issue with cropped or incomplete outer frame lines compared with Type I."
           },
           {
             "scott": {
@@ -796,8 +502,7 @@
             "denomination": "1c",
             "perforation": "15 to 15½",
             "primary_color": "blue, pale blue, dark blue",
-            "description": "1857–61 1¢ Franklin Type III blue; perforated 15–15½ stamp with characteristic breaks in the outer top and bottom frame lines.",
-            "c": 15
+            "description": "1857–61 1¢ Franklin Type III blue; perforated 15–15½ stamp with characteristic breaks in the outer top and bottom frame lines."
           },
           {
             "scott": {
@@ -808,8 +513,7 @@
             "denomination": "1c",
             "perforation": "15 to 15½",
             "primary_color": "blue, pale blue, dark blue",
-            "description": "1857–61 1¢ Franklin Type IIIa blue; perforated 15–15½ intermediate plate state between Types III and IV.",
-            "c": 15
+            "description": "1857–61 1¢ Franklin Type IIIa blue; perforated 15–15½ intermediate plate state between Types III and IV."
           },
           {
             "scott": {
@@ -820,8 +524,7 @@
             "denomination": "1c",
             "perforation": "15 to 15½",
             "primary_color": "blue, pale blue, dark blue",
-            "description": "1857–61 1¢ Franklin Type IV blue; perforated 15–15½ issue with pronounced recutting along the top and bottom frame lines.",
-            "c": 15
+            "description": "1857–61 1¢ Franklin Type IV blue; perforated 15–15½ issue with pronounced recutting along the top and bottom frame lines."
           },
           {
             "scott": {
@@ -832,8 +535,7 @@
             "denomination": "1c",
             "perforation": "15 to 15½",
             "primary_color": "blue, pale blue, dark blue",
-            "description": "1857–61 1¢ Franklin Type V blue; most common perforated 1¢ Franklin, with side ornaments trimmed for tight perforation spacing.",
-            "c": 15
+            "description": "1857–61 1¢ Franklin Type V blue; most common perforated 1¢ Franklin, with side ornaments trimmed for tight perforation spacing."
           },
           {
             "scott": {
@@ -844,8 +546,7 @@
             "denomination": "3c",
             "perforation": "15 or 15½",
             "primary_color": "rose, dull rose",
-            "description": "1857 3¢ George Washington Type I rose shades; perforated 15 or 15½ domestic letter stamp from the first U.S. perforated issue.",
-            "c": 15
+            "description": "1857 3¢ George Washington Type I rose shades; perforated 15 or 15½ domestic letter stamp from the first U.S. perforated issue."
           },
           {
             "scott": {
@@ -856,8 +557,7 @@
             "denomination": "3c",
             "perforation": "15 or 15½",
             "primary_color": "dull red, brownish-claret, plum, and brownish-carmine",
-            "description": "1857 3¢ Washington Type II dull red through plum shades; perforated 15 or 15½ stamp with plate work that removes portions of the outer frame lines.",
-            "c": 15
+            "description": "1857 3¢ Washington Type II dull red through plum shades; perforated 15 or 15½ stamp with plate work that removes portions of the outer frame lines."
           },
           {
             "scott": {
@@ -868,8 +568,7 @@
             "denomination": "5c",
             "perforation": "15 or 15½",
             "primary_color": "brick red",
-            "description": "1858 5¢ Thomas Jefferson Type I brick red; perforated 15 or 15½ line-engraved Jefferson from the 1857 perforated series.",
-            "c": 15
+            "description": "1858 5¢ Thomas Jefferson Type I brick red; perforated 15 or 15½ line-engraved Jefferson from the 1857 perforated series."
           },
           {
             "scott": {
@@ -880,8 +579,7 @@
             "denomination": "5c",
             "perforation": "15 or 15½",
             "primary_color": "red brown, pale red brown",
-            "description": "1857 5¢ Jefferson Type I red brown and pale red brown shades; perforated 15 or 15½ early Jefferson of the perforated issue.",
-            "c": 15
+            "description": "1857 5¢ Jefferson Type I red brown and pale red brown shades; perforated 15 or 15½ early Jefferson of the perforated issue."
           },
           {
             "scott": {
@@ -892,8 +590,7 @@
             "denomination": "5c",
             "perforation": "15 or 15½",
             "primary_color": "brown, pale brown or deep brown",
-            "description": "1859 5¢ Jefferson Type I brown shades; perforated 15 or 15½ late Type I plate printing before adoption of the Type II frame layout.",
-            "c": 15
+            "description": "1859 5¢ Jefferson Type I brown shades; perforated 15 or 15½ late Type I plate printing before adoption of the Type II frame layout."
           },
           {
             "scott": {
@@ -904,8 +601,7 @@
             "denomination": "5c",
             "perforation": "15 or 15½",
             "primary_color": "orange brown",
-            "description": "1861 5¢ Jefferson Type II orange brown; perforated 15 or 15½ design without the small projections at top and bottom of the earlier Type I.",
-            "c": 15
+            "description": "1861 5¢ Jefferson Type II orange brown; perforated 15 or 15½ design without the small projections at top and bottom of the earlier Type I."
           },
           {
             "scott": {
@@ -917,8 +613,7 @@
             "denomination": "5c",
             "perforation": "15 or 15½",
             "primary_color": "brown",
-            "description": "1861 5¢ Jefferson Type II brown (listed variety \"A\"); perforated 15 or 15½ companion shade to the orange brown Type II printing.",
-            "c": 15
+            "description": "1861 5¢ Jefferson Type II brown (listed variety \"A\"); perforated 15 or 15½ companion shade to the orange brown Type II printing."
           },
           {
             "scott": {
@@ -929,8 +624,7 @@
             "denomination": "10c",
             "perforation": "15½",
             "primary_color": "dark green, green, bluish green, yellowish green",
-            "description": "1857–61 10¢ George Washington Type I green; perforated 15½ line engraving for the transcontinental ten-cent letter rate.",
-            "c": 15
+            "description": "1857–61 10¢ George Washington Type I green; perforated 15½ line engraving for the transcontinental ten-cent letter rate."
           },
           {
             "scott": {
@@ -941,8 +635,7 @@
             "denomination": "10c",
             "perforation": "15½",
             "primary_color": "dark green, green, bluish green, yellowish green",
-            "description": "1857–61 10¢ Washington Type II green; perforated 15½ issue with plate alterations distinct from the Type I frame line pattern.",
-            "c": 15
+            "description": "1857–61 10¢ Washington Type II green; perforated 15½ issue with plate alterations distinct from the Type I frame line pattern."
           },
           {
             "scott": {
@@ -953,8 +646,7 @@
             "denomination": "10c",
             "perforation": "15½",
             "primary_color": "dark green, green, bluish green, yellowish green",
-            "description": "1857–61 10¢ Washington Type III green; perforated 15½ intermediate recut state of the perforated ten-cent Washington.",
-            "c": 15
+            "description": "1857–61 10¢ Washington Type III green; perforated 15½ intermediate recut state of the perforated ten-cent Washington."
           },
           {
             "scott": {
@@ -965,8 +657,7 @@
             "denomination": "10c",
             "perforation": "15½",
             "primary_color": "dark green, green, bluish green, yellowish green",
-            "description": "1857–61 10¢ Washington Type IV green; perforated 15½ late-plate characteristics of the green Washington design.",
-            "c": 15
+            "description": "1857–61 10¢ Washington Type IV green; perforated 15½ late-plate characteristics of the green Washington design."
           },
           {
             "scott": {
@@ -977,8 +668,7 @@
             "denomination": "10c",
             "perforation": "15½",
             "primary_color": "dark green, green, bluish green, yellowish green",
-            "description": "1857–61 10¢ Washington Type V green; perforated 15½ final major plate state of the perforated ten-cent issue.",
-            "c": 15
+            "description": "1857–61 10¢ Washington Type V green; perforated 15½ final major plate state of the perforated ten-cent issue."
           },
           {
             "scott": {
@@ -989,8 +679,7 @@
             "denomination": "12c",
             "perforation": "15½",
             "primary_color": "black, gray black, intense black",
-            "description": "1857 12¢ George Washington black; perforated 15½ high-value line engraving for registry and heavy postage.",
-            "c": 15
+            "description": "1857 12¢ George Washington black; perforated 15½ high-value line engraving for registry and heavy postage."
           },
           {
             "scott": {
@@ -1001,8 +690,7 @@
             "denomination": "24c",
             "perforation": "15½",
             "primary_color": "gray lilac",
-            "description": "1860 24¢ Washington gray lilac; perforated 15½ stamp for large domestic frankings and some international rates.",
-            "c": 15
+            "description": "1860 24¢ Washington gray lilac; perforated 15½ stamp for large domestic frankings and some international rates."
           },
           {
             "scott": {
@@ -1013,8 +701,7 @@
             "denomination": "30c",
             "perforation": "15½",
             "primary_color": "orange, yellow orange, reddish orange",
-            "description": "1860 30¢ Benjamin Franklin orange shades; perforated 15½ high-denomination line engraving.",
-            "c": 15
+            "description": "1860 30¢ Benjamin Franklin orange shades; perforated 15½ high-denomination line engraving."
           },
           {
             "scott": {
@@ -1025,8 +712,7 @@
             "denomination": "90c",
             "perforation": "15½",
             "primary_color": "blue",
-            "description": "1860 90¢ George Washington deep blue; perforated 15½ rare high value for very heavy letter postage and certain steamship uses.",
-            "c": 15
+            "description": "1860 90¢ George Washington deep blue; perforated 15½ rare high value for very heavy letter postage and certain steamship uses."
           },
           {
             "scott": {
@@ -1037,8 +723,7 @@
             "denomination": "1c",
             "perforation": "12 (the original is 15½)",
             "primary_color": "bright blue",
-            "description": "1875 BEP hard-paper reprint of the perforated 1¢ Franklin, perf 12 (original 1861–67 printings were 15–15½).",
-            "c": 15
+            "description": "1875 BEP hard-paper reprint of the perforated 1¢ Franklin, perf 12 (original 1861–67 printings were 15–15½)."
           },
           {
             "scott": {
@@ -1049,8 +734,7 @@
             "denomination": "3c",
             "perforation": "12 (the original is 15½)",
             "primary_color": "scarlet",
-            "description": "1875 BEP hard-paper reprint of the 3¢ Washington, perf 12 (original perforated issue was 15–15½).",
-            "c": 15
+            "description": "1875 BEP hard-paper reprint of the 3¢ Washington, perf 12 (original perforated issue was 15–15½)."
           },
           {
             "scott": {
@@ -1061,8 +745,7 @@
             "denomination": "5c",
             "perforation": "12 (the original is 15½)",
             "primary_color": "orange brown",
-            "description": "1875 BEP hard-paper reprint of the 5¢ Jefferson, perf 12 (original perforated issue was 15–15½).",
-            "c": 15
+            "description": "1875 BEP hard-paper reprint of the 5¢ Jefferson, perf 12 (original perforated issue was 15–15½)."
           },
           {
             "scott": {
@@ -1073,8 +756,7 @@
             "denomination": "10c",
             "perforation": "12 (the original is 15½)",
             "primary_color": "blue-green",
-            "description": "1875 BEP hard-paper reprint of the 10¢ Washington, perf 12 (original perforated issue was 15½).",
-            "c": 15
+            "description": "1875 BEP hard-paper reprint of the 10¢ Washington, perf 12 (original perforated issue was 15½)."
           },
           {
             "scott": {
@@ -1085,8 +767,7 @@
             "denomination": "12c",
             "perforation": "12 (the original is 15½)",
             "primary_color": "greenish black",
-            "description": "1875 BEP hard-paper reprint of the 12¢ Washington, perf 12 (original perforated issue was 15½).",
-            "c": 15
+            "description": "1875 BEP hard-paper reprint of the 12¢ Washington, perf 12 (original perforated issue was 15½)."
           },
           {
             "scott": {
@@ -1097,8 +778,7 @@
             "denomination": "24c",
             "perforation": "12 (the original is 15½)",
             "primary_color": "blackish violet",
-            "description": "1875 BEP hard-paper reprint of the 24¢ Washington, perf 12 (original perforated issue was 15½).",
-            "c": 15
+            "description": "1875 BEP hard-paper reprint of the 24¢ Washington, perf 12 (original perforated issue was 15½)."
           },
           {
             "scott": {
@@ -1109,8 +789,7 @@
             "denomination": "30c",
             "perforation": "12 (the original is 15½)",
             "primary_color": "yellow orange",
-            "description": "1875 BEP hard-paper reprint of the 30¢ Franklin, perf 12 (original perforated issue was 15½).",
-            "c": 15
+            "description": "1875 BEP hard-paper reprint of the 30¢ Franklin, perf 12 (original perforated issue was 15½)."
           },
           {
             "scott": {
@@ -1121,8 +800,7 @@
             "denomination": "90c",
             "perforation": "12 (the original is 15½)",
             "primary_color": "deep blue",
-            "description": "1875 BEP hard-paper reprint of the 90¢ Washington, perf 12 (original perforated issue was 15½).",
-            "c": 15
+            "description": "1875 BEP hard-paper reprint of the 90¢ Washington, perf 12 (original perforated issue was 15½)."
           },
           {
             "scott": {
@@ -1132,8 +810,7 @@
             "denomination": "5c",
             "perforation": "15",
             "primary_color": "Brick Red",
-            "description": "5c Thomas Jefferson. 1857-61 Issue. Printed by Toppan, Carpenter & Co. This variety (Type II) features the 'Brick Red' color and is distinguished by the projections at the top and bottom being partially cut away to accommodate the perforation 15.",
-            "c": 15
+            "description": "5c Thomas Jefferson. 1857-61 Issue. Printed by Toppan, Carpenter & Co. This variety (Type II) features the 'Brick Red' color and is distinguished by the projections at the top and bottom being partially cut away to accommodate the perforation 15."
           },
           {
             "scott": {
@@ -1143,8 +820,7 @@
             "denomination": "5c",
             "perforation": "15",
             "primary_color": "Bright Brown",
-            "description": "5c Thomas Jefferson. 1857-61 Issue. Type II. Distinguishable from #48 by its lighter, warmer brown shade. The design features the same 'Type II' characteristics where top and bottom ornaments are partially cut away to accommodate the perfs.",
-            "c": 15
+            "description": "5c Thomas Jefferson. 1857-61 Issue. Type II. Distinguishable from #48 by its lighter, warmer brown shade. The design features the same 'Type II' characteristics where top and bottom ornaments are partially cut away to accommodate the perfs."
           },
           {
             "scott": {
@@ -1154,8 +830,7 @@
             "denomination": "5c",
             "perforation": "15",
             "primary_color": "Dark Brown",
-            "description": "5c Thomas Jefferson. 1857-61 Issue. Type II. This is the rarest color variety of the perforated 5c Jefferson. The deep, dark brown shade is distinct from the 'Bright Brown' of #49. Design features partially cut away ornaments at top and bottom.",
-            "c": 15
+            "description": "5c Thomas Jefferson. 1857-61 Issue. Type II. This is the rarest color variety of the perforated 5c Jefferson. The deep, dark brown shade is distinct from the 'Bright Brown' of #49. Design features partially cut away ornaments at top and bottom."
           },
           {
             "scott": {
@@ -1165,8 +840,7 @@
             "denomination": "10c",
             "perforation": "15",
             "primary_color": "Green",
-            "description": "10c George Washington. 1857-61 Issue. Type II. The design is complete at the top (top line and lines above X are full), but the bottom shell ornaments are partially cut away and the bottom line is broken in the center.",
-            "c": 15
+            "description": "10c George Washington. 1857-61 Issue. Type II. The design is complete at the top (top line and lines above X are full), but the bottom shell ornaments are partially cut away and the bottom line is broken in the center."
           },
           {
             "scott": {
@@ -1176,8 +850,7 @@
             "denomination": "10c",
             "perforation": "15",
             "primary_color": "Green",
-            "description": "10c George Washington. 1857-61 Issue. Type III. Both the top and bottom lines are broken. The shells at the top and bottom are also partially missing. A key identification point for your AI's edge-detection logic.",
-            "c": 15
+            "description": "10c George Washington. 1857-61 Issue. Type III. Both the top and bottom lines are broken. The shells at the top and bottom are also partially missing. A key identification point for your AI's edge-detection logic."
           },
           {
             "scott": {
@@ -1187,8 +860,7 @@
             "denomination": "10c",
             "perforation": "15",
             "primary_color": "Green",
-            "description": "10c George Washington. 1857-61 Issue. Type IV. This variety occurs when the top or bottom lines (or both) have been recut. Your OpenCV model should look for a 'stronger' or thicker line compared to the original engraving.",
-            "c": 15
+            "description": "10c George Washington. 1857-61 Issue. Type IV. This variety occurs when the top or bottom lines (or both) have been recut. Your OpenCV model should look for a 'stronger' or thicker line compared to the original engraving."
           },
           {
             "scott": {
@@ -1198,8 +870,7 @@
             "denomination": "10c",
             "perforation": "15",
             "primary_color": "Green",
-            "description": "10c George Washington. 1857-61 Issue. Type V. The most common type. The side ornaments are partially trimmed to allow for more space between stamps during the perforation process. Side pearls are typically missing or incomplete.",
-            "c": 15
+            "description": "10c George Washington. 1857-61 Issue. Type V. The most common type. The side ornaments are partially trimmed to allow for more space between stamps during the perforation process. Side pearls are typically missing or incomplete."
           },
           {
             "scott": {
@@ -1210,8 +881,7 @@
             "denomination": "1c",
             "perforation": "12 (the original is 15½)",
             "primary_color": "indigo",
-            "description": "1861 1¢ Benjamin Franklin indigo; National Bank Note Company issue on tinted paper, perf 12, opening value of the 1861 general issue.",
-            "c": 15
+            "description": "1861 1¢ Benjamin Franklin indigo; National Bank Note Company issue on tinted paper, perf 12, opening value of the 1861 general issue."
           },
           {
             "scott": {
@@ -1222,8 +892,7 @@
             "denomination": "3c",
             "perforation": "12 (the original is 15½)",
             "primary_color": "brown rose, dim deep red",
-            "description": "1861 3¢ George Washington brown rose to deep red; National Bank Note Company perf 12 Civil War letter-rate stamp.",
-            "c": 15
+            "description": "1861 3¢ George Washington brown rose to deep red; National Bank Note Company perf 12 Civil War letter-rate stamp."
           },
           {
             "scott": {
@@ -1234,8 +903,7 @@
             "denomination": "5c",
             "perforation": "12 (the original is 15½)",
             "primary_color": "brown",
-            "description": "1861 5¢ Thomas Jefferson brown; National Bank Note Company perf 12 middle denomination.",
-            "c": 15
+            "description": "1861 5¢ Thomas Jefferson brown; National Bank Note Company perf 12 middle denomination."
           },
           {
             "scott": {
@@ -1246,8 +914,7 @@
             "denomination": "10c",
             "perforation": "12 (the original is 15½)",
             "primary_color": "dark green or dark yellow green",
-            "description": "1861 10¢ George Washington dark green; National Bank Note Company perf 12 ten-cent letter rate.",
-            "c": 15
+            "description": "1861 10¢ George Washington dark green; National Bank Note Company perf 12 ten-cent letter rate."
           },
           {
             "scott": {
@@ -1258,8 +925,7 @@
             "denomination": "12c",
             "perforation": "12 (the original is 15½)",
             "primary_color": "intense black",
-            "description": "1861 12¢ George Washington intense black; National Bank Note Company perf 12 high value.",
-            "c": 15
+            "description": "1861 12¢ George Washington intense black; National Bank Note Company perf 12 high value."
           },
           {
             "scott": {
@@ -1270,8 +936,7 @@
             "denomination": "24c",
             "perforation": "12 (the original is 15½)",
             "primary_color": "dark violet",
-            "description": "1861 24¢ George Washington dark violet; National Bank Note Company perf 12.",
-            "c": 15
+            "description": "1861 24¢ George Washington dark violet; National Bank Note Company perf 12."
           },
           {
             "scott": {
@@ -1282,8 +947,7 @@
             "denomination": "30c",
             "perforation": "12 (the original is 15½)",
             "primary_color": "red orange",
-            "description": "1861 30¢ Benjamin Franklin red orange; National Bank Note Company perf 12.",
-            "c": 15
+            "description": "1861 30¢ Benjamin Franklin red orange; National Bank Note Company perf 12."
           },
           {
             "scott": {
@@ -1294,8 +958,7 @@
             "denomination": "90c",
             "perforation": "12 (the original is 15½)",
             "primary_color": "blue",
-            "description": "1861 90¢ George Washington blue; National Bank Note Company perf 12 rare high denomination.",
-            "c": 15
+            "description": "1861 90¢ George Washington blue; National Bank Note Company perf 12 rare high denomination."
           },
           {
             "scott": {
@@ -1307,8 +970,7 @@
             "denomination": "10c",
             "perforation": "12 (the original is 15½)",
             "primary_color": "dark green or dark yellow green",
-            "description": "1861 10¢ George Washington dark green, listed variety \"B\" under the Scott 62 grouping; National Bank Note Company perf 12.",
-            "c": 15
+            "description": "1861 10¢ George Washington dark green, listed variety \"B\" under the Scott 62 grouping; National Bank Note Company perf 12."
           },
           {
             "scott": {
@@ -1319,8 +981,7 @@
             "denomination": "1c",
             "perforation": "12",
             "primary_color": "blue (for more shades see below)",
-            "description": "1861 1¢ Benjamin Franklin blue on white wove; Continental Bank Note Company first perf 12 printing of the new paper stock.",
-            "c": 15
+            "description": "1861 1¢ Benjamin Franklin blue on white wove; Continental Bank Note Company first perf 12 printing of the new paper stock."
           },
           {
             "scott": {
@@ -1331,8 +992,7 @@
             "denomination": "3c",
             "perforation": "12",
             "primary_color": "pink",
-            "description": "1861 3¢ George Washington pink; Continental Bank Note Company perf 12.",
-            "c": 15
+            "description": "1861 3¢ George Washington pink; Continental Bank Note Company perf 12."
           },
           {
             "scott": {
@@ -1343,8 +1003,7 @@
             "denomination": "3c",
             "perforation": "12",
             "primary_color": "rose, brown red",
-            "description": "1861 3¢ Washington rose to brown red; Continental Bank Note Company perf 12.",
-            "c": 15
+            "description": "1861 3¢ Washington rose to brown red; Continental Bank Note Company perf 12."
           },
           {
             "scott": {
@@ -1355,8 +1014,7 @@
             "denomination": "3c",
             "perforation": "unknown",
             "primary_color": "unknown",
-            "description": "Catalog placeholder for Scott U.S. 66; confirm denomination and design against specialized catalog before use in listings.",
-            "c": 15
+            "description": "Catalog placeholder for Scott U.S. 66; confirm denomination and design against specialized catalog before use in listings."
           },
           {
             "scott": {
@@ -1367,8 +1025,7 @@
             "denomination": "5c",
             "perforation": "12",
             "primary_color": "buff",
-            "description": "1861 5¢ Thomas Jefferson buff; Continental Bank Note Company perf 12.",
-            "c": 15
+            "description": "1861 5¢ Thomas Jefferson buff; Continental Bank Note Company perf 12."
           },
           {
             "scott": {
@@ -1379,8 +1036,7 @@
             "denomination": "10c",
             "perforation": "12",
             "primary_color": "green",
-            "description": "1861 10¢ George Washington green; Continental Bank Note Company perf 12.",
-            "c": 15
+            "description": "1861 10¢ George Washington green; Continental Bank Note Company perf 12."
           },
           {
             "scott": {
@@ -1391,8 +1047,7 @@
             "denomination": "12c",
             "perforation": "12",
             "primary_color": "black",
-            "description": "1861 12¢ George Washington black; Continental Bank Note Company perf 12.",
-            "c": 15
+            "description": "1861 12¢ George Washington black; Continental Bank Note Company perf 12."
           },
           {
             "scott": {
@@ -1403,8 +1058,7 @@
             "denomination": "70c",
             "perforation": "12",
             "primary_color": "red lilac",
-            "description": "1862 70¢ George Washington red lilac; Continental Bank Note Company perf 12 rare high value.",
-            "c": 15
+            "description": "1862 70¢ George Washington red lilac; Continental Bank Note Company perf 12 rare high value."
           },
           {
             "scott": {
@@ -1415,8 +1069,7 @@
             "denomination": "30c",
             "perforation": "12",
             "primary_color": "orange",
-            "description": "1861 30¢ Benjamin Franklin orange; Continental Bank Note Company perf 12.",
-            "c": 15
+            "description": "1861 30¢ Benjamin Franklin orange; Continental Bank Note Company perf 12."
           },
           {
             "scott": {
@@ -1427,8 +1080,7 @@
             "denomination": "90c",
             "perforation": "12",
             "primary_color": "blue",
-            "description": "1861 90¢ George Washington blue; Continental Bank Note Company perf 12.",
-            "c": 15
+            "description": "1861 90¢ George Washington blue; Continental Bank Note Company perf 12."
           },
           {
             "scott": {
@@ -1439,8 +1091,7 @@
             "denomination": "2c",
             "perforation": "12",
             "primary_color": "black",
-            "description": "1863 2¢ Andrew Jackson black (\"Black Jack\"); Continental Bank Note Company perf 12 stamp for the double-weight domestic rate.",
-            "c": 15
+            "description": "1863 2¢ Andrew Jackson black (\"Black Jack\"); Continental Bank Note Company perf 12 stamp for the double-weight domestic rate."
           },
           {
             "scott": {
@@ -1451,8 +1102,7 @@
             "denomination": "3c",
             "perforation": "unknown",
             "primary_color": "unknown",
-            "description": "Catalog placeholder for Scott U.S. 74; confirm denomination and design against specialized catalog before use in listings.",
-            "c": 15
+            "description": "Catalog placeholder for Scott U.S. 74; confirm denomination and design against specialized catalog before use in listings."
           },
           {
             "scott": {
@@ -1463,8 +1113,7 @@
             "denomination": "5c",
             "perforation": "12",
             "primary_color": "red brown",
-            "description": "1862 5¢ Thomas Jefferson red brown; Continental Bank Note Company perf 12.",
-            "c": 15
+            "description": "1862 5¢ Thomas Jefferson red brown; Continental Bank Note Company perf 12."
           },
           {
             "scott": {
@@ -1475,8 +1124,7 @@
             "denomination": "5c",
             "perforation": "12",
             "primary_color": "brown",
-            "description": "1863 5¢ Jefferson brown; Continental Bank Note Company perf 12 later brown shade.",
-            "c": 15
+            "description": "1863 5¢ Jefferson brown; Continental Bank Note Company perf 12 later brown shade."
           },
           {
             "scott": {
@@ -1487,8 +1135,7 @@
             "denomination": "15c",
             "perforation": "12",
             "primary_color": "black",
-            "description": "1863 15¢ Abraham Lincoln black; Continental Bank Note Company perf 12 registry and heavy-postage denomination.",
-            "c": 15
+            "description": "1863 15¢ Abraham Lincoln black; Continental Bank Note Company perf 12 registry and heavy-postage denomination."
           },
           {
             "scott": {
@@ -1499,8 +1146,7 @@
             "denomination": "24c",
             "perforation": "12",
             "primary_color": "lilac",
-            "description": "1866 24¢ George Washington lilac; National Bank Note Company printing on silk-fiber security paper, perf 12.",
-            "c": 15
+            "description": "1866 24¢ George Washington lilac; National Bank Note Company printing on silk-fiber security paper, perf 12."
           },
           {
             "scott": {
@@ -1511,8 +1157,7 @@
             "denomination": "3c",
             "perforation": "12",
             "primary_color": "rose",
-            "description": "1867 3¢ George Washington rose; National Bank Note Company perf 12 stamp from the ungrilled late-1860s letter-rate series.",
-            "c": 15
+            "description": "1867 3¢ George Washington rose; National Bank Note Company perf 12 stamp from the ungrilled late-1860s letter-rate series."
           },
           {
             "scott": {
@@ -1523,8 +1168,7 @@
             "denomination": "5c",
             "perforation": "12",
             "primary_color": "brown",
-            "description": "1867 5¢ Thomas Jefferson brown; perf 12 Bank Note-era Jefferson without grill.",
-            "c": 15
+            "description": "1867 5¢ Thomas Jefferson brown; perf 12 Bank Note-era Jefferson without grill."
           },
           {
             "scott": {
@@ -1535,8 +1179,7 @@
             "denomination": "30c",
             "perforation": "12",
             "primary_color": "orange",
-            "description": "1867 30¢ Benjamin Franklin orange; perf 12 high denomination without grill.",
-            "c": 15
+            "description": "1867 30¢ Benjamin Franklin orange; perf 12 high denomination without grill."
           },
           {
             "scott": {
@@ -1547,8 +1190,7 @@
             "denomination": "3c",
             "perforation": "12",
             "primary_color": "rose",
-            "description": "1867 3¢ Washington rose; perf 12 printing from the late 1860s regular issue.",
-            "c": 15
+            "description": "1867 3¢ Washington rose; perf 12 printing from the late 1860s regular issue."
           },
           {
             "scott": {
@@ -1559,8 +1201,7 @@
             "denomination": "3c",
             "perforation": "12",
             "primary_color": "rose",
-            "description": "1867 3¢ Washington rose; perf 12 later shipment or shade grouping of the ungrilled 3¢ design.",
-            "c": 15
+            "description": "1867 3¢ Washington rose; perf 12 later shipment or shade grouping of the ungrilled 3¢ design."
           },
           {
             "scott": {
@@ -1571,8 +1212,7 @@
             "denomination": "2c",
             "perforation": "12",
             "primary_color": "black",
-            "description": "1868 2¢ Andrew Jackson black; perf 12 line engraving from the late 1860s regular issue.",
-            "c": 15
+            "description": "1868 2¢ Andrew Jackson black; perf 12 line engraving from the late 1860s regular issue."
           },
           {
             "scott": {
@@ -1583,8 +1223,7 @@
             "denomination": "3c",
             "perforation": "12",
             "primary_color": "rose",
-            "description": "1868 3¢ George Washington rose; perf 12 parent design for several denominated varieties and minor listings in specialized catalogs.",
-            "c": 15
+            "description": "1868 3¢ George Washington rose; perf 12 parent design for several denominated varieties and minor listings in specialized catalogs."
           },
           {
             "scott": {
@@ -1596,8 +1235,7 @@
             "denomination": "1c",
             "perforation": "12",
             "primary_color": "blue",
-            "description": "Listed variety \"A\": 1868 1¢ Benjamin Franklin blue; perf 12 stamp grouped under the Scott 85 design family in this dataset.",
-            "c": 15
+            "description": "Listed variety \"A\": 1868 1¢ Benjamin Franklin blue; perf 12 stamp grouped under the Scott 85 design family in this dataset."
           },
           {
             "scott": {
@@ -1609,8 +1247,7 @@
             "denomination": "2c",
             "perforation": "12",
             "primary_color": "black",
-            "description": "Listed variety \"B\": 1868 2¢ Andrew Jackson black; perf 12 stamp grouped under the Scott 85 design family in this dataset.",
-            "c": 15
+            "description": "Listed variety \"B\": 1868 2¢ Andrew Jackson black; perf 12 stamp grouped under the Scott 85 design family in this dataset."
           },
           {
             "scott": {
@@ -1622,8 +1259,7 @@
             "denomination": "85c",
             "perforation": "12",
             "primary_color": "rose",
-            "description": "Listed variety \"C\": 1868 85¢ George Washington rose; perf 12 unusual denomination—verify status (regular issue, essay, or provisional) in a specialized catalog.",
-            "c": 15
+            "description": "Listed variety \"C\": 1868 85¢ George Washington rose; perf 12 unusual denomination—verify status (regular issue, essay, or provisional) in a specialized catalog."
           },
           {
             "scott": {
@@ -1635,8 +1271,7 @@
             "denomination": "10c",
             "perforation": "12",
             "primary_color": "green",
-            "description": "Listed variety \"D\": 1868 10¢ George Washington green; perf 12 stamp grouped under the Scott 85 design family in this dataset.",
-            "c": 15
+            "description": "Listed variety \"D\": 1868 10¢ George Washington green; perf 12 stamp grouped under the Scott 85 design family in this dataset."
           },
           {
             "scott": {
@@ -1648,8 +1283,7 @@
             "denomination": "12c",
             "perforation": "12",
             "primary_color": "black",
-            "description": "Listed variety \"E\": 1868 12¢ George Washington black; perf 12 stamp grouped under the Scott 85 design family in this dataset.",
-            "c": 15
+            "description": "Listed variety \"E\": 1868 12¢ George Washington black; perf 12 stamp grouped under the Scott 85 design family in this dataset."
           },
           {
             "scott": {
@@ -1661,8 +1295,7 @@
             "denomination": "15c",
             "perforation": "12",
             "primary_color": "black",
-            "description": "Listed variety \"F\": 1868 15¢ Abraham Lincoln black; perf 12 stamp grouped under the Scott 85 design family in this dataset.",
-            "c": 15
+            "description": "Listed variety \"F\": 1868 15¢ Abraham Lincoln black; perf 12 stamp grouped under the Scott 85 design family in this dataset."
           },
           {
             "scott": {
@@ -1673,8 +1306,7 @@
             "denomination": "1c",
             "perforation": "12",
             "primary_color": "blue",
-            "description": "1868 1¢ Benjamin Franklin blue; perf 12 National Bank Note printing of the ungrilled late-1860s series.",
-            "c": 15
+            "description": "1868 1¢ Benjamin Franklin blue; perf 12 National Bank Note printing of the ungrilled late-1860s series."
           },
           {
             "scott": {
@@ -1685,8 +1317,7 @@
             "denomination": "2c",
             "perforation": "12",
             "primary_color": "black",
-            "description": "1868 2¢ Andrew Jackson black; perf 12 ungrilled \"Black Jack\" design of the late-1860s issue.",
-            "c": 15
+            "description": "1868 2¢ Andrew Jackson black; perf 12 ungrilled \"Black Jack\" design of the late-1860s issue."
           },
           {
             "scott": {
@@ -1697,8 +1328,7 @@
             "denomination": "3c",
             "perforation": "12",
             "primary_color": "rose",
-            "description": "1868 3¢ George Washington rose; perf 12 ungrilled line-engraved letter rate.",
-            "c": 15
+            "description": "1868 3¢ George Washington rose; perf 12 ungrilled line-engraved letter rate."
           },
           {
             "scott": {
@@ -1709,8 +1339,7 @@
             "denomination": "10c",
             "perforation": "12",
             "primary_color": "green",
-            "description": "1868 10¢ George Washington green; perf 12 ungrilled ten-cent denomination.",
-            "c": 15
+            "description": "1868 10¢ George Washington green; perf 12 ungrilled ten-cent denomination."
           },
           {
             "scott": {
@@ -1721,8 +1350,7 @@
             "denomination": "12c",
             "perforation": "12",
             "primary_color": "black",
-            "description": "1868 12¢ George Washington black; perf 12 ungrilled twelve-cent value.",
-            "c": 15
+            "description": "1868 12¢ George Washington black; perf 12 ungrilled twelve-cent value."
           },
           {
             "scott": {
@@ -1733,8 +1361,7 @@
             "denomination": "15c",
             "perforation": "12",
             "primary_color": "black",
-            "description": "1868 15¢ Abraham Lincoln black; perf 12 ungrilled fifteen-cent stamp.",
-            "c": 15
+            "description": "1868 15¢ Abraham Lincoln black; perf 12 ungrilled fifteen-cent stamp."
           },
           {
             "scott": {
@@ -1745,8 +1372,7 @@
             "denomination": "1c",
             "perforation": "12",
             "primary_color": "blue, pale blue",
-            "description": "1868 1¢ Franklin blue shades; perf 12 later printing or shade grouping of the ungrilled 1¢ design.",
-            "c": 15
+            "description": "1868 1¢ Franklin blue shades; perf 12 later printing or shade grouping of the ungrilled 1¢ design."
           },
           {
             "scott": {
@@ -1757,8 +1383,7 @@
             "denomination": "2c",
             "perforation": "12",
             "primary_color": "black",
-            "description": "1868 2¢ Andrew Jackson black; perf 12 stamp from the same ungrilled series as the 1868 2¢ regular issue.",
-            "c": 15
+            "description": "1868 2¢ Andrew Jackson black; perf 12 stamp from the same ungrilled series as the 1868 2¢ regular issue."
           },
           {
             "scott": {
@@ -1769,8 +1394,7 @@
             "denomination": "3c",
             "perforation": "12",
             "primary_color": "red",
-            "description": "1868 3¢ George Washington carmine red; perf 12 distinctive red ink variety of the ungrilled 3¢ design.",
-            "c": 15
+            "description": "1868 3¢ George Washington carmine red; perf 12 distinctive red ink variety of the ungrilled 3¢ design."
           },
           {
             "scott": {
@@ -1781,8 +1405,7 @@
             "denomination": "5c",
             "perforation": "12",
             "primary_color": "black, black brown",
-            "description": "1868 5¢ Thomas Jefferson black (\"Black Jefferson\"); perf 12 striking monochrome Jefferson design.",
-            "c": 15
+            "description": "1868 5¢ Thomas Jefferson black (\"Black Jefferson\"); perf 12 striking monochrome Jefferson design."
           },
           {
             "scott": {
@@ -1793,8 +1416,7 @@
             "denomination": "10c",
             "perforation": "12",
             "primary_color": "green, dark green (#96a)",
-            "description": "1868 10¢ George Washington green; perf 12 late-1860s ungrilled ten-cent including minor listed shade differences.",
-            "c": 15
+            "description": "1868 10¢ George Washington green; perf 12 late-1860s ungrilled ten-cent including minor listed shade differences."
           },
           {
             "scott": {
@@ -1805,8 +1427,7 @@
             "denomination": "12c",
             "perforation": "12",
             "primary_color": "black",
-            "description": "1868 12¢ George Washington black; perf 12 late-1860s ungrilled twelve-cent.",
-            "c": 15
+            "description": "1868 12¢ George Washington black; perf 12 late-1860s ungrilled twelve-cent."
           },
           {
             "scott": {
@@ -1817,8 +1438,7 @@
             "denomination": "15c",
             "perforation": "12",
             "primary_color": "black",
-            "description": "1868 15¢ Abraham Lincoln black; perf 12 late-1860s ungrilled fifteen-cent.",
-            "c": 15
+            "description": "1868 15¢ Abraham Lincoln black; perf 12 late-1860s ungrilled fifteen-cent."
           },
           {
             "scott": {
@@ -1829,8 +1449,7 @@
             "denomination": "24c",
             "perforation": "12",
             "primary_color": "gray lilac",
-            "description": "1868 24¢ George Washington gray lilac; perf 12 ungrilled twenty-four-cent value.",
-            "c": 15
+            "description": "1868 24¢ George Washington gray lilac; perf 12 ungrilled twenty-four-cent value."
           },
           {
             "scott": {
@@ -1841,120 +1460,116 @@
             "denomination": "30c",
             "perforation": "12",
             "primary_color": "orange",
-            "description": "1868 30¢ Benjamin Franklin orange; perf 12 ungrilled thirty-cent denomination.",
-            "c": 15
+            "description": "1868 30¢ Benjamin Franklin orange; perf 12 ungrilled thirty-cent denomination."
           }
         ],
-        "c": 10,
-        "m": [
-          15
-        ],
-        "v": 15
+        "c": 1,
+        "v": 1
       },
       "ca": {
         "country_id": "ca",
         "display_name": "Canada",
         "ebay_category": 3478,
-        "c": 10,
-        "v": 10
+        "c": 1,
+        "v": 1
       },
       "gb": {
         "country_id": "gb",
         "display_name": "Great Britain",
         "ebay_category": 3499,
-        "c": 10,
-        "v": 10
+        "c": 1,
+        "v": 1
       },
       "no": {
         "country_id": "no",
         "display_name": "Norway",
         "ebay_category": 4742,
-        "c": 10,
-        "v": 10
+        "c": 1,
+        "v": 1
       },
       "de": {
         "country_id": "de",
         "display_name": "Germany",
         "ebay_category": 4742,
-        "c": 10,
-        "v": 10
+        "c": 1,
+        "v": 1
       },
       "fr": {
         "country_id": "fr",
         "display_name": "France",
         "ebay_category": 4742,
-        "c": 10,
-        "v": 10
+        "c": 1,
+        "v": 1
       },
       "it": {
         "country_id": "it",
         "display_name": "Italy",
         "ebay_category": 4742,
-        "c": 10,
-        "v": 10
+        "c": 1,
+        "v": 1
       },
       "nl": {
         "country_id": "nl",
         "display_name": "Netherlands",
         "ebay_category": 40413,
-        "c": 10,
-        "v": 10
+        "c": 1,
+        "v": 1
       },
       "ch": {
         "country_id": "ch",
         "display_name": "Switzerland",
         "ebay_category": 4742,
-        "c": 10,
-        "v": 10
+        "c": 1,
+        "v": 1
       },
       "jp": {
         "country_id": "jp",
         "display_name": "Japan",
         "ebay_category": 47174,
-        "c": 10,
-        "v": 10
+        "c": 1,
+        "v": 1
       },
       "cn": {
         "country_id": "cn",
         "display_name": "China",
         "ebay_category": 47174,
-        "c": 10,
-        "v": 10
+        "c": 1,
+        "v": 1
       },
       "au": {
         "country_id": "au",
         "display_name": "Australia",
         "ebay_category": 150923,
-        "c": 10,
-        "v": 10
+        "c": 1,
+        "v": 1
       },
       "nz": {
         "country_id": "nz",
         "display_name": "New Zealand",
         "ebay_category": 150923,
-        "c": 10,
-        "v": 10
+        "c": 1,
+        "v": 1
       },
       "br": {
         "country_id": "br",
         "display_name": "Brazil",
         "ebay_category": 181417,
-        "c": 10,
-        "v": 10
+        "c": 1,
+        "v": 1
       },
       "mx": {
         "country_id": "mx",
         "display_name": "Mexico",
         "ebay_category": 181417,
-        "c": 10,
-        "v": 10
+        "c": 1,
+        "v": 1
       },
       "za": {
         "country_id": "za",
         "display_name": "South Africa",
         "ebay_category": 181423,
-        "c": 10,
-        "v": 10
+        "c": 1,
+        "v": 1
       }
     },
     "gemini_function_call": {
@@ -1971,9 +1586,7 @@
             },
             "description": "Issuer whose numeral-cancel table applies.",
             "schema_entity": "country",
-            "required": true,
-            "c": 33,
-            "v": 33
+            "required": true
           },
           {
             "parameter_key": {
@@ -1992,9 +1605,7 @@
               }
             ],
             "required": true,
-            "enum": false,
-            "c": 33,
-            "v": 33
+            "enum": false
           },
           {
             "parameter_key": {
@@ -2013,9 +1624,7 @@
               }
             ],
             "required": false,
-            "enum": false,
-            "c": 33,
-            "v": 33
+            "enum": false
           }
         ],
         "output": [
@@ -2024,8 +1633,8 @@
             "anchor_parameter": "number"
           }
         ],
-        "c": 31,
-        "v": 31
+        "c": 1,
+        "v": 1
       }
     },
     "listing": {
@@ -2045,8 +1654,8 @@
         "provider_id": "google_gemini",
         "has_free_tier": false,
         "rate_limits": "Text-out caps (max RPM / TPM / RPD from usage vs limit UI): 25 RPM, 2M TPM, 250 RPD. Token pricing: https://ai.google.dev/gemini-api/docs/pricing#standard",
-        "c": 8,
-        "v": 8
+        "c": 1,
+        "v": 1
       },
       "gemini-3-flash-preview": {
         "model_id": "gemini-3-flash-preview",
@@ -2054,8 +1663,8 @@
         "provider_id": "google_gemini",
         "has_free_tier": true,
         "rate_limits": "Text-out caps (max RPM / TPM / RPD): 1K RPM, 2M TPM, 10K RPD. Token pricing: https://ai.google.dev/gemini-api/docs/pricing#standard",
-        "c": 8,
-        "v": 8
+        "c": 1,
+        "v": 1
       },
       "gemini-3.1-flash-lite": {
         "model_id": "gemini-3.1-flash-lite",
@@ -2063,8 +1672,8 @@
         "provider_id": "google_gemini",
         "has_free_tier": true,
         "rate_limits": "Text-out models (max RPM / TPM / RPD from usage vs limit UI): 4K RPM, 4M TPM, 150K RPD. Token pricing: https://ai.google.dev/gemini-api/docs/pricing#standard",
-        "c": 39,
-        "v": 39
+        "c": 1,
+        "v": 1
       },
       "gemini-2.5-pro": {
         "model_id": "gemini-2.5-pro",
@@ -2072,8 +1681,8 @@
         "provider_id": "google_gemini",
         "has_free_tier": true,
         "rate_limits": "Text-out caps (max RPM / TPM / RPD): 150 RPM, 2M TPM, 1K RPD. Token pricing: https://ai.google.dev/gemini-api/docs/pricing#standard",
-        "c": 8,
-        "v": 8
+        "c": 1,
+        "v": 1
       },
       "gemini-2.5-flash": {
         "model_id": "gemini-2.5-flash",
@@ -2081,8 +1690,8 @@
         "provider_id": "google_gemini",
         "has_free_tier": true,
         "rate_limits": "Text-out caps (max RPM / TPM / RPD): 1K RPM, 1M TPM, 10K RPD. Token pricing: https://ai.google.dev/gemini-api/docs/pricing#standard",
-        "c": 8,
-        "v": 8
+        "c": 1,
+        "v": 1
       },
       "gemini-2.5-flash-lite": {
         "model_id": "gemini-2.5-flash-lite",
@@ -2090,8 +1699,8 @@
         "provider_id": "google_gemini",
         "has_free_tier": true,
         "rate_limits": "Not listed separately in operator chart; typically aligns with Flash-Lite tier on https://ai.google.dev/gemini-api/docs/rate-limits. Standard token pricing: https://ai.google.dev/gemini-api/docs/pricing#standard",
-        "c": 8,
-        "v": 8
+        "c": 1,
+        "v": 1
       },
       "gemini-2.0-flash": {
         "model_id": "gemini-2.0-flash",
@@ -2099,8 +1708,8 @@
         "provider_id": "google_gemini",
         "has_free_tier": true,
         "rate_limits": "Text-out caps (max RPM / TPM / RPD): 2K RPM, 4M TPM, unlimited RPD. Deprecated ~2026-06-01. Token pricing: https://ai.google.dev/gemini-api/docs/pricing#standard",
-        "c": 8,
-        "v": 8
+        "c": 1,
+        "v": 1
       },
       "gemini-2.0-flash-lite": {
         "model_id": "gemini-2.0-flash-lite",
@@ -2108,8 +1717,8 @@
         "provider_id": "google_gemini",
         "has_free_tier": true,
         "rate_limits": "Not listed separately in operator chart; see https://ai.google.dev/gemini-api/docs/rate-limits. Deprecated ~2026-06-01. Standard token pricing: https://ai.google.dev/gemini-api/docs/pricing#standard",
-        "c": 8,
-        "v": 8
+        "c": 1,
+        "v": 1
       },
       "openai/gpt-4o": {
         "model_id": "openai/gpt-4o",
@@ -2117,8 +1726,8 @@
         "provider_id": "openrouter",
         "has_free_tier": false,
         "rate_limits": "OpenRouter account RPM/TPM; see provider dashboard.",
-        "c": 8,
-        "v": 8
+        "c": 1,
+        "v": 1
       },
       "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free": {
         "model_id": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
@@ -2126,8 +1735,44 @@
         "provider_id": "openrouter",
         "has_free_tier": true,
         "rate_limits": "OpenRouter free-tier route (:free); account RPM/TPM; see https://openrouter.ai/",
-        "c": 21,
-        "v": 21
+        "c": 1,
+        "v": 1
+      },
+      "nvidia/nemotron-3-super-120b-a12b:free": {
+        "model_id": "nvidia/nemotron-3-super-120b-a12b:free",
+        "name": "NVIDIA Nemotron 3 Super 120B A12B (free, via OpenRouter)",
+        "provider_id": "openrouter",
+        "has_free_tier": true,
+        "rate_limits": "OpenRouter free-tier route (:free); account RPM/TPM; see https://openrouter.ai/",
+        "c": 1,
+        "v": 1
+      },
+      "openai/gpt-oss-120b:free": {
+        "model_id": "openai/gpt-oss-120b:free",
+        "name": "OpenAI GPT-OSS 120B (free, via OpenRouter)",
+        "provider_id": "openrouter",
+        "has_free_tier": true,
+        "rate_limits": "OpenRouter free-tier route (:free); account RPM/TPM; see https://openrouter.ai/",
+        "c": 1,
+        "v": 1
+      },
+      "google/gemma-4-31b-it:free": {
+        "model_id": "google/gemma-4-31b-it:free",
+        "name": "Google Gemma 4 31B IT (free, via OpenRouter)",
+        "provider_id": "openrouter",
+        "has_free_tier": true,
+        "rate_limits": "OpenRouter free-tier route (:free); account RPM/TPM; see https://openrouter.ai/",
+        "c": 1,
+        "v": 1
+      },
+      "openrouter/free": {
+        "model_id": "openrouter/free",
+        "name": "OpenRouter Free (auto-selected model)",
+        "provider_id": "openrouter",
+        "has_free_tier": true,
+        "rate_limits": "OpenRouter free router; selects a free model per request (capabilities-matched). https://openrouter.ai/docs/guides/routing/routers/free-router — account RPM/TPM; https://openrouter.ai/",
+        "c": 1,
+        "v": 1
       }
     },
     "prompt": {
@@ -2234,8 +1879,8 @@
           "[Condition]",
           "[Description]"
         ],
-        "c": 25,
-        "v": 25
+        "c": 1,
+        "v": 1
       },
       "jay_smith_listing": {
         "prompt_id": "jay_smith_listing",
@@ -2274,11 +1919,8 @@
           "2) Blank line.",
           "3) BODY — continuation in the same voice: defects, rarity and history, valuations, closing flourish, certificate/stock notes if supported; end with a single line “Asking context:” and the dealer’s target price if provided, or say price not specified."
         ],
-        "c": 4,
-        "m": [
-          8
-        ],
-        "v": 8
+        "c": 1,
+        "v": 1
       },
       "multi_stamp_sheet_xframe": {
         "prompt_id": "multi_stamp_sheet_xframe",
@@ -2326,13 +1968,8 @@
           "=== PRICING ===",
           "Do not split a single dealer target price across stamps unless the notes explicitly say so. If one price applies to the whole sheet, mention it in the first stamp's summary (or omit if the schema has no listing fields)."
         ],
-        "c": 4,
-        "m": [
-          16,
-          18,
-          19
-        ],
-        "v": 19
+        "c": 1,
+        "v": 1
       },
       "numeral_cancel_identification": {
         "prompt_id": "numeral_cancel_identification",
@@ -2392,12 +2029,28 @@
           "",
           "Prefer cautious accuracy over confident speculation."
         ],
-        "c": 36,
-        "m": [
-          40,
-          41
+        "prompt_invocations": [
+          {
+            "invocation_id": "numeral_cancel_identification_gemini",
+            "provider_id": "google_gemini",
+            "model": "gemini-3.1-pro-preview",
+            "sort_order": 0,
+            "primary_for_listing": true,
+            "c": 2,
+            "v": 2
+          },
+          {
+            "invocation_id": "numeral_cancel_identification_openrouter_free",
+            "provider_id": "openrouter",
+            "model": "openrouter/free",
+            "sort_order": 1,
+            "primary_for_listing": false,
+            "c": 2,
+            "v": 2
+          }
         ],
-        "v": 41
+        "c": 1,
+        "v": 1
       },
       "stamp_listing": {
         "prompt_id": "stamp_listing",
@@ -2427,12 +2080,33 @@
           "- If the city is clear enough, lookup its population at the time of the cancel or issue and describe its role in the region",
           "- Listing body text that respects the dealer's notes and is consistent with their target price band (polite, professional tone)"
         ],
-        "c": 4,
-        "m": [
-          8,
-          9
+        "prompt_invocations": [
+          {
+            "invocation_id": "stamp_listing_gemini",
+            "provider_id": "google_gemini",
+            "model": "gemini-3-flash-preview",
+            "sort_order": 0,
+            "primary_for_listing": true
+          },
+          {
+            "invocation_id": "stamp_listing_openrouter_nemotron",
+            "provider_id": "openrouter",
+            "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+            "sort_order": 1,
+            "primary_for_listing": false,
+            "enabled": false
+          },
+          {
+            "invocation_id": "stamp_listing_openrouter",
+            "provider_id": "openrouter",
+            "model": "openai/gpt-4o-mini",
+            "sort_order": 2,
+            "primary_for_listing": false,
+            "enabled": false
+          }
         ],
-        "v": 9
+        "c": 1,
+        "v": 1
       },
       "stamp_numeral_cancel_identification": {
         "prompt_id": "stamp_numeral_cancel_identification",
@@ -2500,12 +2174,8 @@
           "Important failure rule:",
           "If the clearest visible digit is only part of a larger centered strike, the answer must identify the larger candidate, not just the clearest digit."
         ],
-        "c": 38,
-        "m": [
-          39,
-          41
-        ],
-        "v": 41
+        "c": 1,
+        "v": 1
       },
       "xframe": {
         "prompt_id": "xframe",
@@ -2529,55 +2199,8 @@
           "Dealer target listing price (JSON; may be null): __TARGET_JSON__",
           "Dealer notes and hints (JSON; may be null): __NOTES_JSON__"
         ],
-        "c": 4,
-        "m": [
-          8
-        ],
-        "v": 8
-      }
-    },
-    "prompt_invocation": {
-      "stamp_listing_gemini": {
-        "invocation_id": "stamp_listing_gemini",
-        "prompt_id": "stamp_listing",
-        "provider_id": "google_gemini",
-        "model": "gemini-3-flash-preview",
-        "sort_order": 0,
-        "primary_for_listing": true,
-        "c": 4,
-        "m": [
-          8
-        ],
-        "v": 8
-      },
-      "stamp_listing_openrouter_nemotron": {
-        "invocation_id": "stamp_listing_openrouter_nemotron",
-        "prompt_id": "stamp_listing",
-        "provider_id": "openrouter",
-        "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
-        "sort_order": 1,
-        "primary_for_listing": false,
-        "enabled": false,
-        "c": 21,
-        "m": [
-          36
-        ],
-        "v": 36
-      },
-      "stamp_listing_openrouter": {
-        "invocation_id": "stamp_listing_openrouter",
-        "prompt_id": "stamp_listing",
-        "provider_id": "openrouter",
-        "model": "openai/gpt-4o-mini",
-        "sort_order": 2,
-        "primary_for_listing": false,
-        "enabled": false,
-        "c": 4,
-        "m": [
-          21,
-          36
-        ],
-        "v": 36
+        "c": 1,
+        "v": 1
       }
     },
     "provider": {
@@ -2586,16 +2209,16 @@
         "brief": "Google Gemini (AI Studio API key)",
         "api_base_url": "https://generativelanguage.googleapis.com/v1beta",
         "notes": "GEMINI_API_KEY. Client: @google/genai; api_base_url documents the REST v1beta base the SDK targets.",
-        "c": 4,
-        "v": 4
+        "c": 1,
+        "v": 1
       },
       "openrouter": {
         "provider_id": "openrouter",
         "brief": "OpenRouter (OpenAI-compatible API)",
         "api_base_url": "https://openrouter.ai/api/v1",
         "notes": "OPENROUTER_API_KEY. Optional: OPENROUTER_HTTP_REFERER, OPENROUTER_TITLE for OpenRouter rankings headers.",
-        "c": 4,
-        "v": 4
+        "c": 1,
+        "v": 1
       }
     },
     "scott_catalog_section": {
@@ -2604,152 +2227,152 @@
         "category_name": "Semi-Postal",
         "description": "Stamps sold for a premium (e.g., 10c+2c) for charity.",
         "sort_order": 10,
-        "c": 4,
-        "v": 4
+        "c": 1,
+        "v": 1
       },
       "C": {
         "section_prefix": "C",
         "category_name": "Airmail",
         "description": "(Also called Air Post) Specifically for airmail service.",
         "sort_order": 20,
-        "c": 4,
-        "v": 4
+        "c": 1,
+        "v": 1
       },
       "D": {
         "section_prefix": "D",
         "category_name": "Pneumatic Post",
         "description": "For mail sent via pressurized underground tubes (common in Italy).",
         "sort_order": 30,
-        "c": 4,
-        "v": 4
+        "c": 1,
+        "v": 1
       },
       "E": {
         "section_prefix": "E",
         "category_name": "Special Delivery",
         "description": "For immediate delivery upon arrival at the post office.",
         "sort_order": 40,
-        "c": 4,
-        "v": 4
+        "c": 1,
+        "v": 1
       },
       "F": {
         "section_prefix": "F",
         "category_name": "Registration",
         "description": "Paid for the registration fee (tracking/security).",
         "sort_order": 50,
-        "c": 4,
-        "v": 4
+        "c": 1,
+        "v": 1
       },
       "G": {
         "section_prefix": "G",
         "category_name": "Insured Letter",
         "description": "Used to pay fees for insuring contents.",
         "sort_order": 60,
-        "c": 4,
-        "v": 4
+        "c": 1,
+        "v": 1
       },
       "H": {
         "section_prefix": "H",
         "category_name": "Acknowledgment of Receipt",
         "description": "Paid for a return receipt to the sender.",
         "sort_order": 70,
-        "c": 4,
-        "v": 4
+        "c": 1,
+        "v": 1
       },
       "I": {
         "section_prefix": "I",
         "category_name": "Late Fee",
         "description": "Paid for mail posted after the daily collection deadline.",
         "sort_order": 80,
-        "c": 4,
-        "v": 4
+        "c": 1,
+        "v": 1
       },
       "J": {
         "section_prefix": "J",
         "category_name": "Postage Due",
         "description": "Collected from the recipient for unpaid postage.",
         "sort_order": 90,
-        "c": 4,
-        "v": 4
+        "c": 1,
+        "v": 1
       },
       "K": {
         "section_prefix": "K",
         "category_name": "Offices Abroad",
         "description": "Issued for use in a country's post offices in foreign cities.",
         "sort_order": 100,
-        "c": 4,
-        "v": 4
+        "c": 1,
+        "v": 1
       },
       "L": {
         "section_prefix": "L",
         "category_name": "Local",
         "description": "Valid only for delivery within a specific city or district.",
         "sort_order": 110,
-        "c": 4,
-        "v": 4
+        "c": 1,
+        "v": 1
       },
       "M": {
         "section_prefix": "M",
         "category_name": "Military",
         "description": "Issued for use by armed forces.",
         "sort_order": 120,
-        "c": 4,
-        "v": 4
+        "c": 1,
+        "v": 1
       },
       "N": {
         "section_prefix": "N",
         "category_name": "Occupation",
         "description": "Issued by a conquering power in an occupied territory.",
         "sort_order": 130,
-        "c": 4,
-        "v": 4
+        "c": 1,
+        "v": 1
       },
       "O": {
         "section_prefix": "O",
         "category_name": "Official",
         "description": "Restricted for use by government agencies only.",
         "sort_order": 140,
-        "c": 4,
-        "v": 4
+        "c": 1,
+        "v": 1
       },
       "P": {
         "section_prefix": "P",
         "category_name": "Newspaper",
         "description": "For bulk mailing of periodicals/newspapers.",
         "sort_order": 150,
-        "c": 4,
-        "v": 4
+        "c": 1,
+        "v": 1
       },
       "Q": {
         "section_prefix": "Q",
         "category_name": "Parcel Post",
         "description": "Specifically for the transport of packages.",
         "sort_order": 160,
-        "c": 4,
-        "v": 4
+        "c": 1,
+        "v": 1
       },
       "QE": {
         "section_prefix": "QE",
         "category_name": "Special Handling",
         "description": "Fast-tracked handling for parcel post (but not \"Special Delivery\").",
         "sort_order": 170,
-        "c": 4,
-        "v": 4
+        "c": 1,
+        "v": 1
       },
       "R": {
         "section_prefix": "R",
         "category_name": "Revenue",
         "description": "Technically for taxes/fees, but included in Scott catalogs.",
         "sort_order": 180,
-        "c": 4,
-        "v": 4
+        "c": 1,
+        "v": 1
       },
       "RW": {
         "section_prefix": "RW",
         "category_name": "Hunting Permit",
         "description": "The \"Duck Stamps\" (often found in the US Specialized catalog).",
         "sort_order": 190,
-        "c": 4,
-        "v": 4
+        "c": 1,
+        "v": 1
       }
     },
     "stamp_catalog_number": {
@@ -2760,10 +2383,7 @@
         "catalog_number": "DK 45",
         "supplement_notes": "Illustrative Facit-style id; replace with real number.",
         "c": 1,
-        "m": [
-          4
-        ],
-        "v": 4
+        "v": 1
       },
       "scn-002": {
         "catalog_line_id": "scn-002",
@@ -2772,10 +2392,7 @@
         "catalog_number": "28y",
         "supplement_notes": "Illustrative Michel number.",
         "c": 1,
-        "m": [
-          4
-        ],
-        "v": 4
+        "v": 1
       }
     },
     "stamp_thematic_tag": {

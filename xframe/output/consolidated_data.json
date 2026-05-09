@@ -1,6 +1,6 @@
 {
-  "version": 35,
-  "timestamp": "2026-05-08T23:36:19Z",
+  "version": 36,
+  "timestamp": "2026-05-09T00:19:56Z",
   "model": {
     "name": "PhilateLister stamp catalog",
     "version": "26.04.11.1",
@@ -81,6 +81,10 @@
     "000000000015": {
       "id": 15,
       "path": "data/gemini_function_calls.json"
+    },
+    "000000000016": {
+      "id": 16,
+      "path": "data/prompts/numeral_cancel_identification.json"
     }
   },
   "data": {
@@ -321,6 +325,13 @@
         "author": "jbemmel",
         "note": "CI consolidate after model/data change (f699e831318ff9e1297ae3e1aacf010f3d63a88c)",
         "git_commit_hash": "f699e831318ff9e1297ae3e1aacf010f3d63a88c"
+      },
+      "000000000036": {
+        "id": 36,
+        "timestamp": "2026-05-08T19:19:56-05:00",
+        "author": "jbemmel",
+        "note": "Add numeral_cancel_identification prompt shard; prompt_invocation enabled flags and disabled OpenRouter rows in data; align consolidated schema/data and JS bundles.",
+        "git_commit_hash": "fe4388c2d7abaa31ed6b69377af328ebc06bbdb6"
       }
     },
     "catalog_system": {
@@ -369,8 +380,8 @@
               "section": "M",
               "number": 45
             },
-            "c": 35,
-            "v": 35,
+            "c": 36,
+            "v": 36,
             "stamp_id": "stamp_2026-04-11_example_001",
             "country_id": "dk",
             "title": "Denmark 20 øre bicolor used",
@@ -2275,6 +2286,68 @@
         ],
         "v": 19
       },
+      "numeral_cancel_identification": {
+        "prompt_id": "numeral_cancel_identification",
+        "brief": "Numeral cancel identification with cautious eBay-style listing (plain text)",
+        "preferred_model": "gemini-3-flash-preview",
+        "output_format": "txt",
+        "template_lines": [
+          "You are helping a stamp dealer prepare an accurate eBay listing for this upload.",
+          "",
+          "Your first priority is factual accuracy and uncertainty handling.",
+          "Do not invent catalog numbers, cancels, perforation gauges, towns, dates, or varieties.",
+          "If evidence is incomplete, explicitly say so.",
+          "Do not infer a full cancel number from a partial digit unless supported by lookup results and image evidence.",
+          "",
+          "Image file name: __IMAGE_BASENAME____FILE_MISMATCH_GAP__",
+          "",
+          "Commit summary line (from uploader):",
+          "__FIRST_LINE__",
+          "",
+          "Full structured parameters from the upload form (JSON — use every field that helps identification or listing copy):",
+          "__META_JSON__",
+          "",
+          "Dealer target listing price (use as pricing context; do not invent a Scott value): __TARGET_JSON__",
+          "Dealer notes and hints (incorporate into identification and description): __NOTES_JSON__",
+          "",
+          "When evaluating numeral cancels:",
+          "- Use lookup tools when available instead of relying only on visual interpretation",
+          "- Treat lookup failures as negative evidence against the reading",
+          "- If a lookup returns zero matches, do not present that numeral attribution as fact",
+          "- If the image suggests additional digits beyond the initial OCR result, reconsider the reading",
+          "- Prefer full centered numeral interpretations over isolated visible digits when supported by the image",
+          "- When multiple numeral assignments exist across time periods, compare them against the issue date before selecting one",
+          "",
+          "When evaluating perforations:",
+          "- Do not claim an exact perforation gauge unless the image resolution and scale support it",
+          "- Avoid overconfident differentiation between close catalog varieties from image inspection alone",
+          "- If uncertain, state that perforation measurement is required",
+          "",
+          "When evaluating dates:",
+          "- If a cancel date is readable, verify it is chronologically possible for the issue",
+          "- If the date precedes the issue date, treat the stamp identification or cancel reading as suspect",
+          "- If the date is sufficiently clear, include the day of the week",
+          "",
+          "When evaluating towns or cities:",
+          "- Only identify a city when supported by the cancel text or lookup data",
+          "- Do not fabricate postal history context",
+          "- If a city is confirmed, you may briefly describe its historical regional role",
+          "",
+          "From the stamp image, identify the issue where possible. Provide:",
+          "- A concise eBay title",
+          "- Scott or main catalog number when justified, otherwise explain uncertainty",
+          "- A condition report visible from the image",
+          "- Details on perforations, including visible faults or missing perforation teeth if observable",
+          "- Details on the cancel, including uncertainty level and lookup support",
+          "- A chronology check between issue date and cancel date if applicable",
+          "- Listing body text that respects the dealer's notes and target price band",
+          "",
+          "Prefer cautious accuracy over confident speculation."
+        ],
+        "c": 36,
+        "v": 36,
+        "f": 16
+      },
       "stamp_listing": {
         "prompt_id": "stamp_listing",
         "brief": "eBay-style single-stamp listing (plain text)",
@@ -2360,8 +2433,12 @@
         "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
         "sort_order": 1,
         "primary_for_listing": false,
+        "enabled": false,
         "c": 21,
-        "v": 21
+        "m": [
+          36
+        ],
+        "v": 36
       },
       "stamp_listing_openrouter": {
         "invocation_id": "stamp_listing_openrouter",
@@ -2370,11 +2447,13 @@
         "model": "openai/gpt-4o-mini",
         "sort_order": 2,
         "primary_for_listing": false,
+        "enabled": false,
         "c": 4,
         "m": [
-          21
+          21,
+          36
         ],
-        "v": 21
+        "v": 36
       }
     },
     "provider": {

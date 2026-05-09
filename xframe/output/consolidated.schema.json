@@ -549,9 +549,13 @@
         "primary_for_listing": {
           "type": "boolean",
           "description": "If true, this invocation's output is the main listings/<stem> file the uploader polls."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "If false, appraisal skips this invocation. When omitted, treated as true."
         }
       },
-      "description": "Rows live in xframe/data/prompt_invocations.json. All invocations for a prompt_id run in parallel. Exactly one row per prompt should have primary_for_listing true; that output is listings/<stem>.{txt|json}. Others are listings/<stem>__<invocation_id>.{txt|json}. If a prompt_id has no rows, appraisal falls back to a single Gemini call using prompt.preferred_model.",
+      "description": "Rows live in xframe/data/prompt_invocations.json. All enabled invocations for a prompt_id run in parallel. Set enabled false to skip a row without deleting it. Exactly one enabled row per prompt should have primary_for_listing true; that output is listings/<stem>.{txt|json}. Others are listings/<stem>__<invocation_id>.{txt|json}. If a prompt_id has no enabled rows, appraisal falls back to a single Gemini call using prompt.preferred_model.",
       "required": [
         "invocation_id",
         "prompt_id",

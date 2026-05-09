@@ -14,7 +14,8 @@
       "provider_id": "openrouter",
       "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
       "sort_order": 1,
-      "primary_for_listing": false
+      "primary_for_listing": false,
+      "enabled": false
     },
     {
       "invocation_id": "stamp_listing_openrouter",
@@ -22,7 +23,8 @@
       "provider_id": "openrouter",
       "model": "openai/gpt-4o-mini",
       "sort_order": 2,
-      "primary_for_listing": false
+      "primary_for_listing": false,
+      "enabled": false
     }
   ]
 }

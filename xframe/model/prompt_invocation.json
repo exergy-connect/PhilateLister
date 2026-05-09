@@ -1,6 +1,6 @@
 {
   "name": "PhilateLister stamp catalog",
-  "version": "26.04.12.3",
+  "version": "26.05.08.1",
   "author": "Exergy ∞ LLC",
   "description": "Entity shard: one appraisal API call (provider + model) per prompt; parallel invocations per prompt_id.",
   "source": "PhilateLister",
@@ -8,7 +8,7 @@
     {
       "name": "prompt_invocation",
       "brief": "Parallel model/provider target for a prompt template.",
-      "description": "Rows live in xframe/data/prompt_invocations.json. All invocations for a prompt_id run in parallel. Exactly one row per prompt should have primary_for_listing true; that output is listings/<stem>.{txt|json}. Others are listings/<stem>__<invocation_id>.{txt|json}. If a prompt_id has no rows, appraisal falls back to a single Gemini call using prompt.preferred_model.",
+      "description": "Rows live in xframe/data/prompt_invocations.json. All enabled invocations for a prompt_id run in parallel. Set enabled false to skip a row without deleting it. Exactly one enabled row per prompt should have primary_for_listing true; that output is listings/<stem>.{txt|json}. Others are listings/<stem>__<invocation_id>.{txt|json}. If a prompt_id has no enabled rows, appraisal falls back to a single Gemini call using prompt.preferred_model.",
       "primary_key": "invocation_id",
       "fields": [
         {
@@ -52,6 +52,12 @@
           "description": "If true, this invocation's output is the main listings/<stem> file the uploader polls.",
           "type": { "primitive": "boolean" },
           "required": true
+        },
+        {
+          "name": "enabled",
+          "description": "If false, appraisal skips this invocation. When omitted, treated as true.",
+          "type": { "primitive": "boolean" },
+          "required": false
         }
       ]
     }

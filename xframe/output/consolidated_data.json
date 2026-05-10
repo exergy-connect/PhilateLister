@@ -1,6 +1,6 @@
 {
-  "version": 9,
-  "timestamp": "2026-05-10T18:35:43Z",
+  "version": 10,
+  "timestamp": "2026-05-10T18:36:59Z",
   "model": {
     "name": "PhilateLister stamp catalog",
     "version": "26.04.11.1",
@@ -140,6 +140,13 @@
         "author": "jbemmel",
         "note": "invocation_event_file: drop schema_version from model and runtime event JSON",
         "git_commit_hash": "571dc81dcadebfd4c4b73fdeed490f4cbdad4ffb"
+      },
+      "000000000010": {
+        "id": 10,
+        "timestamp": "2026-05-10T18:36:59+00:00",
+        "author": "jbemmel",
+        "note": "CI consolidate after model/data change (ee8d06fd1d9f91cdc97261bd3afc83c2aab09f34)",
+        "git_commit_hash": "ee8d06fd1d9f91cdc97261bd3afc83c2aab09f34"
       }
     },
     "catalog_system": {
@@ -184,8 +191,8 @@
               "section": "M",
               "number": 45
             },
-            "c": 9,
-            "v": 9,
+            "c": 10,
+            "v": 10,
             "stamp_id": "stamp_2026-04-11_example_001",
             "country_id": "dk",
             "title": "Denmark 20 øre bicolor used",

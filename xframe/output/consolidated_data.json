@@ -1,6 +1,6 @@
 {
-  "version": 7,
-  "timestamp": "2026-05-09T15:46:28Z",
+  "version": 9,
+  "timestamp": "2026-05-10T18:35:43Z",
   "model": {
     "name": "PhilateLister stamp catalog",
     "version": "26.04.11.1",
@@ -126,6 +126,20 @@
         "author": "jbemmel",
         "note": "CI consolidate after model/data change (e9da2eec376ff3be22c2f16cee1bc921984469eb)",
         "git_commit_hash": "e9da2eec376ff3be22c2f16cee1bc921984469eb"
+      },
+      "000000000008": {
+        "id": 8,
+        "timestamp": "2026-05-10T13:34:54-05:00",
+        "author": "jbemmel",
+        "note": "invocation_event model valid for consolidator; llm_feedback_event rename + allow_unlimited_fields; invocation logs token_usage shape",
+        "git_commit_hash": "571dc81dcadebfd4c4b73fdeed490f4cbdad4ffb"
+      },
+      "000000000009": {
+        "id": 9,
+        "timestamp": "2026-05-10T13:35:43-05:00",
+        "author": "jbemmel",
+        "note": "invocation_event_file: drop schema_version from model and runtime event JSON",
+        "git_commit_hash": "571dc81dcadebfd4c4b73fdeed490f4cbdad4ffb"
       }
     },
     "catalog_system": {
@@ -170,8 +184,8 @@
               "section": "M",
               "number": 45
             },
-            "c": 7,
-            "v": 7,
+            "c": 9,
+            "v": 9,
             "stamp_id": "stamp_2026-04-11_example_001",
             "country_id": "dk",
             "title": "Denmark 20 øre bicolor used",
@@ -2004,9 +2018,11 @@
           "",
           "When evaluating numeral cancels:",
           "- Use lookup tools when available instead of relying only on visual interpretation",
+          "- Aim for one tool round: decide the country, numeral reading, and any optional filters before calling; avoid serial guess-and-retry loops",
+          "- Each tool reply is a JSON envelope: on success use the object in \"result\" (e.g. rows under keys like numeral_cancel); on failure read \"error\" (e.g. missing mandatory parameters). Fields \"success\", \"retryable\", and \"final\" summarize outcome — treat \"final\": true as the definitive answer for that call",
           "- Treat lookup failures as negative evidence against the reading",
-          "- If a lookup returns zero matches, do not present that numeral attribution as fact",
-          "- If the image suggests additional digits beyond the initial OCR result, reconsider the reading",
+          "- If \"success\" is false or \"result\" has zero matches for the reading you tested, do not present that numeral attribution as fact",
+          "- If the image suggests additional digits beyond the initial OCR result, reconsider the reading before calling, not after several partial lookups",
           "- Prefer full centered numeral interpretations over isolated visible digits when supported by the image",
           "- When multiple numeral assignments exist across time periods, compare them against the issue date before selecting one",
           "",
@@ -2057,7 +2073,10 @@
           }
         ],
         "c": 1,
-        "v": 1
+        "m": [
+          8
+        ],
+        "v": 8
       },
       "stamp_listing": {
         "prompt_id": "stamp_listing",

@@ -1,14 +1,15 @@
 {
   "name": "PhilateLister stamp catalog",
-  "version": "26.04.15.5",
+  "version": "26.05.09.8",
   "author": "Exergy ∞ LLC",
-  "description": "Entity shard: concrete LLM model identifiers usable with a provider (appraisal, listing helpers).",
+  "description": "Entity shard: concrete LLM model identifiers usable with a provider (appraisal, listing helpers). Runtime rate-limit and error telemetry is stored only in xframe/data/invocation_stats.json (separate file). Optional llm_model.feedback_events is for hand-curated or exported notes, not a mirror of that log.",
   "source": "PhilateLister",
+  "allow_unlimited_fields": true,
   "entities": [
     {
       "name": "llm_model",
       "brief": "Named model offering from a provider API.",
-      "description": "Rows describe which vendor model id to pass to the client (e.g. gemini-2.0-flash, openai/gpt-4o). has_free_tier and rate_limits are indicative documentation for operators; they are not enforced by this app.",
+      "description": "Rows describe which vendor model id to pass to the client (e.g. gemini-2.0-flash, openai/gpt-4o). has_free_tier and rate_limits are indicative documentation for operators; they are not enforced by this app. feedback_events is optional and separate from invocation_stats.json.",
       "primary_key": "model_id",
       "fields": [
         {
@@ -41,6 +42,126 @@
         {
           "name": "rate_limits",
           "description": "Operator notes: max RPM/TPM/RPD (or usage-dashboard cap), vendor doc links, token pricing pointers; empty if unknown.",
+          "type": { "primitive": "string" },
+          "required": false
+        },
+        {
+          "name": "feedback_events",
+          "description": "Optional curated operator notes per catalog model. Not written by appraisal; use xframe/data/invocation_stats.json for automated rate-limit events.",
+          "type": {
+            "array": {
+              "entity": "llm_feedback_event"
+            }
+          },
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "llm_feedback_event",
+      "brief": "One operational feedback row for an LLM model (rate limits, quota errors).",
+      "description": "Aligns with invocation_stats.json event shape: actual_model_id, requested_model_id, char_counts, turn_count, function_calls.",
+      "primary_key": "feedback_event_id",
+      "fields": [
+        {
+          "name": "feedback_event_id",
+          "description": "Stable unique id for this event (e.g. UUID, or a deterministic hash of at_iso + invocation_id + message_preview prefix).",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "prompt_id",
+          "description": "Prompt template id for the appraisal run (matches invocation_stats.events[].prompt_id and xframe/data/prompts/<prompt_id>.json).",
+          "type": {
+            "primitive": "string",
+            "foreignKeys": [{ "entity": "prompt" }]
+          },
+          "required": false
+        },
+        {
+          "name": "actual_model_id",
+          "description": "Vendor model id that served or failed (matches invocation_stats.events[].model).",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "requested_model_id",
+          "description": "Invocation or router model when it differs from actual_model_id (matches invocation_stats.events[].requested_model). Omit when identical.",
+          "type": { "primitive": "string" },
+          "required": false
+        },
+        {
+          "name": "char_counts",
+          "description": "UTF-16 lengths of user prompt text sent (in) and model completion returned (out); matches invocation_stats.events[].char_counts.",
+          "type": {
+            "composite": [
+              {
+                "name": "in",
+                "description": "User prompt string length in UTF-16 code units.",
+                "type": { "primitive": "integer", "min": 0 },
+                "required": true
+              },
+              {
+                "name": "out",
+                "description": "Model reply text length in UTF-16 code units; 0 when the attempt failed before any body.",
+                "type": { "primitive": "integer", "min": 0 },
+                "required": true
+              }
+            ]
+          },
+          "required": false
+        },
+        {
+          "name": "turn_count",
+          "description": "Successful provider/model completions before failure (matches invocation_stats.events[].turn_count).",
+          "type": { "primitive": "integer", "min": 0 },
+          "required": false
+        },
+        {
+          "name": "function_calls",
+          "description": "Tool names invoked in order (matches invocation_stats.events[].function_calls).",
+          "type": {
+            "array": {
+              "primitive": "string",
+              "min": 0,
+              "max": 256
+            }
+          },
+          "required": false
+        },
+        {
+          "name": "at_iso",
+          "description": "When the event was observed (ISO-8601 timestamp).",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "provider_id",
+          "description": "Provider that returned the error.",
+          "type": {
+            "primitive": "string",
+            "foreignKeys": [{ "entity": "provider" }]
+          },
+          "required": false
+        },
+        {
+          "name": "invocation_id",
+          "description": "Appraisal prompt_invocation.invocation_id when the event came from a run (e.g. numeral_cancel_identification_openrouter_free).",
+          "type": { "primitive": "string" },
+          "required": false
+        },
+        {
+          "name": "reason_code",
+          "description": "Normalized reason derived from the upstream message (matches appraisal rate-limit bucketing).",
+          "type": {
+            "primitive": "string",
+            "enum": ["http_429", "resource_exhausted", "rate_limit_text", "other"]
+          },
+          "required": true
+        },
+        {
+          "name": "message_preview",
+          "description": "Truncated error or body text for operators (keep short; full payloads may live in CI logs).",
           "type": { "primitive": "string" },
           "required": false
         }

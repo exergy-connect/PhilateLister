@@ -1,0 +1,250 @@
+{
+  "name": "PhilateLister stamp catalog",
+  "version": "26.05.09.14",
+  "author": "Exergy ∞ LLC",
+  "description": "Entity shard: JSON documents written as xframe/data/events/<provider_id>/<requested_model>/<iso-timestamp>_<rand>.json by appraisal (not rows in consolidated_data.json). Shape matches scripts/src/invocation-events.ts (InvocationEventFileBodyV1). token_usage.by_round[] aligns with each provider HTTP completion that reported usage.",
+  "source": "PhilateLister",
+  "allow_unlimited_fields": true,
+  "entities": [
+    {
+      "name": "invocation_token_round",
+      "brief": "Token usage for one completed provider HTTP response within an invocation event.",
+      "description": "Snake_case fields align with Gemini usageMetadata and OpenRouter usage. round_index is 0 for the first completion, then increments per follow-up (e.g. each tool round). tool_use_tokens maps Gemini toolUsePromptTokenCount.",
+      "primary_key": "round_index",
+      "fields": [
+        {
+          "name": "round_index",
+          "description": "Zero-based order of this completion within the invocation.",
+          "type": { "primitive": "integer", "min": 0 },
+          "required": true
+        },
+        {
+          "name": "prompt_tokens",
+          "description": "Gemini promptTokenCount / OpenRouter prompt tokens.",
+          "type": { "primitive": "integer", "min": 0 },
+          "required": false
+        },
+        {
+          "name": "completion_tokens",
+          "description": "Gemini candidatesTokenCount / OpenRouter completion tokens.",
+          "type": { "primitive": "integer", "min": 0 },
+          "required": false
+        },
+        {
+          "name": "total_tokens",
+          "description": "Gemini totalTokenCount / OpenRouter total when present.",
+          "type": { "primitive": "integer", "min": 0 },
+          "required": false
+        },
+        {
+          "name": "thoughts_tokens",
+          "description": "Gemini thoughtsTokenCount when thinking models report it.",
+          "type": { "primitive": "integer", "min": 0 },
+          "required": false
+        },
+        {
+          "name": "cached_content_tokens",
+          "description": "Gemini cachedContentTokenCount when context caching applies.",
+          "type": { "primitive": "integer", "min": 0 },
+          "required": false
+        },
+        {
+          "name": "tool_use_tokens",
+          "description": "Gemini toolUsePromptTokenCount when tool-use billing is split out.",
+          "type": { "primitive": "integer", "min": 0 },
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "invocation_token_usage",
+      "brief": "Aggregated token usage block on an invocation event file.",
+      "description": "Embedded under invocation_event_file.token_usage. usage_anchor is always the literal aggregate for this per-file summary object.",
+      "primary_key": "usage_anchor",
+      "fields": [
+        {
+          "name": "usage_anchor",
+          "description": "Fixed discriminator for this summary object; appraisal writes aggregate.",
+          "type": { "primitive": "string", "enum": ["aggregate"] },
+          "required": true
+        },
+        {
+          "name": "by_round",
+          "description": "Usage per completed provider HTTP response.",
+          "type": { "array": { "entity": "invocation_token_round" } },
+          "required": true
+        },
+        {
+          "name": "totals",
+          "description": "Sum of numeric fields across by_round (missing keys treated as 0).",
+          "type": {
+            "composite": [
+              {
+                "name": "prompt_tokens",
+                "description": "Sum of prompt_tokens across by_round.",
+                "type": { "primitive": "integer", "min": 0 },
+                "required": false
+              },
+              {
+                "name": "completion_tokens",
+                "description": "Sum of completion_tokens across by_round.",
+                "type": { "primitive": "integer", "min": 0 },
+                "required": false
+              },
+              {
+                "name": "total_tokens",
+                "description": "Sum of total_tokens across by_round.",
+                "type": { "primitive": "integer", "min": 0 },
+                "required": false
+              },
+              {
+                "name": "thoughts_tokens",
+                "description": "Sum of thoughts_tokens across by_round.",
+                "type": { "primitive": "integer", "min": 0 },
+                "required": false
+              },
+              {
+                "name": "cached_content_tokens",
+                "description": "Sum of cached_content_tokens across by_round.",
+                "type": { "primitive": "integer", "min": 0 },
+                "required": false
+              },
+              {
+                "name": "tool_use_tokens",
+                "description": "Sum of tool_use_tokens across by_round.",
+                "type": { "primitive": "integer", "min": 0 },
+                "required": false
+              }
+            ]
+          },
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "invocation_event_file",
+      "brief": "Per-invocation appraisal log (one file per runInvocation finally block).",
+      "description": "Root object of each event file. Omit optional keys when not applicable: actual_model only when it differs from requested_model; token_usage only when at least one usage round was recorded; error_message only on status error with a message; output_text_chars only on status ok.",
+      "primary_key": "invocation_id",
+      "fields": [
+        {
+          "name": "recorded_at_iso",
+          "description": "When the file was written (ISO-8601).",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "status",
+          "description": "Whether appraisal produced listing text.",
+          "type": { "primitive": "string", "enum": ["ok", "error"] },
+          "required": true
+        },
+        {
+          "name": "client_kind",
+          "description": "Appraisal client discriminator (e.g. google_gemini, openrouter).",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "prompt_id",
+          "description": "Prompt template id (xframe/data/prompts/<prompt_id>.json).",
+          "type": {
+            "primitive": "string",
+            "foreignKeys": [{ "entity": "prompt" }]
+          },
+          "required": true
+        },
+        {
+          "name": "invocation_id",
+          "description": "prompt_invocation.invocation_id for this run.",
+          "type": { "primitive": "string" },
+          "required": true
+        },
+        {
+          "name": "provider_id",
+          "description": "Provider that served the call.",
+          "type": {
+            "primitive": "string",
+            "foreignKeys": [{ "entity": "provider" }]
+          },
+          "required": true
+        },
+        {
+          "name": "requested_model",
+          "description": "Model id from the invocation config (Gemini model id or OpenRouter route); must match llm_model.model_id when that catalog row exists.",
+          "type": {
+            "primitive": "string",
+            "foreignKeys": [{ "entity": "llm_model" }]
+          },
+          "required": true
+        },
+        {
+          "name": "actual_model",
+          "description": "Upstream model when it differs from requested_model (e.g. OpenRouter free pool); omitted when identical or unknown. When set, should match llm_model.model_id for the serving route.",
+          "type": {
+            "primitive": "string",
+            "foreignKeys": [{ "entity": "llm_model" }]
+          },
+          "required": false
+        },
+        {
+          "name": "char_counts",
+          "description": "UTF-16 code unit counts: user prompt in; model completion text out (0 on error or empty body).",
+          "type": {
+            "composite": [
+              {
+                "name": "in",
+                "description": "User prompt length.",
+                "type": { "primitive": "integer", "min": 0 },
+                "required": true
+              },
+              {
+                "name": "out",
+                "description": "Returned listing text length when status is ok; otherwise 0.",
+                "type": { "primitive": "integer", "min": 0 },
+                "required": true
+              }
+            ]
+          },
+          "required": true
+        },
+        {
+          "name": "turn_count",
+          "description": "Successful provider completions (each returned model message) during the run.",
+          "type": { "primitive": "integer", "min": 0 },
+          "required": true
+        },
+        {
+          "name": "function_calls",
+          "description": "Tool names in invocation order (may repeat); each value should match gemini_function_call.function_name when that declaration exists.",
+          "type": {
+            "array": {
+              "primitive": "string",
+              "min": 0,
+              "max": 512
+            }
+          },
+          "required": true
+        },
+        {
+          "name": "token_usage",
+          "description": "Present only when at least one usage round was captured.",
+          "type": { "entity": "invocation_token_usage" },
+          "required": false
+        },
+        {
+          "name": "error_message",
+          "description": "Present when status is error and a message was captured.",
+          "type": { "primitive": "string" },
+          "required": false
+        },
+        {
+          "name": "output_text_chars",
+          "description": "Present when status is ok: UTF-16 length of returned listing text (0 when the model returned empty text).",
+          "type": { "primitive": "integer", "min": 0 },
+          "required": false
+        }
+      ]
+    }
+  ]
+}

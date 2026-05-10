@@ -242,6 +242,219 @@
       ],
       "x-primaryKey": "parameter_key"
     },
+    "invocation_token_round": {
+      "type": "object",
+      "properties": {
+        "round_index": {
+          "type": "integer",
+          "description": "Zero-based order of this completion within the invocation."
+        },
+        "prompt_tokens": {
+          "type": "integer",
+          "description": "Gemini promptTokenCount / OpenRouter prompt tokens."
+        },
+        "completion_tokens": {
+          "type": "integer",
+          "description": "Gemini candidatesTokenCount / OpenRouter completion tokens."
+        },
+        "total_tokens": {
+          "type": "integer",
+          "description": "Gemini totalTokenCount / OpenRouter total when present."
+        },
+        "thoughts_tokens": {
+          "type": "integer",
+          "description": "Gemini thoughtsTokenCount when thinking models report it."
+        },
+        "cached_content_tokens": {
+          "type": "integer",
+          "description": "Gemini cachedContentTokenCount when context caching applies."
+        },
+        "tool_use_tokens": {
+          "type": "integer",
+          "description": "Gemini toolUsePromptTokenCount when tool-use billing is split out."
+        }
+      },
+      "description": "Snake_case fields align with Gemini usageMetadata and OpenRouter usage. round_index is 0 for the first completion, then increments per follow-up (e.g. each tool round). tool_use_tokens maps Gemini toolUsePromptTokenCount.",
+      "required": [
+        "round_index"
+      ],
+      "x-primaryKey": "round_index"
+    },
+    "invocation_token_usage": {
+      "type": "object",
+      "properties": {
+        "usage_anchor": {
+          "type": "string",
+          "description": "Fixed discriminator for this summary object; appraisal writes aggregate.",
+          "enum": [
+            "aggregate"
+          ]
+        },
+        "by_round": {
+          "type": "array",
+          "description": "Usage per completed provider HTTP response.",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "totals": {
+          "type": "object",
+          "properties": {
+            "prompt_tokens": {
+              "type": "integer",
+              "description": "Sum of prompt_tokens across by_round."
+            },
+            "completion_tokens": {
+              "type": "integer",
+              "description": "Sum of completion_tokens across by_round."
+            },
+            "total_tokens": {
+              "type": "integer",
+              "description": "Sum of total_tokens across by_round."
+            },
+            "thoughts_tokens": {
+              "type": "integer",
+              "description": "Sum of thoughts_tokens across by_round."
+            },
+            "cached_content_tokens": {
+              "type": "integer",
+              "description": "Sum of cached_content_tokens across by_round."
+            },
+            "tool_use_tokens": {
+              "type": "integer",
+              "description": "Sum of tool_use_tokens across by_round."
+            }
+          },
+          "required": [],
+          "additionalProperties": false,
+          "description": "Sum of numeric fields across by_round (missing keys treated as 0)."
+        }
+      },
+      "description": "Embedded under invocation_event_file.token_usage. usage_anchor is always the literal aggregate for this per-file summary object.",
+      "required": [
+        "usage_anchor",
+        "by_round",
+        "totals"
+      ],
+      "x-primaryKey": "usage_anchor"
+    },
+    "invocation_event_file": {
+      "type": "object",
+      "properties": {
+        "recorded_at_iso": {
+          "type": "string",
+          "description": "When the file was written (ISO-8601)."
+        },
+        "status": {
+          "type": "string",
+          "description": "Whether appraisal produced listing text.",
+          "enum": [
+            "ok",
+            "error"
+          ]
+        },
+        "client_kind": {
+          "type": "string",
+          "description": "Appraisal client discriminator (e.g. google_gemini, openrouter)."
+        },
+        "prompt_id": {
+          "type": "string",
+          "description": "Prompt template id (xframe/data/prompts/<prompt_id>.json).",
+          "x-foreignKeys": [
+            {
+              "entity": "prompt"
+            }
+          ]
+        },
+        "invocation_id": {
+          "type": "string",
+          "description": "prompt_invocation.invocation_id for this run."
+        },
+        "provider_id": {
+          "type": "string",
+          "description": "Provider that served the call.",
+          "x-foreignKeys": [
+            {
+              "entity": "provider"
+            }
+          ]
+        },
+        "requested_model": {
+          "type": "string",
+          "description": "Model id from the invocation config (Gemini model id or OpenRouter route); must match llm_model.model_id when that catalog row exists.",
+          "x-foreignKeys": [
+            {
+              "entity": "llm_model"
+            }
+          ]
+        },
+        "actual_model": {
+          "type": "string",
+          "description": "Upstream model when it differs from requested_model (e.g. OpenRouter free pool); omitted when identical or unknown. When set, should match llm_model.model_id for the serving route.",
+          "x-foreignKeys": [
+            {
+              "entity": "llm_model"
+            }
+          ]
+        },
+        "char_counts": {
+          "type": "object",
+          "properties": {
+            "in": {
+              "type": "integer",
+              "description": "User prompt length."
+            },
+            "out": {
+              "type": "integer",
+              "description": "Returned listing text length when status is ok; otherwise 0."
+            }
+          },
+          "required": [
+            "in",
+            "out"
+          ],
+          "additionalProperties": false,
+          "description": "UTF-16 code unit counts: user prompt in; model completion text out (0 on error or empty body)."
+        },
+        "turn_count": {
+          "type": "integer",
+          "description": "Successful provider completions (each returned model message) during the run."
+        },
+        "function_calls": {
+          "type": "array",
+          "description": "Tool names in invocation order (may repeat); each value should match gemini_function_call.function_name when that declaration exists.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "token_usage": {
+          "type": "string",
+          "description": "Present only when at least one usage round was captured."
+        },
+        "error_message": {
+          "type": "string",
+          "description": "Present when status is error and a message was captured."
+        },
+        "output_text_chars": {
+          "type": "integer",
+          "description": "Present when status is ok: UTF-16 length of returned listing text (0 when the model returned empty text)."
+        }
+      },
+      "description": "Root object of each event file. Omit optional keys when not applicable: actual_model only when it differs from requested_model; token_usage only when at least one usage round was recorded; error_message only on status error with a message; output_text_chars only on status ok.",
+      "required": [
+        "recorded_at_iso",
+        "status",
+        "client_kind",
+        "prompt_id",
+        "invocation_id",
+        "provider_id",
+        "requested_model",
+        "char_counts",
+        "turn_count",
+        "function_calls"
+      ],
+      "x-primaryKey": "invocation_id"
+    },
     "issue_series": {
       "type": "object",
       "properties": {
@@ -364,9 +577,16 @@
         "rate_limits": {
           "type": "string",
           "description": "Operator notes: max RPM/TPM/RPD (or usage-dashboard cap), vendor doc links, token pricing pointers; empty if unknown."
+        },
+        "feedback_events": {
+          "type": "array",
+          "description": "Optional curated operator notes per catalog model. Not written by appraisal; use xframe/data/invocation_stats.json for automated rate-limit events.",
+          "items": {
+            "type": "string"
+          }
         }
       },
-      "description": "Rows describe which vendor model id to pass to the client (e.g. gemini-2.0-flash, openai/gpt-4o). has_free_tier and rate_limits are indicative documentation for operators; they are not enforced by this app.",
+      "description": "Rows describe which vendor model id to pass to the client (e.g. gemini-2.0-flash, openai/gpt-4o). has_free_tier and rate_limits are indicative documentation for operators; they are not enforced by this app. feedback_events is optional and separate from invocation_stats.json.",
       "required": [
         "model_id",
         "name",
@@ -374,6 +594,101 @@
         "has_free_tier"
       ],
       "x-primaryKey": "model_id"
+    },
+    "llm_feedback_event": {
+      "type": "object",
+      "properties": {
+        "feedback_event_id": {
+          "type": "string",
+          "description": "Stable unique id for this event (e.g. UUID, or a deterministic hash of at_iso + invocation_id + message_preview prefix)."
+        },
+        "prompt_id": {
+          "type": "string",
+          "description": "Prompt template id for the appraisal run (matches invocation_stats.events[].prompt_id and xframe/data/prompts/<prompt_id>.json).",
+          "x-foreignKeys": [
+            {
+              "entity": "prompt"
+            }
+          ]
+        },
+        "actual_model_id": {
+          "type": "string",
+          "description": "Vendor model id that served or failed (matches invocation_stats.events[].model)."
+        },
+        "requested_model_id": {
+          "type": "string",
+          "description": "Invocation or router model when it differs from actual_model_id (matches invocation_stats.events[].requested_model). Omit when identical."
+        },
+        "char_counts": {
+          "type": "object",
+          "properties": {
+            "in": {
+              "type": "integer",
+              "description": "User prompt string length in UTF-16 code units."
+            },
+            "out": {
+              "type": "integer",
+              "description": "Model reply text length in UTF-16 code units; 0 when the attempt failed before any body."
+            }
+          },
+          "required": [
+            "in",
+            "out"
+          ],
+          "additionalProperties": false,
+          "description": "UTF-16 lengths of user prompt text sent (in) and model completion returned (out); matches invocation_stats.events[].char_counts."
+        },
+        "turn_count": {
+          "type": "integer",
+          "description": "Successful provider/model completions before failure (matches invocation_stats.events[].turn_count)."
+        },
+        "function_calls": {
+          "type": "array",
+          "description": "Tool names invoked in order (matches invocation_stats.events[].function_calls).",
+          "items": {
+            "type": "string"
+          }
+        },
+        "at_iso": {
+          "type": "string",
+          "description": "When the event was observed (ISO-8601 timestamp)."
+        },
+        "provider_id": {
+          "type": "string",
+          "description": "Provider that returned the error.",
+          "x-foreignKeys": [
+            {
+              "entity": "provider"
+            }
+          ]
+        },
+        "invocation_id": {
+          "type": "string",
+          "description": "Appraisal prompt_invocation.invocation_id when the event came from a run (e.g. numeral_cancel_identification_openrouter_free)."
+        },
+        "reason_code": {
+          "type": "string",
+          "description": "Normalized reason derived from the upstream message (matches appraisal rate-limit bucketing).",
+          "enum": [
+            "http_429",
+            "resource_exhausted",
+            "rate_limit_text",
+            "other"
+          ]
+        },
+        "message_preview": {
+          "type": "string",
+          "description": "Truncated error or body text for operators (keep short; full payloads may live in CI logs)."
+        }
+      },
+      "description": "Aligns with invocation_stats.json event shape: actual_model_id, requested_model_id, char_counts, turn_count, function_calls.",
+      "required": [
+        "feedback_event_id",
+        "actual_model_id",
+        "at_iso",
+        "reason_code"
+      ],
+      "x-primaryKey": "feedback_event_id"
     },
     "numeral_cancel": {
       "type": "object",
@@ -1235,6 +1550,24 @@
         "$ref": "#/$defs/gemini_function_parameter"
       }
     },
+    "invocation_token_round": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/invocation_token_round"
+      }
+    },
+    "invocation_token_usage": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/invocation_token_usage"
+      }
+    },
+    "invocation_event_file": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/invocation_event_file"
+      }
+    },
     "issue_series": {
       "type": "array",
       "items": {
@@ -1251,6 +1584,12 @@
       "type": "array",
       "items": {
         "$ref": "#/$defs/llm_model"
+      }
+    },
+    "llm_feedback_event": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/llm_feedback_event"
       }
     },
     "numeral_cancel": {

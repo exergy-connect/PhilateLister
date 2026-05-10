@@ -81,7 +81,8 @@ test('gemini function workflow: declarations → LLM functionCall → local tool
   assert.equal(calls[0]?.name, 'lookup_numeral_cancel');
 
   const toolResult = runtime.executeFunctionCall(calls[0]!);
-  const rows = toolResult.numeral_cancel;
+  assert.equal(toolResult.success, true);
+  const rows = (toolResult.result as Record<string, unknown>).numeral_cancel;
   assert.ok(Array.isArray(rows), 'expected numeral_cancel to be an array of consolidated rows');
   assert.equal(rows.length, 2);
 
@@ -92,6 +93,29 @@ test('gemini function workflow: declarations → LLM functionCall → local tool
     .map((r) => (r.numeral_cancel_key as Record<string, unknown>)?.period_start)
     .sort();
   assert.deepEqual(periodStarts, ['1851-04-01', '1864-10-01']);
+});
+
+test('executeFunctionCall wraps errors in success/retryable/final/error envelope', () => {
+  const store = loadEntityStoreFromConsolidated();
+  const runtime = new XFrameGeminiFunctionRuntime({
+    consolidatedSchemaPath: CONSOLIDATED_SCHEMA_PATH,
+    getEntityStore: () => store,
+    providerId: 'google_gemini',
+    functionCallEntity: 'gemini_function_call',
+    functionParameterEntity: 'gemini_function_parameter',
+  });
+
+  const unknown = runtime.executeFunctionCall({ name: 'no_such_tool', args: {} });
+  assert.equal(unknown.success, false);
+  assert.equal(unknown.retryable, false);
+  assert.equal(unknown.final, true);
+  assert.match(String(unknown.error), /Unknown function/);
+
+  const missing = runtime.executeFunctionCall({ name: 'lookup_numeral_cancel', args: { country: 'dk' } });
+  assert.equal(missing.success, false);
+  assert.equal(missing.retryable, false);
+  assert.equal(missing.final, true);
+  assert.equal(missing.error, "mandatory parameter 'number' not provided");
 });
 
 test('functionCallModelPartsForReplay preserves thoughtSignature on function call parts', () => {
@@ -162,7 +186,8 @@ test('gemini function workflow resolves referenced parameter rows without functi
     },
   });
 
-  const rows = toolResult.numeral_cancel;
+  assert.equal(toolResult.success, true);
+  const rows = (toolResult.result as Record<string, unknown>).numeral_cancel;
   assert.ok(Array.isArray(rows), 'expected numeral_cancel to be an array of consolidated rows');
   assert.equal(rows.length, 2);
 });

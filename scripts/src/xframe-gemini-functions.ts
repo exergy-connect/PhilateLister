@@ -106,13 +106,45 @@ export class XFrameGeminiFunctionRuntime {
     return null;
   }
 
+  private toolErrorPayload(error: string): Record<string, unknown> {
+    return { success: false, retryable: false, final: true, error };
+  }
+
+  private toolSuccessPayload(result: Record<string, unknown>): Record<string, unknown> {
+    return { success: true, retryable: false, final: true, result };
+  }
+
+  private validateRequiredParameters(row: GeminiFunctionCallRow, args: Record<string, unknown>): string | null {
+    for (const param of row.parameters) {
+      if (!param.required) continue;
+      const v = args[param.name];
+      if (v === undefined || v === null) {
+        return `mandatory parameter '${param.name}' not provided`;
+      }
+    }
+    return null;
+  }
+
   executeFunctionCall(call: GeminiFunctionCall): Record<string, unknown> {
     const name = String(call.name ?? '').trim();
     const row = this.loadGeminiFunctionCalls().find((candidate) => candidate.enabled && candidate.functionName === name);
-    if (!row) return { ok: false, error: `Unknown function ${name}` };
+    if (!row) return this.toolErrorPayload(`Unknown function ${name}`);
 
-    if (row.output && Object.keys(row.output).length > 0) return this.executeDeclarativeFunction(row, call.args ?? {});
-    return { ok: false, error: `No declarative implementation for function ${name}` };
+    const args = call.args ?? {};
+    const missing = this.validateRequiredParameters(row, args);
+    if (missing) return this.toolErrorPayload(missing);
+
+    if (!row.output || Object.keys(row.output).length === 0) {
+      return this.toolErrorPayload(`No declarative implementation for function ${name}`);
+    }
+
+    try {
+      const raw = this.executeDeclarativeFunction(row, args);
+      return this.toolSuccessPayload(raw);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      return this.toolErrorPayload(msg);
+    }
   }
 
   private loadConsolidatedSchemaRoot(): Record<string, unknown> {

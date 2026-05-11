@@ -30,7 +30,7 @@ jobs:
           printf '%s\n' "$COMMIT_MESSAGE" | head -n 12
 
       # dist/appraisal.cjs is the esbuild bundle (committed by scripts-build); no npm install here.
-      - name: Run appraisal (Gemini / OpenRouter per prompt_invocation)
+      - name: Move upload to public/listings/images (content hash) and run appraisal
         env:
           NODE_DEBUG: appraisal
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -39,10 +39,6 @@ jobs:
           OPENROUTER_TITLE: ${{ vars.OPENROUTER_TITLE }}
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
-          if [ -z "${GEMINI_API_KEY}" ] && [ -z "${OPENROUTER_API_KEY}" ]; then
-            echo "Skipping appraisal: add repository secret GEMINI_API_KEY and/or OPENROUTER_API_KEY."
-            exit 0
-          fi
           set -euo pipefail
           first=$(printf '%s\n' "${COMMIT_MESSAGE:-}" | head -n 1 | tr -d '\r')
           name=$(printf '%s\n' "$first" | sed -n 's/^PhilateLister upload:[[:space:]]*\(.*\)$/\1/p' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
@@ -62,8 +58,22 @@ jobs:
             echo "Commit message names $f but that file is missing in the tree."
             exit 1
           fi
-          echo "Appraising: $f"
-          node scripts/dist/appraisal.cjs "$f"
+
+          mkdir -p public/listings/images
+          base=$(basename "$f")
+          ext="${base##*.}"
+          ext=$(printf '%s\n' "$ext" | tr 'A-Z' 'a-z')
+          hash=$(sha256sum "$f" | awk '{print $1}')
+          dest="public/listings/images/${hash}.${ext}"
+          mv "$f" "$dest"
+          echo "Moved upload to $dest (sha256=$hash)"
+
+          if [ -z "${GEMINI_API_KEY:-}" ] && [ -z "${OPENROUTER_API_KEY:-}" ]; then
+            echo "Skipping appraisal: add repository secret GEMINI_API_KEY and/or OPENROUTER_API_KEY."
+            exit 0
+          fi
+          echo "Appraising: $dest"
+          node scripts/dist/appraisal.cjs "$dest"
 
       - name: Stage listings under public/
         run: |
@@ -75,14 +85,17 @@ jobs:
             rmdir listings 2>/dev/null || true
           fi
 
-      - name: Commit listings
+      - name: Commit listings, images, upload removals, and invocation stats
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add public/listings/
+          git add -u uploads/
+          git add xframe/data/invocation_stats.json
+          git add xframe/data/events/
           if git diff --staged --quiet; then
-            echo "No listing files to commit."
+            echo "No listing, image ingest, invocation_stats, or per-invocation event changes to commit."
           else
-            git commit -m "listings: Gemini text for latest upload(s)"
+            git commit -m "listings: stamp outputs; invocation telemetry (stats + events)"
             git push origin "HEAD:${GITHUB_REF_NAME}"
           fi

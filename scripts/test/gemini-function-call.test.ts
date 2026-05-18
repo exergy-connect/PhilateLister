@@ -164,8 +164,8 @@ test('gemini function workflow resolves referenced parameter rows without functi
   store.gemini_function_parameter = {};
   for (const p of parameters) {
     assert.ok(p && typeof p === 'object' && !Array.isArray(p), 'expected object parameter');
-    const name = ((p as Record<string, unknown>).parameter_key as Record<string, unknown> | undefined)?.name;
-    assert.ok(typeof name === 'string');
+    const name = String((p as Record<string, unknown>).name ?? '').trim();
+    assert.ok(name.length > 0);
     store.gemini_function_parameter[name] = p as Record<string, unknown>;
   }
   lookup.parameters = ['country', 'number', 'scott_number'];

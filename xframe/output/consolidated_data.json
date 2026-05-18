@@ -1,6 +1,6 @@
 {
-  "version": 10,
-  "timestamp": "2026-05-10T18:36:59Z",
+  "version": 11,
+  "timestamp": "2026-05-18T19:37:11Z",
   "model": {
     "name": "PhilateLister stamp catalog",
     "version": "26.04.11.1",
@@ -147,6 +147,13 @@
         "author": "jbemmel",
         "note": "CI consolidate after model/data change (ee8d06fd1d9f91cdc97261bd3afc83c2aab09f34)",
         "git_commit_hash": "ee8d06fd1d9f91cdc97261bd3afc83c2aab09f34"
+      },
+      "000000000011": {
+        "id": 11,
+        "timestamp": "2026-05-18T14:37:11-05:00",
+        "author": "jbemmel",
+        "note": "Reconsolidate after entity parents model migration; TS loader injects nested composite parent FKs",
+        "git_commit_hash": "96bad27d77d54c2ccda6e26f01b8e72c99b0e4b7"
       }
     },
     "catalog_system": {
@@ -191,49 +198,45 @@
               "section": "M",
               "number": 45
             },
-            "c": 10,
-            "v": 10,
-            "stamp_id": "stamp_2026-04-11_example_001",
-            "country_id": "dk",
-            "title": "Denmark 20 øre bicolor used",
-            "summary": "VF used, numeral cancel; printing variety per dealer notes.",
-            "issue_year": 1895,
-            "condition_quality": "used",
-            "centering_grade": "fine",
-            "image_basename": "stamp_2026-04-11_example_001.jpg",
-            "bounding_box": {
-              "x_min": 0,
-              "x_max": 1000,
-              "y_min": 0,
-              "y_max": 1000
-            },
-            "freeform_keywords": [
-              "Facit",
-              "numeral",
-              "cancel"
-            ]
+            "issue_series_id": "dk-bicolors-classic",
+            "issue_date": "1895-01-01",
+            "denomination": "20ø",
+            "perforation": "Perforated 13",
+            "primary_color": "carmine and blue (bicolor)",
+            "description": "Illustrative Denmark bicolor definitive tied to sample inventory; see stamp_catalog_number for Michel cross-reference.",
+            "notes": "Illustrative primary listing for the sample stamp; see stamp_catalog_number for Michel cross-ref.",
+            "c": 11,
+            "v": 11
           }
         ],
         "numeral_cancels": [
           {
             "numeral_cancel_key": {
               "numeral": 152,
-              "period_start": "1851-04-01",
-              "country_id": "dk"
+              "period_start": "1851-04-01"
             },
+            "country_id": "dk",
             "period_end": "1864-04-01",
             "town_name": "Flensborg",
-            "history": "Original assignment to Flensborg. Following the defeat in the Second Schleswig War (1864), the town was ceded to Prussia/Austria, and the Danish numeral cancel was retired from this location."
+            "history": "Original assignment to Flensborg. Following the defeat in the Second Schleswig War (1864), the town was ceded to Prussia/Austria, and the Danish numeral cancel was retired from this location.",
+            "m": [
+              11
+            ],
+            "v": 11
           },
           {
             "numeral_cancel_key": {
               "numeral": 152,
-              "period_start": "1864-10-01",
-              "country_id": "dk"
+              "period_start": "1864-10-01"
             },
+            "country_id": "dk",
             "period_end": "1884-12-31",
             "town_name": "Skibby",
-            "history": "Reassigned to the Sjælland town of Skibby during the post-war reorganization of the postal system to fill the gaps left by lost Schleswig territories."
+            "history": "Reassigned to the Sjælland town of Skibby during the post-war reorganization of the postal system to fill the gaps left by lost Schleswig territories.",
+            "m": [
+              11
+            ],
+            "v": 11
           }
         ],
         "c": 1,
@@ -1853,7 +1856,6 @@
           "- Do NOT let uncertainty make the writing dull — only qualify the specific detail.",
           "",
           "INPUTS:",
-          "Image file name: __IMAGE_BASENAME____FILE_MISMATCH_GAP__",
           "",
           "Commit summary:",
           "__FIRST_LINE__",
@@ -1908,7 +1910,10 @@
           "[Description]"
         ],
         "c": 1,
-        "v": 1
+        "m": [
+          11
+        ],
+        "v": 11
       },
       "jay_smith_listing": {
         "prompt_id": "jay_smith_listing",
@@ -1917,8 +1922,6 @@
         "output_format": "txt",
         "template_lines": [
           "You write stamp descriptions in the voice and density of Jay Smith & Associates–style specialized listings: catalog-precise, narrative-rich, and confident. Technical identifiers and bracketed issue specs come first; condition is honest; rarity and literature support the ask. Do not invent catalog numbers, print quantities, sheet positions, expert quotes, or handbook facts—use only what the image, dealer notes, and uploader JSON plausibly support; where unknown, say so briefly or omit.",
-          "",
-          "Image file name: __IMAGE_BASENAME____FILE_MISMATCH_GAP__",
           "",
           "Commit summary line (from uploader):",
           "__FIRST_LINE__",
@@ -1948,7 +1951,10 @@
           "3) BODY — continuation in the same voice: defects, rarity and history, valuations, closing flourish, certificate/stock notes if supported; end with a single line “Asking context:” and the dealer’s target price if provided, or say price not specified."
         ],
         "c": 1,
-        "v": 1
+        "m": [
+          11
+        ],
+        "v": 11
       },
       "multi_stamp_sheet_xframe": {
         "prompt_id": "multi_stamp_sheet_xframe",
@@ -1959,9 +1965,6 @@
           "You are a philatelic cataloging assistant. The attached image may show MULTIPLE postage stamps on one scan or photo (e.g. a stock sheet, album page, or black-background layout). Your job is to detect every distinct stamp impression, read what is visible on each, and fill the response JSON.",
           "",
           "The API returns one object with a \"stamp\" array only: one stamp object per detected impression, matching the response schema. Use the stamp_id rules below (country + Scott + local index); they must stay unique within this response.",
-          "",
-          "Batch / upload suggested id (reference for humans only — do not prefix stamp_id with it): __STAMP_SUGGESTED_ID__",
-          "Image file name: __IMAGE_BASENAME____FILE_MISMATCH_GAP__",
           "",
           "Commit summary line (from uploader):",
           "__FIRST_LINE__",
@@ -1997,7 +2000,10 @@
           "Do not split a single dealer target price across stamps unless the notes explicitly say so. If one price applies to the whole sheet, mention it in the first stamp's summary (or omit if the schema has no listing fields)."
         ],
         "c": 1,
-        "v": 1
+        "m": [
+          11
+        ],
+        "v": 11
       },
       "numeral_cancel_identification": {
         "prompt_id": "numeral_cancel_identification",
@@ -2011,8 +2017,6 @@
           "Do not invent catalog numbers, cancels, perforation gauges, towns, dates, or varieties.",
           "If evidence is incomplete, explicitly say so.",
           "Do not infer a full cancel number from a partial digit unless supported by lookup results and image evidence.",
-          "",
-          "Image file name: __IMAGE_BASENAME____FILE_MISMATCH_GAP__",
           "",
           "Commit summary line (from uploader):",
           "__FIRST_LINE__",
@@ -2067,6 +2071,9 @@
             "sort_order": 0,
             "primary_for_listing": true,
             "c": 2,
+            "m": [
+              8
+            ],
             "v": 2
           },
           {
@@ -2076,14 +2083,18 @@
             "sort_order": 1,
             "primary_for_listing": false,
             "c": 2,
+            "m": [
+              8
+            ],
             "v": 2
           }
         ],
         "c": 1,
         "m": [
-          8
+          8,
+          11
         ],
-        "v": 8
+        "v": 11
       },
       "stamp_listing": {
         "prompt_id": "stamp_listing",
@@ -2092,8 +2103,6 @@
         "output_format": "txt",
         "template_lines": [
           "You are helping a stamp dealer prepare an eBay listing for this upload.",
-          "",
-          "Image file name: __IMAGE_BASENAME____FILE_MISMATCH_GAP__",
           "",
           "Commit summary line (from uploader):",
           "__FIRST_LINE__",
@@ -2119,7 +2128,8 @@
             "provider_id": "google_gemini",
             "model": "gemini-3-flash-preview",
             "sort_order": 0,
-            "primary_for_listing": true
+            "primary_for_listing": true,
+            "v": 1
           },
           {
             "invocation_id": "stamp_listing_openrouter_nemotron",
@@ -2127,7 +2137,8 @@
             "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
             "sort_order": 1,
             "primary_for_listing": false,
-            "enabled": false
+            "enabled": false,
+            "v": 1
           },
           {
             "invocation_id": "stamp_listing_openrouter",
@@ -2135,11 +2146,15 @@
             "model": "openai/gpt-4o-mini",
             "sort_order": 2,
             "primary_for_listing": false,
-            "enabled": false
+            "enabled": false,
+            "v": 1
           }
         ],
         "c": 1,
-        "v": 1
+        "m": [
+          11
+        ],
+        "v": 11
       },
       "stamp_numeral_cancel_identification": {
         "prompt_id": "stamp_numeral_cancel_identification",
@@ -2218,10 +2233,7 @@
         "template_lines": [
           "You are a philatelic cataloging assistant. From the stamp image and the dealer context below, produce structured data for THIS stamp only.",
           "",
-          "The API returns JSON shaped as one object with a \"stamp\" array; each element is a stamp row per the response schema. For a single stamp use one element and set stamp_id to the suggested id below.",
-          "",
-          "Suggested stamp_id for this upload: __STAMP_SUGGESTED_ID__",
-          "Image file name: __IMAGE_BASENAME____FILE_MISMATCH_GAP__",
+          "The API returns JSON shaped as one object with a \"stamp\" array; each element is a stamp row per the response schema. For a single stamp use one element with a unique stamp_id.",
           "",
           "Commit summary line (from uploader):",
           "__FIRST_LINE__",
@@ -2233,7 +2245,10 @@
           "Dealer notes and hints (JSON; may be null): __NOTES_JSON__"
         ],
         "c": 1,
-        "v": 1
+        "m": [
+          11
+        ],
+        "v": 11
       }
     },
     "provider": {
@@ -2406,6 +2421,36 @@
         "sort_order": 190,
         "c": 1,
         "v": 1
+      }
+    },
+    "stamp": {
+      "stamp_2026-04-11_example_001": {
+        "stamp_id": "stamp_2026-04-11_example_001",
+        "country_id": "dk",
+        "scott": {
+          "country_id": "dk",
+          "section": "M",
+          "number": 45
+        },
+        "title": "Denmark 20 øre bicolor used",
+        "summary": "VF used, numeral cancel; printing variety per dealer notes.",
+        "issue_year": 1895,
+        "condition_quality": "used",
+        "centering_grade": "fine",
+        "image_basename": "stamp_2026-04-11_example_001.jpg",
+        "bounding_box": {
+          "x_min": 0,
+          "x_max": 1000,
+          "y_min": 0,
+          "y_max": 1000
+        },
+        "freeform_keywords": [
+          "Facit",
+          "numeral",
+          "cancel"
+        ],
+        "c": 11,
+        "v": 11
       }
     },
     "stamp_catalog_number": {

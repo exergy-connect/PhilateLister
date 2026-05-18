@@ -43,9 +43,9 @@
         },
         {
           "name": "parameters",
-          "description": "Parameters in declaration order.",
+          "description": "Parameters in declaration order (nested under each function in source data; omitted on flattened parent rows).",
           "type": { "array": { "entity": "gemini_function_parameter" } },
-          "required": true
+          "required": false
         },
         {
           "name": "output",

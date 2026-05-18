@@ -109,7 +109,7 @@
         },
         "parameters": {
           "type": "array",
-          "description": "Parameters in declaration order.",
+          "description": "Parameters in declaration order (nested under each function in source data; omitted on flattened parent rows).",
           "items": {
             "$ref": "#/$defs/gemini_function_parameter"
           }
@@ -144,7 +144,6 @@
         "provider_id",
         "enabled",
         "sort_order",
-        "parameters",
         "output"
       ],
       "x-primaryKey": "function_name"
@@ -160,14 +159,7 @@
               "description": "Parent Gemini function (nesting under gemini_function_call.parameters).",
               "x-foreignKeys": [
                 {
-                  "entity": "gemini_function_call",
-                  "parent_array": "parameters"
-                }
-              ],
-              "x-parents": [
-                {
-                  "entity": "gemini_function_call",
-                  "parent_array": "parameters"
+                  "entity": "gemini_function_call"
                 }
               ]
             },
@@ -184,14 +176,7 @@
           "description": "Composite primary key (function_name, parameter name).",
           "x-foreignKeys": [
             {
-              "entity": "gemini_function_call",
-              "parent_array": "parameters"
-            }
-          ],
-          "x-parents": [
-            {
-              "entity": "gemini_function_call",
-              "parent_array": "parameters"
+              "entity": "gemini_function_call"
             }
           ]
         },
@@ -240,7 +225,13 @@
         "schema_entity",
         "required"
       ],
-      "x-primaryKey": "parameter_key"
+      "x-primaryKey": "parameter_key",
+      "x-parents": [
+        {
+          "entity": "gemini_function_call",
+          "parent_array": "parameters"
+        }
+      ]
     },
     "invocation_token_round": {
       "type": "object",
@@ -467,14 +458,7 @@
           "description": "Primary issuing country or administration for this series.",
           "x-foreignKeys": [
             {
-              "entity": "country",
-              "parent_array": "issue_series"
-            }
-          ],
-          "x-parents": [
-            {
-              "entity": "country",
-              "parent_array": "issue_series"
+              "entity": "country"
             }
           ]
         },
@@ -510,7 +494,13 @@
         "country_id",
         "name"
       ],
-      "x-primaryKey": "series_id"
+      "x-primaryKey": "series_id",
+      "x-parents": [
+        {
+          "entity": "country",
+          "parent_array": "issue_series"
+        }
+      ]
     },
     "listing": {
       "type": "object",
@@ -580,7 +570,7 @@
         },
         "feedback_events": {
           "type": "array",
-          "description": "Optional curated operator notes per catalog model. Not written by appraisal; use xframe/data/invocation_stats.json for automated rate-limit events.",
+          "description": "Optional curated operator notes per catalog model. Not written by appraisal; use xframe/data/invocation_stats.json for automated invocation telemetry.",
           "items": {
             "type": "string"
           }
@@ -701,14 +691,7 @@
               "description": "Issuing country or postal administration for this numeral assignment.",
               "x-foreignKeys": [
                 {
-                  "entity": "country",
-                  "parent_array": "numeral_cancels"
-                }
-              ],
-              "x-parents": [
-                {
-                  "entity": "country",
-                  "parent_array": "numeral_cancels"
+                  "entity": "country"
                 }
               ]
             },
@@ -731,14 +714,7 @@
           "description": "Composite primary key (country, numeral, period start).",
           "x-foreignKeys": [
             {
-              "entity": "country",
-              "parent_array": "numeral_cancels"
-            }
-          ],
-          "x-parents": [
-            {
-              "entity": "country",
-              "parent_array": "numeral_cancels"
+              "entity": "country"
             }
           ]
         },
@@ -747,14 +723,7 @@
           "description": "Issuing country (must match numeral_cancel_key.country_id; scalar FK enables nesting under country.numeral_cancels during consolidation).",
           "x-foreignKeys": [
             {
-              "entity": "country",
-              "parent_array": "numeral_cancels"
-            }
-          ],
-          "x-parents": [
-            {
-              "entity": "country",
-              "parent_array": "numeral_cancels"
+              "entity": "country"
             }
           ]
         },
@@ -779,7 +748,13 @@
         "period_end",
         "town_name"
       ],
-      "x-primaryKey": "numeral_cancel_key"
+      "x-primaryKey": "numeral_cancel_key",
+      "x-parents": [
+        {
+          "entity": "country",
+          "parent_array": "numeral_cancels"
+        }
+      ]
     },
     "prompt": {
       "type": "object",
@@ -806,7 +781,7 @@
         },
         "template_lines": {
           "type": "array",
-          "description": "Prompt body lines; appraisal joins with newline. Placeholders: __IMAGE_BASENAME__, __FILE_MISMATCH_GAP__, __FIRST_LINE__, __META_JSON__, __TARGET_JSON__, __NOTES_JSON__, __STAMP_SUGGESTED_ID__. For output_format json, Gemini and OpenRouter use API structured output (stamp array schema), not inlined consolidated schema.",
+          "description": "Prompt body lines; appraisal joins with newline. Placeholders: __FIRST_LINE__, __META_JSON__, __TARGET_JSON__, __NOTES_JSON__. For output_format json, Gemini and OpenRouter use API structured output (stamp array schema), not inlined consolidated schema.",
           "items": {
             "type": "string"
           }
@@ -847,14 +822,7 @@
           "description": "Prompt template this invocation belongs to. Omit in nested source rows under prompt.prompt_invocations (implied by parent).",
           "x-foreignKeys": [
             {
-              "entity": "prompt",
-              "parent_array": "prompt_invocations"
-            }
-          ],
-          "x-parents": [
-            {
-              "entity": "prompt",
-              "parent_array": "prompt_invocations"
+              "entity": "prompt"
             }
           ]
         },
@@ -893,7 +861,13 @@
         "sort_order",
         "primary_for_listing"
       ],
-      "x-primaryKey": "invocation_id"
+      "x-primaryKey": "invocation_id",
+      "x-parents": [
+        {
+          "entity": "prompt",
+          "parent_array": "prompt_invocations"
+        }
+      ]
     },
     "provider": {
       "type": "object",
@@ -937,14 +911,7 @@
               "description": "Issuing country or postal administration for this listing (denormalized; use with country.scott_catalog_entries nesting).",
               "x-foreignKeys": [
                 {
-                  "entity": "country",
-                  "parent_array": "scott_catalog_entries"
-                }
-              ],
-              "x-parents": [
-                {
-                  "entity": "country",
-                  "parent_array": "scott_catalog_entries"
+                  "entity": "country"
                 }
               ]
             },
@@ -1003,17 +970,10 @@
           "description": "Structured Scott listing (primary key).",
           "x-foreignKeys": [
             {
-              "entity": "country",
-              "parent_array": "scott_catalog_entries"
+              "entity": "country"
             },
             {
               "entity": "scott_catalog_section"
-            }
-          ],
-          "x-parents": [
-            {
-              "entity": "country",
-              "parent_array": "scott_catalog_entries"
             }
           ]
         },
@@ -1056,7 +1016,13 @@
         "primary_color",
         "description"
       ],
-      "x-primaryKey": "scott"
+      "x-primaryKey": "scott",
+      "x-parents": [
+        {
+          "entity": "country",
+          "parent_array": "scott_catalog_entries"
+        }
+      ]
     },
     "scott_catalog_section": {
       "type": "object",
@@ -1131,14 +1097,7 @@
               "description": "Issuing country or postal administration for this listing (denormalized; use with country.scott_catalog_entries nesting).",
               "x-foreignKeys": [
                 {
-                  "entity": "country",
-                  "parent_array": "scott_catalog_entries"
-                }
-              ],
-              "x-parents": [
-                {
-                  "entity": "country",
-                  "parent_array": "scott_catalog_entries"
+                  "entity": "country"
                 }
               ]
             },
@@ -1199,17 +1158,10 @@
               "entity": "scott_catalog_entry"
             },
             {
-              "entity": "country",
-              "parent_array": "scott_catalog_entries"
+              "entity": "country"
             },
             {
               "entity": "scott_catalog_section"
-            }
-          ],
-          "x-parents": [
-            {
-              "entity": "country",
-              "parent_array": "scott_catalog_entries"
             }
           ]
         },

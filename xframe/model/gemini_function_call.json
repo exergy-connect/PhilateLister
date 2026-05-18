@@ -1,6 +1,6 @@
 {
   "name": "PhilateLister stamp catalog",
-  "version": "26.05.08.2",
+  "version": "26.05.18.1",
   "author": "Exergy ∞ LLC",
   "description": "Entity shard: Gemini function-calling tools exposed by appraisal.",
   "source": "PhilateLister",
@@ -77,6 +77,7 @@
       "brief": "One Gemini function parameter.",
       "description": "Declaration field for a single parameter. Primary key is function_name plus parameter name so flattened rows are globally unique.",
       "primary_key": "parameter_key",
+      "parents": [{ "entity": "gemini_function_call", "parent_array": "parameters" }],
       "field_definitions": [
         {
           "name": "gemini_function_parameter_key",
@@ -88,9 +89,7 @@
                 "description": "Parent Gemini function (nesting under gemini_function_call.parameters).",
                 "type": {
                   "primitive": "string",
-                  "foreignKeys": [
-                    { "entity": "gemini_function_call", "parent_array": "parameters" }
-                  ]
+                  "foreignKeys": [{ "entity": "gemini_function_call" }]
                 },
                 "required": true
               },

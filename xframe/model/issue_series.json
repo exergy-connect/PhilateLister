@@ -1,6 +1,6 @@
 {
   "name": "PhilateLister stamp catalog",
-  "version": "26.04.11.1",
+  "version": "26.05.18.1",
   "author": "Exergy ∞ LLC",
   "description": "Entity shard: stamp set, series, or definitive issue grouping.",
   "source": "PhilateLister",
@@ -10,6 +10,7 @@
       "brief": "Named set or series an issue belongs to.",
       "description": "Groups stamps into sets, definitive series, commemoratives, or specialized series for browsing and pricing context.",
       "primary_key": "series_id",
+      "parents": [{ "entity": "country", "parent_array": "issue_series" }],
       "fields": [
         {
           "name": "series_id",
@@ -22,9 +23,7 @@
           "description": "Primary issuing country or administration for this series.",
           "type": {
             "primitive": "string",
-            "foreignKeys": [
-              { "entity": "country", "parent_array": "issue_series" }
-            ]
+            "foreignKeys": [{ "entity": "country" }]
           },
           "required": true
         },

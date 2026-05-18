@@ -1,6 +1,6 @@
 {
   "name": "PhilateLister stamp catalog",
-  "version": "26.04.14.21",
+  "version": "26.05.18.1",
   "author": "Exergy ∞ LLC",
   "description": "Entity shard: Scott-style catalog listing (composite scott PK); stamp instances may reference one primary entry.",
   "source": "PhilateLister",
@@ -11,6 +11,7 @@
       "brief": "Abstract listing in a published catalog (not a physical copy).",
       "description": "Identifies a stamp design or major listing in a catalog system (Scott, Michel, etc.). Primary key is the composite field scott (country_id, section, number, variation). Optional issue_series_id ties the listing to a set or series row; optional perforation records the catalog-listed gauge or style. A stamp instance optionally points here via the same composite key; additional cross-references stay in stamp_catalog_number.",
       "primary_key": "scott",
+      "parents": [{ "entity": "country", "parent_array": "scott_catalog_entries" }],
       "field_definitions": [
         {
           "name": "scott_listing_key",
@@ -22,7 +23,7 @@
                 "description": "Issuing country or postal administration for this listing (denormalized; use with country.scott_catalog_entries nesting).",
                 "type": {
                   "primitive": "string",
-                  "foreignKeys": [{ "entity": "country", "parent_array": "scott_catalog_entries" }]
+                  "foreignKeys": [{ "entity": "country" }]
                 }
               },
               {

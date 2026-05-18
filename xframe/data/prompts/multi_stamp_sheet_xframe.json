@@ -10,8 +10,6 @@
         "",
         "The API returns one object with a \"stamp\" array only: one stamp object per detected impression, matching the response schema. Use the stamp_id rules below (country + Scott + local index); they must stay unique within this response.",
         "",
-        "Image file name: __IMAGE_BASENAME__",
-        "",
         "Commit summary line (from uploader):",
         "__FIRST_LINE__",
         "",

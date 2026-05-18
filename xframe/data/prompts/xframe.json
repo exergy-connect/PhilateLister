@@ -10,8 +10,6 @@
         "",
         "The API returns JSON shaped as one object with a \"stamp\" array; each element is a stamp row per the response schema. For a single stamp use one element with a unique stamp_id.",
         "",
-        "Image file name: __IMAGE_BASENAME__",
-        "",
         "Commit summary line (from uploader):",
         "__FIRST_LINE__",
         "",

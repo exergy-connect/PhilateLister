@@ -364,7 +364,6 @@ function parseCommit(message: string | undefined): { raw: string; firstLine: str
 }
 
 function buildPrompt(
-  imageBasename: string,
   parsed: ReturnType<typeof parseCommit>,
   pack: PromptPack,
   includeGeminiOutputLines: boolean
@@ -376,7 +375,6 @@ function buildPrompt(
     text = `${text}${pack.geminiOutputJoin.startsWith('\n') ? '' : '\n'}${pack.geminiOutputJoin}`;
   }
   return text
-    .replaceAll('__IMAGE_BASENAME__', imageBasename)
     .replaceAll('__FIRST_LINE__', parsed.firstLine || '(none)')
     .replaceAll('__META_JSON__', JSON.stringify(meta, null, 2))
     .replaceAll('__TARGET_JSON__', JSON.stringify(meta.targetPrice))
@@ -872,18 +870,32 @@ function writeListing(
   return outPath;
 }
 
-function parseArgs(): { imagePath: string; commitMessage: string } {
+function listingOutputBase(name: string): string {
+  const stem = basename(name.trim(), extname(name.trim()));
+  if (!stem || stem === '.' || stem === '..') {
+    throw new Error(`Invalid listing basename: ${JSON.stringify(name)}`);
+  }
+  return stem;
+}
+
+function parseArgs(): { imagePath: string; commitMessage: string; listingBasename?: string } {
   const positional: string[] = [];
   let commitMessage = process.env.COMMIT_MESSAGE ?? '';
+  let listingBasename = process.env.LISTING_BASENAME?.trim() || undefined;
   for (let i = 2; i < process.argv.length; i += 1) {
     const arg = process.argv[i];
     if (arg === '--commit-message' && process.argv[i + 1]) commitMessage = process.argv[++i];
+    else if (arg === '--listing-basename' && process.argv[i + 1]) listingBasename = process.argv[++i];
     else if (!arg.startsWith('-')) positional.push(arg);
   }
-  return { imagePath: positional[0] ?? '', commitMessage };
+  return { imagePath: positional[0] ?? '', commitMessage, listingBasename };
 }
 
-async function main(imagePath: string, commitMessage: string | undefined): Promise<void> {
+async function main(
+  imagePath: string,
+  commitMessage: string | undefined,
+  listingBasename?: string
+): Promise<void> {
   const absImage = join(process.cwd(), imagePath);
   if (!existsSync(absImage)) throw new Error(`File ${imagePath} not found.`);
 
@@ -892,8 +904,9 @@ async function main(imagePath: string, commitMessage: string | undefined): Promi
   const pack = loadPromptPack(promptId);
   const image = readFileSync(absImage);
   const mime = guessMime(imagePath);
-  const imageBasename = basename(imagePath);
-  const outputBase = basename(imagePath, extname(imagePath));
+  const outputBase = listingBasename
+    ? listingOutputBase(listingBasename)
+    : listingOutputBase(imagePath);
 
   const invocations = effectiveInvocations(promptId, pack.preferredModel).filter((invocation) => {
     const provider = providerFor(invocation.provider.provider_id);
@@ -910,7 +923,7 @@ async function main(imagePath: string, commitMessage: string | undefined): Promi
     const key = spec.includeGeminiOutputLines;
     const cached = prompts.get(key);
     if (cached) return cached;
-    const prompt = buildPrompt(imageBasename, parsed, pack, key);
+    const prompt = buildPrompt(parsed, pack, key);
     prompts.set(key, prompt);
     return prompt;
   };
@@ -939,14 +952,14 @@ async function main(imagePath: string, commitMessage: string | undefined): Promi
   }
 }
 
-const { imagePath, commitMessage } = parseArgs();
+const { imagePath, commitMessage, listingBasename } = parseArgs();
 if (!imagePath) {
-  console.error('Usage: node appraisal.cjs <image_path> [--commit-message TEXT]');
-  console.error('Env: GEMINI_API_KEY, OPENROUTER_API_KEY, optional OPENROUTER_HTTP_REFERER, OPENROUTER_TITLE.');
+  console.error('Usage: node appraisal.cjs <image_path> [--commit-message TEXT] [--listing-basename STEM]');
+  console.error('Env: GEMINI_API_KEY, OPENROUTER_API_KEY, optional OPENROUTER_HTTP_REFERER, OPENROUTER_TITLE, LISTING_BASENAME.');
   process.exit(1);
 }
 
-void main(imagePath, commitMessage).catch((e) => {
+void main(imagePath, commitMessage, listingBasename).catch((e) => {
   console.error(`Error: ${e instanceof Error ? e.message : String(e)}`);
   process.exit(1);
 });

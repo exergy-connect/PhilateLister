@@ -8,8 +8,6 @@
       "template_lines": [
         "You are helping a stamp dealer prepare an eBay listing for this upload.",
         "",
-        "Image file name: __IMAGE_BASENAME__",
-        "",
         "Commit summary line (from uploader):",
         "__FIRST_LINE__",
         "",

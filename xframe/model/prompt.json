@@ -40,7 +40,7 @@
         },
         {
           "name": "template_lines",
-          "description": "Prompt body lines; appraisal joins with newline. Placeholders: __IMAGE_BASENAME__, __FIRST_LINE__, __META_JSON__, __TARGET_JSON__, __NOTES_JSON__. For output_format json, Gemini and OpenRouter use API structured output (stamp array schema), not inlined consolidated schema.",
+          "description": "Prompt body lines; appraisal joins with newline. Placeholders: __FIRST_LINE__, __META_JSON__, __TARGET_JSON__, __NOTES_JSON__. For output_format json, Gemini and OpenRouter use API structured output (stamp array schema), not inlined consolidated schema.",
           "type": {
             "array": {
               "primitive": "string",

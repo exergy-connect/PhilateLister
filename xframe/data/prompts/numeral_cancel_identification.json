@@ -13,8 +13,6 @@
         "If evidence is incomplete, explicitly say so.",
         "Do not infer a full cancel number from a partial digit unless supported by lookup results and image evidence.",
         "",
-        "Image file name: __IMAGE_BASENAME__",
-        "",
         "Commit summary line (from uploader):",
         "__FIRST_LINE__",
         "",

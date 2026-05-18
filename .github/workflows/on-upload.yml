@@ -72,8 +72,9 @@ jobs:
             echo "Skipping appraisal: add repository secret GEMINI_API_KEY and/or OPENROUTER_API_KEY."
             exit 0
           fi
-          echo "Appraising: $dest"
-          node scripts/dist/appraisal.cjs "$dest"
+          listing_stem="${base%.*}"
+          echo "Appraising: $dest (listing basename: $listing_stem)"
+          node scripts/dist/appraisal.cjs "$dest" --listing-basename "$listing_stem"
 
       - name: Stage listings under public/
         run: |

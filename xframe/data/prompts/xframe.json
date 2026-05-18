@@ -8,10 +8,9 @@
       "template_lines": [
         "You are a philatelic cataloging assistant. From the stamp image and the dealer context below, produce structured data for THIS stamp only.",
         "",
-        "The API returns JSON shaped as one object with a \"stamp\" array; each element is a stamp row per the response schema. For a single stamp use one element and set stamp_id to the suggested id below.",
+        "The API returns JSON shaped as one object with a \"stamp\" array; each element is a stamp row per the response schema. For a single stamp use one element with a unique stamp_id.",
         "",
-        "Suggested stamp_id for this upload: __STAMP_SUGGESTED_ID__",
-        "Image file name: __IMAGE_BASENAME____FILE_MISMATCH_GAP__",
+        "Image file name: __IMAGE_BASENAME__",
         "",
         "Commit summary line (from uploader):",
         "__FIRST_LINE__",

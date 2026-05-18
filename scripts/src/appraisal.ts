@@ -26,7 +26,7 @@ import {
 } from './invocation-events.js';
 import {
   emptyInvocationTelemetry,
-  recordAppraisalRateLimitEvent,
+  recordInvocationStatsEvent,
   type AppraisalInvocationTelemetry,
 } from './appraisal-rate-limit-stats.js';
 import { XFrameGeminiFunctionRuntime, type EntityStore } from './xframe-gemini-functions.js';
@@ -370,11 +370,6 @@ function buildPrompt(
   includeGeminiOutputLines: boolean
 ): string {
   const meta = parsed.meta ?? {};
-  const fileMeta = meta.file;
-  const fileMismatchGap =
-    typeof fileMeta === 'string' && fileMeta && fileMeta !== imageBasename
-      ? `\nNote: Commit metadata file field is ${JSON.stringify(fileMeta)} but this run is for ${JSON.stringify(imageBasename)}; still apply target price and notes if they are relevant.\n`
-      : '\n';
 
   let text = pack.template;
   if (includeGeminiOutputLines && pack.outputFormat === 'txt' && pack.geminiOutputJoin) {
@@ -382,12 +377,10 @@ function buildPrompt(
   }
   return text
     .replaceAll('__IMAGE_BASENAME__', imageBasename)
-    .replaceAll('__FILE_MISMATCH_GAP__', fileMismatchGap)
     .replaceAll('__FIRST_LINE__', parsed.firstLine || '(none)')
     .replaceAll('__META_JSON__', JSON.stringify(meta, null, 2))
     .replaceAll('__TARGET_JSON__', JSON.stringify(meta.targetPrice))
-    .replaceAll('__NOTES_JSON__', JSON.stringify(meta.notes))
-    .replaceAll('__STAMP_SUGGESTED_ID__', basename(imageBasename, extname(imageBasename)));
+    .replaceAll('__NOTES_JSON__', JSON.stringify(meta.notes));
 }
 
 function guessMime(path: string): string {
@@ -789,16 +782,24 @@ async function runInvocation(
   } catch (e) {
     status = 'error';
     errorMessage = e instanceof Error ? e.message : String(e);
-    recordAppraisalRateLimitEvent({
-      prompt_id: promptId,
-      invocation_id: invocation.id,
-      provider_id: invocation.provider.provider_id,
-      requested_model: invocation.model,
-      message: errorMessage,
-      char_counts: { in: prompt.length, out: 0 },
-      telemetry,
-    });
   } finally {
+    try {
+      recordInvocationStatsEvent({
+        prompt_id: promptId,
+        invocation_id: invocation.id,
+        provider_id: invocation.provider.provider_id,
+        requested_model: invocation.model,
+        actual_model: servedModel,
+        status,
+        char_counts: { in: prompt.length, out: status === 'ok' ? text.length : 0 },
+        telemetry,
+        error_message: errorMessage,
+      });
+    } catch (statsErr) {
+      console.error(
+        `Warning: could not update invocation_stats.json (${statsErr instanceof Error ? statsErr.message : String(statsErr)})`
+      );
+    }
     try {
       writeInvocationEventFile({
         repoRoot,

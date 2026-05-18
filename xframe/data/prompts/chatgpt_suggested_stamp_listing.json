@@ -49,7 +49,7 @@
           "- Do NOT let uncertainty make the writing dull — only qualify the specific detail.",
           "",
           "INPUTS:",
-          "Image file name: __IMAGE_BASENAME____FILE_MISMATCH_GAP__",
+          "Image file name: __IMAGE_BASENAME__",
           "",
           "Commit summary:",
           "__FIRST_LINE__",

@@ -2,7 +2,7 @@
   "name": "PhilateLister stamp catalog",
   "version": "26.05.09.8",
   "author": "Exergy ∞ LLC",
-  "description": "Entity shard: concrete LLM model identifiers usable with a provider (appraisal, listing helpers). Runtime rate-limit and error telemetry is stored only in xframe/data/invocation_stats.json (separate file). Optional llm_model.feedback_events is for hand-curated or exported notes, not a mirror of that log.",
+  "description": "Entity shard: concrete LLM model identifiers usable with a provider (appraisal, listing helpers). Runtime appraisal telemetry (every invocation, plus rate-limit counts) is stored in xframe/data/invocation_stats.json (separate file). Optional llm_model.feedback_events is for hand-curated or exported notes, not a mirror of that log.",
   "source": "PhilateLister",
   "allow_unlimited_fields": true,
   "entities": [
@@ -47,7 +47,7 @@
         },
         {
           "name": "feedback_events",
-          "description": "Optional curated operator notes per catalog model. Not written by appraisal; use xframe/data/invocation_stats.json for automated rate-limit events.",
+          "description": "Optional curated operator notes per catalog model. Not written by appraisal; use xframe/data/invocation_stats.json for automated invocation telemetry.",
           "type": {
             "array": {
               "entity": "llm_feedback_event"

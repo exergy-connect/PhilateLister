@@ -284,7 +284,82 @@ export class XFrameGeminiFunctionRuntime {
     return String(a).localeCompare(String(b), undefined, { numeric: true });
   }
 
-  private enumValuesForFunctionParameter(param: GeminiFunctionParameterRow): Array<string | number | boolean> {
+  /**
+   * When a sibling parameter's composite_key maps a PK/component field to this parameter, and that
+   * sibling's schema_entity differs from this parameter's schema_entity, enum values are taken from
+   * distinct field values on the sibling entity's consolidated rows (same paths as tool matching).
+   * Declared in gemini_function_call data (composite_key + output anchor), not hardcoded per function.
+   */
+  private preferredOutputAnchorName(output: Record<string, string> | null): string | null {
+    if (!output || !Object.keys(output).length) return null;
+    const first = Object.values(output)[0];
+    return first?.trim() ? first : null;
+  }
+
+  private compositeKeyReferencesParameter(
+    p: GeminiFunctionParameterRow,
+    paramName: string
+  ): boolean {
+    if (!p.compositeKey) return false;
+    return Object.values(p.compositeKey).some((n) => n === paramName);
+  }
+
+  /**
+   * @returns null when this parameter is not supplied via another parameter's composite_key on a
+   * different schema_entity; otherwise distinct scalar values (possibly empty).
+   */
+  private enumValuesFromCompositeKeyReferencer(
+    param: GeminiFunctionParameterRow,
+    row: GeminiFunctionCallRow
+  ): Array<string | number | boolean> | null {
+    const anchorName = this.preferredOutputAnchorName(row.output);
+    const anchor =
+      (anchorName
+        ? row.parameters.find(
+            (p) => p.name === anchorName && this.compositeKeyReferencesParameter(p, param.name)
+          )
+        : undefined) ??
+      row.parameters.find((p) => this.compositeKeyReferencesParameter(p, param.name));
+
+    if (!anchor?.compositeKey) return null;
+    if (anchor.schemaEntity === param.schemaEntity) return null;
+
+    const components = Object.entries(anchor.compositeKey)
+      .filter(([, pname]) => pname === param.name)
+      .map(([c]) => c);
+    if (!components.length) return null;
+
+    const entity = anchor.schemaEntity;
+    const bucket = this.lookupBucketForEntity(entity);
+    if (!bucket) return [];
+
+    const values: Array<string | number | boolean> = [];
+    for (const obj of Object.values(bucket)) {
+      if (!obj || typeof obj !== 'object' || Array.isArray(obj)) continue;
+      const r = obj as Record<string, unknown>;
+      for (const component of components) {
+        const v = this.rowValueForExpectedComponent(r, entity, component);
+        if (this.isGeminiEnumScalar(v)) values.push(v);
+      }
+    }
+    return this.dedupeSortEnumValues(values);
+  }
+
+  private dedupeSortEnumValues(values: Array<string | number | boolean>): Array<string | number | boolean> {
+    const unique = new Map<string, string | number | boolean>();
+    for (const value of values) {
+      unique.set(`${typeof value}:${String(value)}`, value);
+    }
+    return [...unique.values()].sort((a, b) => this.compareEnumValues(a, b));
+  }
+
+  private enumValuesForFunctionParameter(
+    param: GeminiFunctionParameterRow,
+    row: GeminiFunctionCallRow
+  ): Array<string | number | boolean> {
+    const fromCompositeRef = this.enumValuesFromCompositeKeyReferencer(param, row);
+    if (fromCompositeRef !== null) return fromCompositeRef;
+
     const bucket = this.options.getEntityStore()[param.schemaEntity];
     if (!bucket || typeof bucket !== 'object') return [];
 
@@ -312,11 +387,7 @@ export class XFrameGeminiFunctionRuntime {
       }
     }
 
-    const unique = new Map<string, string | number | boolean>();
-    for (const value of values) {
-      unique.set(`${typeof value}:${String(value)}`, value);
-    }
-    return [...unique.values()].sort((a, b) => this.compareEnumValues(a, b));
+    return this.dedupeSortEnumValues(values);
   }
 
   private parseCompositeKey(raw: unknown): Record<string, string> | null {
@@ -706,7 +777,7 @@ export class XFrameGeminiFunctionRuntime {
       for (const param of row.parameters) {
         const paramSchema = this.geminiFunctionParamSchema(this.schemaForFunctionParameter(param));
         if (param.enumEnabled) {
-          const enumValues = this.enumValuesForFunctionParameter(param);
+          const enumValues = this.enumValuesForFunctionParameter(param, row);
           if (enumValues.length) paramSchema.enum = enumValues;
         }
         if (param.description) paramSchema.description = param.description;

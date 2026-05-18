@@ -1,6 +1,6 @@
 {
-  "version": 11,
-  "timestamp": "2026-05-18T19:37:11Z",
+  "version": 12,
+  "timestamp": "2026-05-18T20:15:45Z",
   "model": {
     "name": "PhilateLister stamp catalog",
     "version": "26.04.11.1",
@@ -154,6 +154,13 @@
         "author": "jbemmel",
         "note": "Reconsolidate after entity parents model migration; TS loader injects nested composite parent FKs",
         "git_commit_hash": "96bad27d77d54c2ccda6e26f01b8e72c99b0e4b7"
+      },
+      "000000000012": {
+        "id": 12,
+        "timestamp": "2026-05-18T20:15:45+00:00",
+        "author": "jbemmel",
+        "note": "CI consolidate after model/data change (0bece67e9e9ef219931b81e28ddb40185c5af7a0)",
+        "git_commit_hash": "0bece67e9e9ef219931b81e28ddb40185c5af7a0"
       }
     },
     "catalog_system": {
@@ -205,8 +212,8 @@
             "primary_color": "carmine and blue (bicolor)",
             "description": "Illustrative Denmark bicolor definitive tied to sample inventory; see stamp_catalog_number for Michel cross-reference.",
             "notes": "Illustrative primary listing for the sample stamp; see stamp_catalog_number for Michel cross-ref.",
-            "c": 11,
-            "v": 11
+            "c": 12,
+            "v": 12
           }
         ],
         "numeral_cancels": [
@@ -2118,7 +2125,7 @@
           "- Scott or main catalog number when you can justify it, or say when uncertain",
           "- A condition report visible from the image",
           "- Details on perforations, if any, such as missing or damaged ones, and the count of horizontal and vertical dents",
-          "- Details on the cancel, if any, such as city name or date of cancellation. If the date is clear enough, check that it is after the date of issue and cite the day of the week it represents",
+          "- Details on the cancel, if any, such as city name or date of cancellation. If the date is clear enough, check that it is after the date of issue and cite the day of the week it represents; if that day is Sunday, treat that as highly unusual for postal cancellations and flag it as a possible sign of misreading the date (digits, month/day order, or partial strike)",
           "- If the city is clear enough, lookup its population at the time of the cancel or issue and describe its role in the region",
           "- Listing body text that respects the dealer's notes and is consistent with their target price band (polite, professional tone)"
         ],
@@ -2129,6 +2136,9 @@
             "model": "gemini-3-flash-preview",
             "sort_order": 0,
             "primary_for_listing": true,
+            "m": [
+              11
+            ],
             "v": 1
           },
           {
@@ -2138,6 +2148,9 @@
             "sort_order": 1,
             "primary_for_listing": false,
             "enabled": false,
+            "m": [
+              11
+            ],
             "v": 1
           },
           {
@@ -2147,14 +2160,18 @@
             "sort_order": 2,
             "primary_for_listing": false,
             "enabled": false,
+            "m": [
+              11
+            ],
             "v": 1
           }
         ],
         "c": 1,
         "m": [
-          11
+          11,
+          12
         ],
-        "v": 11
+        "v": 12
       },
       "stamp_numeral_cancel_identification": {
         "prompt_id": "stamp_numeral_cancel_identification",

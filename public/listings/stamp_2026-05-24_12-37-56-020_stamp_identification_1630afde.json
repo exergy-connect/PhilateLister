@@ -1,0 +1,42 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "us-264-1",
+      "country_id": "us",
+      "scott": {
+        "country_id": "us",
+        "number": 264
+      },
+      "title": "US 1895 1c Franklin Blue (Bureau Issue)",
+      "summary": "United States 1c Franklin blue from the 1895 Bureau Issue, featuring triangles in the upper corners. This issue is watermarked 'USPS'. This specific example displays a bright blue shade and very good centering. It appears to be an unused or very lightly cancelled specimen.",
+      "issue_year": 1895,
+      "condition_quality": "unknown",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 18,
+        "x_max": 477,
+        "y_min": 17,
+        "y_max": 978
+      }
+    },
+    {
+      "stamp_id": "us-264-2",
+      "country_id": "us",
+      "scott": {
+        "country_id": "us",
+        "number": 264
+      },
+      "title": "US 1895 1c Franklin Blue (Bureau Issue)",
+      "summary": "United States 1c Franklin blue Bureau Issue with triangles in upper corners. This example shows a slightly different shade (possibly due to paper toning) and is centered Fine to Very Fine. Without physical inspection of the watermark, it is indistinguishable from the unwatermarked Scott #246.",
+      "issue_year": 1895,
+      "condition_quality": "unknown",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 512,
+        "x_max": 977,
+        "y_min": 19,
+        "y_max": 981
+      }
+    }
+  ]
+}

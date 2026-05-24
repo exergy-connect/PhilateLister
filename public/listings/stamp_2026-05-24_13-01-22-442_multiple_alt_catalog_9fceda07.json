@@ -1,0 +1,222 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "ch-13-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 13
+      },
+      "title": "Switzerland Sitting Helvetia 5r brown (imperf)",
+      "summary": "Switzerland Scott #13 (Michel #13), 1854 5r brown Sitting Helvetia (Strubel) imperforate definitive. Used with four margins. Handwritten label indicates Michel 13 and price €2.50.",
+      "issue_year": 1854,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 738,
+        "x_max": 855,
+        "y_min": 51,
+        "y_max": 268
+      }
+    },
+    {
+      "stamp_id": "ch-15-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 15
+      },
+      "title": "Switzerland Sitting Helvetia 10r rose (imperf)",
+      "summary": "Switzerland Scott #15 (Michel #15), 1854 10r rose Sitting Helvetia (Strubel) imperforate definitive. Used with heavy cancel. Handwritten label indicates Michel 15 and price €5.",
+      "issue_year": 1854,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 22,
+        "x_max": 128,
+        "y_min": 315,
+        "y_max": 519
+      }
+    },
+    {
+      "stamp_id": "ch-43-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 43
+      },
+      "title": "Switzerland Sitting Helvetia 2r grey (perf 11.5)",
+      "summary": "Switzerland Scott #43 (Michel #20), 1862 2r grey Sitting Helvetia definitive, perforated 11.5. Used. Handwritten label indicates Michel 20 and price €0.30.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 311,
+        "x_max": 421,
+        "y_min": 322,
+        "y_max": 511
+      }
+    },
+    {
+      "stamp_id": "ch-44-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 44
+      },
+      "title": "Switzerland Sitting Helvetia 3r black (perf 11.5)",
+      "summary": "Switzerland Scott #44 (Michel #21), 1862 3r black Sitting Helvetia definitive, perforated 11.5. Used. Handwritten label indicates Michel 21 and price €10.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 564,
+        "x_max": 673,
+        "y_min": 317,
+        "y_max": 506
+      }
+    },
+    {
+      "stamp_id": "ch-44-2",
+      "country_id": "ch",
+      "scott": {
+        "number": 44
+      },
+      "title": "Switzerland Sitting Helvetia 3r black (perf 11.5)",
+      "summary": "Switzerland Scott #44 (Michel #21), 1862 3r black Sitting Helvetia definitive, perforated 11.5. Used with circular datestamp fragment. Handwritten label indicates Michel 21. and price €10.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 17,
+        "x_max": 124,
+        "y_min": 558,
+        "y_max": 742
+      }
+    },
+    {
+      "stamp_id": "ch-49-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 49
+      },
+      "title": "Switzerland Sitting Helvetia 40r green (perf 11.5)",
+      "summary": "Switzerland Scott #49 (Michel #26), 1862 40r green Sitting Helvetia definitive, perforated 11.5. Used with part of a circular cancel. Handwritten label indicates Michel 26. and price €4.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 251,
+        "x_max": 361,
+        "y_min": 552,
+        "y_max": 743
+      }
+    },
+    {
+      "stamp_id": "ch-51-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 51
+      },
+      "title": "Switzerland Sitting Helvetia 1f gold (perf 11.5)",
+      "summary": "Switzerland Scott #51 (Michel #28), 1863 1f gold/bronze Sitting Helvetia definitive, perforated 11.5. Used with circular cancel. Handwritten label indicates Michel 28. and price €8.",
+      "issue_year": 1863,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 514,
+        "x_max": 624,
+        "y_min": 546,
+        "y_max": 738
+      }
+    },
+    {
+      "stamp_id": "ch-52-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 52
+      },
+      "title": "Switzerland Sitting Helvetia 2r grey (perf 9)",
+      "summary": "Switzerland Scott #52 (Michel #29B), 1867 2r grey Sitting Helvetia definitive, perforated 9. Used. Handwritten label indicates Michel 29 B and price €15.",
+      "issue_year": 1867,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 767,
+        "x_max": 883,
+        "y_min": 548,
+        "y_max": 738
+      }
+    },
+    {
+      "stamp_id": "ch-56-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 56
+      },
+      "title": "Switzerland Sitting Helvetia 25r green",
+      "summary": "Switzerland Scott #56 (Michel #32), 1867/78 25r green Sitting Helvetia definitive. Used. Handwritten label indicates Michel 32 and price €0.50.",
+      "issue_year": 1867,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 12,
+        "x_max": 118,
+        "y_min": 777,
+        "y_max": 964
+      }
+    },
+    {
+      "stamp_id": "ch-57-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 57
+      },
+      "title": "Switzerland Sitting Helvetia 30r blue (perf 11.5)",
+      "summary": "Switzerland Scott #57 (Michel #33A), 1867 30r blue Sitting Helvetia definitive, perforated 11.5. Left stamp of a pair/group labeled Michel 33 A+B for €21.",
+      "issue_year": 1867,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 238,
+        "x_max": 346,
+        "y_min": 782,
+        "y_max": 969
+      }
+    },
+    {
+      "stamp_id": "ch-57a-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 57,
+        "variation": "a"
+      },
+      "title": "Switzerland Sitting Helvetia 30r blue (perf 9)",
+      "summary": "Switzerland Scott #57a (Michel #33B), 1874 30r blue Sitting Helvetia definitive, perforated 9. Right stamp of a pair/group labeled Michel 33 A+B for €21.",
+      "issue_year": 1874,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 348,
+        "x_max": 456,
+        "y_min": 778,
+        "y_max": 964
+      }
+    },
+    {
+      "stamp_id": "ch-57a-2",
+      "country_id": "ch",
+      "scott": {
+        "number": 57,
+        "variation": "a"
+      },
+      "title": "Switzerland Sitting Helvetia 30r blue (perf 9)",
+      "summary": "Switzerland Scott #57a (Michel #33B), 1874 30r blue Sitting Helvetia definitive, perforated 9. Used. Handwritten label indicates Michel 33 B. and price €20.",
+      "issue_year": 1874,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 637,
+        "x_max": 748,
+        "y_min": 782,
+        "y_max": 974
+      }
+    }
+  ]
+}

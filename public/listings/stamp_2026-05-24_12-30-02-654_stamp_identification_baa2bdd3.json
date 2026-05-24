@@ -1,0 +1,54 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "us-331-1",
+      "country_id": "us",
+      "scott": {
+        "country_id": "us",
+        "number": 331
+      },
+      "title": "USA 1c Benjamin Franklin (Series of 1908-1922)",
+      "summary": "USA 1c blue Benjamin Franklin postage stamp from the Series of 1908-1922 (Washington-Franklin issues). Design type A140. Appears to be an unused example with a vibrant blue shade. Perforated 12 or 11 (requires measurement).",
+      "issue_year": 1908,
+      "condition_quality": "unknown",
+      "centering_grade": "vf",
+      "image_basename": "stamp_2026-05-24_12-30-02-654_stamp_identification_baa2bdd3.jpg",
+      "bounding_box": {
+        "x_min": 14,
+        "x_max": 476,
+        "y_min": 17,
+        "y_max": 961
+      },
+      "freeform_keywords": [
+        "Benjamin Franklin",
+        "Washington-Franklin",
+        "flat plate"
+      ]
+    },
+    {
+      "stamp_id": "us-331-2",
+      "country_id": "us",
+      "scott": {
+        "country_id": "us",
+        "number": 331
+      },
+      "title": "USA 1c Benjamin Franklin (Series of 1908-1922)",
+      "summary": "USA 1c blue Benjamin Franklin postage stamp from the Series of 1908-1922. This example shows a slightly different, more muted blue shade compared to its neighbor. Appears unused.",
+      "issue_year": 1908,
+      "condition_quality": "unknown",
+      "centering_grade": "f_vf",
+      "image_basename": "stamp_2026-05-24_12-30-02-654_stamp_identification_baa2bdd3.jpg",
+      "bounding_box": {
+        "x_min": 512,
+        "x_max": 978,
+        "y_min": 25,
+        "y_max": 984
+      },
+      "freeform_keywords": [
+        "Benjamin Franklin",
+        "Washington-Franklin",
+        "shade variety"
+      ]
+    }
+  ]
+}

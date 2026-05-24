@@ -1,0 +1,49 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "us-63-1",
+      "country_id": "us",
+      "scott": {
+        "number": 63
+      },
+      "title": "United States 1861 1c Benjamin Franklin, Blue",
+      "summary": "1861 series Benjamin Franklin 1c blue. Perforation 12. Dealer notes indicate no grill and no watermark, which is consistent with Scott #63. The stamp appears unused with no visible cancellation.",
+      "issue_year": 1861,
+      "condition_quality": "unknown",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 8,
+        "x_max": 476,
+        "y_min": 21,
+        "y_max": 968
+      },
+      "freeform_keywords": [
+        "Benjamin Franklin",
+        "1861 Issue"
+      ]
+    },
+    {
+      "stamp_id": "us-63-2",
+      "country_id": "us",
+      "scott": {
+        "number": 63
+      },
+      "title": "United States 1861 1c Benjamin Franklin, Pale Blue",
+      "summary": "1861 series Benjamin Franklin 1c in a significantly lighter or faded blue shade compared to the first example. Dealer notes 'no grill or wm'. Perforation 12. Appears unused.",
+      "issue_year": 1861,
+      "condition_quality": "unknown",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 512,
+        "x_max": 983,
+        "y_min": 24,
+        "y_max": 978
+      },
+      "freeform_keywords": [
+        "Benjamin Franklin",
+        "1861 Issue",
+        "Pale shade"
+      ]
+    }
+  ]
+}

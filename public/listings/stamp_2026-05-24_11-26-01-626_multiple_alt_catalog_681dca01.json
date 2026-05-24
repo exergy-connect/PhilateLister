@@ -1,0 +1,220 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "ch-16-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 16
+      },
+      "title": "Switzerland 5r Brown, Seated Helvetia (Strubel)",
+      "summary": "1854-62 Seated Helvetia (Strubel issue), imperforate, 5r brown. Labeled as Michel 13. Used with circular cancel.",
+      "issue_year": 1854,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 739,
+        "x_max": 857,
+        "y_min": 52,
+        "y_max": 271
+      }
+    },
+    {
+      "stamp_id": "ch-15-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 15
+      },
+      "title": "Switzerland 10r Blue, Seated Helvetia (Strubel)",
+      "summary": "1854-62 Seated Helvetia (Strubel issue), 10r. Labeled as Michel 15 (which is 10r blue), though the color in the image appears browned or oxidized. Used.",
+      "issue_year": 1854,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 22,
+        "x_max": 125,
+        "y_min": 317,
+        "y_max": 518
+      }
+    },
+    {
+      "stamp_id": "ch-41-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 41
+      },
+      "title": "Switzerland 2r Grey, Seated Helvetia",
+      "summary": "1862 perforated Seated Helvetia, 2r grey. Labeled as Michel 20. Used.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 313,
+        "x_max": 423,
+        "y_min": 326,
+        "y_max": 511
+      }
+    },
+    {
+      "stamp_id": "ch-42-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 42
+      },
+      "title": "Switzerland 3r Black, Seated Helvetia",
+      "summary": "1862 perforated Seated Helvetia, 3r black. Labeled as Michel 21. Used.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 563,
+        "x_max": 677,
+        "y_min": 319,
+        "y_max": 504
+      }
+    },
+    {
+      "stamp_id": "ch-42-2",
+      "country_id": "ch",
+      "scott": {
+        "number": 42
+      },
+      "title": "Switzerland 3r Black, Seated Helvetia",
+      "summary": "1862 perforated Seated Helvetia, 3r black. Labeled as Michel 21. Used with heavy killer cancel.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 19,
+        "x_max": 121,
+        "y_min": 561,
+        "y_max": 742
+      }
+    },
+    {
+      "stamp_id": "ch-48-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 48
+      },
+      "title": "Switzerland 40r Green, Seated Helvetia",
+      "summary": "1862 perforated Seated Helvetia, 40r green. Labeled as Michel 26. Used.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 253,
+        "x_max": 360,
+        "y_min": 556,
+        "y_max": 743
+      }
+    },
+    {
+      "stamp_id": "ch-50-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 50
+      },
+      "title": "Switzerland 1fr Gold, Seated Helvetia",
+      "summary": "1863 perforated Seated Helvetia, 1fr bronze/gold. Labeled as Michel 28. Used.",
+      "issue_year": 1863,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 514,
+        "x_max": 624,
+        "y_min": 546,
+        "y_max": 738
+      }
+    },
+    {
+      "stamp_id": "ch-52-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 52
+      },
+      "title": "Switzerland 2c Bistre, Seated Helvetia",
+      "summary": "1867-78 Seated Helvetia, 2c bistre. Labeled as Michel 29B. Used.",
+      "issue_year": 1867,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 768,
+        "x_max": 881,
+        "y_min": 550,
+        "y_max": 742
+      }
+    },
+    {
+      "stamp_id": "ch-56-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 56
+      },
+      "title": "Switzerland 25c Green, Seated Helvetia",
+      "summary": "1867-78 Seated Helvetia, 25c green. Labeled as Michel 32. Used.",
+      "issue_year": 1867,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 11,
+        "x_max": 120,
+        "y_min": 782,
+        "y_max": 963
+      }
+    },
+    {
+      "stamp_id": "ch-57-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 57
+      },
+      "title": "Switzerland 30c Blue, Seated Helvetia (Left of Pair)",
+      "summary": "1867-78 Seated Helvetia, 30c blue. Labeled as part of Michel 33 A+B. Basel circular cancel.",
+      "issue_year": 1867,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 238,
+        "x_max": 345,
+        "y_min": 784,
+        "y_max": 968
+      }
+    },
+    {
+      "stamp_id": "ch-57-2",
+      "country_id": "ch",
+      "scott": {
+        "number": 57
+      },
+      "title": "Switzerland 30c Blue, Seated Helvetia (Right of Pair)",
+      "summary": "1867-78 Seated Helvetia, 30c blue. Labeled as part of Michel 33 A+B. Used.",
+      "issue_year": 1867,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 348,
+        "x_max": 457,
+        "y_min": 778,
+        "y_max": 965
+      }
+    },
+    {
+      "stamp_id": "ch-57-3",
+      "country_id": "ch",
+      "scott": {
+        "number": 57
+      },
+      "title": "Switzerland 30c Blue, Seated Helvetia",
+      "summary": "1867-78 Seated Helvetia, 30c blue. Labeled as Michel 33B. Used.",
+      "issue_year": 1867,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 636,
+        "x_max": 749,
+        "y_min": 782,
+        "y_max": 976
+      }
+    }
+  ]
+}

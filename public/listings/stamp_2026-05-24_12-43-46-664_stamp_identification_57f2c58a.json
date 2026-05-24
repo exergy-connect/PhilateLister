@@ -1,0 +1,54 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "us-156-1",
+      "country_id": "us",
+      "scott": {
+        "country_id": "us",
+        "number": 156
+      },
+      "title": "USA 1c Franklin, Bank Note Issue (Left View)",
+      "summary": "United States 1c Benjamin Franklin, Bank Note issue. The dealer notes specify choosing between Scott 145 (National Bank Note Co., 1870) and Scott 156 (Continental Bank Note Co., 1873). As there are no secret marks for the 1c value, they are distinguished by paper type (National on thin white, Continental on yellowish). This bright blue impression is the left-side view of the same physical stamp shown on the right, presented here against a dark background for contrast. Centering is Fine, with perforations very close to the frame on the right.",
+      "issue_year": 1873,
+      "condition_quality": "mint_hinged",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 13,
+        "x_max": 477,
+        "y_min": 17,
+        "y_max": 981
+      },
+      "freeform_keywords": [
+        "Benjamin Franklin",
+        "Bank Note Issue",
+        "Continental",
+        "National"
+      ]
+    },
+    {
+      "stamp_id": "us-156-2",
+      "country_id": "us",
+      "scott": {
+        "country_id": "us",
+        "number": 156
+      },
+      "title": "USA 1c Franklin, Bank Note Issue (Right View)",
+      "summary": "United States 1c Benjamin Franklin, Bank Note issue. This is the second impression (right-side view) of the same physical stamp, shown in a standard light-background scan. Centering is Fine, with the right margin notably tighter than the left. Identified here as Scott 156 (Continental) per the dealer's notes, though Scott 145 is a visual possibility.",
+      "issue_year": 1873,
+      "condition_quality": "mint_hinged",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 511,
+        "x_max": 974,
+        "y_min": 24,
+        "y_max": 983
+      },
+      "freeform_keywords": [
+        "Benjamin Franklin",
+        "Bank Note Issue",
+        "Continental",
+        "National"
+      ]
+    }
+  ]
+}

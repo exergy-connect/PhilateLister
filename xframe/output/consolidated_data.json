@@ -1,6 +1,6 @@
 {
-  "version": 12,
-  "timestamp": "2026-05-18T20:15:45Z",
+  "version": 13,
+  "timestamp": "2026-05-24T17:36:37Z",
   "model": {
     "name": "PhilateLister stamp catalog",
     "version": "26.04.11.1",
@@ -161,6 +161,13 @@
         "author": "jbemmel",
         "note": "CI consolidate after model/data change (0bece67e9e9ef219931b81e28ddb40185c5af7a0)",
         "git_commit_hash": "0bece67e9e9ef219931b81e28ddb40185c5af7a0"
+      },
+      "000000000013": {
+        "id": 13,
+        "timestamp": "2026-05-24T17:36:37+00:00",
+        "author": "jbemmel",
+        "note": "CI consolidate after model/data change (28858581bc6edf13eb9612a653a192c79b76330a)",
+        "git_commit_hash": "28858581bc6edf13eb9612a653a192c79b76330a"
       }
     },
     "catalog_system": {
@@ -212,8 +219,8 @@
             "primary_color": "carmine and blue (bicolor)",
             "description": "Illustrative Denmark bicolor definitive tied to sample inventory; see stamp_catalog_number for Michel cross-reference.",
             "notes": "Illustrative primary listing for the sample stamp; see stamp_catalog_number for Michel cross-ref.",
-            "c": 12,
-            "v": 12
+            "c": 13,
+            "v": 13
           }
         ],
         "numeral_cancels": [
@@ -1988,7 +1995,7 @@
           "3) For each stamp, extract what the image supports:",
           "   - Country or postal administration (e.g. from script, language, or emblem text such as SVERIGE).",
           "   - Face value: numerals in side tablets or corners, and currency unit from text (öre, kr, cent, etc.).",
-          "   - Design / series clues: coat of arms, portrait, commemorative topic, \"Official\" / service types, color shade when it distinguishes catalog varieties.",
+          "   - Design / series clues: coat of arms, portrait, commemorative topic, \"Official\" / service types, color shade when it distinguishes catalog varieties, secret marks for US stamps.",
           "   - Cancellations: postmark town or route, readable date (day/month/year when possible). If a day is clear, you may note the weekday in stamp.summary.",
           "   - Condition and centering: infer from the crop (faults, thins, heavy cancel obscuring design, margin balance). Use schema enums only.",
           "   - Perforation: describe visible perf or roulettes, damage, or \"imperf\" / \"unknown\" in summary when not clear.",
@@ -2008,9 +2015,10 @@
         ],
         "c": 1,
         "m": [
-          11
+          11,
+          13
         ],
-        "v": 11
+        "v": 13
       },
       "numeral_cancel_identification": {
         "prompt_id": "numeral_cancel_identification",

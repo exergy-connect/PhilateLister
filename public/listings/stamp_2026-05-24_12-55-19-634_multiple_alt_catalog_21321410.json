@@ -1,0 +1,220 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "ch-13-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 13
+      },
+      "title": "Switzerland 1854 Strubel 5r Brown",
+      "summary": "Switzerland 1854 Strubel issue, seated Helvetia with spear and shield. Imperforate, 5r brown. Dealer note '13' and price '€2,50'. Lightly used.",
+      "issue_year": 1854,
+      "condition_quality": "used",
+      "centering_grade": "not_applicable",
+      "bounding_box": {
+        "x_min": 741,
+        "x_max": 856,
+        "y_min": 55,
+        "y_max": 265
+      }
+    },
+    {
+      "stamp_id": "ch-15-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 15
+      },
+      "title": "Switzerland 1854 Strubel 15r Rose",
+      "summary": "Switzerland 1854 Strubel issue, imperforate, 15r rose. Heavily used with a black barred/grid cancel. Dealer note '15' and price '€5,-'.",
+      "issue_year": 1854,
+      "condition_quality": "used",
+      "centering_grade": "not_applicable",
+      "bounding_box": {
+        "x_min": 22,
+        "x_max": 126,
+        "y_min": 317,
+        "y_max": 519
+      }
+    },
+    {
+      "stamp_id": "ch-41-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 41
+      },
+      "title": "Switzerland 1862 Seated Helvetia 2c Grey",
+      "summary": "Switzerland 1862 perforated Seated Helvetia, 2c grey. Dealer note '20' and price '€0,30'. Used with partial circular datestamp.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 313,
+        "x_max": 421,
+        "y_min": 326,
+        "y_max": 509
+      }
+    },
+    {
+      "stamp_id": "ch-42-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 42
+      },
+      "title": "Switzerland 1862 Seated Helvetia 3c Black",
+      "summary": "Switzerland 1862 perforated Seated Helvetia, 3c black. Dealer note '21' and price '€10,-'. Used with partial circular datestamp.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 566,
+        "x_max": 676,
+        "y_min": 320,
+        "y_max": 504
+      }
+    },
+    {
+      "stamp_id": "ch-42-2",
+      "country_id": "ch",
+      "scott": {
+        "number": 42
+      },
+      "title": "Switzerland 1862 Seated Helvetia 3c Black",
+      "summary": "Switzerland 1862 perforated Seated Helvetia, 3c black. Dealer note '21.' and price '€10,-'. Used with circular datestamp (appears to be Genève).",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 17,
+        "x_max": 125,
+        "y_min": 559,
+        "y_max": 743
+      }
+    },
+    {
+      "stamp_id": "ch-46-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 46
+      },
+      "title": "Switzerland 1862 Seated Helvetia 40c Green",
+      "summary": "Switzerland 1862 perforated Seated Helvetia, 40c green. Dealer note '26.' and price '€4,-'. Used with partial circular datestamp.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 252,
+        "x_max": 361,
+        "y_min": 552,
+        "y_max": 743
+      }
+    },
+    {
+      "stamp_id": "ch-55-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 55
+      },
+      "title": "Switzerland 1881 Seated Helvetia 10c Bister",
+      "summary": "Switzerland 1881 perforated Seated Helvetia, 10c bister/brown. Dealer note '28.' and price '€8,-'. Used with partial circular datestamp.",
+      "issue_year": 1881,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 517,
+        "x_max": 625,
+        "y_min": 546,
+        "y_max": 735
+      }
+    },
+    {
+      "stamp_id": "ch-52-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 52
+      },
+      "title": "Switzerland 1881 Seated Helvetia 2c Bister",
+      "summary": "Switzerland 1881 perforated Seated Helvetia, 2c bister. Dealer note '29 B' and price '€15,-'. Used with partial circular datestamp.",
+      "issue_year": 1881,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 770,
+        "x_max": 882,
+        "y_min": 550,
+        "y_max": 738
+      }
+    },
+    {
+      "stamp_id": "ch-85-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 85
+      },
+      "title": "Switzerland 1882 Standing Helvetia 25c Green",
+      "summary": "Switzerland 1882 Standing Helvetia issue, 25c green. Dealer note '32' and price '€0,50'. Used with circular datestamp.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 13,
+        "x_max": 120,
+        "y_min": 779,
+        "y_max": 962
+      }
+    },
+    {
+      "stamp_id": "ch-86-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 86
+      },
+      "title": "Switzerland 1882 Standing Helvetia 30c Blue",
+      "summary": "Switzerland 1882 Standing Helvetia issue, 30c blue. Part of a group identified by dealer as '33 A+B' (price for pair €21,-). Used with partial circular datestamp.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 238,
+        "x_max": 345,
+        "y_min": 784,
+        "y_max": 969
+      }
+    },
+    {
+      "stamp_id": "ch-86-2",
+      "country_id": "ch",
+      "scott": {
+        "number": 86
+      },
+      "title": "Switzerland 1882 Standing Helvetia 30c Blue",
+      "summary": "Switzerland 1882 Standing Helvetia issue, 30c blue. Second of a group identified by dealer as '33 A+B' (price for pair €21,-). Used with partial circular datestamp.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 346,
+        "x_max": 457,
+        "y_min": 778,
+        "y_max": 960
+      }
+    },
+    {
+      "stamp_id": "ch-86-3",
+      "country_id": "ch",
+      "scott": {
+        "number": 86
+      },
+      "title": "Switzerland 1882 Standing Helvetia 30c Blue",
+      "summary": "Switzerland 1882 Standing Helvetia issue, 30c blue. Dealer note '33 B' and price '€20,-'. Used with partial circular datestamp.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 637,
+        "x_max": 748,
+        "y_min": 785,
+        "y_max": 978
+      }
+    }
+  ]
+}

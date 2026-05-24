@@ -1,0 +1,52 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "us-156-1",
+      "country_id": "us",
+      "scott": {
+        "number": 156
+      },
+      "title": "US 1c Franklin (1873 Continental Bank Note Co.)",
+      "summary": "1c Franklin blue. 1873 Continental Bank Note Company printing on hard paper. Per the requested notes, the 'secret mark' for this issue—a small crescent-shaped line in the pearl to the left of the lower-left scroll (left of the 'O' in ONE)—is clearly present. This example exhibits excellent centering for the Large Bank Note series.",
+      "issue_year": 1873,
+      "condition_quality": "mint_hinged",
+      "centering_grade": "vf_xf",
+      "bounding_box": {
+        "x_min": 15,
+        "x_max": 475,
+        "y_min": 18,
+        "y_max": 968
+      },
+      "freeform_keywords": [
+        "Large Bank Note",
+        "Continental Bank Note Company",
+        "Benjamin Franklin",
+        "Secret Mark"
+      ]
+    },
+    {
+      "stamp_id": "us-156-2",
+      "country_id": "us",
+      "scott": {
+        "number": 156
+      },
+      "title": "US 1c Franklin (1873 Continental Bank Note Co.)",
+      "summary": "1c Franklin blue. 1873 Continental Bank Note Company printing. Like the first example, the Continental secret mark (crescent in the left pearl) is visible. Centering is shifted towards the top and right compared to the first stamp.",
+      "issue_year": 1873,
+      "condition_quality": "mint_hinged",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 508,
+        "x_max": 978,
+        "y_min": 24,
+        "y_max": 978
+      },
+      "freeform_keywords": [
+        "Large Bank Note",
+        "Continental Bank Note Company",
+        "Benjamin Franklin",
+        "Secret Mark"
+      ]
+    }
+  ]
+}

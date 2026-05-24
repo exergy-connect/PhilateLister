@@ -1,0 +1,220 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "ch-13-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 13
+      },
+      "title": "Switzerland 5r Brown Sitting Helvetia (Strubel)",
+      "summary": "1854-62 imperforate issue, 5r brown. Cancelled with heavy circular postmark. Dealer label #13 priced at €2,50.",
+      "issue_year": 1854,
+      "condition_quality": "used",
+      "centering_grade": "average",
+      "bounding_box": {
+        "x_min": 741,
+        "x_max": 857,
+        "y_min": 56,
+        "y_max": 268
+      }
+    },
+    {
+      "stamp_id": "ch-40-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 40
+      },
+      "title": "Switzerland 20r Orange Sitting Helvetia, Perforated",
+      "summary": "1862-81 perforated issue. Face value 20 (Rappen). Dealer label #15 priced at €5,-.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 22,
+        "x_max": 126,
+        "y_min": 315,
+        "y_max": 519
+      }
+    },
+    {
+      "stamp_id": "ch-21-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 21
+      },
+      "title": "Switzerland 2r Grey Sitting Helvetia, Perforated",
+      "summary": "1862 perforated issue, face value 2 (Rappen). Dealer label #20 priced at €0,30.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 311,
+        "x_max": 423,
+        "y_min": 326,
+        "y_max": 510
+      }
+    },
+    {
+      "stamp_id": "ch-37-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 37
+      },
+      "title": "Switzerland 3r Grey Sitting Helvetia, Perforated",
+      "summary": "1867 perforated issue, face value 3 (Rappen). Dealer label #21 priced at €10,-.",
+      "issue_year": 1867,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 566,
+        "x_max": 676,
+        "y_min": 320,
+        "y_max": 507
+      }
+    },
+    {
+      "stamp_id": "ch-37-2",
+      "country_id": "ch",
+      "scott": {
+        "number": 37
+      },
+      "title": "Switzerland 3r Grey Sitting Helvetia, Perforated",
+      "summary": "1867 perforated issue, face value 3 (Rappen). Dealer label #21 priced at €10,-. Heavy circular cancel.",
+      "issue_year": 1867,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 17,
+        "x_max": 125,
+        "y_min": 561,
+        "y_max": 746
+      }
+    },
+    {
+      "stamp_id": "ch-42-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 42
+      },
+      "title": "Switzerland 40r Green Sitting Helvetia, Perforated",
+      "summary": "1862-81 perforated issue. Face value 40 (Rappen). Dealer label #26 priced at €4,-.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 251,
+        "x_max": 361,
+        "y_min": 554,
+        "y_max": 743
+      }
+    },
+    {
+      "stamp_id": "ch-38-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 38
+      },
+      "title": "Switzerland 5r Brown Sitting Helvetia, Perforated",
+      "summary": "1862-81 perforated issue. Face value 5 (Rappen). Dealer label #28 priced at €8,-.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 515,
+        "x_max": 625,
+        "y_min": 546,
+        "y_max": 738
+      }
+    },
+    {
+      "stamp_id": "ch-21-2",
+      "country_id": "ch",
+      "scott": {
+        "number": 21
+      },
+      "title": "Switzerland 2r Grey Sitting Helvetia, Perforated",
+      "summary": "1862 perforated issue, face value 2 (Rappen). Dealer label #29 B priced at €15,-.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 769,
+        "x_max": 883,
+        "y_min": 551,
+        "y_max": 741
+      }
+    },
+    {
+      "stamp_id": "ch-67-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 67
+      },
+      "title": "Switzerland 25c Green Standing Helvetia",
+      "summary": "1882 Standing Helvetia issue, 25c green. Circular cancel showing cross. Dealer label #32 priced at €0,50.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 12,
+        "x_max": 122,
+        "y_min": 777,
+        "y_max": 968
+      }
+    },
+    {
+      "stamp_id": "ch-68-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 68
+      },
+      "title": "Switzerland 30c Grey Standing Helvetia",
+      "summary": "1882 Standing Helvetia issue, 30c grey. Left stamp of a pair/duo labelled #33 A+B priced at €21,- for the pair.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 238,
+        "x_max": 348,
+        "y_min": 782,
+        "y_max": 971
+      }
+    },
+    {
+      "stamp_id": "ch-85-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 85
+      },
+      "title": "Switzerland 30c Blue Standing Helvetia",
+      "summary": "1891 color change issue, 30c blue. Right stamp of a pair/duo labelled #33 A+B.",
+      "issue_year": 1891,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 351,
+        "x_max": 459,
+        "y_min": 780,
+        "y_max": 970
+      }
+    },
+    {
+      "stamp_id": "ch-68-2",
+      "country_id": "ch",
+      "scott": {
+        "number": 68
+      },
+      "title": "Switzerland 30c Grey Standing Helvetia",
+      "summary": "1882 Standing Helvetia issue, 30c grey. Dealer label #33 B priced at €20,-.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 637,
+        "x_max": 749,
+        "y_min": 786,
+        "y_max": 975
+      }
+    }
+  ]
+}

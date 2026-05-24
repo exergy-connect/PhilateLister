@@ -1,0 +1,220 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "ch-13-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 13
+      },
+      "title": "Switzerland 5rp brown Sitting Helvetia (Strubel), imperf",
+      "summary": "1854 5rp brown 'Strubel' issue, Sitting Helvetia, imperforate. Labeled as Zumstein #13, priced at €2,50. Used with circular postmark.",
+      "issue_year": 1854,
+      "condition_quality": "used",
+      "centering_grade": "not_applicable",
+      "bounding_box": {
+        "x_min": 735,
+        "x_max": 856,
+        "y_min": 52,
+        "y_max": 260
+      }
+    },
+    {
+      "stamp_id": "ch-15-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 15
+      },
+      "title": "Switzerland 5rp orange-red Sitting Helvetia (Strubel), imperf",
+      "summary": "1854 5rp orange-red 'Strubel' issue, Sitting Helvetia, imperforate. Labeled as Zumstein #15, priced at €5,-. Used with heavy black cancel.",
+      "issue_year": 1854,
+      "condition_quality": "used",
+      "centering_grade": "not_applicable",
+      "bounding_box": {
+        "x_min": 21,
+        "x_max": 126,
+        "y_min": 315,
+        "y_max": 517
+      }
+    },
+    {
+      "stamp_id": "ch-38-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 38
+      },
+      "title": "Switzerland 2rp grey Sitting Helvetia, perforated",
+      "summary": "1862 2rp grey Sitting Helvetia, perforated. Labeled as Zumstein #20, priced at €0,30. Used with circular datestamp.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 311,
+        "x_max": 423,
+        "y_min": 327,
+        "y_max": 511
+      }
+    },
+    {
+      "stamp_id": "ch-39-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 39
+      },
+      "title": "Switzerland 3rp black Sitting Helvetia, perforated",
+      "summary": "1862 3rp black Sitting Helvetia, perforated. Labeled as Zumstein #21, priced at €10,-. Used with circular datestamp.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 563,
+        "x_max": 678,
+        "y_min": 321,
+        "y_max": 506
+      }
+    },
+    {
+      "stamp_id": "ch-39-2",
+      "country_id": "ch",
+      "scott": {
+        "number": 39
+      },
+      "title": "Switzerland 3rp black Sitting Helvetia, perforated",
+      "summary": "1862 3rp black Sitting Helvetia, perforated. A second example, labeled as Zumstein #21, priced at €10,-. Used with circular datestamp.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 17,
+        "x_max": 123,
+        "y_min": 558,
+        "y_max": 744
+      }
+    },
+    {
+      "stamp_id": "ch-46-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 46
+      },
+      "title": "Switzerland 40rp green Sitting Helvetia, perforated",
+      "summary": "1862 40rp green Sitting Helvetia, perforated. Labeled as Zumstein #26, priced at €4,-. Used with circular datestamp.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 252,
+        "x_max": 362,
+        "y_min": 554,
+        "y_max": 743
+      }
+    },
+    {
+      "stamp_id": "ch-48-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 48
+      },
+      "title": "Switzerland 1fr gold Sitting Helvetia, perforated",
+      "summary": "1862 1fr gold Sitting Helvetia, perforated. Labeled as Zumstein #28, priced at €8,-. Used with circular datestamp.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 513,
+        "x_max": 626,
+        "y_min": 549,
+        "y_max": 740
+      }
+    },
+    {
+      "stamp_id": "ch-49-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 49
+      },
+      "title": "Switzerland 2rp bistre-brown Sitting Helvetia, perforated",
+      "summary": "1867 2rp bistre-brown Sitting Helvetia, perforated. Labeled as Zumstein #29 B, priced at €15,-. Used with circular datestamp.",
+      "issue_year": 1867,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 768,
+        "x_max": 882,
+        "y_min": 550,
+        "y_max": 737
+      }
+    },
+    {
+      "stamp_id": "ch-67-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 67
+      },
+      "title": "Switzerland 25c green Standing Helvetia",
+      "summary": "1882 25c green Standing Helvetia issue. Labeled as Zumstein #32, priced at €0,50. Used with circular datestamp.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 13,
+        "x_max": 118,
+        "y_min": 779,
+        "y_max": 963
+      }
+    },
+    {
+      "stamp_id": "ch-68-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 68
+      },
+      "title": "Switzerland 30c blue Standing Helvetia",
+      "summary": "1882 30c blue Standing Helvetia issue. Part of a group labeled Zumstein #33 A+B, priced at €21,- for the pair. Used.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 237,
+        "x_max": 345,
+        "y_min": 784,
+        "y_max": 969
+      }
+    },
+    {
+      "stamp_id": "ch-68-2",
+      "country_id": "ch",
+      "scott": {
+        "number": 68
+      },
+      "title": "Switzerland 30c blue Standing Helvetia",
+      "summary": "1882 30c blue Standing Helvetia issue. Second stamp in the group labeled Zumstein #33 A+B. Used with circular datestamp.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 349,
+        "x_max": 458,
+        "y_min": 779,
+        "y_max": 970
+      }
+    },
+    {
+      "stamp_id": "ch-68-3",
+      "country_id": "ch",
+      "scott": {
+        "number": 68
+      },
+      "title": "Switzerland 30c blue Standing Helvetia",
+      "summary": "1882 30c blue Standing Helvetia issue. Labeled as Zumstein #33 B, priced at €20,-. Likely a rarer perforation or paper variety (perf 11.5). Used.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 638,
+        "x_max": 750,
+        "y_min": 786,
+        "y_max": 976
+      }
+    }
+  ]
+}

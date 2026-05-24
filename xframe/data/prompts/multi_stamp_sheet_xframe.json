@@ -25,7 +25,7 @@
         "3) For each stamp, extract what the image supports:",
         "   - Country or postal administration (e.g. from script, language, or emblem text such as SVERIGE).",
         "   - Face value: numerals in side tablets or corners, and currency unit from text (öre, kr, cent, etc.).",
-        "   - Design / series clues: coat of arms, portrait, commemorative topic, \"Official\" / service types, color shade when it distinguishes catalog varieties.",
+        "   - Design / series clues: coat of arms, portrait, commemorative topic, \"Official\" / service types, color shade when it distinguishes catalog varieties, secret marks for US stamps.",
         "   - Cancellations: postmark town or route, readable date (day/month/year when possible). If a day is clear, you may note the weekday in stamp.summary.",
         "   - Condition and centering: infer from the crop (faults, thins, heavy cancel obscuring design, margin balance). Use schema enums only.",
         "   - Perforation: describe visible perf or roulettes, damage, or \"imperf\" / \"unknown\" in summary when not clear.",

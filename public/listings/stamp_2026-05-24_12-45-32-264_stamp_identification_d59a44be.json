@@ -1,0 +1,42 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "us-145-1",
+      "country_id": "us",
+      "scott": {
+        "number": 145
+      },
+      "title": "US 1c Franklin, National Bank Note Co. printing",
+      "summary": "Scott 145. Benjamin Franklin portrait in blue. This is the National Bank Note Company printing (1870), identified by the hard white paper and the lack of a secret mark in the pearl ornament to the left of 'ONE'. Appears unused with very nice centering.",
+      "issue_year": 1870,
+      "condition_quality": "unknown",
+      "centering_grade": "vf",
+      "image_basename": "stamp_2026-05-24_12-45-32-264_stamp_identification_d59a44be.jpg",
+      "bounding_box": {
+        "x_min": 17,
+        "x_max": 476,
+        "y_min": 24,
+        "y_max": 969
+      }
+    },
+    {
+      "stamp_id": "us-156-1",
+      "country_id": "us",
+      "scott": {
+        "number": 156
+      },
+      "title": "US 1c Franklin, Continental Bank Note Co. printing",
+      "summary": "Scott 156. Benjamin Franklin portrait in blue. This is the Continental Bank Note Company printing (1873), identified by the more yellowish paper and the secret mark (a small dash or line in the pearl ornament at the left of the word 'ONE'). Appears unused.",
+      "issue_year": 1873,
+      "condition_quality": "unknown",
+      "centering_grade": "f_vf",
+      "image_basename": "stamp_2026-05-24_12-45-32-264_stamp_identification_d59a44be.jpg",
+      "bounding_box": {
+        "x_min": 523,
+        "x_max": 982,
+        "y_min": 24,
+        "y_max": 986
+      }
+    }
+  ]
+}

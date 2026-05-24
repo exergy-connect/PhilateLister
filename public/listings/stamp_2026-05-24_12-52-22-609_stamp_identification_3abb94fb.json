@@ -1,0 +1,40 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "us-24-1",
+      "country_id": "us",
+      "scott": {
+        "number": 24
+      },
+      "title": "US Scott #24 Benjamin Franklin 1c Blue (Type V)",
+      "summary": "1857 issue, 1c Blue Benjamin Franklin, perforated, Type V (with side ornaments and top/bottom scrolls trimmed). This specimen shows a bright, fresh blue color. Centering is Fine-Very Fine.",
+      "issue_year": 1857,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 11,
+        "x_max": 479,
+        "y_min": 24,
+        "y_max": 966
+      }
+    },
+    {
+      "stamp_id": "us-24-2",
+      "country_id": "us",
+      "scott": {
+        "number": 24
+      },
+      "title": "US Scott #24 Benjamin Franklin 1c Blue (Type V)",
+      "summary": "1857 issue, 1c Blue Benjamin Franklin, perforated, Type V. Shows a duller or more grayish-blue shade compared to the left example. Centering is Fine, shifted to the left.",
+      "issue_year": 1857,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 512,
+        "x_max": 978,
+        "y_min": 24,
+        "y_max": 978
+      }
+    }
+  ]
+}

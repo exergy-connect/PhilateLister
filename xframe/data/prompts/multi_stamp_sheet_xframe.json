@@ -20,7 +20,7 @@
         "Dealer notes and hints (JSON; may be null): __NOTES_JSON__",
         "",
         "=== VISUAL WORKFLOW ===",
-        "1) Segment mentally: treat each physically separate perforated (or cut) stamp as one item. Ignore the background between stamps.",
+        "1) Segment mentally: treat each physically separate perforated (or cut) stamp as one uniquely different item. Ignore the background between stamps.",
         "2) Reading order: top-to-bottom, then left-to-right (row-major), so stamp numbering matches a human scanning the grid.",
         "3) For each stamp, extract what the image supports:",
         "   - Country or postal administration (e.g. from script, language, or emblem text such as SVERIGE).",

@@ -1,0 +1,51 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "us-63-1",
+      "country_id": "us",
+      "scott": {
+        "country_id": "us",
+        "number": 63
+      },
+      "title": "USA 1861 1c Benjamin Franklin, Blue",
+      "summary": "United States 1861-1866 series Benjamin Franklin 1c blue. Left stamp in a comparison of shades. Unused with bright color. Perf 12. Dealer notes indicate no watermark, which is consistent with this issue.",
+      "issue_year": 1861,
+      "condition_quality": "mint_no_gum",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 17,
+        "x_max": 476,
+        "y_min": 25,
+        "y_max": 962
+      },
+      "freeform_keywords": [
+        "franklin",
+        "1861 issue"
+      ]
+    },
+    {
+      "stamp_id": "us-63-2",
+      "country_id": "us",
+      "scott": {
+        "country_id": "us",
+        "number": 63
+      },
+      "title": "USA 1861 1c Benjamin Franklin, Dull Blue",
+      "summary": "United States 1861-1866 series Benjamin Franklin 1c blue. Right stamp showing a duller or more grayish-blue shade variation. Unused. Perf 12.",
+      "issue_year": 1861,
+      "condition_quality": "mint_no_gum",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 518,
+        "x_max": 981,
+        "y_min": 25,
+        "y_max": 977
+      },
+      "freeform_keywords": [
+        "franklin",
+        "1861 issue",
+        "shade variety"
+      ]
+    }
+  ]
+}

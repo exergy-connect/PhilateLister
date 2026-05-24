@@ -1,0 +1,220 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "ch-13-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 13
+      },
+      "title": "Switzerland 1854 5r Brown Helvetia Seated (Imperf)",
+      "summary": "Sitting Helvetia (Strubel) issue, 5r brown, imperforate with silk thread. Used with circular cancel. Margin on all four sides, appears close at top right.",
+      "issue_year": 1854,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 742,
+        "x_max": 856,
+        "y_min": 54,
+        "y_max": 268
+      }
+    },
+    {
+      "stamp_id": "ch-16-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 16
+      },
+      "title": "Switzerland 1854 15r Rose Helvetia Seated (Imperf)",
+      "summary": "Sitting Helvetia (Strubel) issue, 15r rose/pale red-brown, imperforate with silk thread. Heavy circular cancel obscures part of the design.",
+      "issue_year": 1854,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 23,
+        "x_max": 127,
+        "y_min": 315,
+        "y_max": 517
+      }
+    },
+    {
+      "stamp_id": "ch-34-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 34
+      },
+      "title": "Switzerland 1862 2r Gray Helvetia Seated (Perf)",
+      "summary": "Sitting Helvetia perforated issue, 2r gray. Part of a circular cancel visible on the left side.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 312,
+        "x_max": 421,
+        "y_min": 327,
+        "y_max": 511
+      }
+    },
+    {
+      "stamp_id": "ch-35-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 35
+      },
+      "title": "Switzerland 1862 3r Black Helvetia Seated (Perf)",
+      "summary": "Sitting Helvetia perforated issue, 3r black. Circular cancel at top left.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 563,
+        "x_max": 676,
+        "y_min": 321,
+        "y_max": 502
+      }
+    },
+    {
+      "stamp_id": "ch-35-2",
+      "country_id": "ch",
+      "scott": {
+        "number": 35
+      },
+      "title": "Switzerland 1862 3r Black Helvetia Seated (Perf)",
+      "summary": "Sitting Helvetia perforated issue, 3r black. Cancelled with a large circular datestamp.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "fine",
+      "bounding_box": {
+        "x_min": 17,
+        "x_max": 122,
+        "y_min": 558,
+        "y_max": 743
+      }
+    },
+    {
+      "stamp_id": "ch-40-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 40
+      },
+      "title": "Switzerland 1862 40r Green Helvetia Seated (Perf)",
+      "summary": "Sitting Helvetia perforated issue, 40r green. Used with a circular datestamp.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 250,
+        "x_max": 362,
+        "y_min": 553,
+        "y_max": 742
+      }
+    },
+    {
+      "stamp_id": "ch-42-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 42
+      },
+      "title": "Switzerland 1862 1fr Gold Helvetia Seated (Perf)",
+      "summary": "Sitting Helvetia perforated issue, 1fr gold/bronze. Used with circular cancel.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 514,
+        "x_max": 627,
+        "y_min": 544,
+        "y_max": 740
+      }
+    },
+    {
+      "stamp_id": "ch-60-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 60
+      },
+      "title": "Switzerland 1881 2c Brown Helvetia Seated",
+      "summary": "Helvetia Seated (numeral in corners) issue, 2c brown. Used.",
+      "issue_year": 1881,
+      "condition_quality": "used",
+      "centering_grade": "f_vf",
+      "bounding_box": {
+        "x_min": 768,
+        "x_max": 882,
+        "y_min": 548,
+        "y_max": 742
+      }
+    },
+    {
+      "stamp_id": "ch-105-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 105
+      },
+      "title": "Switzerland 1882-1907 25c Green Standing Helvetia",
+      "summary": "Standing Helvetia issue, 25c green. Used with circular datestamp.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 11,
+        "x_max": 119,
+        "y_min": 776,
+        "y_max": 966
+      }
+    },
+    {
+      "stamp_id": "ch-106-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 106
+      },
+      "title": "Switzerland 1882-1907 30c Blue Standing Helvetia",
+      "summary": "Standing Helvetia issue, 30c blue. Part of a lot with stock number 33. Used.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 237,
+        "x_max": 345,
+        "y_min": 784,
+        "y_max": 968
+      }
+    },
+    {
+      "stamp_id": "ch-106-2",
+      "country_id": "ch",
+      "scott": {
+        "number": 106
+      },
+      "title": "Switzerland 1882-1907 30c Blue Standing Helvetia",
+      "summary": "Standing Helvetia issue, 30c blue. Second of three examples on the sheet. Used.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 349,
+        "x_max": 458,
+        "y_min": 780,
+        "y_max": 968
+      }
+    },
+    {
+      "stamp_id": "ch-106-3",
+      "country_id": "ch",
+      "scott": {
+        "number": 106
+      },
+      "title": "Switzerland 1882-1907 30c Blue Standing Helvetia",
+      "summary": "Standing Helvetia issue, 30c blue. Third of three examples. Used.",
+      "issue_year": 1882,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 636,
+        "x_max": 750,
+        "y_min": 784,
+        "y_max": 976
+      }
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "recorded_at_iso": "2026-05-25T16:48:14.455Z",
+  "status": "ok",
+  "client_kind": "google_gemini",
+  "prompt_id": "stamp_listing",
+  "invocation_id": "stamp_listing_gemini",
+  "provider_id": "google_gemini",
+  "requested_model": "gemini-3-flash-preview",
+  "char_counts": {
+    "in": 1922,
+    "out": 2515
+  },
+  "turn_count": 1,
+  "function_calls": [],
+  "token_usage": {
+    "usage_anchor": "aggregate",
+    "by_round": [
+      {
+        "round_index": 0,
+        "prompt_tokens": 1716,
+        "completion_tokens": 630,
+        "total_tokens": 5691,
+        "thoughts_tokens": 3345
+      }
+    ],
+    "totals": {
+      "prompt_tokens": 1716,
+      "completion_tokens": 630,
+      "total_tokens": 5691,
+      "thoughts_tokens": 3345
+    }
+  },
+  "output_text_chars": 2515
+}

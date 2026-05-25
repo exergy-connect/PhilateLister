@@ -1,6 +1,6 @@
 {
-  "version": 14,
-  "timestamp": "2026-05-24T17:51:15Z",
+  "version": 15,
+  "timestamp": "2026-05-25T17:01:14Z",
   "model": {
     "name": "PhilateLister stamp catalog",
     "version": "26.04.11.1",
@@ -175,6 +175,13 @@
         "author": "jbemmel",
         "note": "CI consolidate after model/data change (8686d3b14d82d82cc6989913fd7b52277a661240)",
         "git_commit_hash": "8686d3b14d82d82cc6989913fd7b52277a661240"
+      },
+      "000000000015": {
+        "id": 15,
+        "timestamp": "2026-05-25T17:01:14+00:00",
+        "author": "jbemmel",
+        "note": "CI consolidate after model/data change (b74eabed95a83c15f8b59641109324eb7be56667)",
+        "git_commit_hash": "b74eabed95a83c15f8b59641109324eb7be56667"
       }
     },
     "catalog_system": {
@@ -226,8 +233,8 @@
             "primary_color": "carmine and blue (bicolor)",
             "description": "Illustrative Denmark bicolor definitive tied to sample inventory; see stamp_catalog_number for Michel cross-reference.",
             "notes": "Illustrative primary listing for the sample stamp; see stamp_catalog_number for Michel cross-ref.",
-            "c": 14,
-            "v": 14
+            "c": 15,
+            "v": 15
           }
         ],
         "numeral_cancels": [
@@ -2142,6 +2149,7 @@
           "- A condition report visible from the image",
           "- Details on perforations, if any, such as missing or damaged ones, and the count of horizontal and vertical dents",
           "- Details on the cancel, if any, such as city name or date of cancellation. If the date is clear enough, check that it is after the date of issue and cite the day of the week it represents; if that day is Sunday, treat that as highly unusual for postal cancellations and flag it as a possible sign of misreading the date (digits, month/day order, or partial strike)",
+          "- Swedish dated cancels: the central number is the day of the month, even when it equals the stamp denomination. The month sits between the first two digits of the year and the last two (year split as YY…YY around the month). Parse day, month, and full year from that layout before weekday or chronology checks.",
           "- If the city is clear enough, lookup its population at the time of the cancel or issue and describe its role in the region",
           "- Listing body text that respects the dealer's notes and is consistent with their target price band (polite, professional tone)"
         ],
@@ -2185,9 +2193,10 @@
         "c": 1,
         "m": [
           11,
-          12
+          12,
+          15
         ],
-        "v": 12
+        "v": 15
       },
       "stamp_numeral_cancel_identification": {
         "prompt_id": "stamp_numeral_cancel_identification",

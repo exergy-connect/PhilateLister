@@ -11,7 +11,7 @@
         "Commit summary line (from uploader):",
         "__FIRST_LINE__",
         "",
-        "Full structured parameters from the upload form (JSON — use every field that helps identification or listing copy):",
+        "Full structured parameters from the upload form (JSON \u2014 use every field that helps identification or listing copy):",
         "__META_JSON__",
         "",
         "Dealer target listing price (use as pricing context; do not invent a Scott value): __TARGET_JSON__",
@@ -23,6 +23,7 @@
         "- A condition report visible from the image",
         "- Details on perforations, if any, such as missing or damaged ones, and the count of horizontal and vertical dents",
         "- Details on the cancel, if any, such as city name or date of cancellation. If the date is clear enough, check that it is after the date of issue and cite the day of the week it represents; if that day is Sunday, treat that as highly unusual for postal cancellations and flag it as a possible sign of misreading the date (digits, month/day order, or partial strike)",
+        "- Swedish dated cancels: the central number is the day of the month, even when it equals the stamp denomination. The month sits between the first two digits of the year and the last two (year split as YY\u2026YY around the month). Parse day, month, and full year from that layout before weekday or chronology checks.",
         "- If the city is clear enough, lookup its population at the time of the cancel or issue and describe its role in the region",
         "- Listing body text that respects the dealer's notes and is consistent with their target price band (polite, professional tone)"
       ],

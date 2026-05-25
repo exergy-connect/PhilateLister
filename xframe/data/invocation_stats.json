@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at_iso": "2026-05-25T17:05:08.117Z",
-  "total_events": 32,
+  "updated_at_iso": "2026-05-25T17:06:57.592Z",
+  "total_events": 33,
   "counts_by_key": {},
   "events": [
     {
@@ -448,6 +448,20 @@
       "char_counts": {
         "in": 1880,
         "out": 2643
+      },
+      "turn_count": 1,
+      "function_calls": []
+    },
+    {
+      "at_iso": "2026-05-25T17:06:57.592Z",
+      "status": "ok",
+      "prompt_id": "stamp_listing",
+      "invocation_id": "stamp_listing_gemini",
+      "provider_id": "google_gemini",
+      "model": "gemini-3-flash-preview",
+      "char_counts": {
+        "in": 1880,
+        "out": 2109
       },
       "turn_count": 1,
       "function_calls": []

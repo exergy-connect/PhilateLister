@@ -1,0 +1,220 @@
+{
+  "stamp": [
+    {
+      "stamp_id": "ch-44-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 44
+      },
+      "title": "Switzerland Michel 13, 5c Brown, Seated Helvetia",
+      "summary": "Seated Helvetia definitive, 1862-64 issue. Perforated 11 3/4 on white paper with green silk thread. Indicated as Michel 13 on dealer tag. Used condition.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 739,
+        "x_max": 856,
+        "y_min": 56,
+        "y_max": 269
+      }
+    },
+    {
+      "stamp_id": "ch-46-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 46
+      },
+      "title": "Switzerland Michel 15, 10c Rose, Seated Helvetia",
+      "summary": "Seated Helvetia definitive, 1862-64 issue. Indicated as Michel 15 on dealer tag. Used with a circular datestamp cancel.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 23,
+        "x_max": 125,
+        "y_min": 315,
+        "y_max": 517
+      }
+    },
+    {
+      "stamp_id": "ch-43-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 43
+      },
+      "title": "Switzerland Michel 20, 2c Grey, Seated Helvetia",
+      "summary": "Seated Helvetia definitive, 1867-78 issue. Indicated as Michel 20 on dealer tag. Used condition.",
+      "issue_year": 1863,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 313,
+        "x_max": 423,
+        "y_min": 325,
+        "y_max": 510
+      }
+    },
+    {
+      "stamp_id": "ch-41-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 41
+      },
+      "title": "Switzerland Michel 21, 3c Black, Seated Helvetia",
+      "summary": "Seated Helvetia definitive, 1867-78 issue. Indicated as Michel 21 on dealer tag. Used condition.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 565,
+        "x_max": 676,
+        "y_min": 320,
+        "y_max": 503
+      }
+    },
+    {
+      "stamp_id": "ch-41-2",
+      "country_id": "ch",
+      "scott": {
+        "number": 41
+      },
+      "title": "Switzerland Michel 21, 3c Black, Seated Helvetia",
+      "summary": "Seated Helvetia definitive, 1867-78 issue. Second example of Michel 21. Used with part of a circular postmark.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 17,
+        "x_max": 125,
+        "y_min": 557,
+        "y_max": 742
+      }
+    },
+    {
+      "stamp_id": "ch-49-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 49
+      },
+      "title": "Switzerland Michel 26, 40c Green, Seated Helvetia",
+      "summary": "Seated Helvetia definitive, 1868 issue. Indicated as Michel 26 on dealer tag. Used with a circular datestamp.",
+      "issue_year": 1862,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 251,
+        "x_max": 362,
+        "y_min": 551,
+        "y_max": 742
+      }
+    },
+    {
+      "stamp_id": "ch-42-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 42
+      },
+      "title": "Switzerland Michel 28, 1c Grey-brown, Seated Helvetia",
+      "summary": "Seated Helvetia definitive, 1c value from the 1867 series. Indicated as Michel 28 on dealer tag. Used condition.",
+      "issue_year": 1867,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 514,
+        "x_max": 626,
+        "y_min": 548,
+        "y_max": 739
+      }
+    },
+    {
+      "stamp_id": "ch-53-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 53
+      },
+      "title": "Switzerland Michel 29, 2c Bistre, Seated Helvetia",
+      "summary": "Seated Helvetia definitive, 2c bistre from the 1878 issue. Indicated as Michel 29B on tag (perforation variety). Used condition.",
+      "issue_year": 1878,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 767,
+        "x_max": 882,
+        "y_min": 550,
+        "y_max": 740
+      }
+    },
+    {
+      "stamp_id": "ch-58-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 58
+      },
+      "title": "Switzerland Michel 32, 25c Green, Seated Helvetia",
+      "summary": "Seated Helvetia definitive, 25c green from the 1878 issue. Indicated as Michel 32 on dealer tag. Features a green circular cancel.",
+      "issue_year": 1878,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 12,
+        "x_max": 122,
+        "y_min": 777,
+        "y_max": 963
+      }
+    },
+    {
+      "stamp_id": "ch-59-1",
+      "country_id": "ch",
+      "scott": {
+        "number": 59
+      },
+      "title": "Switzerland Michel 33, 30c Blue, Seated Helvetia",
+      "summary": "Seated Helvetia definitive, 30c blue from the 1878 series. Indicated as part of a Michel 33 A+B group. Used condition.",
+      "issue_year": 1878,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 237,
+        "x_max": 347,
+        "y_min": 783,
+        "y_max": 971
+      }
+    },
+    {
+      "stamp_id": "ch-59-2",
+      "country_id": "ch",
+      "scott": {
+        "number": 59
+      },
+      "title": "Switzerland Michel 33, 30c Blue, Seated Helvetia",
+      "summary": "Seated Helvetia definitive, 30c blue. Second example in the 33 A+B group. Used with a circular datestamp.",
+      "issue_year": 1878,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 347,
+        "x_max": 458,
+        "y_min": 778,
+        "y_max": 969
+      }
+    },
+    {
+      "stamp_id": "ch-59-3",
+      "country_id": "ch",
+      "scott": {
+        "number": 59
+      },
+      "title": "Switzerland Michel 33B, 30c Blue, Seated Helvetia",
+      "summary": "Seated Helvetia definitive, 30c blue. Indicated as Michel 33B (perforation variety). Used condition.",
+      "issue_year": 1878,
+      "condition_quality": "used",
+      "centering_grade": "vf",
+      "bounding_box": {
+        "x_min": 635,
+        "x_max": 747,
+        "y_min": 784,
+        "y_max": 975
+      }
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "recorded_at_iso": "2026-05-27T14:27:38.601Z",
+  "status": "ok",
+  "client_kind": "google_gemini",
+  "prompt_id": "chatgpt_suggested_stamp_listing",
+  "invocation_id": "chatgpt_suggested_stamp_listing_fallback_gemini",
+  "provider_id": "google_gemini",
+  "requested_model": "gemini-3-flash-preview",
+  "char_counts": {
+    "in": 3835,
+    "out": 1300
+  },
+  "turn_count": 1,
+  "function_calls": [],
+  "token_usage": {
+    "usage_anchor": "aggregate",
+    "by_round": [
+      {
+        "round_index": 0,
+        "prompt_tokens": 2236,
+        "completion_tokens": 346,
+        "total_tokens": 4375,
+        "thoughts_tokens": 1793
+      }
+    ],
+    "totals": {
+      "prompt_tokens": 2236,
+      "completion_tokens": 346,
+      "total_tokens": 4375,
+      "thoughts_tokens": 1793
+    }
+  },
+  "output_text_chars": 1300
+}

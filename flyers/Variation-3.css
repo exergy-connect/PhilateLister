@@ -1,0 +1,666 @@
+/* Greater Houston Stamp Show — Variation 3 */
+
+:root {
+  --navy: #002d62;
+  --navy-dark: #001f45;
+  --sky: #d1dce5;
+  --white: #ffffff;
+  --maroon: #8b1a1a;
+  --maroon-dark: #6d1414;
+  --text: #002d62;
+  --border-width: 10px;
+  --letter-width: 8.5in;
+  --letter-height: 11in;
+  --page-margin: 0.35in;
+  --flyer-width: calc(var(--letter-width) - 2 * var(--page-margin));
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem 1rem;
+  background: #e8edf2;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--text);
+}
+
+.flyer {
+  width: min(100%, var(--flyer-width));
+  max-width: var(--flyer-width);
+  background: var(--white);
+  border: var(--border-width) solid var(--navy);
+  box-shadow:
+    inset 0 0 0 2px var(--white),
+    inset 0 0 0 3px var(--navy);
+  position: relative;
+}
+
+/* ── Header ── */
+
+.header {
+  position: relative;
+  background: var(--sky);
+  padding: 0;
+  overflow: hidden;
+}
+
+.header-skyline {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.texas-stamp {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  width: 52px;
+  height: 52px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15));
+}
+
+.title-block {
+  background: var(--white);
+  text-align: center;
+  padding: 1.1rem 1.5rem 1.4rem;
+  position: relative;
+}
+
+.title-block::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -8px;
+  height: 16px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='white'/%3E%3C/svg%3E");
+  background-size: 16px 16px;
+  background-repeat: repeat-x;
+  background-position: center bottom;
+}
+
+.title-greater {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.title-show {
+  font-size: 2.6rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  line-height: 1.05;
+  margin: 0.1rem 0 0;
+}
+
+.event-details {
+  text-align: center;
+  padding: 1.5rem 1rem 1.25rem;
+}
+
+.event-date {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin: 0 0 0.35rem;
+}
+
+.event-location-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  padding: 0 0.25rem;
+}
+
+.civic-center-illustration {
+  width: 120px;
+  height: auto;
+  flex-shrink: 0;
+}
+
+.event-location {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  font-style: normal;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.location-name {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.location-line {
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+/* ── Show Hours ── */
+
+.show-hours {
+  display: grid;
+  grid-template-columns: 1fr 2.4fr;
+  border-top: 2px solid var(--navy);
+  border-bottom: 2px solid var(--navy);
+}
+
+.show-hours-label {
+  background: var(--navy);
+  color: var(--white);
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 0.75rem;
+  text-align: center;
+}
+
+.show-hours-times {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background: var(--sky);
+}
+
+.hour-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 0.5rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border-left: 1px solid var(--navy);
+}
+
+.hour-slot:first-child {
+  border-left: none;
+}
+
+.hour-day {
+  margin-bottom: 0.15rem;
+}
+
+.dealer-box {
+  background: var(--white);
+  border: 2px solid var(--navy);
+  flex: 0 0 38%;
+  min-height: 72px;
+  margin-left: auto;
+}
+
+/* ── Featuring ── */
+
+.featuring {
+  padding: 1.25rem 1rem 1.5rem;
+}
+
+.featuring-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.featuring-heading::before,
+.featuring-heading::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--navy);
+}
+
+.featuring-heading span {
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.featuring-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border: 1px solid var(--navy);
+}
+
+.feature-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1rem 0.75rem;
+  min-height: 7.5rem;
+  border-top: 1px solid var(--navy);
+  border-left: 1px solid var(--navy);
+}
+
+.feature-item:nth-child(-n + 2) {
+  border-top: none;
+}
+
+.feature-item:nth-child(odd) {
+  border-left: none;
+}
+
+.feature-icon {
+  width: 80px;
+  height: 80px;
+}
+
+.feature-label {
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-align: center;
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+}
+
+/* ── Special Event ── */
+
+.special-event {
+  margin: 0 1rem 1.25rem;
+  border: 3px solid var(--maroon);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.special-event .corner {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: var(--white);
+  border: 3px solid var(--maroon);
+  z-index: 2;
+}
+
+.special-event .corner-tl {
+  top: -3px;
+  left: -3px;
+  border-right: none;
+  border-bottom: none;
+  border-radius: 3px 0 0 0;
+}
+
+.special-event .corner-tr {
+  top: -3px;
+  right: -3px;
+  border-left: none;
+  border-bottom: none;
+  border-radius: 0 3px 0 0;
+}
+
+.special-event .corner-bl {
+  bottom: -3px;
+  left: -3px;
+  border-right: none;
+  border-top: none;
+  border-radius: 0 0 0 3px;
+}
+
+.special-event .corner-br {
+  bottom: -3px;
+  right: -3px;
+  border-left: none;
+  border-top: none;
+  border-radius: 0 0 3px 0;
+}
+
+.special-event-header {
+  background: var(--maroon);
+  color: var(--white);
+  text-align: center;
+  font-weight: 800;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  padding: 0.55rem 0.75rem;
+}
+
+.special-event-body {
+  display: grid;
+  grid-template-columns: 1fr 1.35fr;
+  gap: 0.75rem;
+  padding: 0.85rem;
+  background: var(--white);
+  align-items: start;
+}
+
+.auction-images {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stamp-photo {
+  width: 88px;
+  height: auto;
+  border: 1px solid #ccc;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.psag-cert {
+  width: 72px;
+  height: 96px;
+  flex-shrink: 0;
+}
+
+.auction-copy {
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
+.auction-copy h3 {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  margin: 0 0 0.5rem;
+  line-height: 1.35;
+}
+
+.auction-copy ul {
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.auction-copy li {
+  margin-bottom: 0.3rem;
+}
+
+.auction-copy strong {
+  font-weight: 800;
+}
+
+/* ── Print (US Letter: 8.5 × 11 in) ── */
+
+@page {
+  size: 8.5in 11in portrait;
+  margin: 0;
+}
+
+@media print {
+  *,
+  *::before,
+  *::after {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  html,
+  body {
+    width: 8.5in;
+    height: 11in;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  html {
+    font-size: 12pt;
+  }
+
+  body {
+    min-height: 0;
+    display: block;
+    background: white;
+  }
+
+  .flyer {
+    width: 8.5in;
+    height: 11in;
+    max-width: none;
+    margin: 0;
+    padding: 0.2in 0.22in 0.18in;
+    border-width: 0.12in;
+    box-shadow: none;
+    overflow: visible;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    page-break-after: avoid;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .header,
+  .title-block,
+  .event-details,
+  .show-hours,
+  .featuring,
+  .special-event {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .header {
+    flex-shrink: 0;
+  }
+
+  .header-skyline {
+    max-height: 1.15in;
+  }
+
+  .texas-stamp {
+    width: 0.52in;
+    height: 0.52in;
+    filter: none;
+  }
+
+  .title-block {
+    flex-shrink: 0;
+    padding: 0.45rem 1rem 0.85rem;
+  }
+
+  .title-greater {
+    font-size: 1.25rem;
+  }
+
+  .title-show {
+    font-size: 2.35rem;
+  }
+
+  .event-details {
+    flex-shrink: 0;
+    padding: 0.65rem 0.35rem 0.55rem;
+  }
+
+  .event-date {
+    font-size: 1.05rem;
+  }
+
+  .event-location-row {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0;
+  }
+
+  .event-location {
+    align-items: flex-start;
+    text-align: left;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .civic-center-illustration {
+    width: 1.15in;
+  }
+
+  .location-name {
+    font-size: 0.92rem;
+  }
+
+  .location-line {
+    font-size: 0.84rem;
+  }
+
+  .dealer-box {
+    flex: 0 0 2.05in;
+    width: 2.05in;
+    min-height: 0.78in;
+    margin-left: auto;
+  }
+
+  .show-hours {
+    flex-shrink: 0;
+    grid-template-columns: 1fr 2.4fr;
+  }
+
+  .show-hours-label,
+  .hour-slot {
+    font-size: 0.88rem;
+    padding: 0.55rem 0.4rem;
+  }
+
+  .featuring {
+    flex: 1 1 auto;
+    padding: 0.7rem 0.35rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .featuring-heading {
+    margin-bottom: 0.85rem;
+  }
+
+  .featuring-heading span {
+    font-size: 0.9rem;
+  }
+
+  .featuring-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .feature-item {
+    min-height: 1.55in;
+    padding: 0.55rem 0.4rem;
+    border-top: 1px solid var(--navy);
+    border-left: 1px solid var(--navy);
+  }
+
+  .feature-item:nth-child(-n + 2) {
+    border-top: none;
+  }
+
+  .feature-item:nth-child(odd) {
+    border-left: none;
+  }
+
+  .feature-icon {
+    width: 0.85in;
+    height: 0.85in;
+  }
+
+  .feature-label {
+    font-size: 0.76rem;
+  }
+
+  .special-event {
+    flex-shrink: 0;
+    margin: 0 0.15rem 0;
+  }
+
+  .special-event-body {
+    grid-template-columns: 1fr 1.35fr;
+  }
+
+  .special-event-header {
+    font-size: 0.76rem;
+    padding: 0.45rem 0.5rem;
+  }
+
+  .special-event-body {
+    padding: 0.65rem;
+    gap: 0.55rem;
+  }
+
+  .stamp-photo {
+    width: 0.9in;
+    box-shadow: none;
+  }
+
+  .psag-cert {
+    width: 0.72in;
+    height: 0.95in;
+  }
+
+  .auction-copy {
+    font-size: 0.66rem;
+  }
+
+  .auction-copy h3 {
+    font-size: 0.62rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .auction-copy li {
+    margin-bottom: 0.2rem;
+  }
+
+  img,
+  svg {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 520px) {
+  .title-show {
+    font-size: 2rem;
+  }
+
+  .show-hours {
+    grid-template-columns: 1fr;
+  }
+
+  .show-hours-times {
+    border-top: 1px solid var(--navy);
+  }
+
+  .feature-item {
+    min-height: 6.5rem;
+    padding: 0.75rem 0.5rem;
+  }
+
+  .feature-icon {
+    width: 68px;
+    height: 68px;
+  }
+
+  .special-event-body {
+    grid-template-columns: 1fr;
+  }
+
+  .event-location-row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .event-location {
+    align-items: center;
+    text-align: center;
+  }
+
+  .dealer-box {
+    flex: 1 1 auto;
+    width: 100%;
+    margin-left: 0;
+  }
+}

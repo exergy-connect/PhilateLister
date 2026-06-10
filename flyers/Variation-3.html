@@ -55,16 +55,47 @@
         <!-- Texas flag stamp -->
         <svg class="texas-stamp" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <defs>
-            <pattern id="perf" width="6" height="6" patternUnits="userSpaceOnUse">
-              <circle cx="3" cy="3" r="2.2" fill="white" />
-            </pattern>
+            <mask id="texas-stamp-perf">
+              <rect x="4" y="4" width="44" height="44" fill="white" />
+              <g fill="black">
+                <circle cx="10" cy="4" r="2.5" />
+                <circle cx="18" cy="4" r="2.5" />
+                <circle cx="26" cy="4" r="2.5" />
+                <circle cx="34" cy="4" r="2.5" />
+                <circle cx="42" cy="4" r="2.5" />
+                <circle cx="10" cy="48" r="2.5" />
+                <circle cx="18" cy="48" r="2.5" />
+                <circle cx="26" cy="48" r="2.5" />
+                <circle cx="34" cy="48" r="2.5" />
+                <circle cx="42" cy="48" r="2.5" />
+                <circle cx="4" cy="10" r="2.5" />
+                <circle cx="4" cy="18" r="2.5" />
+                <circle cx="4" cy="26" r="2.5" />
+                <circle cx="4" cy="34" r="2.5" />
+                <circle cx="4" cy="42" r="2.5" />
+                <circle cx="48" cy="10" r="2.5" />
+                <circle cx="48" cy="18" r="2.5" />
+                <circle cx="48" cy="26" r="2.5" />
+                <circle cx="48" cy="34" r="2.5" />
+                <circle cx="48" cy="42" r="2.5" />
+              </g>
+            </mask>
+            <linearGradient id="star-shade" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="white" />
+              <stop offset="100%" stop-color="#d1dce5" />
+            </linearGradient>
           </defs>
-          <rect x="2" y="2" width="48" height="48" fill="url(#perf)" />
-          <rect x="5" y="5" width="42" height="42" fill="#002d62" />
-          <rect x="5" y="32" width="42" height="15" fill="#8b1a1a" />
-          <polygon points="5,5 22,26 5,47" fill="#002d62" />
-          <polygon points="5,5 22,26 5,47" fill="none" stroke="white" stroke-width="0.5" opacity="0.3" />
-          <polygon points="13,20 14.2,24 18.5,24 15,26.5 16.2,31 13,28.5 9.8,31 11,26.5 7.5,24 11.8,24" fill="white" />
+          <g mask="url(#texas-stamp-perf)">
+            <rect x="4" y="4" width="14" height="44" fill="#002d62" />
+            <rect x="18" y="4" width="30" height="22" fill="white" />
+            <rect x="18" y="26" width="30" height="22" fill="#8b1a1a" />
+            <polygon
+              points="11,17 12.4,21.2 16.8,21.2 13.2,23.8 14.6,28 11,25.6 7.4,28 8.8,23.8 5.2,21.2 9.6,21.2"
+              fill="url(#star-shade)"
+              stroke="white"
+              stroke-width="0.4"
+            />
+          </g>
         </svg>
       </header>
 
@@ -75,20 +106,37 @@
 
       <div class="event-details">
         <p class="event-date">SEPTEMBER 18–20, 2026</p>
-        <div class="event-location-row">
-          <img
-            class="civic-center-illustration"
-            src="humble-civic-center.png"
-            alt=""
-            width="120"
-            height="45"
-          />
-          <address class="event-location">
-            <span class="location-name">Humble Civic Center</span>
-            <span class="location-line">8233 Will Clayton Pkwy</span>
-            <span class="location-line">Humble, TX 77338</span>
-          </address>
-          <div class="dealer-box" aria-label="Dealer information"></div>
+        <div class="event-info-row">
+          <div class="event-location-block">
+            <img
+              class="civic-center-illustration"
+              src="humble-civic-center.png"
+              alt=""
+              width="120"
+              height="45"
+            />
+            <address class="event-location">
+              <span class="location-name">Humble Civic Center</span>
+              <span class="location-line">8233 Will Clayton Pkwy</span>
+              <span class="location-line">Humble, TX 77338</span>
+            </address>
+          </div>
+          <div class="event-qr">
+            <a
+              class="event-qr-link"
+              href="https://houstonstampclub.org/greater-houston-stamp-show-2026/"
+              aria-label="Greater Houston Stamp Show 2026 — scan QR code or visit houstonstampclub.org"
+            >
+              <img
+                class="event-qr-image"
+                src="ghss-2026-qr.png"
+                alt="QR code linking to Greater Houston Stamp Show 2026"
+                width="80"
+                height="80"
+              />
+            </a>
+          </div>
+          <div class="dealer-box" aria-label="Dealer information">Dealer details here</div>
         </div>
       </div>
 
@@ -97,15 +145,15 @@
         <div class="show-hours-label">SHOW HOURS:</div>
         <div class="show-hours-times">
           <div class="hour-slot">
-            <span class="hour-day">Friday</span>
+            <span class="hour-day">Friday 18th</span>
             <span>10–6</span>
           </div>
           <div class="hour-slot">
-            <span class="hour-day">Saturday</span>
+            <span class="hour-day">Saturday 19th</span>
             <span>10–5</span>
           </div>
           <div class="hour-slot">
-            <span class="hour-day">Sunday</span>
+            <span class="hour-day">Sunday 20th</span>
             <span>10–4</span>
           </div>
         </div>
@@ -208,14 +256,16 @@
           ✦ SPECIAL EVENT: GHSS DONATION AUCTION ✦
         </div>
         <div class="special-event-body">
-          <div class="auction-images">
+          <figure class="lot-stamp">
             <img
               class="stamp-photo"
               src="../samples/SC91.jpg"
               alt="US Scott #91, 15¢ Lincoln with E-Grill"
-              width="88"
-              height="110"
+              width="100"
+              height="125"
             />
+          </figure>
+          <figure class="lot-cert">
             <svg class="psag-cert" viewBox="0 0 72 96" xmlns="http://www.w3.org/2000/svg" aria-label="PSAG certificate">
               <rect x="1" y="1" width="70" height="94" fill="white" stroke="#002d62" stroke-width="1.5" />
               <rect x="4" y="4" width="64" height="88" fill="none" stroke="#ccc" stroke-width="0.5" />
@@ -226,17 +276,16 @@
               <text x="36" y="82" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="4.5" fill="#002d62">US Scott #91</text>
               <text x="36" y="88" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="4.5" fill="#002d62">15¢ Lincoln, E-Grill</text>
             </svg>
-          </div>
+          </figure>
           <div class="auction-copy">
-            <h3>FEATURING A CURATED PREMIUM SELECTION OF DONATED ITEMS</h3>
-            <ul>
-              <li>
-                Including unique and valuable pieces, such as this
-                <strong>US Scott #91, 15¢ Lincoln with E-Grill.</strong>
-              </li>
-              <li>Bidding Opens: Saturday Morning</li>
-              <li>Bidding Closes: Sunday at 3:00 PM Sharp</li>
-              <li>Terms: Whole-dollar cash bids only.</li>
+            <p class="auction-intro">Featuring a curated premium selection of donated items</p>
+            <p class="lot-highlight">
+              Highlight: <strong>US Scott #91, 15¢ Lincoln with E-Grill</strong>
+            </p>
+            <ul class="auction-facts">
+              <li><strong>Bidding starts:</strong> Saturday 19th 10:00 AM</li>
+              <li><strong>Closes:</strong> Sunday 20th, 3:00 PM Sharp</li>
+              <li><strong>Terms:</strong> Whole-dollar cash bids only</li>
             </ul>
           </div>
         </div>

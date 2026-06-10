@@ -76,7 +76,7 @@ body {
 .texas-stamp {
   position: absolute;
   top: 12px;
-  left: 14px;
+  right: 14px;
   width: 52px;
   height: 52px;
   background: #000000;

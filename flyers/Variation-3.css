@@ -79,7 +79,9 @@ body {
   left: 14px;
   width: 52px;
   height: 52px;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15));
+  background: #000000;
+  border-radius: 2px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.28));
 }
 
 .title-block {
@@ -518,7 +520,8 @@ body {
   }
 
   .texas-stamp {
-    filter: none;
+    background: #000000;
+    filter: drop-shadow(0 1pt 1pt rgba(0, 0, 0, 0.32));
   }
 
   .header,

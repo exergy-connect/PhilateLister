@@ -34,24 +34,28 @@ defaults:
     @region featuring-heading
       align: center
     @stack featuring
-      direction: vertical
-      gap: 2px
+      direction: horizontal
+      gap: 0.5rem
+      weight: 1
       content:
-        @stack featuring-top
-          direction: horizontal
-          gap: 2px
-          content:
-            @region feature-bourse
-              weight: 1
-            @region feature-exhibits
-              weight: 1
-        @stack featuring-bottom
-          direction: horizontal
-          gap: 2px
-          content:
-            @region feature-seminars
-              weight: 1
-            @region feature-beginners
-              weight: 1
-    @region stamp-release
-    @region auction
+        @region feature-bourse
+          weight: 1
+          height: 5.5rem
+        @region feature-exhibits
+          weight: 1
+          height: 5.5rem
+        @region feature-seminars
+          weight: 1
+          height: 5.5rem
+        @region feature-beginners
+          weight: 1
+          height: 5.5rem
+    @stack specials
+      direction: horizontal
+      weight: 2
+      gap: 0.55rem
+      content:
+        @region stamp-release
+          weight: 1
+        @region auction
+          weight: 1

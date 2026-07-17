@@ -53,106 +53,7 @@ event:
 @id flyer
 @presentation poster
 
-@region header
-@image houston-skyline
-  url: houston-skyline.svg
-  alt: Houston skyline
-
-@image texas-flag-stamp
-  url: texas-flag-stamp.svg
-  alt: Texas flag stamp
-
-@region title
-GREATER HOUSTON
-
-# STAMP SHOW
-
-{{ event.dates | upper }}
-
-@region venue
-![Humble Civic Center](humble-civic-center.png)
-
-**{{ event.venue }}**
-
-{{ event.address_line1 }}
-
-{{ event.address_line2 }}
-
-@region qr
-@qr_code
-  url: "{{ event.url }}"
-
-@region dealer
-```editable-slot
-placeholder: 
-  static: Brought to you by the GHSS Foundation
-  dynamic: Add dealer details here
-label: Dealer information
-```
-
-@region hours
-<table>
-  <tr>
-    <th rowspan="2">SHOW HOURS:</th>
-    <th>{{ event.hours[0].day }}</th>
-    <th>{{ event.hours[1].day }}</th>
-    <th>{{ event.hours[2].day }}</th>
-  </tr>
-  <tr>
-    <td>{{ event.hours[0].time }}</td>
-    <td>{{ event.hours[1].time }}</td>
-    <td>{{ event.hours[2].time }}</td>
-  </tr>
-</table>
-
-@region featuring-heading
-### FEATURING
-
-@region feature-bourse
-**Dealer Bourse**
-
-@region feature-exhibits
-**Competitive Exhibits**
-
-@region feature-seminars
-**Educational Seminars**
-
-@region feature-beginners
-**Beginner's Booth**
-
-@region stamp-release
-### ✦ USPS FIRST DAY OF ISSUE: {{ event.stamp_release.name }} ✦
-
-@image
-  url: winter-wreath-2026.png
-  alt: "{{ event.stamp_release.name }} Global Forever stamp"
-
-**{{ event.stamp_release.kind }}**
-
-Released {{ event.stamp_release.release }}
-
-**{{ event.stamp_release.lead }}**
-
-{{ event.stamp_release.summary }}
-
-Photo by {{ event.stamp_release.photographer }} · Design by {{ event.stamp_release.designer }}
-
-@region auction
-### ✦ SPECIAL EVENT: GHSS DONATION SILENT AUCTION ✦
-
-@image
-  url: ../samples/SC91.jpg
-  alt: "{{ event.auction.highlight }}"
-
-**{{ event.auction.kind }}**
-
-Closes {{ event.auction.closes }}
-
-**{{ event.auction.lead }}**
-
-{{ event.auction.summary }}
-
-Bid sheets available {{ event.auction.bidding_starts }} · {{ event.auction.terms }}
+@include partials/ghss-regions.xp
 
 ---
 @id preview
@@ -180,3 +81,41 @@ September 18–20, 2026 · Humble Civic Center
       States Scott number ninety-one, the fifteen-cent Lincoln with E-Grill.
       Come for the stamps. Stay for an exclusive experience you will only find
       here. Details and directions are on the flyer — scan the code and join us.
+  - es-US: >-
+      Marque su calendario: el Greater Houston Stamp Show regresa del dieciocho
+      al veinte de septiembre en el Humble Civic Center — tres días que no se
+      puede perder. Este es el punto de encuentro de Houston para coleccionistas,
+      comerciantes y para quienes sienten curiosidad por las historias que
+      cuentan los sellos. Recorra una completa bolsa de comerciantes, explore
+      exhibiciones competitivas, asista a seminarios educativos y visite el
+      Beginner’s Booth si está empezando. Y esto es lo que hace inolvidable este
+      año: el viernes a las once, el Servicio Postal de los Estados Unidos
+      celebra la ceremonia de Primer Día de Emisión del sello Global Forever
+      Winter Wreath — un diseño navideño nevado que usted puede presenciar en el
+      momento en que entra al correo. Luego puje en la subasta silenciosa
+      benéfica de GHSS, con un lote destacado de la era clásica: Estados Unidos
+      Scott número noventa y uno, el Lincoln de quince centavos con E-Grill.
+      Venga por los sellos. Quédese por una experiencia exclusiva que solo
+      encontrará aquí. Los detalles y las indicaciones están en el folleto —
+      escanee el código y únase a nosotros.
+
+---
+@id widescreen
+@presentation slidedeck
+@layout stamp-show-wide
+
+@include partials/ghss-regions.xp
+
+@narrative
+  - en-US: >-
+      Same show, widescreen ready — everything you need for Greater Houston
+      Stamp Show, September eighteenth through twentieth at the Humble Civic
+      Center. First Day of Issue for Winter Wreath on Friday at eleven, plus the
+      GHSS donation silent auction featuring Scott number ninety-one. Scan the
+      code, save the dates, and join us.
+  - es-US: >-
+      El mismo evento, listo para pantalla ancha: todo lo esencial del Greater
+      Houston Stamp Show, del dieciocho al veinte de septiembre en el Humble
+      Civic Center. Primer Día de Emisión de Winter Wreath el viernes a las
+      once, y la subasta silenciosa benéfica de GHSS con el Scott número
+      noventa y uno. Escanee el código, reserve las fechas y únase a nosotros.

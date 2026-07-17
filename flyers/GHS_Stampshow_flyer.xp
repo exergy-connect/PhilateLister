@@ -26,17 +26,23 @@ event:
     designer: Greg Breeding
     release: Friday 18th at 11:00 AM
     stamp_image: winter-wreath-2026.png
+    lead: A snowy holiday wreath for the season’s Global Forever issue.
     summary: >-
-      The new holiday Global stamp features a snowy, decorated wreath created
-      from artificial branches and craft-store materials by photographer
-      Natalia Kostikova, who painted the ornaments and sprayed the wreath with
-      baking soda to simulate snow. Designed by Greg Breeding for USPS.
+      Photographer Natalia Kostikova built the wreath from artificial branches
+      and craft-store materials, painting each ornament and dusting the greenery
+      with baking soda for frost. Designed by Greg Breeding for the United
+      States Postal Service.
   auction:
+    kind: Donation silent auction
     highlight: "US Scott #91, 15¢ Lincoln with E-Grill"
     stamp_image: ../samples/SC91.jpg
     bidding_starts: Saturday 19th 10:00 AM
     closes: "Sunday 20th, 3:00 PM"
     terms: Whole-dollar cash bids only
+    lead: A curated premium selection of donated lots to support the show.
+    summary: >-
+      Highlight lot US Scott #91, the 15¢ Lincoln with E-Grill — a classic-era
+      issue that anchors this year’s GHSS donation auction.
 ---
 @id flyer
 
@@ -112,7 +118,11 @@ Dealer details here
   alt: "{{ event.stamp_release.name }} Global Forever stamp"
   click_to_zoom: false
 
-**{{ event.stamp_release.kind }}** — released {{ event.stamp_release.release }}
+**{{ event.stamp_release.kind }}**
+
+Released {{ event.stamp_release.release }}
+
+**{{ event.stamp_release.lead }}**
 
 {{ event.stamp_release.summary }}
 
@@ -126,10 +136,12 @@ Photo by {{ event.stamp_release.photographer }} · Design by {{ event.stamp_rele
   alt: "{{ event.auction.highlight }}"
   click_to_zoom: false
 
-Featuring a curated premium selection of donated items
+**{{ event.auction.kind }}**
 
-Highlight: **{{ event.auction.highlight }}**
+Closes {{ event.auction.closes }}
 
-- **Bid sheets available:** {{ event.auction.bidding_starts }}
-- **Closes:** {{ event.auction.closes }}
-- **Terms:** {{ event.auction.terms }}
+**{{ event.auction.lead }}**
+
+{{ event.auction.summary }}
+
+Bid sheets available {{ event.auction.bidding_starts }} · {{ event.auction.terms }}

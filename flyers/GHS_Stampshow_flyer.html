@@ -262,6 +262,10 @@ body {
   --sky: #d1dce5;
   --maroon: #8b1a1a;
   --white: #ffffff;
+  --panel: color-mix(in srgb, var(--sky) 55%, var(--white));
+  --ink-soft: color-mix(in srgb, var(--navy) 35%, var(--sky));
+  --release-tint: color-mix(in srgb, var(--sky) 28%, var(--white));
+  --auction-tint: color-mix(in srgb, var(--maroon) 12%, var(--white));
   border: none;
   border-radius: 0;
   box-shadow: none;
@@ -446,7 +450,7 @@ body {
   padding: 0.4rem 0.55rem;
   min-height: 5.75rem;
   height: 5.75rem;
-  background: #e4e8ec;
+  background: var(--panel);
   border: 2px dotted var(--navy);
   font-size: 0.85rem;
   font-weight: 600;
@@ -456,7 +460,7 @@ body {
 
 #xframe .segment[data-layout="stamp-show"] .stamp-show-dealer,
 #xframe .segment[data-layout="stamp-show"] .stamp-show-dealer p {
-  color: #b8c0c8;
+  color: var(--ink-soft);
 }
 
 /* Hours bar */
@@ -526,7 +530,7 @@ body {
   margin: 0;
   padding: 0.35rem 0.5rem;
   background:
-    linear-gradient(135deg, rgba(209, 220, 229, 0.72), rgba(255, 255, 255, 0.96) 58%),
+    linear-gradient(135deg, color-mix(in srgb, var(--sky) 72%, transparent), color-mix(in srgb, var(--white) 96%, transparent) 58%),
     var(--white);
   font-size: 1.05rem;
   font-weight: 900;
@@ -574,12 +578,12 @@ body {
 #xframe .stamp-show-stamp-release {
   border-color: var(--navy);
   background:
-    linear-gradient(180deg, #f4f7fa 0%, var(--white) 42%);
+    linear-gradient(180deg, var(--release-tint) 0%, var(--white) 42%);
 }
 
 #xframe .stamp-show-auction {
   background:
-    linear-gradient(180deg, #faf4f4 0%, var(--white) 42%);
+    linear-gradient(180deg, var(--auction-tint) 0%, var(--white) 42%);
 }
 
 #xframe .segment[data-layout="stamp-show"] .stamp-show-stamp-release h3,
@@ -587,7 +591,7 @@ body {
   grid-column: 1 / -1;
   margin: 0;
   padding: 0.35rem 0.5rem;
-  color: #ffffff;
+  color: var(--white);
   font-size: 0.88rem;
   font-weight: 800;
   letter-spacing: 0.03em;
@@ -612,20 +616,20 @@ body {
   margin: 0.7rem 0 0.7rem 0.7rem;
   padding: 0.28rem;
   background:
-    linear-gradient(145deg, #ffffff 0%, #f0f4f8 100%);
-  border: 1px solid #b7c4d0;
+    linear-gradient(145deg, var(--white) 0%, var(--release-tint) 100%);
+  border: 1px solid color-mix(in srgb, var(--sky) 70%, var(--navy));
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.9) inset,
-    0 8px 18px rgba(0, 45, 98, 0.12);
+    0 1px 0 color-mix(in srgb, var(--white) 90%, transparent) inset,
+    0 8px 18px color-mix(in srgb, var(--navy) 12%, transparent);
 }
 
 #xframe .stamp-show-auction img {
   background:
-    linear-gradient(145deg, #ffffff 0%, #f7efef 100%);
-  border-color: #d0b7b7;
+    linear-gradient(145deg, var(--white) 0%, var(--auction-tint) 100%);
+  border-color: color-mix(in srgb, var(--maroon) 35%, var(--sky));
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.9) inset,
-    0 8px 18px rgba(139, 26, 26, 0.12);
+    0 1px 0 color-mix(in srgb, var(--white) 90%, transparent) inset,
+    0 8px 18px color-mix(in srgb, var(--maroon) 12%, transparent);
 }
 
 #xframe .stamp-show-stamp-release > p,
@@ -665,7 +669,7 @@ body {
 }
 
 #xframe .stamp-show-auction > p:nth-of-type(2) {
-  background: color-mix(in srgb, #f0d6d6 70%, white);
+  background: color-mix(in srgb, var(--auction-tint) 70%, var(--white));
   border-left-color: var(--maroon);
   color: var(--maroon);
 }
@@ -686,7 +690,7 @@ body {
   font-size: 0.86rem;
   font-weight: 500;
   line-height: 1.5;
-  color: color-mix(in srgb, var(--navy) 82%, #4a5560);
+  color: color-mix(in srgb, var(--navy) 82%, var(--muted, #555));
 }
 
 #xframe .stamp-show-stamp-release > p:nth-of-type(5),
@@ -698,11 +702,11 @@ body {
   font-weight: 600;
   font-style: italic;
   letter-spacing: 0.02em;
-  color: #5a6570;
+  color: var(--muted, #555);
 }
 
 #xframe .stamp-show-auction > p:nth-of-type(5) {
-  border-top-color: color-mix(in srgb, #f0d6d6 70%, var(--maroon));
+  border-top-color: color-mix(in srgb, var(--auction-tint) 70%, var(--maroon));
 }
 
 #xframe .layout-controls {

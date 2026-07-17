@@ -1,0 +1,101 @@
+---
+extends: stamp-show-base
+---
+```css
+/* Flyer / poster presentation chrome */
+body {
+  padding: 0 !important;
+  margin: 0 !important;
+  background: #e8edf2 !important;
+}
+
+#xframe {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background: var(--white, #ffffff);
+}
+
+#xframe .layout-controls {
+  top: calc(100% + 0.75rem);
+  bottom: auto;
+}
+
+/* Dealer / “Brought to you by” slot — flyer only */
+#xframe .segment[data-layout="stamp-show"] .layout-container:has(> .stamp-show-qr) > .stamp-show-dealer {
+  display: grid;
+  place-items: stretch;
+  justify-self: end;
+  align-self: center !important;
+  box-sizing: border-box;
+  width: 19rem;
+  max-width: 19rem;
+  height: 6.25rem;
+  min-height: 6.25rem;
+  max-height: 100%;
+  min-width: 0;
+  margin: 0.15rem 0.75rem 0.15rem 0;
+  padding: 0;
+  overflow: hidden;
+  background: var(--release-tint);
+  border: 1px solid color-mix(in srgb, var(--navy) 45%, var(--sky));
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--navy);
+}
+
+#xframe .segment[data-layout="stamp-show"] .stamp-show-dealer .xframe-content-plugin.editable-slot {
+  --editable-slot-fg: var(--navy);
+  --editable-slot-muted: var(--ink-soft);
+  --editable-slot-surface: var(--white);
+  --editable-slot-border: color-mix(in srgb, var(--navy) 35%, var(--sky));
+  --editable-slot-accent: var(--navy);
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  color: var(--navy);
+}
+
+#xframe .segment[data-layout="stamp-show"] .stamp-show-dealer :is(.editable-slot-display, .editable-slot-text) {
+  color: var(--navy);
+  font-family: var(--body-font);
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+#xframe .segment[data-layout="stamp-show"] .stamp-show-dealer .editable-slot-callout {
+  color: var(--ink-soft);
+}
+
+#xframe .segment[data-layout="stamp-show"] .stamp-show-dealer .editable-slot-bar {
+  border-top-color: color-mix(in srgb, var(--navy) 28%, var(--sky));
+  background: color-mix(in srgb, var(--white) 72%, var(--sky));
+}
+
+/* Static PNG path: transparent placeholder SVG sits inside the dotted badge. */
+#xframe .segment[data-layout="stamp-show"] .stamp-show-dealer > img {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0.35rem 0.5rem;
+  object-fit: contain;
+  object-position: center;
+}
+
+/* Flyer featuring grid frame — one grouped list rather than four competing cards. */
+#xframe .segment[data-layout="stamp-show"] > .layout-container > .layout-container:has(.stamp-show-feature-bourse) {
+  width: calc(100% - 1.7rem);
+  margin: 0 0.85rem 0.15rem;
+  padding: 0;
+  border: 2px solid var(--navy);
+  background: var(--navy);
+  gap: 1px !important;
+  box-sizing: border-box;
+}
+```

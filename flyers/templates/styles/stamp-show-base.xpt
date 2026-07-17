@@ -1,12 +1,6 @@
 ```css
-/* Greater Houston Stamp Show — minimum flyer chrome */
-body {
-  padding: 0 !important;
-  margin: 0 !important;
-  background: #e8edf2 !important;
-}
-
-#xframe {
+/* Shared GHSS content look — extended by flyer and slidedeck styles */
+#xframe .segment[data-layout^="stamp-show"] {
   --navy: #002d62;
   --sky: #d1dce5;
   --maroon: #8b1a1a;
@@ -15,16 +9,8 @@ body {
   --ink-soft: color-mix(in srgb, var(--navy) 35%, var(--sky));
   --release-tint: color-mix(in srgb, var(--sky) 28%, var(--white));
   --auction-tint: color-mix(in srgb, var(--maroon) 12%, var(--white));
-  border: none;
-  border-radius: 0;
-  box-shadow: none;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: var(--navy);
-  background: var(--white);
-}
-
-#xframe .segment[data-layout^="stamp-show"] {
-  display: flex !important;
+  --body-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  /* Do not force display — slidedeck hides inactive .segment; poster CSS shows all. */
   padding: 0 !important;
   gap: 0 !important;
   justify-content: flex-start !important;
@@ -34,6 +20,7 @@ body {
   box-shadow: inset 0 0 0 2px var(--white);
   /* Drive framework `.segment h1 { color: var(--fg) }` without retargeting tags. */
   --fg: var(--navy);
+  font-family: var(--body-font);
   color: var(--navy);
 }
 
@@ -56,6 +43,13 @@ body {
 
 #xframe .segment[data-layout^="stamp-show"] img {
   max-height: none;
+}
+
+#xframe .segment[data-layout^="stamp-show"] :is(
+  h1, h2, h3, p, table, caption,
+  .editable-slot-display, .editable-slot-text, .editable-slot-callout
+) {
+  font-family: var(--body-font);
 }
 
 /* Header: SVG is already 50% scale (640∶60); show whole graphic — no cover crop */
@@ -145,7 +139,7 @@ body {
   letter-spacing: 0.04em;
 }
 
-/* Event row: venue | QR | dealer (portrait) or hours (wide) */
+/* Event row: venue | QR [| dealer] */
 #xframe .segment[data-layout^="stamp-show"] .layout-container:has(> :is(.stamp-show-qr, .stamp-show-wide-qr)) {
   display: grid !important;
   grid-template-columns: 1fr auto 1fr;
@@ -157,16 +151,14 @@ body {
 }
 
 #xframe .segment[data-layout^="stamp-show"] .layout-container:has(> :is(.stamp-show-qr, .stamp-show-wide-qr)) > :is(.stamp-show-venue, .stamp-show-wide-venue),
-#xframe .segment[data-layout^="stamp-show"] .layout-container:has(> :is(.stamp-show-qr, .stamp-show-wide-qr)) > :is(.stamp-show-qr, .stamp-show-wide-qr),
-#xframe .segment[data-layout^="stamp-show"] .layout-container:has(> :is(.stamp-show-qr, .stamp-show-wide-qr)) > :is(.stamp-show-dealer, .stamp-show-wide-dealer) {
+#xframe .segment[data-layout^="stamp-show"] .layout-container:has(> :is(.stamp-show-qr, .stamp-show-wide-qr)) > :is(.stamp-show-qr, .stamp-show-wide-qr) {
   align-self: center !important;
   height: fit-content !important;
   max-height: 100%;
   min-width: 0;
 }
 
-#xframe .segment[data-layout^="stamp-show"] .layout-container:has(> :is(.stamp-show-qr, .stamp-show-wide-qr)) > :is(.stamp-show-venue, .stamp-show-wide-venue),
-#xframe .segment[data-layout^="stamp-show"] .layout-container:has(> :is(.stamp-show-qr, .stamp-show-wide-qr)) > :is(.stamp-show-dealer, .stamp-show-wide-dealer) {
+#xframe .segment[data-layout^="stamp-show"] .layout-container:has(> :is(.stamp-show-qr, .stamp-show-wide-qr)) > :is(.stamp-show-venue, .stamp-show-wide-venue) {
   width: auto;
 }
 
@@ -222,75 +214,6 @@ body {
   height: 100% !important;
 }
 
-#xframe .segment[data-layout^="stamp-show"] .layout-container:has(> :is(.stamp-show-qr, .stamp-show-wide-qr)) > :is(.stamp-show-dealer, .stamp-show-wide-dealer) {
-  display: grid;
-  place-items: stretch;
-  justify-self: end;
-  align-self: center !important;
-  box-sizing: border-box;
-  width: 19rem;
-  max-width: 19rem;
-  margin: 0.15rem 0.75rem 0.15rem 0;
-  padding: 0;
-  min-height: 6.25rem;
-  height: 6.25rem;
-  background: var(--panel);
-  border: 1.5px dotted var(--navy);
-  overflow: hidden;
-  font-size: 0.85rem;
-  font-weight: 600;
-  font-style: italic;
-  text-align: center;
-}
-
-#xframe .segment[data-layout^="stamp-show"] :is(.stamp-show-dealer, .stamp-show-wide-dealer) {
-  color: var(--navy);
-  font-style: normal;
-}
-
-#xframe .segment[data-layout^="stamp-show"] :is(.stamp-show-dealer, .stamp-show-wide-dealer) .xframe-content-plugin.editable-slot {
-  --editable-slot-fg: var(--navy);
-  --editable-slot-muted: var(--ink-soft);
-  --editable-slot-surface: var(--white);
-  --editable-slot-border: color-mix(in srgb, var(--navy) 35%, var(--sky));
-  --editable-slot-accent: var(--navy);
-  width: 100%;
-  height: 100%;
-  min-height: 100%;
-  color: var(--navy);
-}
-
-#xframe .segment[data-layout^="stamp-show"] :is(.stamp-show-dealer, .stamp-show-wide-dealer) .editable-slot-display,
-#xframe .segment[data-layout^="stamp-show"] :is(.stamp-show-dealer, .stamp-show-wide-dealer) .editable-slot-text {
-  color: var(--navy);
-  font-family: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", serif;
-  font-style: italic;
-  letter-spacing: 0.03em;
-}
-
-#xframe .segment[data-layout^="stamp-show"] :is(.stamp-show-dealer, .stamp-show-wide-dealer) .editable-slot-callout {
-  color: var(--ink-soft);
-}
-
-#xframe .segment[data-layout^="stamp-show"] :is(.stamp-show-dealer, .stamp-show-wide-dealer) .editable-slot-bar {
-  border-top-color: color-mix(in srgb, var(--navy) 28%, var(--sky));
-  background: color-mix(in srgb, var(--white) 72%, var(--sky));
-}
-
-/* Static PNG path: transparent placeholder SVG sits inside the dotted badge. */
-#xframe .segment[data-layout^="stamp-show"] :is(.stamp-show-dealer, .stamp-show-wide-dealer) > img {
-  display: block;
-  box-sizing: border-box;
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  max-height: none;
-  margin: 0;
-  padding: 0.35rem 0.5rem;
-  object-fit: contain;
-  object-position: center;
-}
-
 /* Hours @table — compact schedule via authored id */
 #show-times {
   width: auto;
@@ -343,7 +266,6 @@ body {
   padding-right: 0.85rem;
 }
 
-
 /* Featuring */
 #xframe :is(.stamp-show-featuring-heading, .stamp-show-wide-featuring-heading) {
   padding: 0.35rem 0.85rem 0.25rem;
@@ -371,26 +293,15 @@ body {
 #xframe [class*="stamp-show-wide-feature-"] {
   display: grid;
   place-items: center;
-  min-height: 3.2rem;
+  min-height: 2.8rem;
   margin: 0;
   padding: 0.35rem 0.5rem;
-  background:
-    linear-gradient(135deg, color-mix(in srgb, var(--sky) 72%, transparent), color-mix(in srgb, var(--white) 96%, transparent) 58%),
-    var(--white);
-  font-size: 1.05rem;
-  font-weight: 900;
-  letter-spacing: 0.02em;
+  background: var(--white);
+  font-size: 0.98rem;
+  font-weight: 700;
+  letter-spacing: 0.035em;
   text-transform: uppercase;
   text-align: center;
-}
-
-#xframe .segment[data-layout="stamp-show"] > .layout-container > .layout-container:has(.stamp-show-feature-bourse) {
-  width: calc(100% - 1.7rem);
-  margin: 0 0.85rem 0.15rem;
-  padding: 2px;
-  border: 2px solid var(--navy);
-  background: var(--navy);
-  box-sizing: border-box;
 }
 
 #xframe .segment[data-layout^="stamp-show"] .layout-container[data-layout-direction="horizontal"] {
@@ -408,15 +319,14 @@ body {
   overflow: hidden;
   font-size: 0.82rem;
   line-height: 1.35;
-}
-
-#xframe :is(.stamp-show-stamp-release, .stamp-show-wide-stamp-release),
-#xframe :is(.stamp-show-auction, .stamp-show-wide-auction) {
   display: grid;
   grid-template-columns: 7.75rem minmax(0, 1fr);
   column-gap: 0.85rem;
   row-gap: 0;
   align-items: start;
+  width: auto;
+  min-width: 0;
+  box-shadow: none;
 }
 
 #xframe :is(.stamp-show-stamp-release, .stamp-show-wide-stamp-release) {
@@ -462,18 +372,13 @@ body {
   background:
     linear-gradient(145deg, var(--white) 0%, var(--release-tint) 100%);
   border: 1px solid color-mix(in srgb, var(--sky) 70%, var(--navy));
-  box-shadow:
-    0 1px 0 color-mix(in srgb, var(--white) 90%, transparent) inset,
-    0 8px 18px color-mix(in srgb, var(--navy) 12%, transparent);
+  box-shadow: none;
 }
 
 #xframe :is(.stamp-show-auction, .stamp-show-wide-auction) img {
   background:
     linear-gradient(145deg, var(--white) 0%, var(--auction-tint) 100%);
   border-color: color-mix(in srgb, var(--maroon) 35%, var(--sky));
-  box-shadow:
-    0 1px 0 color-mix(in srgb, var(--white) 90%, transparent) inset,
-    0 8px 18px color-mix(in srgb, var(--maroon) 12%, transparent);
 }
 
 #xframe :is(.stamp-show-stamp-release, .stamp-show-wide-stamp-release) > p,
@@ -544,7 +449,7 @@ body {
   border-top: 1px solid color-mix(in srgb, var(--sky) 70%, var(--navy));
   font-size: 0.72rem;
   font-weight: 600;
-  font-style: italic;
+  font-style: normal;
   letter-spacing: 0.02em;
   color: var(--muted, #555);
 }
@@ -553,138 +458,10 @@ body {
   border-top-color: color-mix(in srgb, var(--auction-tint) 70%, var(--maroon));
 }
 
-#xframe .layout-controls {
-  top: calc(100% + 0.75rem);
-  bottom: auto;
-}
-
-/* Widescreen / YouTube 16:9 — same poster stack, stretched horizontally */
-#xframe .segment[data-layout="stamp-show-wide"] {
-  border-width: 8px;
-}
-
-#xframe .segment[data-layout="stamp-show-wide"] > .layout-container {
-  gap: 0 !important;
-}
-
-#xframe .segment[data-layout="stamp-show-wide"] #texas-flag-stamp {
-  top: 8px;
-  right: 14px;
-  width: 64px;
-  height: 42px;
-}
-
-#xframe .segment[data-layout="stamp-show-wide"] .stamp-show-wide-title {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 0.45rem 1.5rem 0.3rem;
-  background: var(--white);
-  color: var(--navy);
-}
-
-#xframe .segment[data-layout="stamp-show-wide"] .stamp-show-wide-title p,
-#xframe .segment[data-layout="stamp-show-wide"] .stamp-show-wide-title h1 {
-  width: 100%;
-  margin: 0;
-  text-align: center;
-  color: var(--navy);
-}
-
-#xframe .segment[data-layout="stamp-show-wide"] .stamp-show-wide-title p:first-child {
-  font-size: 1.2rem;
-  letter-spacing: 0.16em;
-}
-
-#xframe .segment[data-layout="stamp-show-wide"] .stamp-show-wide-title h1 {
-  font-size: 2.85rem;
-  letter-spacing: 0.08em;
-}
-
-#xframe .segment[data-layout="stamp-show-wide"] .stamp-show-wide-title p:last-child {
-  font-size: 1.35rem;
-}
-
-#xframe .segment[data-layout="stamp-show-wide"] .layout-container:has(> .stamp-show-wide-qr) {
-  width: 100%;
-  padding: 0.15rem 0.75rem;
-  align-items: center !important;
-}
-
-#xframe .segment[data-layout="stamp-show-wide"] .stamp-show-wide-venue {
-  min-height: 68px;
-  font-size: 0.92rem;
-}
-
-#xframe .segment[data-layout="stamp-show-wide"] .stamp-show-wide-qr .xframe-qr-code {
-  width: 86px;
-  height: 86px;
-}
-
-#xframe .segment[data-layout="stamp-show-wide"] .stamp-show-wide-featuring-heading {
-  padding: 0.55rem 1.25rem 0.4rem;
-}
-
-#xframe .segment[data-layout="stamp-show-wide"] .stamp-show-wide-featuring-heading h3 {
-  font-size: 1.25rem;
-  letter-spacing: 0.12em;
-}
-
-#xframe .segment[data-layout="stamp-show-wide"] > .layout-container > .layout-container:has(> .stamp-show-wide-feature-bourse) {
-  width: calc(100% - 2.5rem);
-  margin: 0.2rem 1.25rem 0.55rem;
-  padding: 4px;
-  border: 2px solid var(--navy);
-  background: var(--navy);
-  gap: 0.5rem !important;
-  box-sizing: border-box;
-}
-
-#xframe .segment[data-layout="stamp-show-wide"] [class*="stamp-show-wide-feature-"] {
-  padding: 1.15rem 1.25rem;
-  font-size: 1.5rem;
-  letter-spacing: 0.05em;
-  line-height: 1.2;
-}
-
-#xframe .segment[data-layout="stamp-show-wide"] [class*="stamp-show-wide-feature-"] p {
-  margin: 0;
-}
-
-#xframe .segment[data-layout="stamp-show-wide"] > .layout-container > .layout-container:has(> .stamp-show-wide-stamp-release) {
-  flex: 1 1 auto;
-  min-height: 0;
-  width: 100%;
-  padding: 0 0.65rem 0.45rem;
-  gap: 0.55rem !important;
-  align-items: stretch;
-}
-
-#xframe .segment[data-layout="stamp-show-wide"] :is(.stamp-show-wide-stamp-release, .stamp-show-wide-auction) {
-  flex: 1 1 0;
-  min-width: 0;
-  min-height: 0;
-  margin: 0;
-  font-size: 0.8rem;
-  grid-template-columns: 6.75rem minmax(0, 1fr);
-}
-
-#xframe .segment[data-layout="stamp-show-wide"] :is(.stamp-show-wide-stamp-release, .stamp-show-wide-auction) img {
-  width: 5.85rem;
-  margin: 0.55rem 0 0.55rem 0.55rem;
-}
-
-#xframe .segment[data-layout="stamp-show-wide"] :is(.stamp-show-wide-stamp-release, .stamp-show-wide-auction) h3 {
-  font-size: 0.82rem;
-}
-
-#xframe .segment[data-layout="stamp-show-wide"] :is(.stamp-show-wide-stamp-release, .stamp-show-wide-auction) > p:nth-of-type(4) {
-  max-width: none;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+/* Reserve two thirds for the longer release story and one third for the auction. */
+#xframe .segment[data-layout^="stamp-show"] > .layout-container > .layout-container:has(> :is(.stamp-show-stamp-release, .stamp-show-wide-stamp-release)) {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.7fr) minmax(20rem, 1fr);
+  align-items: stretch !important;
 }
 ```

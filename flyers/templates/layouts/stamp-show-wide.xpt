@@ -1,5 +1,5 @@
 ---
-styles: [stamp-show]
+styles: [stamp-show-slidedeck]
 defaults:
   region: title
 content_map: true
@@ -26,8 +26,6 @@ content_map: true
         @region venue
           align: center
         @region qr
-          align: center
-        @region dealer
           align: center
     @region featuring-heading
       align: center

@@ -1,0 +1,137 @@
+---
+extends: stamp-show-base
+---
+```css
+/* Slidedeck presentation — 16:9 slide adjustments (no flyer page chrome) */
+#xframe .segment[data-layout="stamp-show-wide"] {
+  border-width: 8px;
+}
+
+#xframe .segment[data-layout="stamp-show-wide"] > .layout-container {
+  gap: 0 !important;
+}
+
+#xframe .segment[data-layout="stamp-show-wide"] #texas-flag-stamp {
+  top: 8px;
+  right: 14px;
+  width: 64px;
+  height: 42px;
+}
+
+#xframe .segment[data-layout="stamp-show-wide"] .stamp-show-wide-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.45rem 1.5rem 0.3rem;
+  background: var(--white);
+  color: var(--navy);
+}
+
+#xframe .segment[data-layout="stamp-show-wide"] .stamp-show-wide-title p,
+#xframe .segment[data-layout="stamp-show-wide"] .stamp-show-wide-title h1 {
+  width: 100%;
+  margin: 0;
+  text-align: center;
+  color: var(--navy);
+}
+
+#xframe .segment[data-layout="stamp-show-wide"] .stamp-show-wide-title p:first-child {
+  font-size: 1.2rem;
+  letter-spacing: 0.16em;
+}
+
+#xframe .segment[data-layout="stamp-show-wide"] .stamp-show-wide-title h1 {
+  font-size: 2.85rem;
+  letter-spacing: 0.08em;
+}
+
+#xframe .segment[data-layout="stamp-show-wide"] .stamp-show-wide-title p:last-child {
+  font-size: 1.35rem;
+}
+
+#xframe .segment[data-layout="stamp-show-wide"] .layout-container:has(> .stamp-show-wide-qr) {
+  width: 100%;
+  padding: 0.15rem 0.75rem;
+  align-items: center !important;
+  flex: 0 0 5.25rem !important;
+  min-height: 5.25rem;
+}
+
+#xframe .segment[data-layout="stamp-show-wide"] .stamp-show-wide-venue {
+  min-height: 62px;
+  font-size: 0.92rem;
+}
+
+#xframe .segment[data-layout="stamp-show-wide"] .stamp-show-wide-qr .xframe-qr-code {
+  width: 78px;
+  height: 78px;
+}
+
+#xframe .segment[data-layout="stamp-show-wide"] .stamp-show-wide-featuring-heading {
+  padding: 0.55rem 1.25rem 0.4rem;
+}
+
+#xframe .segment[data-layout="stamp-show-wide"] .stamp-show-wide-featuring-heading h3 {
+  font-size: 1.25rem;
+  letter-spacing: 0.12em;
+}
+
+#xframe .segment[data-layout="stamp-show-wide"] > .layout-container > .layout-container:has(> .stamp-show-wide-feature-bourse) {
+  width: calc(100% - 2.5rem);
+  margin: 0.2rem 1.25rem 0.55rem;
+  padding: 2px;
+  border: 2px solid var(--navy);
+  background: var(--navy);
+  gap: 1px !important;
+  box-sizing: border-box;
+}
+
+#xframe .segment[data-layout="stamp-show-wide"] [class*="stamp-show-wide-feature-"] {
+  padding: 0.8rem 1rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  line-height: 1.2;
+}
+
+#xframe .segment[data-layout="stamp-show-wide"] [class*="stamp-show-wide-feature-"] p {
+  margin: 0;
+}
+
+#xframe .segment[data-layout="stamp-show-wide"] > .layout-container > .layout-container:has(> .stamp-show-wide-stamp-release) {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  padding: 0 0.65rem 0.45rem;
+  gap: 0.55rem !important;
+  align-items: stretch;
+}
+
+#xframe .segment[data-layout="stamp-show-wide"] :is(.stamp-show-wide-stamp-release, .stamp-show-wide-auction) {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  font-size: 0.8rem;
+  grid-template-columns: 6.75rem minmax(0, 1fr);
+}
+
+#xframe .segment[data-layout="stamp-show-wide"] :is(.stamp-show-wide-stamp-release, .stamp-show-wide-auction) img {
+  width: 5.85rem;
+  margin: 0.55rem 0 0.55rem 0.55rem;
+}
+
+#xframe .segment[data-layout="stamp-show-wide"] :is(.stamp-show-wide-stamp-release, .stamp-show-wide-auction) h3 {
+  font-size: 0.82rem;
+}
+
+#xframe .segment[data-layout="stamp-show-wide"] :is(.stamp-show-wide-stamp-release, .stamp-show-wide-auction) > p:nth-of-type(4) {
+  max-width: none;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+```

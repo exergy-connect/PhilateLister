@@ -11,6 +11,38 @@ themes: [light]
 evaluation: dynamic
 narrative:
   voice: female
+  en-US: >-
+    Mark your calendar: the Greater Houston Stamp Show returns September
+    eighteenth through twentieth at the Humble Civic Center — three days you
+    will not want to miss. This is Houston’s gathering place for collectors,
+    dealers, and anyone curious about the stories stamps tell. Walk a full
+    dealer bourse, explore competitive exhibits, catch educational seminars,
+    and stop by the Beginner’s Booth if you are just getting started. And
+    here is what makes this year unforgettable: on Friday at eleven, the
+    United States Postal Service holds a First Day of Issue ceremony for the
+    Winter Wreath Global Forever stamp — a snowy holiday design you can
+    witness at the moment it enters the mailstream. Then bid in the GHSS
+    donation silent auction, anchored by a classic-era highlight: United
+    States Scott number ninety-one, the fifteen-cent Lincoln with E-Grill.
+    Come for the stamps. Stay for an exclusive experience you will only find
+    here. Details and directions are on the flyer — scan the code and join us.
+  es-US: >-
+    Marque su calendario: el Greater Houston Stamp Show regresa del dieciocho
+    al veinte de septiembre en el Humble Civic Center — tres días que no se
+    puede perder. Este es el punto de encuentro de Houston para coleccionistas,
+    comerciantes y para quienes sienten curiosidad por las historias que
+    cuentan los sellos. Recorra una completa bolsa de comerciantes, explore
+    exhibiciones competitivas, asista a seminarios educativos y visite el
+    Beginner’s Booth si está empezando. Y esto es lo que hace inolvidable este
+    año: el viernes a las once, el Servicio Postal de los Estados Unidos
+    celebra la ceremonia de Primer Día de Emisión del sello Global Forever
+    Winter Wreath — un diseño navideño nevado que usted puede presenciar en el
+    momento en que entra al correo. Luego puje en la subasta silenciosa
+    benéfica de GHSS, con un lote destacado de la era clásica: Estados Unidos
+    Scott número noventa y uno, el Lincoln de quince centavos con E-Grill.
+    Venga por los sellos. Quédese por una experiencia exclusiva que solo
+    encontrará aquí. Los detalles y las indicaciones están en el folleto —
+    escanee el código y únase a nosotros.
 event:
   name: Greater Houston Stamp Show
   dates: September 18–20, 2026
@@ -157,55 +189,7 @@ September 18–20, 2026 · Humble Civic Center
 
 @image segment=flyer presentation=poster caption="Show flyer"
 
-@narrative
-  - en-US: >-
-      Mark your calendar: the Greater Houston Stamp Show returns September
-      eighteenth through twentieth at the Humble Civic Center — three days you
-      will not want to miss. This is Houston’s gathering place for collectors,
-      dealers, and anyone curious about the stories stamps tell. Walk a full
-      dealer bourse, explore competitive exhibits, catch educational seminars,
-      and stop by the Beginner’s Booth if you are just getting started. And
-      here is what makes this year unforgettable: on Friday at eleven, the
-      United States Postal Service holds a First Day of Issue ceremony for the
-      Winter Wreath Global Forever stamp — a snowy holiday design you can
-      witness at the moment it enters the mailstream. Then bid in the GHSS
-      donation silent auction, anchored by a classic-era highlight: United
-      States Scott number ninety-one, the fifteen-cent Lincoln with E-Grill.
-      Come for the stamps. Stay for an exclusive experience you will only find
-      here. Details and directions are on the flyer — scan the code and join us.
-  - es-US: >-
-      Marque su calendario: el Greater Houston Stamp Show regresa del dieciocho
-      al veinte de septiembre en el Humble Civic Center — tres días que no se
-      puede perder. Este es el punto de encuentro de Houston para coleccionistas,
-      comerciantes y para quienes sienten curiosidad por las historias que
-      cuentan los sellos. Recorra una completa bolsa de comerciantes, explore
-      exhibiciones competitivas, asista a seminarios educativos y visite el
-      Beginner’s Booth si está empezando. Y esto es lo que hace inolvidable este
-      año: el viernes a las once, el Servicio Postal de los Estados Unidos
-      celebra la ceremonia de Primer Día de Emisión del sello Global Forever
-      Winter Wreath — un diseño navideño nevado que usted puede presenciar en el
-      momento en que entra al correo. Luego puje en la subasta silenciosa
-      benéfica de GHSS, con un lote destacado de la era clásica: Estados Unidos
-      Scott número noventa y uno, el Lincoln de quince centavos con E-Grill.
-      Venga por los sellos. Quédese por una experiencia exclusiva que solo
-      encontrará aquí. Los detalles y las indicaciones están en el folleto —
-      escanee el código y únase a nosotros.
-
 ---
 @id widescreen
 @presentation slidedeck
 @layout stamp-show-wide
-
-@narrative
-  - en-US: >-
-      Same show, widescreen ready — everything you need for Greater Houston
-      Stamp Show, September eighteenth through twentieth at the Humble Civic
-      Center. First Day of Issue for Winter Wreath on Friday at eleven, plus the
-      GHSS donation silent auction featuring Scott number ninety-one. Scan the
-      code, save the dates, and join us.
-  - es-US: >-
-      El mismo evento, listo para pantalla ancha: todo lo esencial del Greater
-      Houston Stamp Show, del dieciocho al veinte de septiembre en el Humble
-      Civic Center. Primer Día de Emisión de Winter Wreath el viernes a las
-      once, y la subasta silenciosa benéfica de GHSS con el Scott número
-      noventa y uno. Escanee el código, reserve las fechas y únase a nosotros.

@@ -1,11 +1,16 @@
 ---
 presentation: poster
-layout: letter-flyer
+presentations:
+  poster:
+    layout: letter-flyer
+  slidedeck: {}
 title: Greater Houston Stamp Show
 subtitle: September 18–20, 2026
 author: Houston Philatelic Society
 themes: [light]
 evaluation: dynamic
+narrative:
+  voice: female
 event:
   name: Greater Houston Stamp Show
   dates: September 18–20, 2026
@@ -46,17 +51,16 @@ event:
       issue that anchors this year’s GHSS donation auction.
 ---
 @id flyer
+@presentation poster
 
 @region header
 @image houston-skyline
   url: houston-skyline.svg
   alt: Houston skyline
-  click_to_zoom: false
 
 @image texas-flag-stamp
   url: texas-flag-stamp.svg
   alt: Texas flag stamp
-  click_to_zoom: false
 
 @region title
 GREATER HOUSTON
@@ -122,7 +126,6 @@ label: Dealer information
 @image
   url: winter-wreath-2026.png
   alt: "{{ event.stamp_release.name }} Global Forever stamp"
-  click_to_zoom: false
 
 **{{ event.stamp_release.kind }}**
 
@@ -140,7 +143,6 @@ Photo by {{ event.stamp_release.photographer }} · Design by {{ event.stamp_rele
 @image
   url: ../samples/SC91.jpg
   alt: "{{ event.auction.highlight }}"
-  click_to_zoom: false
 
 **{{ event.auction.kind }}**
 
@@ -151,3 +153,30 @@ Closes {{ event.auction.closes }}
 {{ event.auction.summary }}
 
 Bid sheets available {{ event.auction.bidding_starts }} · {{ event.auction.terms }}
+
+---
+@id preview
+@presentation slidedeck
+
+# Greater Houston Stamp Show
+
+September 18–20, 2026 · Humble Civic Center
+
+@image segment=flyer presentation=poster caption="Show flyer"
+
+@narrative
+  - en-US: >-
+      Mark your calendar: the Greater Houston Stamp Show returns September
+      eighteenth through twentieth at the Humble Civic Center — three days you
+      will not want to miss. This is Houston’s gathering place for collectors,
+      dealers, and anyone curious about the stories stamps tell. Walk a full
+      dealer bourse, explore competitive exhibits, catch educational seminars,
+      and stop by the Beginner’s Booth if you are just getting started. And
+      here is what makes this year unforgettable: on Friday at eleven, the
+      United States Postal Service holds a First Day of Issue ceremony for the
+      Winter Wreath Global Forever stamp — a snowy holiday design you can
+      witness at the moment it enters the mailstream. Then bid in the GHSS
+      donation silent auction, anchored by a classic-era highlight: United
+      States Scott number ninety-one, the fifteen-cent Lincoln with E-Grill.
+      Come for the stamps. Stay for an exclusive experience you will only find
+      here. Details and directions are on the flyer — scan the code and join us.

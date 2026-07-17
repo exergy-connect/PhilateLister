@@ -1,7 +1,5 @@
 ---
 constraints: { width: 850, height: 1100 }
-segment:
-  layout: stamp-show
 ---
 @stack shell
   direction: vertical

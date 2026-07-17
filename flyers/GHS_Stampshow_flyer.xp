@@ -1,0 +1,135 @@
+---
+presentation: poster
+layout: letter-flyer
+title: Greater Houston Stamp Show
+subtitle: September 18–20, 2026
+author: Houston Philatelic Society
+themes: [light]
+event:
+  name: Greater Houston Stamp Show
+  dates: September 18–20, 2026
+  url: https://houstonstampclub.org/greater-houston-stamp-show-2026/
+  venue: Humble Civic Center
+  address_line1: 8233 Will Clayton Pkwy
+  address_line2: Humble, TX 77338
+  hours:
+    - day: Friday 18th
+      time: 10–6
+    - day: Saturday 19th
+      time: 10–5
+    - day: Sunday 20th
+      time: 10–4
+  stamp_release:
+    name: Winter Wreath
+    kind: Global Forever stamp
+    photographer: Natalia Kostikova
+    designer: Greg Breeding
+    release: Friday 18th at 11:00 AM
+    stamp_image: winter-wreath-2026.png
+    summary: >-
+      The new holiday Global stamp features a snowy, decorated wreath created
+      from artificial branches and craft-store materials by photographer
+      Natalia Kostikova, who painted the ornaments and sprayed the wreath with
+      baking soda to simulate snow. Designed by Greg Breeding for USPS.
+  auction:
+    highlight: "US Scott #91, 15¢ Lincoln with E-Grill"
+    stamp_image: ../samples/SC91.jpg
+    bidding_starts: Saturday 19th 10:00 AM
+    closes: "Sunday 20th, 3:00 PM"
+    terms: Whole-dollar cash bids only
+---
+@id flyer
+
+@region header
+@image
+  url: houston-skyline.svg
+  alt: Houston skyline
+  click_to_zoom: false
+
+@image
+  url: texas-flag-stamp.svg
+  alt: Texas flag stamp
+  click_to_zoom: false
+
+@region title
+GREATER HOUSTON
+
+# STAMP SHOW
+
+{{ event.dates | upper }}
+
+@region venue
+![Humble Civic Center](humble-civic-center.png)
+
+**{{ event.venue }}**
+
+{{ event.address_line1 }}
+
+{{ event.address_line2 }}
+
+@region qr
+@qr_code
+  url: "{{ event.url }}"
+
+@region dealer
+Dealer details here
+
+@region hours
+<table>
+  <tr>
+    <th rowspan="2">SHOW HOURS:</th>
+    <th>{{ event.hours[0].day }}</th>
+    <th>{{ event.hours[1].day }}</th>
+    <th>{{ event.hours[2].day }}</th>
+  </tr>
+  <tr>
+    <td>{{ event.hours[0].time }}</td>
+    <td>{{ event.hours[1].time }}</td>
+    <td>{{ event.hours[2].time }}</td>
+  </tr>
+</table>
+
+@region featuring-heading
+### FEATURING
+
+@region feature-bourse
+**Dealer Bourse**
+
+@region feature-exhibits
+**Competitive Exhibits**
+
+@region feature-seminars
+**Educational Seminars**
+
+@region feature-beginners
+**Beginner's Booth**
+
+@region stamp-release
+### ✦ USPS FIRST DAY OF ISSUE: {{ event.stamp_release.name }} ✦
+
+@image
+  url: winter-wreath-2026.png
+  alt: "{{ event.stamp_release.name }} Global Forever stamp"
+  click_to_zoom: false
+
+**{{ event.stamp_release.kind }}** — released {{ event.stamp_release.release }}
+
+{{ event.stamp_release.summary }}
+
+Photo by {{ event.stamp_release.photographer }} · Design by {{ event.stamp_release.designer }}
+
+@region auction
+### ✦ SPECIAL EVENT: GHSS DONATION SILENT AUCTION ✦
+
+@image
+  url: ../samples/SC91.jpg
+  alt: "{{ event.auction.highlight }}"
+  click_to_zoom: false
+
+Featuring a curated premium selection of donated items
+
+Highlight: **{{ event.auction.highlight }}**
+
+- **Bid sheets available:** {{ event.auction.bidding_starts }}
+- **Closes:** {{ event.auction.closes }}
+- **Terms:** {{ event.auction.terms }}

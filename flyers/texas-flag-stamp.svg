@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 78 50" role="img" aria-label="Texas flag stamp">
+  <!-- Horizontal US commemorative proportion ≈ 1.56∶1 (e.g. 1.56″ × 1.00″) -->
+  <defs>
+    <mask id="texas-stamp-perf">
+      <rect x="4" y="4" width="70" height="42" fill="white"/>
+      <g fill="black">
+        <!-- top perforations -->
+        <circle cx="11" cy="4" r="2.4"/>
+        <circle cx="19" cy="4" r="2.4"/>
+        <circle cx="27" cy="4" r="2.4"/>
+        <circle cx="35" cy="4" r="2.4"/>
+        <circle cx="43" cy="4" r="2.4"/>
+        <circle cx="51" cy="4" r="2.4"/>
+        <circle cx="59" cy="4" r="2.4"/>
+        <circle cx="67" cy="4" r="2.4"/>
+        <!-- bottom perforations -->
+        <circle cx="11" cy="46" r="2.4"/>
+        <circle cx="19" cy="46" r="2.4"/>
+        <circle cx="27" cy="46" r="2.4"/>
+        <circle cx="35" cy="46" r="2.4"/>
+        <circle cx="43" cy="46" r="2.4"/>
+        <circle cx="51" cy="46" r="2.4"/>
+        <circle cx="59" cy="46" r="2.4"/>
+        <circle cx="67" cy="46" r="2.4"/>
+        <!-- left perforations -->
+        <circle cx="4" cy="11" r="2.4"/>
+        <circle cx="4" cy="19" r="2.4"/>
+        <circle cx="4" cy="27" r="2.4"/>
+        <circle cx="4" cy="35" r="2.4"/>
+        <!-- right perforations -->
+        <circle cx="74" cy="11" r="2.4"/>
+        <circle cx="74" cy="19" r="2.4"/>
+        <circle cx="74" cy="27" r="2.4"/>
+        <circle cx="74" cy="35" r="2.4"/>
+      </g>
+    </mask>
+    <linearGradient id="texas-star-shade" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="white"/>
+      <stop offset="100%" stop-color="#d1dce5"/>
+    </linearGradient>
+  </defs>
+  <rect width="78" height="50" fill="#000000"/>
+  <g mask="url(#texas-stamp-perf)">
+    <!-- Texas flag: vertical blue hoist + white over red -->
+    <rect x="4" y="4" width="22" height="42" fill="#002d62"/>
+    <rect x="26" y="4" width="48" height="21" fill="white"/>
+    <rect x="26" y="25" width="48" height="21" fill="#8b1a1a"/>
+    <!-- Lone Star centered in blue field -->
+    <polygon
+      points="15,14 16.5,18.5 21.2,18.5 17.4,21.3 18.9,25.8 15,23 11.1,25.8 12.6,21.3 8.8,18.5 13.5,18.5"
+      fill="url(#texas-star-shade)"
+      stroke="white"
+      stroke-width="0.4"
+    />
+  </g>
+</svg>

@@ -1,0 +1,371 @@
+```css
+/* Greater Houston Stamp Show — minimum flyer chrome */
+body {
+  padding: 0 !important;
+  margin: 0 !important;
+  background: #e8edf2 !important;
+}
+
+#xframe {
+  --navy: #002d62;
+  --sky: #d1dce5;
+  --maroon: #8b1a1a;
+  --white: #ffffff;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--navy);
+  background: var(--white);
+}
+
+#xframe .segment[data-layout="stamp-show"] {
+  display: flex !important;
+  padding: 0 !important;
+  gap: 0 !important;
+  justify-content: flex-start !important;
+  overflow: hidden;
+  background: var(--white);
+  border: 10px solid var(--navy);
+  box-shadow: inset 0 0 0 2px var(--white);
+  color: var(--navy);
+}
+
+#xframe .segment[data-layout="stamp-show"] > .layout-container {
+  padding: 0;
+  gap: 0;
+}
+
+#xframe .segment[data-layout="stamp-show"] .layout-container > .region {
+  flex-grow: 0;
+  flex-shrink: 0;
+  min-height: auto;
+  overflow: visible;
+}
+
+#xframe .segment[data-layout="stamp-show"] .layout-container[data-layout-direction="horizontal"] > .region {
+  flex-grow: var(--layout-weight, 1);
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+#xframe .segment[data-layout="stamp-show"] h1,
+#xframe .segment[data-layout="stamp-show"] h2,
+#xframe .segment[data-layout="stamp-show"] h3,
+#xframe .segment[data-layout="stamp-show"] p,
+#xframe .segment[data-layout="stamp-show"] li {
+  color: var(--navy);
+}
+
+#xframe .segment[data-layout="stamp-show"] img {
+  max-height: none;
+}
+
+/* Header: full-bleed skyline + Texas stamp */
+#xframe .stamp-show-header {
+  position: relative;
+  flex: 0 0 96px !important;
+  --layout-height: 96px;
+  overflow: hidden;
+  background: var(--sky);
+  line-height: 0;
+}
+
+#xframe .stamp-show-header img[src*="houston-skyline"] {
+  display: block;
+  width: 100%;
+  height: 96px;
+  object-fit: cover;
+}
+
+#xframe .stamp-show-header img[src*="texas-flag-stamp"] {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  /* Horizontal US commemorative ≈ 1.56∶1 */
+  width: 78px;
+  height: 50px;
+  object-fit: contain;
+  background: #000;
+  border-radius: 2px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.28));
+}
+
+/* Title */
+#xframe .stamp-show-title {
+  text-align: center;
+  padding: 0.45rem 1rem 0.35rem;
+}
+
+#xframe .stamp-show-title p:first-child {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+#xframe .stamp-show-title h1 {
+  font-size: 2.75rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  margin: 0.1rem 0 0.15rem;
+}
+
+#xframe .stamp-show-title p:last-child {
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+/* Event row: venue | QR | dealer — side columns share space; QR stays centered */
+#xframe .segment[data-layout="stamp-show"] .layout-container:has(> .stamp-show-qr) {
+  display: grid !important;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
+
+#xframe .segment[data-layout="stamp-show"] .layout-container:has(> .stamp-show-qr) > .stamp-show-venue,
+#xframe .segment[data-layout="stamp-show"] .layout-container:has(> .stamp-show-qr) > .stamp-show-dealer {
+  min-width: 0;
+  width: auto;
+}
+
+#xframe .stamp-show-venue {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0.05rem;
+  min-height: 72px;
+  padding: 0.2rem 0.75rem 0.2rem calc(0.75rem + 92px + 0.55rem);
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: left;
+}
+
+#xframe .stamp-show-venue img {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  width: 92px;
+  height: auto;
+  transform: translateY(-50%);
+}
+
+#xframe .stamp-show-venue p {
+  margin: 0;
+  line-height: 1.15;
+}
+
+#xframe .segment[data-layout="stamp-show"] .layout-container:has(> .stamp-show-qr) > .stamp-show-qr {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  padding: 0.15rem 0.5rem;
+}
+
+#xframe .stamp-show-qr .xframe-qr-code {
+  display: block;
+  width: 96px;
+  height: 96px;
+  padding: 0.2rem;
+  background: var(--white);
+  border: 1px solid var(--sky);
+}
+
+#xframe .stamp-show-qr .xframe-qr-code > span,
+#xframe .stamp-show-qr .xframe-qr-code canvas,
+#xframe .stamp-show-qr .xframe-qr-code svg {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+#xframe .segment[data-layout="stamp-show"] .layout-container:has(> .stamp-show-qr) > .stamp-show-dealer {
+  display: grid;
+  place-items: center;
+  justify-self: end;
+  align-self: center;
+  box-sizing: border-box;
+  width: 19rem;
+  max-width: 19rem;
+  margin: 0.15rem 0.75rem 0.15rem 0;
+  padding: 0.4rem 0.55rem;
+  min-height: 5.75rem;
+  height: 5.75rem;
+  background: #e4e8ec;
+  border: 2px dotted var(--navy);
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-style: italic;
+  text-align: center;
+}
+
+#xframe .segment[data-layout="stamp-show"] .stamp-show-dealer,
+#xframe .segment[data-layout="stamp-show"] .stamp-show-dealer p {
+  color: #b8c0c8;
+}
+
+/* Hours bar */
+#xframe .stamp-show-hours {
+  border-top: 2px solid var(--navy);
+  border-bottom: 2px solid var(--navy);
+}
+
+#xframe .stamp-show-hours table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+#xframe .stamp-show-hours th,
+#xframe .stamp-show-hours td {
+  padding: 0.2rem 0.35rem;
+  border: 0;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 1.25;
+}
+
+#xframe .stamp-show-hours th[rowspan] {
+  width: 22%;
+  background: var(--navy);
+  color: var(--white);
+  letter-spacing: 0.04em;
+  vertical-align: middle;
+}
+
+#xframe .stamp-show-hours th:not([rowspan]),
+#xframe .stamp-show-hours td {
+  background: var(--sky);
+  border-left: 1px solid var(--navy);
+}
+
+/* Featuring */
+#xframe .stamp-show-featuring-heading {
+  padding: 0.35rem 0.85rem 0.25rem;
+  text-align: center;
+}
+
+#xframe .stamp-show-featuring-heading h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+#xframe .stamp-show-featuring-heading h3::before,
+#xframe .stamp-show-featuring-heading h3::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--navy);
+}
+
+#xframe [class*="stamp-show-feature-"] {
+  display: grid;
+  place-items: center;
+  min-height: 3.2rem;
+  margin: 0;
+  padding: 0.35rem 0.5rem;
+  background:
+    linear-gradient(135deg, rgba(209, 220, 229, 0.72), rgba(255, 255, 255, 0.96) 58%),
+    var(--white);
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+#xframe .segment[data-layout="stamp-show"] > .layout-container > .layout-container:has(.stamp-show-feature-bourse) {
+  width: calc(100% - 1.7rem);
+  margin: 0 0.85rem 0.15rem;
+  padding: 2px;
+  border: 2px solid var(--navy);
+  background: var(--navy);
+  gap: 2px !important;
+  box-sizing: border-box;
+}
+
+#xframe .segment[data-layout="stamp-show"] .layout-container[data-layout-direction="horizontal"] {
+  width: 100%;
+  align-self: stretch;
+}
+
+/* Special sections */
+#xframe .stamp-show-stamp-release,
+#xframe .stamp-show-auction {
+  margin: 0.35rem 0.85rem 0.4rem;
+  padding: 0;
+  border: 2px solid var(--maroon);
+  border-radius: 4px;
+  overflow: hidden;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+#xframe .stamp-show-stamp-release {
+  border-color: var(--navy);
+}
+
+#xframe .segment[data-layout="stamp-show"] .stamp-show-stamp-release h3,
+#xframe .segment[data-layout="stamp-show"] .stamp-show-auction h3 {
+  margin: 0;
+  padding: 0.35rem 0.5rem;
+  color: #ffffff;
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-align: center;
+}
+
+#xframe .segment[data-layout="stamp-show"] .stamp-show-stamp-release h3 {
+  background: var(--navy);
+}
+
+#xframe .segment[data-layout="stamp-show"] .stamp-show-auction h3 {
+  background: var(--maroon);
+}
+
+#xframe .stamp-show-stamp-release > :not(h3),
+#xframe .stamp-show-auction > :not(h3) {
+  margin: 0.3rem 0.55rem;
+}
+
+#xframe .stamp-show-stamp-release img,
+#xframe .stamp-show-auction img {
+  float: left;
+  width: 88px;
+  height: auto;
+  margin: 0.35rem 0.65rem 0.35rem 0.55rem;
+  padding: 0.2rem;
+  background: var(--white);
+  border: 1px solid #c5cfd8;
+}
+
+#xframe .stamp-show-stamp-release ul,
+#xframe .stamp-show-auction ul {
+  clear: both;
+  margin: 0.25rem 0.55rem 0.4rem;
+  padding-left: 1.1rem;
+}
+
+#xframe .stamp-show-stamp-release::after,
+#xframe .stamp-show-auction::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+#xframe .layout-controls {
+  top: calc(100% + 0.75rem);
+  bottom: auto;
+}
+```

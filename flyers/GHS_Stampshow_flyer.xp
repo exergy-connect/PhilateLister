@@ -5,6 +5,7 @@ title: Greater Houston Stamp Show
 subtitle: September 18–20, 2026
 author: Houston Philatelic Society
 themes: [light]
+evaluation: dynamic
 event:
   name: Greater Houston Stamp Show
   dates: September 18–20, 2026
@@ -78,7 +79,12 @@ GREATER HOUSTON
   url: "{{ event.url }}"
 
 @region dealer
-Dealer details here
+```editable-slot
+placeholder: 
+  static: Brought to you by the GHSS Foundation
+  dynamic: Add dealer details here
+label: Dealer information
+```
 
 @region hours
 <table>

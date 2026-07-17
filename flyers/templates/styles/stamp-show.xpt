@@ -189,27 +189,71 @@ body {
 
 #xframe .segment[data-layout="stamp-show"] .layout-container:has(> .stamp-show-qr) > .stamp-show-dealer {
   display: grid;
-  place-items: center;
+  place-items: stretch;
   justify-self: end;
   align-self: center;
   box-sizing: border-box;
   width: 19rem;
   max-width: 19rem;
   margin: 0.15rem 0.75rem 0.15rem 0;
-  padding: 0.4rem 0.55rem;
-  min-height: 5.75rem;
-  height: 5.75rem;
+  padding: 0;
+  min-height: 6.25rem;
+  height: 6.25rem;
   background: var(--panel);
-  border: 2px dotted var(--navy);
+  border: 1.5px dotted var(--navy);
+  overflow: hidden;
   font-size: 0.85rem;
   font-weight: 600;
   font-style: italic;
   text-align: center;
 }
 
-#xframe .segment[data-layout="stamp-show"] .stamp-show-dealer,
-#xframe .segment[data-layout="stamp-show"] .stamp-show-dealer p {
+#xframe .segment[data-layout="stamp-show"] .stamp-show-dealer {
+  color: var(--navy);
+  font-style: normal;
+}
+
+#xframe .segment[data-layout="stamp-show"] .stamp-show-dealer .xframe-content-plugin.editable-slot {
+  --editable-slot-fg: var(--navy);
+  --editable-slot-muted: var(--ink-soft);
+  --editable-slot-surface: var(--white);
+  --editable-slot-border: color-mix(in srgb, var(--navy) 35%, var(--sky));
+  --editable-slot-accent: var(--navy);
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  color: var(--navy);
+}
+
+#xframe .segment[data-layout="stamp-show"] .stamp-show-dealer .editable-slot-display,
+#xframe .segment[data-layout="stamp-show"] .stamp-show-dealer .editable-slot-text {
+  color: var(--navy);
+  font-family: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", serif;
+  font-style: italic;
+  letter-spacing: 0.03em;
+}
+
+#xframe .segment[data-layout="stamp-show"] .stamp-show-dealer .editable-slot-callout {
   color: var(--ink-soft);
+}
+
+#xframe .segment[data-layout="stamp-show"] .stamp-show-dealer .editable-slot-bar {
+  border-top-color: color-mix(in srgb, var(--navy) 28%, var(--sky));
+  background: color-mix(in srgb, var(--white) 72%, var(--sky));
+}
+
+/* Static PNG path: transparent placeholder SVG sits inside the dotted badge. */
+#xframe .segment[data-layout="stamp-show"] .stamp-show-dealer > img {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0.35rem 0.5rem;
+  object-fit: contain;
+  object-position: center;
 }
 
 /* Hours bar */

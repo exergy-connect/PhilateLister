@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><style id="xframe-snapshot-canvas">html,body{margin:0!important;padding:0!important;min-height:0!important;width:100%!important;height:100%!important;background:#fff!important;display:block!important}body{place-items:unset!important}#xframe{margin:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;transform:none!important}.hud,.layout-controls,.xframe-narrative-dock{display:none!important}</style>
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="author" content="Houston Philatelic Society">
 <title>Greater Houston Stamp Show</title>
 <style>
 :root {
-  --canvas-w: 850px;
-  --canvas-h: 1100px;
+  --canvas-w: 1280px;
+  --canvas-h: 792px;
 }
 
 /* theme:light */
@@ -246,14 +246,33 @@ img[data-click-to-zoom="true"] { cursor: zoom-in; }
   overflow: auto;
   font-size: 0.95rem;
 }
-/* presentation:poster — single visible segment, no deck HUD */
-[data-xframe-presentation="poster"] .segment {
+.hud {
   display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  background: color-mix(in srgb, var(--surface-bg) 88%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.35rem 0.55rem;
+  backdrop-filter: blur(8px);
 }
-[data-xframe-presentation="poster"] .layout-controls {
-  display: none;
+.hud button {
+  border: 0;
+  background: transparent;
+  color: var(--fg);
+  font: inherit;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  cursor: pointer;
 }
-
+.hud button:hover { background: color-mix(in srgb, var(--accent) 18%, transparent); }
+.hud button:disabled { opacity: 0.4; cursor: default; }
+.hud [data-deck-counter] {
+  min-width: 4.5rem;
+  text-align: center;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
 
 @media print {
   body { display: block; padding: 0; background: white; }
@@ -266,56 +285,15 @@ img[data-click-to-zoom="true"] { cursor: zoom-in; }
     border-radius: 0;
     transform: none !important;
   }
-  /* presentation:poster — one fixed canvas page (no slide pagination) */
-@page {
-  size: 850px 1100px;
-  margin: 0;
-}
-html, body {
-  width: 850px;
-  height: 1100px;
-  margin: 0 !important;
-  padding: 0 !important;
-  background: white !important;
-  overflow: hidden;
-}
-#xframe {
-  width: 850px !important;
-  height: 1100px !important;
-  margin: 0 !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  transform: none !important;
-  overflow: hidden !important;
-  break-after: avoid;
-  page-break-after: avoid;
-}
-[data-xframe-presentation="poster"] .layout-container.layout-stack {
+  .layout-container { display: block !important; height: auto !important; }
+.layout-segments { overflow: visible !important; }
+.layout-controls { display: none !important; }
+.xframe-narrative-dock { display: none !important; }
+.segment {
+  position: relative;
   display: flex !important;
-  flex-direction: column !important;
-  height: 100% !important;
-}
-[data-xframe-presentation="poster"] .layout-container[data-layout-direction="horizontal"] {
-  flex-direction: row !important;
-}
-[data-xframe-presentation="poster"] .layout-segments {
-  flex: 1 1 auto !important;
-  min-height: 0 !important;
-  overflow: hidden !important;
-}
-[data-xframe-presentation="poster"] .layout-controls,
-[data-xframe-presentation="poster"] .xframe-narrative-dock {
-  display: none !important;
-}
-[data-xframe-presentation="poster"] .segment {
-  position: absolute !important;
-  inset: 0 !important;
-  display: flex !important;
-  min-height: 0 !important;
-  height: 100% !important;
-  page-break-after: avoid !important;
-  break-after: avoid !important;
+  page-break-after: always;
+  min-height: 100vh;
 }
 }
 
@@ -352,6 +330,8 @@ body {
   background: var(--white);
   border: 10px solid var(--navy);
   box-shadow: inset 0 0 0 2px var(--white);
+  /* Drive framework `.segment h1 { color: var(--fg) }` without retargeting tags. */
+  --fg: var(--navy);
   color: var(--navy);
 }
 
@@ -370,14 +350,6 @@ body {
   flex-grow: var(--layout-weight, 1);
   flex-shrink: 1;
   min-width: 0;
-}
-
-#xframe .segment[data-layout^="stamp-show"] h1,
-#xframe .segment[data-layout^="stamp-show"] h2,
-#xframe .segment[data-layout^="stamp-show"] h3,
-#xframe .segment[data-layout^="stamp-show"] p,
-#xframe .segment[data-layout^="stamp-show"] li {
-  color: var(--navy);
 }
 
 #xframe .segment[data-layout^="stamp-show"] img {
@@ -417,8 +389,10 @@ body {
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.28));
 }
 
-/* Title + hours row — title stays page-centered; hours sit in the right column */
-#xframe .segment[data-layout^="stamp-show"] .layout-container:has(> :is(.stamp-show-title, .stamp-show-wide-title)):has(> :is(.stamp-show-hours, .stamp-show-wide-hours)) {
+/* Title + hours row — title stays page-centered; #show-times sits in the right column.
+   Scope to the horizontal title-row only: `:has(#show-times)` alone also matches the
+   root vertical stack (ancestor), which turns the whole flyer into a 3-column grid. */
+#xframe .segment[data-layout^="stamp-show"] .layout-container[data-layout-direction="horizontal"]:has(> :is(.stamp-show-hours, .stamp-show-wide-hours)) {
   display: grid !important;
   grid-template-columns: 1fr auto 1fr;
   align-items: center !important;
@@ -429,13 +403,13 @@ body {
   gap: 0.55rem;
 }
 
-#xframe .segment[data-layout^="stamp-show"] .layout-container:has(> :is(.stamp-show-title, .stamp-show-wide-title)):has(> :is(.stamp-show-hours, .stamp-show-wide-hours)) > :is(.stamp-show-title, .stamp-show-wide-title) {
+#xframe .segment[data-layout^="stamp-show"] .layout-container[data-layout-direction="horizontal"]:has(> :is(.stamp-show-hours, .stamp-show-wide-hours)) > :not(:is(.stamp-show-hours, .stamp-show-wide-hours)) {
   grid-column: 2;
   width: auto;
   justify-self: center;
 }
 
-#xframe .segment[data-layout^="stamp-show"] .layout-container:has(> :is(.stamp-show-title, .stamp-show-wide-title)):has(> :is(.stamp-show-hours, .stamp-show-wide-hours)) > :is(.stamp-show-hours, .stamp-show-wide-hours) {
+#xframe .segment[data-layout^="stamp-show"] .layout-container[data-layout-direction="horizontal"]:has(> :is(.stamp-show-hours, .stamp-show-wide-hours)) > :is(.stamp-show-hours, .stamp-show-wide-hours) {
   grid-column: 3;
   justify-self: end;
   align-self: center !important;
@@ -482,7 +456,7 @@ body {
 
 #xframe .segment[data-layout^="stamp-show"] .layout-container:has(> :is(.stamp-show-qr, .stamp-show-wide-qr)) > :is(.stamp-show-venue, .stamp-show-wide-venue),
 #xframe .segment[data-layout^="stamp-show"] .layout-container:has(> :is(.stamp-show-qr, .stamp-show-wide-qr)) > :is(.stamp-show-qr, .stamp-show-wide-qr),
-#xframe .segment[data-layout^="stamp-show"] .layout-container:has(> :is(.stamp-show-qr, .stamp-show-wide-qr)) > :is(.stamp-show-dealer, .stamp-show-wide-dealer, .stamp-show-wide-hours) {
+#xframe .segment[data-layout^="stamp-show"] .layout-container:has(> :is(.stamp-show-qr, .stamp-show-wide-qr)) > :is(.stamp-show-dealer, .stamp-show-wide-dealer) {
   align-self: center !important;
   height: fit-content !important;
   max-height: 100%;
@@ -615,24 +589,20 @@ body {
   object-position: center;
 }
 
-/* Hours @table — compact centered schedule */
-#xframe :is(.stamp-show-hours, .stamp-show-wide-hours) {
-  width: fit-content;
+/* Hours @table — compact schedule via authored id */
+#show-times {
+  width: auto;
   max-width: 100%;
   margin-inline: auto;
   border: 2px solid var(--navy);
-  overflow: hidden;
-}
-
-#xframe :is(.stamp-show-hours, .stamp-show-wide-hours) table {
-  width: auto;
   border-collapse: collapse;
   table-layout: auto;
   font-size: 0.92rem;
   font-weight: 700;
+  overflow: hidden;
 }
 
-#xframe :is(.stamp-show-hours, .stamp-show-wide-hours) caption {
+#show-times caption {
   caption-side: top;
   background: var(--navy);
   color: var(--white);
@@ -643,8 +613,8 @@ body {
   text-align: center;
 }
 
-#xframe :is(.stamp-show-hours, .stamp-show-wide-hours) th,
-#xframe :is(.stamp-show-hours, .stamp-show-wide-hours) td {
+#show-times th,
+#show-times td {
   padding: 0.22rem 0.55rem;
   border: 0;
   border-top: 1px solid var(--navy);
@@ -654,18 +624,18 @@ body {
   white-space: nowrap;
 }
 
-#xframe :is(.stamp-show-hours, .stamp-show-wide-hours) thead {
+#show-times thead {
   display: none;
 }
 
-#xframe :is(.stamp-show-hours, .stamp-show-wide-hours) th:first-child,
-#xframe :is(.stamp-show-hours, .stamp-show-wide-hours) td:first-child {
+#show-times th:first-child,
+#show-times td:first-child {
   text-align: right;
   padding-left: 0.85rem;
 }
 
-#xframe :is(.stamp-show-hours, .stamp-show-wide-hours) th:last-child,
-#xframe :is(.stamp-show-hours, .stamp-show-wide-hours) td:last-child {
+#show-times th:last-child,
+#show-times td:last-child {
   text-align: left;
   border-left: 1px solid var(--navy);
   padding-right: 0.85rem;
@@ -718,7 +688,6 @@ body {
   padding: 2px;
   border: 2px solid var(--navy);
   background: var(--navy);
-  gap: 2px !important;
   box-sizing: border-box;
 }
 
@@ -1200,85 +1169,264 @@ body {
 </style>
 </head>
 <body>
-<main id="xframe" data-theme="light" data-themes="light" data-xframe-presentation="poster" data-xframe-layout="letter-flyer">
+<main id="xframe" data-theme="light" data-themes="light" data-xframe-presentation="slidedeck" data-xframe-layout="framed-deck">
 <div class="layout-container layout-stack" data-layout-direction="vertical">
+    <div class="layout-container layout-stack" data-layout-direction="vertical">
     <div class="layout-segments">
-    <section class="segment" id="flyer" data-title="STAMP SHOW" data-layout="stamp-show" data-themes="light" data-theme="light" data-index="0">
+    <section class="segment" id="preview" data-title="Greater Houston Stamp Show" data-layout="slide-frame" data-themes="light" data-theme="light" data-index="0">
   <div class="layout-container layout-stack" data-layout-direction="vertical">
-    <div class="region stamp-show-header" data-region="header">
-    <img id="houston-skyline" src="houston-skyline.svg" alt="Houston skyline">
-    <img id="texas-flag-stamp" src="texas-flag-stamp.svg" alt="Texas flag stamp">
+    <div class="region slide-frame-header" data-region="header"></div>
+<div class="region slide-frame-main layout-default-region" data-region="main" style="--layout-weight: 1">
+    <h1>Greater Houston Stamp Show</h1>
+    <p>September 18–20, 2026 · Humble Civic Center</p>
+    <figure class="xframe-segment-snapshot"><img id="xframe-media-2" src=".xframe/content-cache/39e42cbdc8b483a79e494a6f2e763347ecd71d01d05a47fd41cbbcb369c26117/c56f5f062424fb3eebd59f28812582e641c9b36d8021117b80309c85ffd8ebd5.png" alt="Segment flyer" data-xframe-segment="flyer" data-click-to-zoom="true"><figcaption>Show flyer</figcaption></figure>
+    
   </div>
-<div class="layout-container layout-stack" data-layout-direction="horizontal">
-    <div class="region stamp-show-title layout-default-region" data-region="title" style="--layout-weight: 1">
+<div class="region slide-frame-footer" data-region="footer">
+    <div class="layout-container layout-stack" data-layout-direction="horizontal">
+    <div class="region slide-frame-footer-left" data-region="footer-left" style="--layout-weight: 1">
+    <p>Houston Philatelic Society</p>
+  </div>
+<div class="region slide-frame-footer-center" data-region="footer-center" style="--layout-weight: 1"></div>
+<div class="region slide-frame-footer-right" data-region="footer-right" style="--layout-weight: 1"></div>
+  </div>
+  </div>
+  </div>
+</section>
+<section class="segment" id="widescreen" data-layout="stamp-show-wide" data-themes="light" data-theme="light" data-index="1">
+  <div class="layout-container layout-stack" data-layout-direction="vertical">
+    <div class="region stamp-show-wide-header" data-region="header">
+    <img id="houston-skyline" src="houston-skyline.svg" alt="Houston skyline" data-click-to-zoom="true">
+    <img id="texas-flag-stamp" src="texas-flag-stamp.svg" alt="Texas flag stamp" data-click-to-zoom="true">
+  </div>
+<div class="layout-container layout-stack" data-layout-direction="horizontal" style="gap: 0.55rem; align-items: center">
+    <div class="region stamp-show-wide-title layout-default-region" data-region="title">
     <p>GREATER HOUSTON</p>
     <h1>STAMP SHOW</h1>
     <p>SEPTEMBER 18–20, 2026</p>
+    
   </div>
-<div class="region stamp-show-hours" data-region="hours">
-    <table><caption>Show times</caption><thead><tr><th>day</th><th>time</th></tr></thead><tbody><tr><td>Friday 18th</td><td>10–6</td></tr><tr><td>Saturday 19th</td><td>10–5</td></tr><tr><td>Sunday 20th</td><td>10–4</td></tr></tbody></table>
+<div class="region stamp-show-wide-hours" data-region="hours">
+    <table id="show-times"><caption>Show times</caption><thead><tr><th>day</th><th>time</th></tr></thead><tbody><tr><td>Friday 18th</td><td>10–6</td></tr><tr><td>Saturday 19th</td><td>10–5</td></tr><tr><td>Sunday 20th</td><td>10–4</td></tr></tbody></table>
   </div>
   </div>
-<div class="layout-container layout-stack" data-layout-direction="horizontal">
-    <div class="region stamp-show-venue" data-region="venue" style="--layout-weight: 1">
+<div class="layout-container layout-stack" data-layout-direction="horizontal" style="gap: 0.35rem; align-items: center">
+    <div class="region stamp-show-wide-venue" data-region="venue">
     <img id="humble-civic-center" src="humble-civic-center.png" alt="Humble Civic Center">
-    <p>Humble Civic Center</p>
+    <p><strong>Humble Civic Center</strong></p>
     <p>8233 Will Clayton Pkwy</p>
     <p>Humble, TX 77338</p>
   </div>
-<div class="region stamp-show-qr" data-region="qr">
+<div class="region stamp-show-wide-qr" data-region="qr">
     <a class="xframe-qr-code" href="https://houstonstampclub.org/greater-houston-stamp-show-2026/" aria-label="Open https://houstonstampclub.org/greater-houston-stamp-show-2026/"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 256 256">
   <rect x="0" y="0" width="256" height="256" style="fill:#ffffff;shape-rendering:crispEdges;"/>
   <path x="0" y="0" style="fill:#000000;shape-rendering:crispEdges;" d="M22.76,22.76 V28.44 H28.44 V22.76 H22.76 Z M28.44,22.76 V28.44 H34.13 V22.76 H28.44 Z M34.13,22.76 V28.44 H39.82 V22.76 H34.13 Z M39.82,22.76 V28.44 H45.51 V22.76 H39.82 Z M45.51,22.76 V28.44 H51.20 V22.76 H45.51 Z M51.20,22.76 V28.44 H56.89 V22.76 H51.20 Z M56.89,22.76 V28.44 H62.58 V22.76 H56.89 Z M68.27,22.76 V28.44 H73.96 V22.76 H68.27 Z M73.96,22.76 V28.44 H79.64 V22.76 H73.96 Z M85.33,22.76 V28.44 H91.02 V22.76 H85.33 Z M91.02,22.76 V28.44 H96.71 V22.76 H91.02 Z M96.71,22.76 V28.44 H102.40 V22.76 H96.71 Z M113.78,22.76 V28.44 H119.47 V22.76 H113.78 Z M119.47,22.76 V28.44 H125.16 V22.76 H119.47 Z M136.53,22.76 V28.44 H142.22 V22.76 H136.53 Z M153.60,22.76 V28.44 H159.29 V22.76 H153.60 Z M176.36,22.76 V28.44 H182.04 V22.76 H176.36 Z M193.42,22.76 V28.44 H199.11 V22.76 H193.42 Z M199.11,22.76 V28.44 H204.80 V22.76 H199.11 Z M204.80,22.76 V28.44 H210.49 V22.76 H204.80 Z M210.49,22.76 V28.44 H216.18 V22.76 H210.49 Z M216.18,22.76 V28.44 H221.87 V22.76 H216.18 Z M221.87,22.76 V28.44 H227.56 V22.76 H221.87 Z M227.56,22.76 V28.44 H233.24 V22.76 H227.56 Z M22.76,28.44 V34.13 H28.44 V28.44 H22.76 Z M56.89,28.44 V34.13 H62.58 V28.44 H56.89 Z M73.96,28.44 V34.13 H79.64 V28.44 H73.96 Z M79.64,28.44 V34.13 H85.33 V28.44 H79.64 Z M85.33,28.44 V34.13 H91.02 V28.44 H85.33 Z M96.71,28.44 V34.13 H102.40 V28.44 H96.71 Z M102.40,28.44 V34.13 H108.09 V28.44 H102.40 Z M159.29,28.44 V34.13 H164.98 V28.44 H159.29 Z M164.98,28.44 V34.13 H170.67 V28.44 H164.98 Z M170.67,28.44 V34.13 H176.36 V28.44 H170.67 Z M193.42,28.44 V34.13 H199.11 V28.44 H193.42 Z M227.56,28.44 V34.13 H233.24 V28.44 H227.56 Z M22.76,34.13 V39.82 H28.44 V34.13 H22.76 Z M34.13,34.13 V39.82 H39.82 V34.13 H34.13 Z M39.82,34.13 V39.82 H45.51 V34.13 H39.82 Z M45.51,34.13 V39.82 H51.20 V34.13 H45.51 Z M56.89,34.13 V39.82 H62.58 V34.13 H56.89 Z M68.27,34.13 V39.82 H73.96 V34.13 H68.27 Z M79.64,34.13 V39.82 H85.33 V34.13 H79.64 Z M102.40,34.13 V39.82 H108.09 V34.13 H102.40 Z M119.47,34.13 V39.82 H125.16 V34.13 H119.47 Z M125.16,34.13 V39.82 H130.84 V34.13 H125.16 Z M130.84,34.13 V39.82 H136.53 V34.13 H130.84 Z M136.53,34.13 V39.82 H142.22 V34.13 H136.53 Z M142.22,34.13 V39.82 H147.91 V34.13 H142.22 Z M153.60,34.13 V39.82 H159.29 V34.13 H153.60 Z M159.29,34.13 V39.82 H164.98 V34.13 H159.29 Z M164.98,34.13 V39.82 H170.67 V34.13 H164.98 Z M170.67,34.13 V39.82 H176.36 V34.13 H170.67 Z M182.04,34.13 V39.82 H187.73 V34.13 H182.04 Z M193.42,34.13 V39.82 H199.11 V34.13 H193.42 Z M204.80,34.13 V39.82 H210.49 V34.13 H204.80 Z M210.49,34.13 V39.82 H216.18 V34.13 H210.49 Z M216.18,34.13 V39.82 H221.87 V34.13 H216.18 Z M227.56,34.13 V39.82 H233.24 V34.13 H227.56 Z M22.76,39.82 V45.51 H28.44 V39.82 H22.76 Z M34.13,39.82 V45.51 H39.82 V39.82 H34.13 Z M39.82,39.82 V45.51 H45.51 V39.82 H39.82 Z M45.51,39.82 V45.51 H51.20 V39.82 H45.51 Z M56.89,39.82 V45.51 H62.58 V39.82 H56.89 Z M68.27,39.82 V45.51 H73.96 V39.82 H68.27 Z M73.96,39.82 V45.51 H79.64 V39.82 H73.96 Z M85.33,39.82 V45.51 H91.02 V39.82 H85.33 Z M113.78,39.82 V45.51 H119.47 V39.82 H113.78 Z M119.47,39.82 V45.51 H125.16 V39.82 H119.47 Z M125.16,39.82 V45.51 H130.84 V39.82 H125.16 Z M147.91,39.82 V45.51 H153.60 V39.82 H147.91 Z M176.36,39.82 V45.51 H182.04 V39.82 H176.36 Z M193.42,39.82 V45.51 H199.11 V39.82 H193.42 Z M204.80,39.82 V45.51 H210.49 V39.82 H204.80 Z M210.49,39.82 V45.51 H216.18 V39.82 H210.49 Z M216.18,39.82 V45.51 H221.87 V39.82 H216.18 Z M227.56,39.82 V45.51 H233.24 V39.82 H227.56 Z M22.76,45.51 V51.20 H28.44 V45.51 H22.76 Z M34.13,45.51 V51.20 H39.82 V45.51 H34.13 Z M39.82,45.51 V51.20 H45.51 V45.51 H39.82 Z M45.51,45.51 V51.20 H51.20 V45.51 H45.51 Z M56.89,45.51 V51.20 H62.58 V45.51 H56.89 Z M73.96,45.51 V51.20 H79.64 V45.51 H73.96 Z M79.64,45.51 V51.20 H85.33 V45.51 H79.64 Z M85.33,45.51 V51.20 H91.02 V45.51 H85.33 Z M96.71,45.51 V51.20 H102.40 V45.51 H96.71 Z M119.47,45.51 V51.20 H125.16 V45.51 H119.47 Z M125.16,45.51 V51.20 H130.84 V45.51 H125.16 Z M130.84,45.51 V51.20 H136.53 V45.51 H130.84 Z M136.53,45.51 V51.20 H142.22 V45.51 H136.53 Z M142.22,45.51 V51.20 H147.91 V45.51 H142.22 Z M153.60,45.51 V51.20 H159.29 V45.51 H153.60 Z M159.29,45.51 V51.20 H164.98 V45.51 H159.29 Z M164.98,45.51 V51.20 H170.67 V45.51 H164.98 Z M182.04,45.51 V51.20 H187.73 V45.51 H182.04 Z M193.42,45.51 V51.20 H199.11 V45.51 H193.42 Z M204.80,45.51 V51.20 H210.49 V45.51 H204.80 Z M210.49,45.51 V51.20 H216.18 V45.51 H210.49 Z M216.18,45.51 V51.20 H221.87 V45.51 H216.18 Z M227.56,45.51 V51.20 H233.24 V45.51 H227.56 Z M22.76,51.20 V56.89 H28.44 V51.20 H22.76 Z M56.89,51.20 V56.89 H62.58 V51.20 H56.89 Z M68.27,51.20 V56.89 H73.96 V51.20 H68.27 Z M73.96,51.20 V56.89 H79.64 V51.20 H73.96 Z M96.71,51.20 V56.89 H102.40 V51.20 H96.71 Z M108.09,51.20 V56.89 H113.78 V51.20 H108.09 Z M119.47,51.20 V56.89 H125.16 V51.20 H119.47 Z M153.60,51.20 V56.89 H159.29 V51.20 H153.60 Z M159.29,51.20 V56.89 H164.98 V51.20 H159.29 Z M164.98,51.20 V56.89 H170.67 V51.20 H164.98 Z M170.67,51.20 V56.89 H176.36 V51.20 H170.67 Z M182.04,51.20 V56.89 H187.73 V51.20 H182.04 Z M193.42,51.20 V56.89 H199.11 V51.20 H193.42 Z M227.56,51.20 V56.89 H233.24 V51.20 H227.56 Z M22.76,56.89 V62.58 H28.44 V56.89 H22.76 Z M28.44,56.89 V62.58 H34.13 V56.89 H28.44 Z M34.13,56.89 V62.58 H39.82 V56.89 H34.13 Z M39.82,56.89 V62.58 H45.51 V56.89 H39.82 Z M45.51,56.89 V62.58 H51.20 V56.89 H45.51 Z M51.20,56.89 V62.58 H56.89 V56.89 H51.20 Z M56.89,56.89 V62.58 H62.58 V56.89 H56.89 Z M68.27,56.89 V62.58 H73.96 V56.89 H68.27 Z M79.64,56.89 V62.58 H85.33 V56.89 H79.64 Z M91.02,56.89 V62.58 H96.71 V56.89 H91.02 Z M102.40,56.89 V62.58 H108.09 V56.89 H102.40 Z M113.78,56.89 V62.58 H119.47 V56.89 H113.78 Z M125.16,56.89 V62.58 H130.84 V56.89 H125.16 Z M136.53,56.89 V62.58 H142.22 V56.89 H136.53 Z M147.91,56.89 V62.58 H153.60 V56.89 H147.91 Z M159.29,56.89 V62.58 H164.98 V56.89 H159.29 Z M170.67,56.89 V62.58 H176.36 V56.89 H170.67 Z M182.04,56.89 V62.58 H187.73 V56.89 H182.04 Z M193.42,56.89 V62.58 H199.11 V56.89 H193.42 Z M199.11,56.89 V62.58 H204.80 V56.89 H199.11 Z M204.80,56.89 V62.58 H210.49 V56.89 H204.80 Z M210.49,56.89 V62.58 H216.18 V56.89 H210.49 Z M216.18,56.89 V62.58 H221.87 V56.89 H216.18 Z M221.87,56.89 V62.58 H227.56 V56.89 H221.87 Z M227.56,56.89 V62.58 H233.24 V56.89 H227.56 Z M68.27,62.58 V68.27 H73.96 V62.58 H68.27 Z M102.40,62.58 V68.27 H108.09 V62.58 H102.40 Z M108.09,62.58 V68.27 H113.78 V62.58 H108.09 Z M113.78,62.58 V68.27 H119.47 V62.58 H113.78 Z M130.84,62.58 V68.27 H136.53 V62.58 H130.84 Z M136.53,62.58 V68.27 H142.22 V62.58 H136.53 Z M153.60,62.58 V68.27 H159.29 V62.58 H153.60 Z M159.29,62.58 V68.27 H164.98 V62.58 H159.29 Z M164.98,62.58 V68.27 H170.67 V62.58 H164.98 Z M170.67,62.58 V68.27 H176.36 V62.58 H170.67 Z M182.04,62.58 V68.27 H187.73 V62.58 H182.04 Z M22.76,68.27 V73.96 H28.44 V68.27 H22.76 Z M28.44,68.27 V73.96 H34.13 V68.27 H28.44 Z M39.82,68.27 V73.96 H45.51 V68.27 H39.82 Z M56.89,68.27 V73.96 H62.58 V68.27 H56.89 Z M62.58,68.27 V73.96 H68.27 V68.27 H62.58 Z M73.96,68.27 V73.96 H79.64 V68.27 H73.96 Z M85.33,68.27 V73.96 H91.02 V68.27 H85.33 Z M91.02,68.27 V73.96 H96.71 V68.27 H91.02 Z M96.71,68.27 V73.96 H102.40 V68.27 H96.71 Z M108.09,68.27 V73.96 H113.78 V68.27 H108.09 Z M119.47,68.27 V73.96 H125.16 V68.27 H119.47 Z M125.16,68.27 V73.96 H130.84 V68.27 H125.16 Z M147.91,68.27 V73.96 H153.60 V68.27 H147.91 Z M159.29,68.27 V73.96 H164.98 V68.27 H159.29 Z M182.04,68.27 V73.96 H187.73 V68.27 H182.04 Z M187.73,68.27 V73.96 H193.42 V68.27 H187.73 Z M193.42,68.27 V73.96 H199.11 V68.27 H193.42 Z M199.11,68.27 V73.96 H204.80 V68.27 H199.11 Z M210.49,68.27 V73.96 H216.18 V68.27 H210.49 Z M216.18,68.27 V73.96 H221.87 V68.27 H216.18 Z M227.56,68.27 V73.96 H233.24 V68.27 H227.56 Z M22.76,73.96 V79.64 H28.44 V73.96 H22.76 Z M34.13,73.96 V79.64 H39.82 V73.96 H34.13 Z M45.51,73.96 V79.64 H51.20 V73.96 H45.51 Z M51.20,73.96 V79.64 H56.89 V73.96 H51.20 Z M62.58,73.96 V79.64 H68.27 V73.96 H62.58 Z M68.27,73.96 V79.64 H73.96 V73.96 H68.27 Z M79.64,73.96 V79.64 H85.33 V73.96 H79.64 Z M91.02,73.96 V79.64 H96.71 V73.96 H91.02 Z M102.40,73.96 V79.64 H108.09 V73.96 H102.40 Z M113.78,73.96 V79.64 H119.47 V73.96 H113.78 Z M119.47,73.96 V79.64 H125.16 V73.96 H119.47 Z M125.16,73.96 V79.64 H130.84 V73.96 H125.16 Z M130.84,73.96 V79.64 H136.53 V73.96 H130.84 Z M142.22,73.96 V79.64 H147.91 V73.96 H142.22 Z M147.91,73.96 V79.64 H153.60 V73.96 H147.91 Z M164.98,73.96 V79.64 H170.67 V73.96 H164.98 Z M170.67,73.96 V79.64 H176.36 V73.96 H170.67 Z M176.36,73.96 V79.64 H182.04 V73.96 H176.36 Z M182.04,73.96 V79.64 H187.73 V73.96 H182.04 Z M187.73,73.96 V79.64 H193.42 V73.96 H187.73 Z M199.11,73.96 V79.64 H204.80 V73.96 H199.11 Z M210.49,73.96 V79.64 H216.18 V73.96 H210.49 Z M216.18,73.96 V79.64 H221.87 V73.96 H216.18 Z M221.87,73.96 V79.64 H227.56 V73.96 H221.87 Z M22.76,79.64 V85.33 H28.44 V79.64 H22.76 Z M28.44,79.64 V85.33 H34.13 V79.64 H28.44 Z M51.20,79.64 V85.33 H56.89 V79.64 H51.20 Z M56.89,79.64 V85.33 H62.58 V79.64 H56.89 Z M62.58,79.64 V85.33 H68.27 V79.64 H62.58 Z M68.27,79.64 V85.33 H73.96 V79.64 H68.27 Z M79.64,79.64 V85.33 H85.33 V79.64 H79.64 Z M96.71,79.64 V85.33 H102.40 V79.64 H96.71 Z M108.09,79.64 V85.33 H113.78 V79.64 H108.09 Z M130.84,79.64 V85.33 H136.53 V79.64 H130.84 Z M147.91,79.64 V85.33 H153.60 V79.64 H147.91 Z M153.60,79.64 V85.33 H159.29 V79.64 H153.60 Z M164.98,79.64 V85.33 H170.67 V79.64 H164.98 Z M193.42,79.64 V85.33 H199.11 V79.64 H193.42 Z M199.11,79.64 V85.33 H204.80 V79.64 H199.11 Z M216.18,79.64 V85.33 H221.87 V79.64 H216.18 Z M221.87,79.64 V85.33 H227.56 V79.64 H221.87 Z M22.76,85.33 V91.02 H28.44 V85.33 H22.76 Z M34.13,85.33 V91.02 H39.82 V85.33 H34.13 Z M45.51,85.33 V91.02 H51.20 V85.33 H45.51 Z M62.58,85.33 V91.02 H68.27 V85.33 H62.58 Z M73.96,85.33 V91.02 H79.64 V85.33 H73.96 Z M79.64,85.33 V91.02 H85.33 V85.33 H79.64 Z M91.02,85.33 V91.02 H96.71 V85.33 H91.02 Z M102.40,85.33 V91.02 H108.09 V85.33 H102.40 Z M108.09,85.33 V91.02 H113.78 V85.33 H108.09 Z M130.84,85.33 V91.02 H136.53 V85.33 H130.84 Z M136.53,85.33 V91.02 H142.22 V85.33 H136.53 Z M142.22,85.33 V91.02 H147.91 V85.33 H142.22 Z M153.60,85.33 V91.02 H159.29 V85.33 H153.60 Z M164.98,85.33 V91.02 H170.67 V85.33 H164.98 Z M170.67,85.33 V91.02 H176.36 V85.33 H170.67 Z M193.42,85.33 V91.02 H199.11 V85.33 H193.42 Z M204.80,85.33 V91.02 H210.49 V85.33 H204.80 Z M210.49,85.33 V91.02 H216.18 V85.33 H210.49 Z M216.18,85.33 V91.02 H221.87 V85.33 H216.18 Z M22.76,91.02 V96.71 H28.44 V91.02 H22.76 Z M39.82,91.02 V96.71 H45.51 V91.02 H39.82 Z M45.51,91.02 V96.71 H51.20 V91.02 H45.51 Z M56.89,91.02 V96.71 H62.58 V91.02 H56.89 Z M62.58,91.02 V96.71 H68.27 V91.02 H62.58 Z M79.64,91.02 V96.71 H85.33 V91.02 H79.64 Z M85.33,91.02 V96.71 H91.02 V91.02 H85.33 Z M119.47,91.02 V96.71 H125.16 V91.02 H119.47 Z M125.16,91.02 V96.71 H130.84 V91.02 H125.16 Z M136.53,91.02 V96.71 H142.22 V91.02 H136.53 Z M153.60,91.02 V96.71 H159.29 V91.02 H153.60 Z M159.29,91.02 V96.71 H164.98 V91.02 H159.29 Z M193.42,91.02 V96.71 H199.11 V91.02 H193.42 Z M227.56,91.02 V96.71 H233.24 V91.02 H227.56 Z M22.76,96.71 V102.40 H28.44 V96.71 H22.76 Z M28.44,96.71 V102.40 H34.13 V96.71 H28.44 Z M51.20,96.71 V102.40 H56.89 V96.71 H51.20 Z M79.64,96.71 V102.40 H85.33 V96.71 H79.64 Z M96.71,96.71 V102.40 H102.40 V96.71 H96.71 Z M113.78,96.71 V102.40 H119.47 V96.71 H113.78 Z M119.47,96.71 V102.40 H125.16 V96.71 H119.47 Z M125.16,96.71 V102.40 H130.84 V96.71 H125.16 Z M136.53,96.71 V102.40 H142.22 V96.71 H136.53 Z M147.91,96.71 V102.40 H153.60 V96.71 H147.91 Z M153.60,96.71 V102.40 H159.29 V96.71 H153.60 Z M159.29,96.71 V102.40 H164.98 V96.71 H159.29 Z M176.36,96.71 V102.40 H182.04 V96.71 H176.36 Z M187.73,96.71 V102.40 H193.42 V96.71 H187.73 Z M193.42,96.71 V102.40 H199.11 V96.71 H193.42 Z M199.11,96.71 V102.40 H204.80 V96.71 H199.11 Z M39.82,102.40 V108.09 H45.51 V102.40 H39.82 Z M45.51,102.40 V108.09 H51.20 V102.40 H45.51 Z M51.20,102.40 V108.09 H56.89 V102.40 H51.20 Z M56.89,102.40 V108.09 H62.58 V102.40 H56.89 Z M68.27,102.40 V108.09 H73.96 V102.40 H68.27 Z M73.96,102.40 V108.09 H79.64 V102.40 H73.96 Z M79.64,102.40 V108.09 H85.33 V102.40 H79.64 Z M102.40,102.40 V108.09 H108.09 V102.40 H102.40 Z M119.47,102.40 V108.09 H125.16 V102.40 H119.47 Z M136.53,102.40 V108.09 H142.22 V102.40 H136.53 Z M153.60,102.40 V108.09 H159.29 V102.40 H153.60 Z M164.98,102.40 V108.09 H170.67 V102.40 H164.98 Z M182.04,102.40 V108.09 H187.73 V102.40 H182.04 Z M204.80,102.40 V108.09 H210.49 V102.40 H204.80 Z M216.18,102.40 V108.09 H221.87 V102.40 H216.18 Z M227.56,102.40 V108.09 H233.24 V102.40 H227.56 Z M34.13,108.09 V113.78 H39.82 V108.09 H34.13 Z M62.58,108.09 V113.78 H68.27 V108.09 H62.58 Z M73.96,108.09 V113.78 H79.64 V108.09 H73.96 Z M79.64,108.09 V113.78 H85.33 V108.09 H79.64 Z M85.33,108.09 V113.78 H91.02 V108.09 H85.33 Z M96.71,108.09 V113.78 H102.40 V108.09 H96.71 Z M125.16,108.09 V113.78 H130.84 V108.09 H125.16 Z M159.29,108.09 V113.78 H164.98 V108.09 H159.29 Z M170.67,108.09 V113.78 H176.36 V108.09 H170.67 Z M182.04,108.09 V113.78 H187.73 V108.09 H182.04 Z M187.73,108.09 V113.78 H193.42 V108.09 H187.73 Z M193.42,108.09 V113.78 H199.11 V108.09 H193.42 Z M199.11,108.09 V113.78 H204.80 V108.09 H199.11 Z M204.80,108.09 V113.78 H210.49 V108.09 H204.80 Z M210.49,108.09 V113.78 H216.18 V108.09 H210.49 Z M227.56,108.09 V113.78 H233.24 V108.09 H227.56 Z M22.76,113.78 V119.47 H28.44 V113.78 H22.76 Z M34.13,113.78 V119.47 H39.82 V113.78 H34.13 Z M51.20,113.78 V119.47 H56.89 V113.78 H51.20 Z M56.89,113.78 V119.47 H62.58 V113.78 H56.89 Z M62.58,113.78 V119.47 H68.27 V113.78 H62.58 Z M68.27,113.78 V119.47 H73.96 V113.78 H68.27 Z M73.96,113.78 V119.47 H79.64 V113.78 H73.96 Z M91.02,113.78 V119.47 H96.71 V113.78 H91.02 Z M96.71,113.78 V119.47 H102.40 V113.78 H96.71 Z M113.78,113.78 V119.47 H119.47 V113.78 H113.78 Z M119.47,113.78 V119.47 H125.16 V113.78 H119.47 Z M125.16,113.78 V119.47 H130.84 V113.78 H125.16 Z M142.22,113.78 V119.47 H147.91 V113.78 H142.22 Z M147.91,113.78 V119.47 H153.60 V113.78 H147.91 Z M164.98,113.78 V119.47 H170.67 V113.78 H164.98 Z M170.67,113.78 V119.47 H176.36 V113.78 H170.67 Z M176.36,113.78 V119.47 H182.04 V113.78 H176.36 Z M182.04,113.78 V119.47 H187.73 V113.78 H182.04 Z M193.42,113.78 V119.47 H199.11 V113.78 H193.42 Z M199.11,113.78 V119.47 H204.80 V113.78 H199.11 Z M216.18,113.78 V119.47 H221.87 V113.78 H216.18 Z M221.87,113.78 V119.47 H227.56 V113.78 H221.87 Z M28.44,119.47 V125.16 H34.13 V119.47 H28.44 Z M39.82,119.47 V125.16 H45.51 V119.47 H39.82 Z M45.51,119.47 V125.16 H51.20 V119.47 H45.51 Z M62.58,119.47 V125.16 H68.27 V119.47 H62.58 Z M79.64,119.47 V125.16 H85.33 V119.47 H79.64 Z M91.02,119.47 V125.16 H96.71 V119.47 H91.02 Z M102.40,119.47 V125.16 H108.09 V119.47 H102.40 Z M108.09,119.47 V125.16 H113.78 V119.47 H108.09 Z M113.78,119.47 V125.16 H119.47 V119.47 H113.78 Z M125.16,119.47 V125.16 H130.84 V119.47 H125.16 Z M130.84,119.47 V125.16 H136.53 V119.47 H130.84 Z M136.53,119.47 V125.16 H142.22 V119.47 H136.53 Z M147.91,119.47 V125.16 H153.60 V119.47 H147.91 Z M187.73,119.47 V125.16 H193.42 V119.47 H187.73 Z M193.42,119.47 V125.16 H199.11 V119.47 H193.42 Z M210.49,119.47 V125.16 H216.18 V119.47 H210.49 Z M216.18,119.47 V125.16 H221.87 V119.47 H216.18 Z M227.56,119.47 V125.16 H233.24 V119.47 H227.56 Z M22.76,125.16 V130.84 H28.44 V125.16 H22.76 Z M28.44,125.16 V130.84 H34.13 V125.16 H28.44 Z M56.89,125.16 V130.84 H62.58 V125.16 H56.89 Z M62.58,125.16 V130.84 H68.27 V125.16 H62.58 Z M79.64,125.16 V130.84 H85.33 V125.16 H79.64 Z M85.33,125.16 V130.84 H91.02 V125.16 H85.33 Z M96.71,125.16 V130.84 H102.40 V125.16 H96.71 Z M102.40,125.16 V130.84 H108.09 V125.16 H102.40 Z M108.09,125.16 V130.84 H113.78 V125.16 H108.09 Z M113.78,125.16 V130.84 H119.47 V125.16 H113.78 Z M125.16,125.16 V130.84 H130.84 V125.16 H125.16 Z M142.22,125.16 V130.84 H147.91 V125.16 H142.22 Z M153.60,125.16 V130.84 H159.29 V125.16 H153.60 Z M159.29,125.16 V130.84 H164.98 V125.16 H159.29 Z M164.98,125.16 V130.84 H170.67 V125.16 H164.98 Z M170.67,125.16 V130.84 H176.36 V125.16 H170.67 Z M182.04,125.16 V130.84 H187.73 V125.16 H182.04 Z M204.80,125.16 V130.84 H210.49 V125.16 H204.80 Z M210.49,125.16 V130.84 H216.18 V125.16 H210.49 Z M28.44,130.84 V136.53 H34.13 V130.84 H28.44 Z M39.82,130.84 V136.53 H45.51 V130.84 H39.82 Z M45.51,130.84 V136.53 H51.20 V130.84 H45.51 Z M51.20,130.84 V136.53 H56.89 V130.84 H51.20 Z M68.27,130.84 V136.53 H73.96 V130.84 H68.27 Z M85.33,130.84 V136.53 H91.02 V130.84 H85.33 Z M96.71,130.84 V136.53 H102.40 V130.84 H96.71 Z M102.40,130.84 V136.53 H108.09 V130.84 H102.40 Z M119.47,130.84 V136.53 H125.16 V130.84 H119.47 Z M125.16,130.84 V136.53 H130.84 V130.84 H125.16 Z M130.84,130.84 V136.53 H136.53 V130.84 H130.84 Z M142.22,130.84 V136.53 H147.91 V130.84 H142.22 Z M170.67,130.84 V136.53 H176.36 V130.84 H170.67 Z M199.11,130.84 V136.53 H204.80 V130.84 H199.11 Z M204.80,130.84 V136.53 H210.49 V130.84 H204.80 Z M216.18,130.84 V136.53 H221.87 V130.84 H216.18 Z M227.56,130.84 V136.53 H233.24 V130.84 H227.56 Z M22.76,136.53 V142.22 H28.44 V136.53 H22.76 Z M28.44,136.53 V142.22 H34.13 V136.53 H28.44 Z M34.13,136.53 V142.22 H39.82 V136.53 H34.13 Z M39.82,136.53 V142.22 H45.51 V136.53 H39.82 Z M51.20,136.53 V142.22 H56.89 V136.53 H51.20 Z M56.89,136.53 V142.22 H62.58 V136.53 H56.89 Z M62.58,136.53 V142.22 H68.27 V136.53 H62.58 Z M68.27,136.53 V142.22 H73.96 V136.53 H68.27 Z M102.40,136.53 V142.22 H108.09 V136.53 H102.40 Z M108.09,136.53 V142.22 H113.78 V136.53 H108.09 Z M113.78,136.53 V142.22 H119.47 V136.53 H113.78 Z M119.47,136.53 V142.22 H125.16 V136.53 H119.47 Z M142.22,136.53 V142.22 H147.91 V136.53 H142.22 Z M147.91,136.53 V142.22 H153.60 V136.53 H147.91 Z M159.29,136.53 V142.22 H164.98 V136.53 H159.29 Z M164.98,136.53 V142.22 H170.67 V136.53 H164.98 Z M170.67,136.53 V142.22 H176.36 V136.53 H170.67 Z M187.73,136.53 V142.22 H193.42 V136.53 H187.73 Z M193.42,136.53 V142.22 H199.11 V136.53 H193.42 Z M210.49,136.53 V142.22 H216.18 V136.53 H210.49 Z M216.18,136.53 V142.22 H221.87 V136.53 H216.18 Z M221.87,136.53 V142.22 H227.56 V136.53 H221.87 Z M28.44,142.22 V147.91 H34.13 V142.22 H28.44 Z M45.51,142.22 V147.91 H51.20 V142.22 H45.51 Z M51.20,142.22 V147.91 H56.89 V142.22 H51.20 Z M62.58,142.22 V147.91 H68.27 V142.22 H62.58 Z M79.64,142.22 V147.91 H85.33 V142.22 H79.64 Z M108.09,142.22 V147.91 H113.78 V142.22 H108.09 Z M136.53,142.22 V147.91 H142.22 V142.22 H136.53 Z M147.91,142.22 V147.91 H153.60 V142.22 H147.91 Z M153.60,142.22 V147.91 H159.29 V142.22 H153.60 Z M159.29,142.22 V147.91 H164.98 V142.22 H159.29 Z M170.67,142.22 V147.91 H176.36 V142.22 H170.67 Z M176.36,142.22 V147.91 H182.04 V142.22 H176.36 Z M182.04,142.22 V147.91 H187.73 V142.22 H182.04 Z M193.42,142.22 V147.91 H199.11 V142.22 H193.42 Z M216.18,142.22 V147.91 H221.87 V142.22 H216.18 Z M22.76,147.91 V153.60 H28.44 V147.91 H22.76 Z M28.44,147.91 V153.60 H34.13 V147.91 H28.44 Z M34.13,147.91 V153.60 H39.82 V147.91 H34.13 Z M39.82,147.91 V153.60 H45.51 V147.91 H39.82 Z M56.89,147.91 V153.60 H62.58 V147.91 H56.89 Z M79.64,147.91 V153.60 H85.33 V147.91 H79.64 Z M91.02,147.91 V153.60 H96.71 V147.91 H91.02 Z M96.71,147.91 V153.60 H102.40 V147.91 H96.71 Z M102.40,147.91 V153.60 H108.09 V147.91 H102.40 Z M108.09,147.91 V153.60 H113.78 V147.91 H108.09 Z M147.91,147.91 V153.60 H153.60 V147.91 H147.91 Z M153.60,147.91 V153.60 H159.29 V147.91 H153.60 Z M159.29,147.91 V153.60 H164.98 V147.91 H159.29 Z M176.36,147.91 V153.60 H182.04 V147.91 H176.36 Z M187.73,147.91 V153.60 H193.42 V147.91 H187.73 Z M199.11,147.91 V153.60 H204.80 V147.91 H199.11 Z M204.80,147.91 V153.60 H210.49 V147.91 H204.80 Z M210.49,147.91 V153.60 H216.18 V147.91 H210.49 Z M216.18,147.91 V153.60 H221.87 V147.91 H216.18 Z M227.56,147.91 V153.60 H233.24 V147.91 H227.56 Z M28.44,153.60 V159.29 H34.13 V153.60 H28.44 Z M85.33,153.60 V159.29 H91.02 V153.60 H85.33 Z M91.02,153.60 V159.29 H96.71 V153.60 H91.02 Z M113.78,153.60 V159.29 H119.47 V153.60 H113.78 Z M130.84,153.60 V159.29 H136.53 V153.60 H130.84 Z M142.22,153.60 V159.29 H147.91 V153.60 H142.22 Z M147.91,153.60 V159.29 H153.60 V153.60 H147.91 Z M159.29,153.60 V159.29 H164.98 V153.60 H159.29 Z M164.98,153.60 V159.29 H170.67 V153.60 H164.98 Z M170.67,153.60 V159.29 H176.36 V153.60 H170.67 Z M176.36,153.60 V159.29 H182.04 V153.60 H176.36 Z M187.73,153.60 V159.29 H193.42 V153.60 H187.73 Z M216.18,153.60 V159.29 H221.87 V153.60 H216.18 Z M22.76,159.29 V164.98 H28.44 V159.29 H22.76 Z M28.44,159.29 V164.98 H34.13 V159.29 H28.44 Z M39.82,159.29 V164.98 H45.51 V159.29 H39.82 Z M56.89,159.29 V164.98 H62.58 V159.29 H56.89 Z M85.33,159.29 V164.98 H91.02 V159.29 H85.33 Z M91.02,159.29 V164.98 H96.71 V159.29 H91.02 Z M96.71,159.29 V164.98 H102.40 V159.29 H96.71 Z M102.40,159.29 V164.98 H108.09 V159.29 H102.40 Z M113.78,159.29 V164.98 H119.47 V159.29 H113.78 Z M136.53,159.29 V164.98 H142.22 V159.29 H136.53 Z M153.60,159.29 V164.98 H159.29 V159.29 H153.60 Z M159.29,159.29 V164.98 H164.98 V159.29 H159.29 Z M164.98,159.29 V164.98 H170.67 V159.29 H164.98 Z M187.73,159.29 V164.98 H193.42 V159.29 H187.73 Z M204.80,159.29 V164.98 H210.49 V159.29 H204.80 Z M210.49,159.29 V164.98 H216.18 V159.29 H210.49 Z M216.18,159.29 V164.98 H221.87 V159.29 H216.18 Z M227.56,159.29 V164.98 H233.24 V159.29 H227.56 Z M28.44,164.98 V170.67 H34.13 V164.98 H28.44 Z M34.13,164.98 V170.67 H39.82 V164.98 H34.13 Z M39.82,164.98 V170.67 H45.51 V164.98 H39.82 Z M85.33,164.98 V170.67 H91.02 V164.98 H85.33 Z M91.02,164.98 V170.67 H96.71 V164.98 H91.02 Z M113.78,164.98 V170.67 H119.47 V164.98 H113.78 Z M119.47,164.98 V170.67 H125.16 V164.98 H119.47 Z M142.22,164.98 V170.67 H147.91 V164.98 H142.22 Z M147.91,164.98 V170.67 H153.60 V164.98 H147.91 Z M153.60,164.98 V170.67 H159.29 V164.98 H153.60 Z M164.98,164.98 V170.67 H170.67 V164.98 H164.98 Z M170.67,164.98 V170.67 H176.36 V164.98 H170.67 Z M182.04,164.98 V170.67 H187.73 V164.98 H182.04 Z M193.42,164.98 V170.67 H199.11 V164.98 H193.42 Z M199.11,164.98 V170.67 H204.80 V164.98 H199.11 Z M204.80,164.98 V170.67 H210.49 V164.98 H204.80 Z M221.87,164.98 V170.67 H227.56 V164.98 H221.87 Z M227.56,164.98 V170.67 H233.24 V164.98 H227.56 Z M22.76,170.67 V176.36 H28.44 V170.67 H22.76 Z M28.44,170.67 V176.36 H34.13 V170.67 H28.44 Z M34.13,170.67 V176.36 H39.82 V170.67 H34.13 Z M39.82,170.67 V176.36 H45.51 V170.67 H39.82 Z M56.89,170.67 V176.36 H62.58 V170.67 H56.89 Z M62.58,170.67 V176.36 H68.27 V170.67 H62.58 Z M73.96,170.67 V176.36 H79.64 V170.67 H73.96 Z M91.02,170.67 V176.36 H96.71 V170.67 H91.02 Z M96.71,170.67 V176.36 H102.40 V170.67 H96.71 Z M102.40,170.67 V176.36 H108.09 V170.67 H102.40 Z M113.78,170.67 V176.36 H119.47 V170.67 H113.78 Z M136.53,170.67 V176.36 H142.22 V170.67 H136.53 Z M153.60,170.67 V176.36 H159.29 V170.67 H153.60 Z M164.98,170.67 V176.36 H170.67 V170.67 H164.98 Z M170.67,170.67 V176.36 H176.36 V170.67 H170.67 Z M176.36,170.67 V176.36 H182.04 V170.67 H176.36 Z M187.73,170.67 V176.36 H193.42 V170.67 H187.73 Z M193.42,170.67 V176.36 H199.11 V170.67 H193.42 Z M199.11,170.67 V176.36 H204.80 V170.67 H199.11 Z M204.80,170.67 V176.36 H210.49 V170.67 H204.80 Z M216.18,170.67 V176.36 H221.87 V170.67 H216.18 Z M227.56,170.67 V176.36 H233.24 V170.67 H227.56 Z M39.82,176.36 V182.04 H45.51 V176.36 H39.82 Z M45.51,176.36 V182.04 H51.20 V176.36 H45.51 Z M62.58,176.36 V182.04 H68.27 V176.36 H62.58 Z M68.27,176.36 V182.04 H73.96 V176.36 H68.27 Z M85.33,176.36 V182.04 H91.02 V176.36 H85.33 Z M91.02,176.36 V182.04 H96.71 V176.36 H91.02 Z M96.71,176.36 V182.04 H102.40 V176.36 H96.71 Z M113.78,176.36 V182.04 H119.47 V176.36 H113.78 Z M119.47,176.36 V182.04 H125.16 V176.36 H119.47 Z M125.16,176.36 V182.04 H130.84 V176.36 H125.16 Z M136.53,176.36 V182.04 H142.22 V176.36 H136.53 Z M159.29,176.36 V182.04 H164.98 V176.36 H159.29 Z M164.98,176.36 V182.04 H170.67 V176.36 H164.98 Z M187.73,176.36 V182.04 H193.42 V176.36 H187.73 Z M199.11,176.36 V182.04 H204.80 V176.36 H199.11 Z M221.87,176.36 V182.04 H227.56 V176.36 H221.87 Z M34.13,182.04 V187.73 H39.82 V182.04 H34.13 Z M39.82,182.04 V187.73 H45.51 V182.04 H39.82 Z M45.51,182.04 V187.73 H51.20 V182.04 H45.51 Z M51.20,182.04 V187.73 H56.89 V182.04 H51.20 Z M56.89,182.04 V187.73 H62.58 V182.04 H56.89 Z M62.58,182.04 V187.73 H68.27 V182.04 H62.58 Z M85.33,182.04 V187.73 H91.02 V182.04 H85.33 Z M96.71,182.04 V187.73 H102.40 V182.04 H96.71 Z M108.09,182.04 V187.73 H113.78 V182.04 H108.09 Z M113.78,182.04 V187.73 H119.47 V182.04 H113.78 Z M119.47,182.04 V187.73 H125.16 V182.04 H119.47 Z M125.16,182.04 V187.73 H130.84 V182.04 H125.16 Z M130.84,182.04 V187.73 H136.53 V182.04 H130.84 Z M136.53,182.04 V187.73 H142.22 V182.04 H136.53 Z M142.22,182.04 V187.73 H147.91 V182.04 H142.22 Z M176.36,182.04 V187.73 H182.04 V182.04 H176.36 Z M182.04,182.04 V187.73 H187.73 V182.04 H182.04 Z M187.73,182.04 V187.73 H193.42 V182.04 H187.73 Z M193.42,182.04 V187.73 H199.11 V182.04 H193.42 Z M199.11,182.04 V187.73 H204.80 V182.04 H199.11 Z M204.80,182.04 V187.73 H210.49 V182.04 H204.80 Z M210.49,182.04 V187.73 H216.18 V182.04 H210.49 Z M73.96,187.73 V193.42 H79.64 V187.73 H73.96 Z M79.64,187.73 V193.42 H85.33 V187.73 H79.64 Z M91.02,187.73 V193.42 H96.71 V187.73 H91.02 Z M96.71,187.73 V193.42 H102.40 V187.73 H96.71 Z M108.09,187.73 V193.42 H113.78 V187.73 H108.09 Z M125.16,187.73 V193.42 H130.84 V187.73 H125.16 Z M136.53,187.73 V193.42 H142.22 V187.73 H136.53 Z M142.22,187.73 V193.42 H147.91 V187.73 H142.22 Z M147.91,187.73 V193.42 H153.60 V187.73 H147.91 Z M159.29,187.73 V193.42 H164.98 V187.73 H159.29 Z M164.98,187.73 V193.42 H170.67 V187.73 H164.98 Z M170.67,187.73 V193.42 H176.36 V187.73 H170.67 Z M176.36,187.73 V193.42 H182.04 V187.73 H176.36 Z M182.04,187.73 V193.42 H187.73 V187.73 H182.04 Z M204.80,187.73 V193.42 H210.49 V187.73 H204.80 Z M210.49,187.73 V193.42 H216.18 V187.73 H210.49 Z M221.87,187.73 V193.42 H227.56 V187.73 H221.87 Z M227.56,187.73 V193.42 H233.24 V187.73 H227.56 Z M22.76,193.42 V199.11 H28.44 V193.42 H22.76 Z M28.44,193.42 V199.11 H34.13 V193.42 H28.44 Z M34.13,193.42 V199.11 H39.82 V193.42 H34.13 Z M39.82,193.42 V199.11 H45.51 V193.42 H39.82 Z M45.51,193.42 V199.11 H51.20 V193.42 H45.51 Z M51.20,193.42 V199.11 H56.89 V193.42 H51.20 Z M56.89,193.42 V199.11 H62.58 V193.42 H56.89 Z M68.27,193.42 V199.11 H73.96 V193.42 H68.27 Z M79.64,193.42 V199.11 H85.33 V193.42 H79.64 Z M91.02,193.42 V199.11 H96.71 V193.42 H91.02 Z M96.71,193.42 V199.11 H102.40 V193.42 H96.71 Z M119.47,193.42 V199.11 H125.16 V193.42 H119.47 Z M130.84,193.42 V199.11 H136.53 V193.42 H130.84 Z M147.91,193.42 V199.11 H153.60 V193.42 H147.91 Z M159.29,193.42 V199.11 H164.98 V193.42 H159.29 Z M164.98,193.42 V199.11 H170.67 V193.42 H164.98 Z M176.36,193.42 V199.11 H182.04 V193.42 H176.36 Z M182.04,193.42 V199.11 H187.73 V193.42 H182.04 Z M193.42,193.42 V199.11 H199.11 V193.42 H193.42 Z M204.80,193.42 V199.11 H210.49 V193.42 H204.80 Z M210.49,193.42 V199.11 H216.18 V193.42 H210.49 Z M216.18,193.42 V199.11 H221.87 V193.42 H216.18 Z M221.87,193.42 V199.11 H227.56 V193.42 H221.87 Z M22.76,199.11 V204.80 H28.44 V199.11 H22.76 Z M56.89,199.11 V204.80 H62.58 V199.11 H56.89 Z M73.96,199.11 V204.80 H79.64 V199.11 H73.96 Z M79.64,199.11 V204.80 H85.33 V199.11 H79.64 Z M96.71,199.11 V204.80 H102.40 V199.11 H96.71 Z M108.09,199.11 V204.80 H113.78 V199.11 H108.09 Z M119.47,199.11 V204.80 H125.16 V199.11 H119.47 Z M136.53,199.11 V204.80 H142.22 V199.11 H136.53 Z M147.91,199.11 V204.80 H153.60 V199.11 H147.91 Z M159.29,199.11 V204.80 H164.98 V199.11 H159.29 Z M164.98,199.11 V204.80 H170.67 V199.11 H164.98 Z M176.36,199.11 V204.80 H182.04 V199.11 H176.36 Z M182.04,199.11 V204.80 H187.73 V199.11 H182.04 Z M204.80,199.11 V204.80 H210.49 V199.11 H204.80 Z M221.87,199.11 V204.80 H227.56 V199.11 H221.87 Z M22.76,204.80 V210.49 H28.44 V204.80 H22.76 Z M34.13,204.80 V210.49 H39.82 V204.80 H34.13 Z M39.82,204.80 V210.49 H45.51 V204.80 H39.82 Z M45.51,204.80 V210.49 H51.20 V204.80 H45.51 Z M56.89,204.80 V210.49 H62.58 V204.80 H56.89 Z M79.64,204.80 V210.49 H85.33 V204.80 H79.64 Z M85.33,204.80 V210.49 H91.02 V204.80 H85.33 Z M91.02,204.80 V210.49 H96.71 V204.80 H91.02 Z M96.71,204.80 V210.49 H102.40 V204.80 H96.71 Z M102.40,204.80 V210.49 H108.09 V204.80 H102.40 Z M108.09,204.80 V210.49 H113.78 V204.80 H108.09 Z M130.84,204.80 V210.49 H136.53 V204.80 H130.84 Z M136.53,204.80 V210.49 H142.22 V204.80 H136.53 Z M153.60,204.80 V210.49 H159.29 V204.80 H153.60 Z M159.29,204.80 V210.49 H164.98 V204.80 H159.29 Z M164.98,204.80 V210.49 H170.67 V204.80 H164.98 Z M176.36,204.80 V210.49 H182.04 V204.80 H176.36 Z M182.04,204.80 V210.49 H187.73 V204.80 H182.04 Z M187.73,204.80 V210.49 H193.42 V204.80 H187.73 Z M193.42,204.80 V210.49 H199.11 V204.80 H193.42 Z M199.11,204.80 V210.49 H204.80 V204.80 H199.11 Z M204.80,204.80 V210.49 H210.49 V204.80 H204.80 Z M210.49,204.80 V210.49 H216.18 V204.80 H210.49 Z M216.18,204.80 V210.49 H221.87 V204.80 H216.18 Z M221.87,204.80 V210.49 H227.56 V204.80 H221.87 Z M227.56,204.80 V210.49 H233.24 V204.80 H227.56 Z M22.76,210.49 V216.18 H28.44 V210.49 H22.76 Z M34.13,210.49 V216.18 H39.82 V210.49 H34.13 Z M39.82,210.49 V216.18 H45.51 V210.49 H39.82 Z M45.51,210.49 V216.18 H51.20 V210.49 H45.51 Z M56.89,210.49 V216.18 H62.58 V210.49 H56.89 Z M68.27,210.49 V216.18 H73.96 V210.49 H68.27 Z M79.64,210.49 V216.18 H85.33 V210.49 H79.64 Z M85.33,210.49 V216.18 H91.02 V210.49 H85.33 Z M96.71,210.49 V216.18 H102.40 V210.49 H96.71 Z M113.78,210.49 V216.18 H119.47 V210.49 H113.78 Z M130.84,210.49 V216.18 H136.53 V210.49 H130.84 Z M136.53,210.49 V216.18 H142.22 V210.49 H136.53 Z M142.22,210.49 V216.18 H147.91 V210.49 H142.22 Z M153.60,210.49 V216.18 H159.29 V210.49 H153.60 Z M164.98,210.49 V216.18 H170.67 V210.49 H164.98 Z M204.80,210.49 V216.18 H210.49 V210.49 H204.80 Z M210.49,210.49 V216.18 H216.18 V210.49 H210.49 Z M216.18,210.49 V216.18 H221.87 V210.49 H216.18 Z M221.87,210.49 V216.18 H227.56 V210.49 H221.87 Z M227.56,210.49 V216.18 H233.24 V210.49 H227.56 Z M22.76,216.18 V221.87 H28.44 V216.18 H22.76 Z M34.13,216.18 V221.87 H39.82 V216.18 H34.13 Z M39.82,216.18 V221.87 H45.51 V216.18 H39.82 Z M45.51,216.18 V221.87 H51.20 V216.18 H45.51 Z M56.89,216.18 V221.87 H62.58 V216.18 H56.89 Z M73.96,216.18 V221.87 H79.64 V216.18 H73.96 Z M85.33,216.18 V221.87 H91.02 V216.18 H85.33 Z M91.02,216.18 V221.87 H96.71 V216.18 H91.02 Z M102.40,216.18 V221.87 H108.09 V216.18 H102.40 Z M113.78,216.18 V221.87 H119.47 V216.18 H113.78 Z M119.47,216.18 V221.87 H125.16 V216.18 H119.47 Z M125.16,216.18 V221.87 H130.84 V216.18 H125.16 Z M153.60,216.18 V221.87 H159.29 V216.18 H153.60 Z M159.29,216.18 V221.87 H164.98 V216.18 H159.29 Z M170.67,216.18 V221.87 H176.36 V216.18 H170.67 Z M182.04,216.18 V221.87 H187.73 V216.18 H182.04 Z M187.73,216.18 V221.87 H193.42 V216.18 H187.73 Z M193.42,216.18 V221.87 H199.11 V216.18 H193.42 Z M221.87,216.18 V221.87 H227.56 V216.18 H221.87 Z M227.56,216.18 V221.87 H233.24 V216.18 H227.56 Z M22.76,221.87 V227.56 H28.44 V221.87 H22.76 Z M56.89,221.87 V227.56 H62.58 V221.87 H56.89 Z M68.27,221.87 V227.56 H73.96 V221.87 H68.27 Z M73.96,221.87 V227.56 H79.64 V221.87 H73.96 Z M91.02,221.87 V227.56 H96.71 V221.87 H91.02 Z M96.71,221.87 V227.56 H102.40 V221.87 H96.71 Z M119.47,221.87 V227.56 H125.16 V221.87 H119.47 Z M125.16,221.87 V227.56 H130.84 V221.87 H125.16 Z M130.84,221.87 V227.56 H136.53 V221.87 H130.84 Z M153.60,221.87 V227.56 H159.29 V221.87 H153.60 Z M159.29,221.87 V227.56 H164.98 V221.87 H159.29 Z M164.98,221.87 V227.56 H170.67 V221.87 H164.98 Z M170.67,221.87 V227.56 H176.36 V221.87 H170.67 Z M176.36,221.87 V227.56 H182.04 V221.87 H176.36 Z M193.42,221.87 V227.56 H199.11 V221.87 H193.42 Z M199.11,221.87 V227.56 H204.80 V221.87 H199.11 Z M204.80,221.87 V227.56 H210.49 V221.87 H204.80 Z M210.49,221.87 V227.56 H216.18 V221.87 H210.49 Z M216.18,221.87 V227.56 H221.87 V221.87 H216.18 Z M227.56,221.87 V227.56 H233.24 V221.87 H227.56 Z M22.76,227.56 V233.24 H28.44 V227.56 H22.76 Z M28.44,227.56 V233.24 H34.13 V227.56 H28.44 Z M34.13,227.56 V233.24 H39.82 V227.56 H34.13 Z M39.82,227.56 V233.24 H45.51 V227.56 H39.82 Z M45.51,227.56 V233.24 H51.20 V227.56 H45.51 Z M51.20,227.56 V233.24 H56.89 V227.56 H51.20 Z M56.89,227.56 V233.24 H62.58 V227.56 H56.89 Z M68.27,227.56 V233.24 H73.96 V227.56 H68.27 Z M91.02,227.56 V233.24 H96.71 V227.56 H91.02 Z M96.71,227.56 V233.24 H102.40 V227.56 H96.71 Z M113.78,227.56 V233.24 H119.47 V227.56 H113.78 Z M119.47,227.56 V233.24 H125.16 V227.56 H119.47 Z M125.16,227.56 V233.24 H130.84 V227.56 H125.16 Z M136.53,227.56 V233.24 H142.22 V227.56 H136.53 Z M153.60,227.56 V233.24 H159.29 V227.56 H153.60 Z M164.98,227.56 V233.24 H170.67 V227.56 H164.98 Z M176.36,227.56 V233.24 H182.04 V227.56 H176.36 Z M182.04,227.56 V233.24 H187.73 V227.56 H182.04 Z M187.73,227.56 V233.24 H193.42 V227.56 H187.73 Z M193.42,227.56 V233.24 H199.11 V227.56 H193.42 Z M227.56,227.56 V233.24 H233.24 V227.56 H227.56 Z " /></svg></a>
   </div>
-<div class="region stamp-show-dealer" data-region="dealer" style="--layout-weight: 1">
-    <div class="xframe-content-plugin editable-slot" data-content-plugin="editable-slot" data-fence="placeholder: &#10;  static: Brought to you by the GHSS Foundation&#10;  dynamic: Add dealer details here&#10;label: Dealer information" data-eval="dynamic" data-alt="Dealer information"></div>
+<div class="region stamp-show-wide-dealer" data-region="dealer">
+    <div class="xframe-content-plugin editable-slot" data-content-plugin="editable-slot" data-fence="placeholder:&#10;  static: Brought to you by the GHSS Foundation&#10;  dynamic: Add dealer details here&#10;label: Dealer information" data-eval="dynamic" data-alt="Dealer information"></div>
   </div>
   </div>
-<div class="region stamp-show-featuring-heading" data-region="featuring-heading">
+<div class="region stamp-show-wide-featuring-heading" data-region="featuring-heading">
     <h3>FEATURING</h3>
   </div>
-<div class="layout-container layout-stack" data-layout-direction="vertical">
-    <div class="layout-container layout-stack" data-layout-direction="horizontal">
-    <div class="region stamp-show-feature-bourse" data-region="feature-bourse" style="--layout-weight: 1">
+<div class="layout-container layout-stack" data-layout-direction="horizontal" style="gap: 0.5rem; --layout-height: 5.5rem">
+    <div class="region stamp-show-wide-feature-bourse" data-region="feature-bourse" style="--layout-height: 5.5rem">
     <p><strong>Dealer Bourse</strong></p>
   </div>
-<div class="region stamp-show-feature-exhibits" data-region="feature-exhibits" style="--layout-weight: 1">
+<div class="region stamp-show-wide-feature-exhibits" data-region="feature-exhibits" style="--layout-height: 5.5rem">
     <p><strong>Competitive Exhibits</strong></p>
   </div>
-  </div>
-<div class="layout-container layout-stack" data-layout-direction="horizontal">
-    <div class="region stamp-show-feature-seminars" data-region="feature-seminars" style="--layout-weight: 1">
+<div class="region stamp-show-wide-feature-seminars" data-region="feature-seminars" style="--layout-height: 5.5rem">
     <p><strong>Educational Seminars</strong></p>
   </div>
-<div class="region stamp-show-feature-beginners" data-region="feature-beginners" style="--layout-weight: 1">
+<div class="region stamp-show-wide-feature-beginners" data-region="feature-beginners" style="--layout-height: 5.5rem">
     <p><strong>Beginner&#39;s Booth</strong></p>
   </div>
   </div>
-  </div>
-<div class="region stamp-show-stamp-release" data-region="stamp-release">
+<div class="layout-container layout-stack" data-layout-direction="horizontal" style="gap: 0.55rem">
+    <div class="region stamp-show-wide-stamp-release" data-region="stamp-release">
     <h3>✦ USPS FIRST DAY OF ISSUE: Winter Wreath ✦</h3>
-    <img id="winter-wreath-2026" src="winter-wreath-2026.png" alt="Winter Wreath Global Forever stamp">
-    <p>Global Forever stamp</p>
+    <img id="winter-wreath-2026" src="winter-wreath-2026.png" alt="Winter Wreath Global Forever stamp" data-click-to-zoom="true">
+    <p><strong>Global Forever stamp</strong></p>
     <p>Released Friday 18th at 11:00 AM</p>
-    <p>A snowy holiday wreath for the season’s Global Forever issue.</p>
+    <p><strong>A snowy holiday wreath for the season’s Global Forever issue.</strong></p>
     <p>Photographer Natalia Kostikova built the wreath from artificial branches and craft-store materials, painting each ornament and dusting the greenery with baking soda for frost. Designed by Greg Breeding for the United States Postal Service.</p>
     <p>Photo by Natalia Kostikova · Design by Greg Breeding</p>
   </div>
-<div class="region stamp-show-auction" data-region="auction">
+<div class="region stamp-show-wide-auction" data-region="auction">
     <h3>✦ SPECIAL EVENT: GHSS DONATION SILENT AUCTION ✦</h3>
-    <img id="SC91" src="../samples/SC91.jpg" alt="US Scott #91, 15¢ Lincoln with E-Grill">
-    <p>Donation silent auction</p>
+    <img id="SC91" src="../samples/SC91.jpg" alt="US Scott #91, 15¢ Lincoln with E-Grill" data-click-to-zoom="true">
+    <p><strong>Donation silent auction</strong></p>
     <p>Closes Sunday 20th, 3:00 PM</p>
-    <p>A curated premium selection of donated lots to support the show.</p>
+    <p><strong>A curated premium selection of donated lots to support the show.</strong></p>
     <p>Highlight lot US Scott #91, the 15¢ Lincoln with E-Grill — a classic-era issue that anchors this year’s GHSS donation auction.</p>
     <p>Bid sheets available Saturday 19th 10:00 AM · Whole-dollar cash bids only</p>
+  </div>
   </div>
   </div>
 </section>
   </div>
   </div>
+<div class="region framed-deck-hud layout-controls" data-region="hud" style="--layout-height: 72px">
+    <nav class="hud" data-xframe-component="hud" data-deck-hud data-themes="light" aria-label="Slide controls">
+  <button type="button" data-deck-previous title="Previous (←)" aria-label="Previous slide">←</button>
+  <span data-deck-counter>1 / 2</span>
+  <button type="button" data-deck-next title="Next (→)" aria-label="Next slide">→</button>
+  <button type="button" data-deck-theme title="Toggle theme (t)" aria-label="Toggle theme">◐</button>
+  <button type="button" data-deck-fullscreen title="Enter full screen (f)" aria-label="Enter full screen">⛶</button>
+  <button type="button" class="xframe-narrative-language" data-narrative-language-button="en-US" aria-pressed="true" aria-label="English" title="English">🇺🇸</button><button type="button" class="xframe-narrative-language" data-narrative-language-button="es-US" aria-pressed="false" aria-label="Español" title="Español">🇪🇸</button>
+</nav>
+<script>
+(() => {
+  if (window.__xframeDeckControlsScheduled) return;
+  window.__xframeDeckControlsScheduled = true;
+  const initialize = () => {
+    const root = document.getElementById("xframe");
+    if (!root) return;
+    const slides = [...root.querySelectorAll(".segment")];
+    const hud = root.querySelector(".hud");
+    const deckThemes = (hud?.dataset.themes || root.dataset.themes || "")
+      .split(",").map((name) => name.trim()).filter(Boolean);
+    let index = 0;
+    const fromHash = () => {
+      const n = Number.parseInt((location.hash || "").replace("#", ""), 10);
+      return Number.isNaN(n) ? 0 : Math.min(Math.max(n - 1, 0), Math.max(slides.length - 1, 0));
+    };
+    const fitCanvas = () => {
+      if (document.fullscreenElement === root) {
+        root.style.transform = "";
+        return;
+      }
+      const w = root.offsetWidth || 1;
+      const h = root.offsetHeight || 1;
+      const chrome = hud ? hud.offsetHeight + 16 : 0;
+      const scale = Math.min((window.innerWidth * 0.92) / w, (window.innerHeight * 0.82) / (h + chrome), 1);
+      root.style.transform = "scale(" + scale + ")";
+    };
+    const applyTheme = (name) => {
+      if (!name) return;
+      root.dataset.theme = name;
+      slides.forEach((slide) => { slide.dataset.theme = name; });
+      document.documentElement.dataset.theme = name;
+    };
+    const show = (nextIndex) => {
+      index = Math.min(Math.max(nextIndex, 0), Math.max(slides.length - 1, 0));
+      slides.forEach((slide, slideIndex) => slide.classList.toggle("active", slideIndex === index));
+      const counter = hud?.querySelector("[data-deck-counter]");
+      if (counter) counter.textContent = (index + 1) + " / " + Math.max(slides.length, 1);
+      const prev = hud?.querySelector("[data-deck-previous]");
+      const next = hud?.querySelector("[data-deck-next]");
+      if (prev instanceof HTMLButtonElement) prev.disabled = index === 0;
+      if (next instanceof HTMLButtonElement) next.disabled = index >= slides.length - 1;
+      const themeBtn = hud?.querySelector("[data-deck-theme]");
+      if (themeBtn instanceof HTMLButtonElement) {
+        themeBtn.disabled = deckThemes.length < 2;
+        themeBtn.hidden = deckThemes.length < 1;
+      }
+      if (!root.dataset.theme) applyTheme(deckThemes[0]);
+      const hash = "#" + (index + 1);
+      if (hash !== location.hash) {
+        try { history.replaceState(null, "", hash); } catch {}
+      }
+      root.dispatchEvent(new CustomEvent("xframe:slidechange", { detail: { index } }));
+    };
+    const cycleTheme = () => {
+      if (deckThemes.length < 2) return;
+      const current = root.dataset.theme || deckThemes[0];
+      const at = deckThemes.indexOf(current);
+      const nextTheme = deckThemes[(at < 0 ? 0 : at + 1) % deckThemes.length];
+      applyTheme(nextTheme);
+    };
+    const updateFullscreenControl = () => {
+      const button = hud?.querySelector("[data-deck-fullscreen]");
+      if (!(button instanceof HTMLButtonElement)) return;
+      const active = document.fullscreenElement === root;
+      button.textContent = active ? "⤢" : "⛶";
+      button.title = active ? "Exit full screen (f)" : "Enter full screen (f)";
+      button.setAttribute("aria-label", active ? "Exit full screen" : "Enter full screen");
+    };
+    const toggleFullscreen = async () => {
+      try {
+        if (document.fullscreenElement === root) await document.exitFullscreen();
+        else await root.requestFullscreen();
+      } catch {}
+    };
+    hud?.querySelector("[data-deck-previous]")?.addEventListener("click", () => show(index - 1));
+    hud?.querySelector("[data-deck-next]")?.addEventListener("click", () => show(index + 1));
+    hud?.querySelector("[data-deck-theme]")?.addEventListener("click", cycleTheme);
+    hud?.querySelector("[data-deck-fullscreen]")?.addEventListener("click", toggleFullscreen);
+    window.addEventListener("keydown", (event) => {
+      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) return;
+      if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") {
+        event.preventDefault(); show(index + 1);
+      }
+      if (event.key === "ArrowLeft" || event.key === "PageUp") {
+        event.preventDefault(); show(index - 1);
+      }
+      if (event.key === "Home") show(0);
+      if (event.key === "End") show(slides.length - 1);
+      if (event.key === "t") cycleTheme();
+      if (event.key === "f") toggleFullscreen();
+    });
+    window.addEventListener("hashchange", () => show(fromHash()));
+    window.addEventListener("resize", fitCanvas);
+    document.addEventListener("fullscreenchange", () => {
+      updateFullscreenControl();
+      fitCanvas();
+    });
+    applyTheme(root.dataset.theme || deckThemes[0]);
+    show(fromHash());
+    updateFullscreenControl();
+    fitCanvas();
 
+    const overlay = document.createElement("div");
+    overlay.className = "xframe-zoom-overlay";
+    overlay.hidden = true;
+    overlay.innerHTML = '<div class="xframe-zoom-stage" role="dialog" aria-modal="true" aria-label="Enlarged image"></div>';
+    const stage = overlay.querySelector(".xframe-zoom-stage");
+    document.body.appendChild(overlay);
+    const closeZoom = () => {
+      overlay.hidden = true;
+      stage.replaceChildren();
+    };
+    const openZoom = (img) => {
+      const clone = img.cloneNode(true);
+      clone.removeAttribute("data-click-to-zoom");
+      clone.removeAttribute("width");
+      clone.removeAttribute("height");
+      clone.style.width = "100%";
+      clone.style.height = "auto";
+      clone.style.maxWidth = "100%";
+      clone.style.maxHeight = "calc(92vh - 2.2rem)";
+      clone.style.objectFit = "contain";
+      stage.replaceChildren(clone);
+      overlay.hidden = false;
+    };
+    document.addEventListener("click", (event) => {
+      if (!overlay.hidden) {
+        if (event.target === overlay) closeZoom();
+        return;
+      }
+      const target = event.target.closest("img[data-click-to-zoom='true']");
+      if (!target) return;
+      event.preventDefault();
+      openZoom(target);
+    });
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !overlay.hidden) closeZoom();
+    });
+  };
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initialize, { once: true });
+  } else {
+    initialize();
+  }
+})();
+</script>
+  </div>
+  </div>
+<aside class="xframe-narrative-dock" aria-label="Slide narration"><div class="xframe-narrative-slide" data-xframe-narrative-slide="0"><div class="xframe-narrative" data-xframe-narrative data-selected-language="en-US"><div data-narrative-text><span data-narrative-language="en-US" data-selected="true">Mark your calendar: the Greater Houston Stamp Show returns September eighteenth through twentieth at the Humble Civic Center — three days you will not want to miss. This is Houston’s gathering place for collectors, dealers, and anyone curious about the stories stamps tell. Walk a full dealer bourse, explore competitive exhibits, catch educational seminars, and stop by the Beginner’s Booth if you are just getting started. And here is what makes this year unforgettable: on Friday at eleven, the United States Postal Service holds a First Day of Issue ceremony for the Winter Wreath Global Forever stamp — a snowy holiday design you can witness at the moment it enters the mailstream. Then bid in the GHSS donation silent auction, anchored by a classic-era highlight: United States Scott number ninety-one, the fifteen-cent Lincoln with E-Grill. Come for the stamps. Stay for an exclusive experience you will only find here. Details and directions are on the flyer — scan the code and join us.</span><span data-narrative-language="es-US" hidden>Marque su calendario: el Greater Houston Stamp Show regresa del dieciocho al veinte de septiembre en el Humble Civic Center — tres días que no se puede perder. Este es el punto de encuentro de Houston para coleccionistas, comerciantes y para quienes sienten curiosidad por las historias que cuentan los sellos. Recorra una completa bolsa de comerciantes, explore exhibiciones competitivas, asista a seminarios educativos y visite el Beginner’s Booth si está empezando. Y esto es lo que hace inolvidable este año: el viernes a las once, el Servicio Postal de los Estados Unidos celebra la ceremonia de Primer Día de Emisión del sello Global Forever Winter Wreath — un diseño navideño nevado que usted puede presenciar en el momento en que entra al correo. Luego puje en la subasta silenciosa benéfica de GHSS, con un lote destacado de la era clásica: Estados Unidos Scott número noventa y uno, el Lincoln de quince centavos con E-Grill. Venga por los sellos. Quédese por una experiencia exclusiva que solo encontrará aquí. Los detalles y las indicaciones están en el folleto — escanee el código y únase a nosotros.</span></div><audio controls preload="none" data-narrative-audio data-narrative-language="en-US" src="audio/preview-en-US.mp3"></audio><audio controls preload="none" data-narrative-audio data-narrative-language="es-US" hidden src="audio/preview-es-US.mp3"></audio></div></div>
+<div class="xframe-narrative-slide" data-xframe-narrative-slide="1" hidden><div class="xframe-narrative" data-xframe-narrative data-selected-language="en-US"><div data-narrative-text><span data-narrative-language="en-US" data-selected="true">Same show, widescreen ready — everything you need for Greater Houston Stamp Show, September eighteenth through twentieth at the Humble Civic Center. First Day of Issue for Winter Wreath on Friday at eleven, plus the GHSS donation silent auction featuring Scott number ninety-one. Scan the code, save the dates, and join us.</span><span data-narrative-language="es-US" hidden>El mismo evento, listo para pantalla ancha: todo lo esencial del Greater Houston Stamp Show, del dieciocho al veinte de septiembre en el Humble Civic Center. Primer Día de Emisión de Winter Wreath el viernes a las once, y la subasta silenciosa benéfica de GHSS con el Scott número noventa y uno. Escanee el código, reserve las fechas y únase a nosotros.</span></div><audio controls preload="none" data-narrative-audio data-narrative-language="en-US" src="audio/widescreen-en-US.mp3"></audio><audio controls preload="none" data-narrative-audio data-narrative-language="es-US" hidden src="audio/widescreen-es-US.mp3"></audio></div></div></aside>
 </main>
 
 

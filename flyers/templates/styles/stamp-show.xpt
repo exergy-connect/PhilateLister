@@ -32,6 +32,8 @@ body {
   background: var(--white);
   border: 10px solid var(--navy);
   box-shadow: inset 0 0 0 2px var(--white);
+  /* Drive framework `.segment h1 { color: var(--fg) }` without retargeting tags. */
+  --fg: var(--navy);
   color: var(--navy);
 }
 
@@ -50,14 +52,6 @@ body {
   flex-grow: var(--layout-weight, 1);
   flex-shrink: 1;
   min-width: 0;
-}
-
-#xframe .segment[data-layout^="stamp-show"] h1,
-#xframe .segment[data-layout^="stamp-show"] h2,
-#xframe .segment[data-layout^="stamp-show"] h3,
-#xframe .segment[data-layout^="stamp-show"] p,
-#xframe .segment[data-layout^="stamp-show"] li {
-  color: var(--navy);
 }
 
 #xframe .segment[data-layout^="stamp-show"] img {
@@ -97,8 +91,10 @@ body {
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.28));
 }
 
-/* Title + hours row — title stays page-centered; hours sit in the right column */
-#xframe .segment[data-layout^="stamp-show"] .layout-container:has(> :is(.stamp-show-title, .stamp-show-wide-title)):has(> :is(.stamp-show-hours, .stamp-show-wide-hours)) {
+/* Title + hours row — title stays page-centered; #show-times sits in the right column.
+   Scope to the horizontal title-row only: `:has(#show-times)` alone also matches the
+   root vertical stack (ancestor), which turns the whole flyer into a 3-column grid. */
+#xframe .segment[data-layout^="stamp-show"] .layout-container[data-layout-direction="horizontal"]:has(> :is(.stamp-show-hours, .stamp-show-wide-hours)) {
   display: grid !important;
   grid-template-columns: 1fr auto 1fr;
   align-items: center !important;
@@ -109,13 +105,13 @@ body {
   gap: 0.55rem;
 }
 
-#xframe .segment[data-layout^="stamp-show"] .layout-container:has(> :is(.stamp-show-title, .stamp-show-wide-title)):has(> :is(.stamp-show-hours, .stamp-show-wide-hours)) > :is(.stamp-show-title, .stamp-show-wide-title) {
+#xframe .segment[data-layout^="stamp-show"] .layout-container[data-layout-direction="horizontal"]:has(> :is(.stamp-show-hours, .stamp-show-wide-hours)) > :not(:is(.stamp-show-hours, .stamp-show-wide-hours)) {
   grid-column: 2;
   width: auto;
   justify-self: center;
 }
 
-#xframe .segment[data-layout^="stamp-show"] .layout-container:has(> :is(.stamp-show-title, .stamp-show-wide-title)):has(> :is(.stamp-show-hours, .stamp-show-wide-hours)) > :is(.stamp-show-hours, .stamp-show-wide-hours) {
+#xframe .segment[data-layout^="stamp-show"] .layout-container[data-layout-direction="horizontal"]:has(> :is(.stamp-show-hours, .stamp-show-wide-hours)) > :is(.stamp-show-hours, .stamp-show-wide-hours) {
   grid-column: 3;
   justify-self: end;
   align-self: center !important;
@@ -162,7 +158,7 @@ body {
 
 #xframe .segment[data-layout^="stamp-show"] .layout-container:has(> :is(.stamp-show-qr, .stamp-show-wide-qr)) > :is(.stamp-show-venue, .stamp-show-wide-venue),
 #xframe .segment[data-layout^="stamp-show"] .layout-container:has(> :is(.stamp-show-qr, .stamp-show-wide-qr)) > :is(.stamp-show-qr, .stamp-show-wide-qr),
-#xframe .segment[data-layout^="stamp-show"] .layout-container:has(> :is(.stamp-show-qr, .stamp-show-wide-qr)) > :is(.stamp-show-dealer, .stamp-show-wide-dealer, .stamp-show-wide-hours) {
+#xframe .segment[data-layout^="stamp-show"] .layout-container:has(> :is(.stamp-show-qr, .stamp-show-wide-qr)) > :is(.stamp-show-dealer, .stamp-show-wide-dealer) {
   align-self: center !important;
   height: fit-content !important;
   max-height: 100%;
@@ -295,24 +291,20 @@ body {
   object-position: center;
 }
 
-/* Hours @table — compact centered schedule */
-#xframe :is(.stamp-show-hours, .stamp-show-wide-hours) {
-  width: fit-content;
+/* Hours @table — compact schedule via authored id */
+#show-times {
+  width: auto;
   max-width: 100%;
   margin-inline: auto;
   border: 2px solid var(--navy);
-  overflow: hidden;
-}
-
-#xframe :is(.stamp-show-hours, .stamp-show-wide-hours) table {
-  width: auto;
   border-collapse: collapse;
   table-layout: auto;
   font-size: 0.92rem;
   font-weight: 700;
+  overflow: hidden;
 }
 
-#xframe :is(.stamp-show-hours, .stamp-show-wide-hours) caption {
+#show-times caption {
   caption-side: top;
   background: var(--navy);
   color: var(--white);
@@ -323,8 +315,8 @@ body {
   text-align: center;
 }
 
-#xframe :is(.stamp-show-hours, .stamp-show-wide-hours) th,
-#xframe :is(.stamp-show-hours, .stamp-show-wide-hours) td {
+#show-times th,
+#show-times td {
   padding: 0.22rem 0.55rem;
   border: 0;
   border-top: 1px solid var(--navy);
@@ -334,18 +326,18 @@ body {
   white-space: nowrap;
 }
 
-#xframe :is(.stamp-show-hours, .stamp-show-wide-hours) thead {
+#show-times thead {
   display: none;
 }
 
-#xframe :is(.stamp-show-hours, .stamp-show-wide-hours) th:first-child,
-#xframe :is(.stamp-show-hours, .stamp-show-wide-hours) td:first-child {
+#show-times th:first-child,
+#show-times td:first-child {
   text-align: right;
   padding-left: 0.85rem;
 }
 
-#xframe :is(.stamp-show-hours, .stamp-show-wide-hours) th:last-child,
-#xframe :is(.stamp-show-hours, .stamp-show-wide-hours) td:last-child {
+#show-times th:last-child,
+#show-times td:last-child {
   text-align: left;
   border-left: 1px solid var(--navy);
   padding-right: 0.85rem;
@@ -398,7 +390,6 @@ body {
   padding: 2px;
   border: 2px solid var(--navy);
   background: var(--navy);
-  gap: 2px !important;
   box-sizing: border-box;
 }
 

@@ -49,11 +49,103 @@ event:
     summary: >-
       Highlight lot US Scott #91, the 15¢ Lincoln with E-Grill — a classic-era
       issue that anchors this year’s GHSS donation auction.
+
+# Layout content — keys match region names (stamp-show and stamp-show-wide)
+content:
+  header: |
+    @image houston-skyline
+      url: houston-skyline.svg
+      alt: Houston skyline
+
+    @image texas-flag-stamp
+      url: texas-flag-stamp.svg
+      alt: Texas flag stamp
+
+  title: |
+    GREATER HOUSTON
+
+    # STAMP SHOW
+
+    {{ event.dates | upper }}
+
+  hours: |
+    @table show-times
+      title: Show times
+      rows: hours
+      columns: day,time
+
+  venue: |
+    ![Humble Civic Center](humble-civic-center.png)
+
+    **{{ event.venue }}**
+
+    {{ event.address_line1 }}
+
+    {{ event.address_line2 }}
+
+  qr: |
+    @qr_code
+      url: "{{ event.url }}"
+
+  dealer: |
+    ```editable-slot
+    placeholder:
+      static: Brought to you by the GHSS Foundation
+      dynamic: Add dealer details here
+    label: Dealer information
+    ```
+
+  featuring-heading: |
+    ### FEATURING
+
+  feature-bourse: |
+    **Dealer Bourse**
+
+  feature-exhibits: |
+    **Competitive Exhibits**
+
+  feature-seminars: |
+    **Educational Seminars**
+
+  feature-beginners: |
+    **Beginner's Booth**
+
+  stamp-release: |
+    ### ✦ USPS FIRST DAY OF ISSUE: {{ event.stamp_release.name }} ✦
+
+    @image
+      url: winter-wreath-2026.png
+      alt: "{{ event.stamp_release.name }} Global Forever stamp"
+
+    **{{ event.stamp_release.kind }}**
+
+    Released {{ event.stamp_release.release }}
+
+    **{{ event.stamp_release.lead }}**
+
+    {{ event.stamp_release.summary }}
+
+    Photo by {{ event.stamp_release.photographer }} · Design by {{ event.stamp_release.designer }}
+
+  auction: |
+    ### ✦ SPECIAL EVENT: GHSS DONATION SILENT AUCTION ✦
+
+    @image
+      url: ../samples/SC91.jpg
+      alt: "{{ event.auction.highlight }}"
+
+    **{{ event.auction.kind }}**
+
+    Closes {{ event.auction.closes }}
+
+    **{{ event.auction.lead }}**
+
+    {{ event.auction.summary }}
+
+    Bid sheets available {{ event.auction.bidding_starts }} · {{ event.auction.terms }}
 ---
 @id flyer
 @presentation poster
-
-@include partials/ghss-regions.xp
 
 ---
 @id preview
@@ -103,8 +195,6 @@ September 18–20, 2026 · Humble Civic Center
 @id widescreen
 @presentation slidedeck
 @layout stamp-show-wide
-
-@include partials/ghss-regions.xp
 
 @narrative
   - en-US: >-

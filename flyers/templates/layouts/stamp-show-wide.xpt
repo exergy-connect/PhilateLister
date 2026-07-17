@@ -2,60 +2,47 @@
 styles: [stamp-show]
 defaults:
   region: title
+content_map: true
 ---
 @stack
   direction: vertical
   content:
     @region header
-    @stack title-row
+    @stack
       direction: horizontal
       gap: 0.55rem
       align: center
       content:
         @region title
           default: true
-          weight: 1
           align: center
         @region hours
           align: end
-    @stack event-row
+    @stack
       direction: horizontal
       gap: 0.35rem
       align: center
       content:
         @region venue
-          weight: 1
           align: center
         @region qr
           align: center
         @region dealer
-          weight: 1
           align: center
     @region featuring-heading
       align: center
-    @stack featuring
+    @stack
       direction: horizontal
       gap: 0.5rem
-      weight: 1
+      height: 5.5rem
       content:
         @region feature-bourse
-          weight: 1
-          height: 5.5rem
         @region feature-exhibits
-          weight: 1
-          height: 5.5rem
         @region feature-seminars
-          weight: 1
-          height: 5.5rem
         @region feature-beginners
-          weight: 1
-          height: 5.5rem
-    @stack specials
+    @stack
       direction: horizontal
-      weight: 2
       gap: 0.55rem
       content:
         @region stamp-release
-          weight: 1
         @region auction
-          weight: 1

@@ -48,12 +48,12 @@ event:
 @id flyer
 
 @region header
-@image
+@image houston-skyline
   url: houston-skyline.svg
   alt: Houston skyline
   click_to_zoom: false
 
-@image
+@image texas-flag-stamp
   url: texas-flag-stamp.svg
   alt: Texas flag stamp
   click_to_zoom: false

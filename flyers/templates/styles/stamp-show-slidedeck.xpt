@@ -53,10 +53,10 @@ extends: stamp-show-base
 
 #xframe .segment[data-layout="stamp-show-wide"] .layout-container:has(> .stamp-show-wide-qr) {
   width: 100%;
-  padding: 0.15rem 0.75rem;
+  padding: 0.1rem 0.75rem;
   align-items: center !important;
-  flex: 0 0 5.25rem !important;
-  min-height: 5.25rem;
+  flex: 0 0 7.25rem !important;
+  min-height: 7.25rem;
 }
 
 #xframe .segment[data-layout="stamp-show-wide"] .stamp-show-wide-venue {
@@ -65,8 +65,10 @@ extends: stamp-show-base
 }
 
 #xframe .segment[data-layout="stamp-show-wide"] .stamp-show-wide-qr .xframe-qr-code {
-  width: 78px;
-  height: 78px;
+  box-sizing: border-box;
+  width: 112px;
+  height: 112px;
+  padding: 0;
 }
 
 #xframe .segment[data-layout="stamp-show-wide"] .stamp-show-wide-featuring-heading {

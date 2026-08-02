@@ -15,10 +15,30 @@ import { fileURLToPath } from "node:url";
 import { consolidate_periods } from "./consolidate.js";
 import { country_output_dir } from "./scrape.js";
 
-const require = createRequire("/app/package.json");
-const { parse: parseYaml } = require("yaml");
-
 const PACKAGE_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+
+/** Resolve `yaml` from Lab (/app) or local stamp_collector node_modules (CI). */
+function loadYamlParse() {
+  const anchors = [
+    path.join(PACKAGE_DIR, "package.json"),
+    "/app/package.json",
+    fileURLToPath(import.meta.url),
+  ];
+  const errors = [];
+  for (const anchor of anchors) {
+    try {
+      const { parse } = createRequire(anchor)("yaml");
+      return parse;
+    } catch (err) {
+      errors.push(`${anchor}: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }
+  throw new Error(
+    `load_country: cannot find module 'yaml' (npm install in examples/stamp_collector).\n${errors.join("\n")}`,
+  );
+}
+
+const parseYaml = loadYamlParse();
 
 /**
  * Load countries/<id>.xp and return its country concept.

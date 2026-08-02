@@ -39,6 +39,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends imagemagick
 
+      - name: Install stamp_collector deps (yaml)
+        working-directory: examples/stamp_collector
+        run: npm ci
+
       - name: Install xform CLI
         run: |
           set -euo pipefail

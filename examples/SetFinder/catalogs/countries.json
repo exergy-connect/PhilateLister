@@ -17,6 +17,11 @@
       "catalog": "is.json"
     },
     {
+      "id": "se",
+      "name": "Sweden",
+      "catalog": "se.json"
+    },
+    {
       "id": "cn-demo",
       "name": "China (demo)",
       "catalog": "demo.json"

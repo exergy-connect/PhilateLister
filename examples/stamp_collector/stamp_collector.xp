@@ -15,7 +15,7 @@
 #   --with year=1990            # keep only sets from this year ("" = all)
 #   --with output_dir=output    # root for per-country directories
 
-{% include "file://./types/local_type.xpt" %}
+# Filters only (no type pack include — skill xform.min.js has no packaged _type index).
 {% include "file://./filters/thumbnails.js" %}
 {% include "file://./filters/scrape.js" %}
 {% include "file://./filters/collect.js" %}

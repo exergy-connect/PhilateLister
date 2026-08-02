@@ -69,6 +69,7 @@ for (const entry of sources) {
     name: entry.name,
     country: collection.country ?? entry.name,
     categories,
+    denominations: collection.summary?.denominations ?? {},
     sets,
   };
   fs.writeFileSync(entry.out, `${JSON.stringify(doc)}\n`, "utf8");

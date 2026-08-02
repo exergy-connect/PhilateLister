@@ -61,18 +61,39 @@ async function uploadImage(req, res, url) {
     const country = safeSegment(url.searchParams.get("country"), "country code").toLowerCase();
     const catalog = safeSegment(url.searchParams.get("catalog"), "catalog number");
     const setId = String(url.searchParams.get("set") || "");
-    const contentType = String(req.headers["content-type"] || "").split(";", 1)[0].toLowerCase();
-    const extension = IMAGE_TYPES.get(contentType);
-    if (!extension) throw new Error("Use a JPEG, PNG, WebP, or GIF image");
+    const stampIndex = Number(url.searchParams.get("index"));
+    if (!Number.isInteger(stampIndex) || stampIndex < 0) throw new Error("Invalid stamp index");
+    let contentType = String(req.headers["content-type"] || "").split(";", 1)[0].toLowerCase();
 
     const catalogPath = path.join(ROOT, "catalogs", `${country}.json`);
     const doc = JSON.parse(fs.readFileSync(catalogPath, "utf8"));
     const sets = Array.isArray(doc) ? doc : doc.sets;
     const set = sets.find((entry) => String(entry.id || "") === setId);
-    const stamp = set?.stamps?.find((entry) => String(entry.no || "") === catalog);
+    const stamp = set?.stamps?.[stampIndex];
+    let inheritedCatalog = "";
+    for (let index = 0; index <= stampIndex && set?.stamps?.[index]; index += 1) {
+      inheritedCatalog = String(set.stamps[index].no || inheritedCatalog).trim();
+    }
+    if (inheritedCatalog !== catalog) throw new Error("Catalog entry does not match the selected stamp");
     if (!stamp) throw new Error("Catalog entry was not found in the selected set");
 
-    const body = await readBody(req);
+    let body;
+    if (contentType === "application/json") {
+      const requestBody = JSON.parse((await readBody(req)).toString("utf8"));
+      const source = new URL(String(requestBody.url || ""));
+      if (!/^https?:$/.test(source.protocol)) throw new Error("Image URL must use HTTP or HTTPS");
+      const remote = await fetch(source, { redirect: "follow" });
+      if (!remote.ok) throw new Error(`Image URL returned ${remote.status}`);
+      const declaredLength = Number(remote.headers.get("content-length") || 0);
+      if (declaredLength > MAX_IMAGE_BYTES) throw new Error("Image is larger than 20 MB");
+      contentType = String(remote.headers.get("content-type") || "").split(";", 1)[0].toLowerCase();
+      body = Buffer.from(await remote.arrayBuffer());
+      if (body.length > MAX_IMAGE_BYTES) throw new Error("Image is larger than 20 MB");
+    } else {
+      body = await readBody(req);
+    }
+    const extension = IMAGE_TYPES.get(contentType);
+    if (!extension) throw new Error("Use a JPEG, PNG, WebP, or GIF image");
     if (!body.length) throw new Error("The uploaded image is empty");
     if (!hasImageSignature(body, contentType)) throw new Error("File contents do not match the selected image type");
     const imageDir = path.join(ROOT, "images", country);

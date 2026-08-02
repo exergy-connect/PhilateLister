@@ -156,7 +156,10 @@ export function with_country_meta(collection, country) {
  */
 export function consolidate_country(country, output_dir = "output") {
   const dir = country_output_dir(country_id(country), output_dir);
-  return with_country_meta(consolidate_periods(dir), country);
+  return with_country_meta(
+    consolidate_periods(dir, country.denominations ?? {}),
+    country,
+  );
 }
 
 export default {

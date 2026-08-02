@@ -13,6 +13,7 @@ import {
   LEGACY_PERIOD_FILE,
   parse_category_period_filename,
 } from "./paths.js";
+import { order_denominations } from "./denominations.js";
 
 function listCatalogueFiles(dir) {
   return readdirSync(dir)
@@ -95,12 +96,44 @@ function mergeSets(periods, period, doc, category) {
   };
 }
 
+/** Collect unique denomination strings for collection-level filtering. */
+function summarizeDenominations(periods, countryCode, denominationModel = {}) {
+  const groups = {
+    regular: new Set(),
+    surcharges: new Set(),
+    overprints: new Set(),
+    special: new Set(),
+  };
+  const special = new Set((denominationModel.special ?? []).map(String));
+
+  for (const period of Object.values(periods)) {
+    for (const set of period?.sets ?? []) {
+      for (const stamp of set?.stamps ?? []) {
+        const denomination = String(stamp?.denom ?? "").trim();
+        if (!denomination) continue;
+        if (special.has(denomination)) groups.special.add(denomination);
+        // A slash takes precedence when a combined surcharge/overprint has both.
+        else if (denomination.includes("/")) groups.overprints.add(denomination);
+        else if (denomination.includes("+")) groups.surcharges.add(denomination);
+        else groups.regular.add(denomination);
+      }
+    }
+  }
+
+  return Object.fromEntries(
+    Object.entries(groups).map(([name, denominations]) => [
+      name,
+      order_denominations(countryCode, denominations),
+    ]),
+  );
+}
+
 /**
  * Load and merge catalogue JSON from a country output directory (or path list).
  * @param {string | string[]} dirOrPaths
  * @returns {object} collection with `.periods` keyed by period id
  */
-export function consolidate_periods(dirOrPaths) {
+export function consolidate_periods(dirOrPaths, denominationModel = {}) {
   /** @type {string[]} */
   let list;
   if (Array.isArray(dirOrPaths)) {
@@ -155,6 +188,9 @@ export function consolidate_periods(dirOrPaths) {
     ...(base ? { base } : {}),
     ...(country ? { country } : {}),
     ...(code ? { code } : {}),
+    summary: {
+      denominations: summarizeDenominations(periods, code, denominationModel),
+    },
     periods: Object.fromEntries(keys.map((k) => [k, periods[k]])),
   };
 }

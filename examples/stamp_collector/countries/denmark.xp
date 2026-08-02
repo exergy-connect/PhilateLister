@@ -5,6 +5,9 @@
 Denmark:
   code: dk
   stampworld: Denmark
+  denominations:
+    special:
+      - JUL
   categories:
     - "Postage stamps"
     - "Postage-due stamps"

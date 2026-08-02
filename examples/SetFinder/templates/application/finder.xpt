@@ -476,6 +476,22 @@ html:
       border: 0;
     }
 
+    .replace-dialog {
+      width: min(30rem, calc(100% - 2rem));
+      border: 1px solid color-mix(in srgb, var(--ink) 22%, transparent);
+      background: var(--paper);
+      color: var(--ink);
+      padding: 1.1rem;
+    }
+
+    .replace-dialog::backdrop { background: rgb(20 18 16 / 45%); }
+    .replace-dialog h3 { margin: 0 0 0.35rem; font-family: var(--font-display); }
+    .replace-dialog p { margin: 0 0 0.85rem; color: var(--muted); }
+    .replace-dialog form { display: grid; gap: 0.65rem; }
+    .replace-dialog input[type="url"] { width: 100%; padding: 0.65rem; font: inherit; }
+    .replace-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .replace-actions button { padding: 0.55rem 0.75rem; font: inherit; cursor: pointer; }
+
     @keyframes rise {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: none; }
@@ -570,6 +586,7 @@ html:
         <select id="period-select" aria-label="Catalog period" disabled>
           <option value="all">All</option>
         </select>
+        <button type="button" class="chip" id="high-value-filter" aria-pressed="false">$10+ value</button>
         <p class="status" id="catalog-status" aria-live="polite"></p>
       </div>
 
@@ -578,7 +595,7 @@ html:
           <h2>Select category</h2>
           <div class="filter-meta">
             <span>Catalogue sections</span>
-            <span>show sets from one StampWorld category</span>
+            <span>show sets from one category</span>
           </div>
           <div class="chips" id="category-chips" role="radiogroup" aria-label="Categories">
             <button type="button" class="chip chip-clear" data-category="*" aria-pressed="true">Any</button>
@@ -607,6 +624,10 @@ html:
                 <summary>Overprints <span id="overprint-denom-count"></span></summary>
                 <div class="chips" id="overprint-denom-chips"></div>
               </details>
+              <details class="denom-group" id="special-denom-group">
+                <summary>Special <span id="special-denom-count"></span></summary>
+                <div class="chips" id="special-denom-chips"></div>
+              </details>
             </div>
           </div>
         </div>
@@ -628,6 +649,18 @@ html:
         <div class="denoms" id="detail-denoms"></div>
       </aside>
       <input class="sr-only" id="replacement-image" type="file" accept="image/jpeg,image/png,image/webp,image/gif" />
+      <dialog class="replace-dialog" id="replace-dialog">
+        <h3 id="replace-title">Replace image</h3>
+        <p>Paste an image with Ctrl/Cmd+V, choose a file, or enter an image URL.</p>
+        <form id="replace-form">
+          <input id="replacement-url" type="url" placeholder="https://example.com/stamp.jpg" aria-label="Replacement image URL" />
+          <div class="replace-actions">
+            <button type="button" id="replacement-choose">Choose file</button>
+            <button type="submit">Use URL</button>
+            <button type="button" id="replacement-cancel">Cancel</button>
+          </div>
+        </form>
+      </dialog>
     </main>
 
     <script>
@@ -650,10 +683,16 @@ html:
           details: document.getElementById("overprint-denom-group"),
           count: document.getElementById("overprint-denom-count"),
         },
+        {
+          container: document.getElementById("special-denom-chips"),
+          details: document.getElementById("special-denom-group"),
+          count: document.getElementById("special-denom-count"),
+        },
       ];
       const categoryChips = document.getElementById("category-chips");
       const categoryFilter = document.getElementById("category-filter");
       const textFilter = document.getElementById("text-filter");
+      const highValueFilter = document.getElementById("high-value-filter");
       const grid = document.getElementById("set-grid");
       const matchCount = document.getElementById("match-count");
       const stampCount = document.getElementById("stamp-count");
@@ -669,9 +708,17 @@ html:
       const catalogStatus = document.getElementById("catalog-status");
       const brandTitle = document.querySelector(".brand h1");
       const replacementImage = document.getElementById("replacement-image");
+      const replaceDialog = document.getElementById("replace-dialog");
+      const replaceTitle = document.getElementById("replace-title");
+      const replaceForm = document.getElementById("replace-form");
+      const replacementUrl = document.getElementById("replacement-url");
+      const replacementChoose = document.getElementById("replacement-choose");
+      const replacementCancel = document.getElementById("replacement-cancel");
 
       let countries = [];
       let sets = [];
+      let catalogDenominations = [];
+      let catalogDenominationKinds = new Map();
       let periodGroups = [];
       let selectedPeriod = "all";
       let selectedDenoms = new Set();
@@ -680,6 +727,7 @@ html:
       let expandedIds = new Set();
       let loadToken = 0;
       let pendingReplacement = null;
+      let highValueOnly = false;
 
       function catalogUrl(file) {
         return new URL(String(file || "").replace(/^\.\//, ""), CATALOG_BASE).href;
@@ -690,55 +738,26 @@ html:
         catalogStatus.classList.toggle("is-error", Boolean(isError));
       }
 
-      function denomValue(denom) {
-        const s = String(denom ?? "").trim();
-        if (!s) return Number.POSITIVE_INFINITY;
-        let m = s.match(/^([\d.]+)\s*元$/u);
-        if (m) return Number(m[1]);
-        m = s.match(/^([\d.]+)\s*分$/u);
-        if (m) return Number(m[1]) / 100;
-        m = s.match(/^B?([\d.]+)\s*g$/i);
-        if (m) return 1e6 + Number(m[1]);
-        m = s.match(/^([\d.½¼¾]+)/u);
-        if (!m) return Number.POSITIVE_INFINITY;
-        const n = Number(
-          m[1].replace("½", ".5").replace("¼", ".25").replace("¾", ".75"),
-        );
-        if (!Number.isFinite(n)) return Number.POSITIVE_INFINITY;
-        if (/^\d[\d.½¼¾]*\s*c\b/i.test(s)) return n / 100;
-        if (/\$/.test(s)) return n;
-        // Icelandic / Nordic: skilling, aur/eyrir (1/100 króna), króna
-        if (/\dSk\b/i.test(s) || /\bSk\b/i.test(s)) return -100 + n;
-        if (/kr\s*\/\s*aur/i.test(s)) return n;
-        if (/aur\s*\/\s*kr/i.test(s)) return n / 100;
-        if (/aur|eyr/i.test(s)) return n / 100;
-        if (/kr\b/i.test(s)) return n;
-        return n;
-      }
-
       function denomKind(denom) {
+        if (catalogDenominationKinds.has(denom)) {
+          return catalogDenominationKinds.get(denom);
+        }
         const s = String(denom ?? "");
         if (s.includes("/")) return 2;
         if (s.includes("+")) return 1;
         return 0;
       }
 
-      function compareDenoms(a, b) {
-        return denomKind(a) - denomKind(b) || denomValue(a) - denomValue(b);
-      }
-
       function denomsFromSets(list) {
-        const seen = new Set();
-        const denoms = [];
+        const available = new Set();
         for (const set of list) {
           for (const d of set.denominations || []) {
             const s = String(d).trim();
-            if (!s || seen.has(s)) continue;
-            seen.add(s);
-            denoms.push(s);
+            if (s) available.add(s);
           }
         }
-        return denoms.sort(compareDenoms);
+        const ordered = catalogDenominations.filter((d) => available.delete(d));
+        return ordered.concat([...available]);
       }
 
       function categoriesFromSets(list) {
@@ -816,7 +835,7 @@ html:
 
         for (const group of denomGroups) group.container.replaceChildren();
         const denoms = denomsFromSets(setsForDenomChips());
-        const groupCounts = [0, 0, 0];
+        const groupCounts = Array(denomGroups.length).fill(0);
         for (const d of denoms) {
           const btn = document.createElement("button");
           btn.type = "button";
@@ -848,6 +867,7 @@ html:
             if (!setDenoms.has(d)) return false;
           }
         }
+        if (highValueOnly && !stampsForSet(set).some(stampHasHighValue)) return false;
 
         const q = textFilter.value.trim().toLowerCase();
         if (q) {
@@ -883,37 +903,103 @@ html:
         }));
       }
 
-      function enableImageReplacement(element, set, stamp) {
-        if (!stamp.no) return;
+      function usdPrices(stamp) {
+        if (String(stamp?.prices?.currency || "").toUpperCase() !== "USD") return [];
+        return ["mnh", "mint", "used", "cover"]
+          .map((condition) => [condition, Number(stamp.prices[condition])])
+          .filter(([, value]) => Number.isFinite(value));
+      }
+
+      function stampHasHighValue(stamp) {
+        return usdPrices(stamp).some(
+          ([condition, value]) => condition !== "cover" && value >= 10,
+        );
+      }
+
+      function stampPricingText(stamp) {
+        const labels = { mnh: "MNH", mint: "Mint", used: "Used", cover: "Cover/FDC" };
+        const prices = usdPrices(stamp);
+        const lines = prices.map(([condition, value]) => `${labels[condition]}: $${value.toFixed(2)}`);
+        if (Number.isFinite(Number(stamp?.issued_count))) {
+          lines.push(`Issued: ${Number(stamp.issued_count).toLocaleString()}`);
+        }
+        return lines.join("\n");
+      }
+
+      function setPricingText(set) {
+        return stampsForSet(set).map((stamp) => {
+          const pricing = stampPricingText(stamp);
+          return pricing ? `${stamp.no || stamp.denom || "Stamp"}\n${pricing}` : "";
+        }).filter(Boolean).join("\n\n");
+      }
+
+      function enableImageReplacement(element, set, stamp, stampIndex, catalog) {
+        if (!catalog) return;
         element.dataset.replaceable = "true";
-        element.title = `Right-click to replace catalog ${stamp.no}`;
+        element.title = [element.title, `Right-click to replace catalog ${catalog}`]
+          .filter(Boolean).join("\n\n");
         element.addEventListener("contextmenu", (ev) => {
           ev.preventDefault();
-          pendingReplacement = { set, stamp };
-          replacementImage.value = "";
-          replacementImage.click();
+          pendingReplacement = { set, stamp, stampIndex, catalog };
+          replaceTitle.textContent = `Replace catalog ${catalog}`;
+          replacementUrl.value = "";
+          replaceDialog.showModal();
         });
       }
 
       async function replaceStampImage(file, target) {
         const country = countries.find((c) => c.id === countrySelect.value);
-        if (!country || !target?.stamp?.no) return;
-        setStatus(`Uploading image for catalog ${target.stamp.no}…`);
+        if (!country || !target?.catalog) return;
+        setStatus(`Uploading image for catalog ${target.catalog}…`);
         try {
           const params = new URLSearchParams({
             country: country.id,
-            catalog: String(target.stamp.no),
+            catalog: String(target.catalog),
             set: String(target.set.id || ""),
+            index: String(target.stampIndex),
           });
           const res = await fetch(`/api/setfinder/image?${params}`, {
             method: "POST",
             headers: { "Content-Type": file.type },
             body: file,
           });
+          if (res.status === 404) {
+            throw new Error("Image replacement API is unavailable. Open SetFinder through its writable server (node examples/SetFinder/server.mjs), not a static file server.");
+          }
           const result = await res.json().catch(() => ({}));
           if (!res.ok) throw new Error(result.error || `${res.status} ${res.statusText}`);
           target.stamp.image = `${result.url}?v=${Date.now()}`;
-          setStatus(`Replaced catalog ${target.stamp.no} with ${result.path}.`);
+          setStatus(`Replaced catalog ${target.catalog} with ${result.path}.`);
+          showDetail(target.set);
+          render();
+        } catch (err) {
+          setStatus(`Image replacement failed: ${err.message || err}`, true);
+        }
+      }
+
+      async function replaceStampUrl(url, target) {
+        const country = countries.find((c) => c.id === countrySelect.value);
+        if (!country || !target?.catalog) return;
+        setStatus(`Downloading image for catalog ${target.catalog}…`);
+        try {
+          const params = new URLSearchParams({
+            country: country.id,
+            catalog: String(target.catalog),
+            set: String(target.set.id || ""),
+            index: String(target.stampIndex),
+          });
+          const res = await fetch(`/api/setfinder/image?${params}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url }),
+          });
+          if (res.status === 404) {
+            throw new Error("Image replacement API is unavailable. Open SetFinder through its writable server (node examples/SetFinder/server.mjs), not a static file server.");
+          }
+          const result = await res.json().catch(() => ({}));
+          if (!res.ok) throw new Error(result.error || `${res.status} ${res.statusText}`);
+          target.stamp.image = `${result.url}?v=${Date.now()}`;
+          setStatus(`Replaced catalog ${target.catalog} with ${result.path}.`);
           showDetail(target.set);
           render();
         } catch (err) {
@@ -939,20 +1025,24 @@ html:
         detailNote.textContent = set.note || "";
 
         detailStamps.innerHTML = "";
-        for (const stamp of stampsForSet(set)) {
+        let inheritedCatalog = "";
+        for (const [stampIndex, stamp] of stampsForSet(set).entries()) {
+          inheritedCatalog = String(stamp.no || inheritedCatalog).trim();
           const fig = document.createElement("figure");
           if (stamp.image) {
             const img = document.createElement("img");
             img.src = stamp.image;
             img.alt = stamp.denom || stamp.no || set.name || "";
             img.loading = "lazy";
-            enableImageReplacement(img, set, stamp);
+            img.title = stampPricingText(stamp);
+            enableImageReplacement(img, set, stamp, stampIndex, inheritedCatalog);
             fig.appendChild(img);
           } else {
             const missing = document.createElement("div");
             missing.className = "stamp-missing";
             missing.textContent = "No image";
-            enableImageReplacement(missing, set, stamp);
+            missing.title = stampPricingText(stamp);
+            enableImageReplacement(missing, set, stamp, stampIndex, inheritedCatalog);
             fig.appendChild(missing);
           }
           const cap = document.createElement("figcaption");
@@ -1002,6 +1092,12 @@ html:
       function render() {
         const periodSets = setsForPeriod();
         const matched = periodSets.filter(matches);
+        if (selectedId && !matched.some((set) => set.id === selectedId)) {
+          showDetail(null);
+        }
+        const visibleSets = selectedId
+          ? matched.filter((set) => set.id === selectedId)
+          : matched;
         matchCount.textContent = String(matched.length);
         stampCount.textContent = String(stampTotal(matched));
         grid.innerHTML = "";
@@ -1028,7 +1124,7 @@ html:
           return;
         }
 
-        for (const set of matched) {
+        for (const set of visibleSets) {
           const btn = document.createElement("button");
           btn.type = "button";
           btn.className = "set";
@@ -1052,12 +1148,17 @@ html:
               <div class="name-zh">${escapeHtml(set.name_zh)}</div>
               <div class="facts">${escapeHtml(catLabel)}${escapeHtml(yearLabel)} · ${escapeHtml(denomLabel)}</div>
             </div>`;
+          btn.querySelector("img").title = setPricingText(set);
           btn.addEventListener("click", (ev) => {
             if (ev.target.closest("img") && set.image_full) {
               if (expandedIds.has(set.id)) expandedIds.delete(set.id);
               else expandedIds.add(set.id);
+              showDetail(set);
+            } else if (selectedId === set.id) {
+              showDetail(null);
+            } else {
+              showDetail(set);
             }
-            showDetail(set);
             render();
           });
           grid.appendChild(btn);
@@ -1130,6 +1231,8 @@ html:
         selectedId = null;
         expandedIds = new Set();
         sets = [];
+        catalogDenominations = [];
+        catalogDenominationKinds = new Map();
         periodGroups = [];
         periodSelect.replaceChildren(new Option("All", "all"));
         periodSelect.disabled = true;
@@ -1151,6 +1254,17 @@ html:
           const doc = await res.json();
           if (token !== loadToken) return;
           sets = Array.isArray(doc) ? doc : (doc.sets || []);
+          const denominationGroups = Array.isArray(doc) ? {} : (doc.denominations || {});
+          const orderedGroups = ["regular", "surcharges", "overprints", "special"];
+          catalogDenominations = [];
+          catalogDenominationKinds = new Map();
+          orderedGroups.forEach((group, kind) => {
+            for (const value of denominationGroups[group] || []) {
+              const denomination = String(value);
+              catalogDenominations.push(denomination);
+              catalogDenominationKinds.set(denomination, kind);
+            }
+          });
           initPeriods(sets);
           selectedCategory = preferredCategory(sets);
           initControls(setsForPeriod());
@@ -1210,6 +1324,13 @@ html:
 
       textFilter.addEventListener("input", render);
 
+      highValueFilter.addEventListener("click", () => {
+        highValueOnly = !highValueOnly;
+        highValueFilter.setAttribute("aria-pressed", highValueOnly ? "true" : "false");
+        showDetail(null);
+        render();
+      });
+
       categoryChips.addEventListener("click", (ev) => {
         const chip = ev.target.closest(".chip");
         if (!chip || !categoryChips.contains(chip)) return;
@@ -1249,8 +1370,47 @@ html:
       replacementImage.addEventListener("change", () => {
         const file = replacementImage.files?.[0];
         const target = pendingReplacement;
-        pendingReplacement = null;
-        if (file && target) replaceStampImage(file, target);
+        if (file && target) {
+          replaceDialog.close();
+          pendingReplacement = null;
+          replaceStampImage(file, target);
+        }
+      });
+
+      replacementChoose.addEventListener("click", () => {
+        replacementImage.value = "";
+        replacementImage.click();
+      });
+
+      replacementCancel.addEventListener("click", () => replaceDialog.close());
+      replaceDialog.addEventListener("close", () => { pendingReplacement = null; });
+
+      replaceForm.addEventListener("submit", (ev) => {
+        ev.preventDefault();
+        const target = pendingReplacement;
+        const url = replacementUrl.value.trim();
+        if (!target || !url) return;
+        replaceDialog.close();
+        replaceStampUrl(url, target);
+      });
+
+      replaceDialog.addEventListener("paste", (ev) => {
+        const target = pendingReplacement;
+        if (!target) return;
+        const image = [...(ev.clipboardData?.items || [])]
+          .find((item) => item.kind === "file" && item.type.startsWith("image/"))?.getAsFile();
+        if (image) {
+          ev.preventDefault();
+          replaceDialog.close();
+          replaceStampImage(image, target);
+          return;
+        }
+        const text = ev.clipboardData?.getData("text/plain")?.trim();
+        if (/^https?:\/\//i.test(text || "")) {
+          ev.preventDefault();
+          replaceDialog.close();
+          replaceStampUrl(text, target);
+        }
       });
 
       boot();

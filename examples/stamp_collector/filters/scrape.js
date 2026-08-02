@@ -86,7 +86,22 @@ function parseSetMeta(pHtml) {
   return meta;
 }
 
-function parseStampsInGroup(groupHtml, imgByType) {
+function parsePrice(value) {
+  const text = String(value ?? "").replaceAll(",", "").trim();
+  if (!text || text === "-") return null;
+  const number = Number(text);
+  return Number.isFinite(number) ? number : null;
+}
+
+function parseIssuedCount(value) {
+  const text = String(value ?? "").trim();
+  const millions = text.match(/([\d]+(?:[.,]\d+)?)\s*mill\.?/i);
+  if (millions) return Math.round(Number(millions[1].replace(",", ".")) * 1_000_000);
+  const digits = text.replace(/[^\d]/g, "");
+  return digits ? Number(digits) : null;
+}
+
+export function parseStampsInGroup(groupHtml, imgByType = new Map()) {
   const stamps = [];
   const rowRe =
     /<tr[^>]*data-stamp-group-id="[^"]*"[^>]*data-stamp-type="([^"]+)"[^>]*>([\s\S]*?)<\/tr>/gi;
@@ -95,17 +110,27 @@ function parseStampsInGroup(groupHtml, imgByType) {
     const type = m[1];
     if (!type || type === "-" || type.includes("-")) continue;
     const body = m[2];
-    const no = (body.match(/id="a_s_(\d+)"/) || [])[1] || "";
+    const rawNo = (body.match(/id="a_s_([^"]+)"/) || [])[1] || "";
+    const no = decodeHtml(rawNo).replace(/\*+$/, "");
     const tds = [...body.matchAll(/<td[^>]*>([\s\S]*?)<\/td>/gi)].map((t) =>
       decodeHtml(t[1].replace(/<[^>]+>/g, " ")),
     );
     const img = imgByType.get(type);
+    const currency = tds[12] || "";
     stamps.push({
       no,
       type,
       denom: tds[1] || "",
       color: tds[3] || "",
       description: tds[5] || "",
+      issued_count: parseIssuedCount(tds[6]),
+      prices: {
+        currency,
+        mnh: parsePrice(tds[8]),
+        mint: parsePrice(tds[9]),
+        used: parsePrice(tds[10]),
+        cover: parsePrice(tds[11]),
+      },
       imagePath: img?.imagePath ?? null,
     });
   }

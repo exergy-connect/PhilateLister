@@ -72,12 +72,15 @@ jobs:
           fi
           mkdir -p public/setfinder
           cp "$src" public/setfinder/index.html
+          if [[ -f examples/FindChineseSets/favicon.ico ]]; then
+            cp examples/FindChineseSets/favicon.ico public/setfinder/favicon.ico
+          fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/setfinder/index.html
+          git add public/setfinder/index.html public/setfinder/favicon.ico
           if git diff --staged --quiet; then
-            echo "No changes to public/setfinder/index.html."
+            echo "No changes to public/setfinder/."
             exit 0
           fi
           git commit -m "public: refresh setfinder viewer (CI)"

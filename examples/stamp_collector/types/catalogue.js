@@ -1,7 +1,7 @@
 /**
  * StampWorld catalogue URL ↔ { country, category, period?, page? } (+ _url fields).
  *
- *   /stamps/{country}/{category}/{period}   — period from catalogue enum
+ *   /stamps/{country}/{category}/{period}   — period slug (country-specific)
  *   /stamps/{country}/{category}            — all years (period omitted)
  *   optional ?page={n}  (page 1 / omitted → no query)
  */

@@ -1,5 +1,6 @@
 ---
-# One file named from source `_document._output` (_basename / _extension).
+# collection.xp is written by write_collection_xp under output/<country>/.
+# This final emits a small compile-tree companion next to the package output/.
 ---
 ===
 {{ collection | to_json }}

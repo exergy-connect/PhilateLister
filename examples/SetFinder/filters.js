@@ -1,4 +1,4 @@
-/** Root filter module for CLI / lab UI discovery. */
+/** Root filter module for SetFinder CLI / lab UI discovery. */
 export {
   default,
   from_json,

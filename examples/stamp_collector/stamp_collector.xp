@@ -1,50 +1,43 @@
 ---
 # StampWorld catalogue collector.
-# Scrapes each query period, attaches thumbnails, emits one file per period.
+# For each period: load output/<country>/<period>.json when present,
+# otherwise download, attach thumbnails, and write that file.
 #
-#   xform stamp_collector.xp --final json --auto-approve
+#   xform stamp_collector.xp --final json --auto-approve --with country=china
+#
+# Re-fetch existing periods with:
+#   --with refresh=true
 #
 # Optional overrides:
 #   --with max_pages=2          # 0 = all pages (default)
 #   --with delay_ms=250         # pause between page fetches
 #   --with year=1990            # keep only sets from this year ("" = all)
+#   --with output_dir=output    # root for per-country directories
 
 {% include "file://./types/local_type.xpt" %}
 {% include "file://./filters/thumbnails.js" %}
 {% include "file://./filters/scrape.js" %}
+{% include "file://./filters/collect.js" %}
+{% include "file://./filters/country.js" %}
 
 _final:
   _templates: file://./templates/_final/
 
-query:
-  _attributes:
-    country: _string
-    categories: [catalogue.category]
-    periods: [catalogue.period]
-  country: China,-Peoples-Rep.
-  categories:
-    - "Postage stamps"
-  periods:
-    - "1949-1949"
-    - "1950-1959"
-    - "1960-1969"
-    - "1970-1979"
-    - "1980-1989"
-    - "1990-1999"
-    - "2000-2009"
-    - "2010-2019"
-    - "2020-2026"
+# Selected via --with country=china → loads countries/china.xp
+country: ""
 
 year: ""
 max_pages: "0"
 delay_ms: "250"
+refresh: false
+output_dir: output
 
 _capability:
   collect:
     stamps:
-      _input: query
+      _input: country
       _output: collection
-      _transform: "{{ _input | scrape_catalogue(max_pages, delay_ms, year) | add_thumbnails }}"
+      _transform: "{{ _input | load_country | as_catalog_query | collect_catalogue(max_pages, delay_ms, year, refresh, output_dir) }}"
 
 _document:
   _final: collect.stamps

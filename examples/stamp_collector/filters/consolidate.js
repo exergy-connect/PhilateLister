@@ -1,14 +1,24 @@
 /**
  * Merge per-period catalogue JSON files into one collection.
+ *
+ * Expects files named `YYYY-YYYY.json` under a country directory, e.g.
+ * `output/china/1990-1999.json`.
  */
-import { readdirSync, readFileSync } from "node:fs";
+import { readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 
 const PERIOD_FILE = /^(\d{4}-\d{4})\.json$/;
 
+function listPeriodFiles(dir) {
+  return readdirSync(dir)
+    .filter((name) => PERIOD_FILE.test(name))
+    .map((name) => path.join(dir, name))
+    .filter((filePath) => statSync(filePath).isFile());
+}
+
 /**
  * Load and merge `YYYY-YYYY.json` files from a directory (or an explicit path list).
- * @param {string | string[]} dirOrPaths  Directory path, or list of file paths
+ * @param {string | string[]} dirOrPaths  Country output directory, or list of file paths
  * @returns {object} collection with `.periods` keyed by period id
  */
 export function consolidate_periods(dirOrPaths) {
@@ -18,15 +28,14 @@ export function consolidate_periods(dirOrPaths) {
     list = dirOrPaths.map(String);
   } else {
     const dir = String(dirOrPaths ?? "output");
-    list = readdirSync(dir)
-      .filter((name) => PERIOD_FILE.test(name))
-      .map((name) => path.join(dir, name));
+    list = listPeriodFiles(dir);
   }
 
   /** @type {Record<string, object>} */
   const periods = {};
   let country;
   let base;
+  let countryDir;
 
   for (const filePath of list) {
     const name = path.basename(filePath);
@@ -39,6 +48,7 @@ export function consolidate_periods(dirOrPaths) {
     }
     periods[period] = doc;
     base ??= doc.base;
+    countryDir ??= path.basename(path.dirname(path.resolve(filePath)));
     if (!country && typeof doc.source === "string") {
       const parts = doc.source.split("/").filter(Boolean);
       if (parts[0] === "stamps" && parts[1]) {
@@ -53,6 +63,10 @@ export function consolidate_periods(dirOrPaths) {
       "consolidate_periods: no period JSON files (expected names like 1990-1999.json)",
     );
   }
+
+  country ??= countryDir && countryDir !== "output" && countryDir !== "."
+    ? countryDir
+    : undefined;
 
   return {
     ...(base ? { base } : {}),

@@ -7,11 +7,34 @@ export {
   lowestDenomStamp,
 } from "./filters/thumbnails.js";
 
-export { scrape_catalogue } from "./filters/scrape.js";
+export {
+  scrape_catalogue,
+  country_dir,
+  country_output_dir,
+} from "./filters/scrape.js";
+export { collect_catalogue } from "./filters/collect.js";
+export {
+  load_country,
+  as_catalog_query,
+  country_id,
+  with_country_meta,
+  consolidate_country,
+} from "./filters/country.js";
 export { consolidate_periods } from "./filters/consolidate.js";
+export { write_period_json, write_collection_xp } from "./filters/write_output.js";
 
 import thumbnails from "./filters/thumbnails.js";
-import { scrape_catalogue } from "./filters/scrape.js";
+import scrape from "./filters/scrape.js";
+import collect from "./filters/collect.js";
+import country from "./filters/country.js";
 import { consolidate_periods } from "./filters/consolidate.js";
+import writeOutput from "./filters/write_output.js";
 
-export default { ...thumbnails, scrape_catalogue, consolidate_periods };
+export default {
+  ...thumbnails,
+  ...scrape,
+  ...collect,
+  ...country,
+  consolidate_periods,
+  ...writeOutput,
+};

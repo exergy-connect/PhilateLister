@@ -1,28 +1,28 @@
 ---
-# Consolidate per-period catalogue JSON under output/ into one XP artefact.
+# Consolidate per-period catalogue JSON for one country into an XP artefact.
 #
-#   xform consolidate.xp --final xp
+#   xform consolidate.xp --final xp --with country=china
 #
-# Merges every `output/YYYY-YYYY.json` into `output/china_collection.xp`.
-# Pass a different directory with: --with output_dir=path/to/jsons
+# Merges output/<country>/YYYY-YYYY.json → output/<country>/collection.xp.
 
 {% include "file://./filters/consolidate.js" %}
+{% include "file://./filters/scrape.js" %}
+{% include "file://./filters/country.js" %}
+{% include "file://./filters/write_output.js" %}
 
 _final:
   _templates: file://./templates/_final/
 
+country: ""
 output_dir: output
 
 _capability:
   consolidate:
     periods:
-      _input: output_dir
+      _input: country
       _output: collection
-      _transform: "{{ _input | consolidate_periods }}"
+      _transform: "{{ _input | load_country | consolidate_country(output_dir) | write_collection_xp(output_dir) }}"
 
 _document:
   _final: consolidate.periods
-  _output:
-    _basename: china_collection
-    _extension: xp
 ---

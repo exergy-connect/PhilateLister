@@ -20,6 +20,7 @@ html:
     html, body {
       margin: 0;
       min-height: 100%;
+      overflow-x: clip;
       background:
         radial-gradient(1200px 600px at 10% -10%, color-mix(in srgb, var(--seal) 12%, transparent), transparent 60%),
         radial-gradient(900px 500px at 100% 0%, color-mix(in srgb, var(--jade) 10%, transparent), transparent 55%),
@@ -27,6 +28,8 @@ html:
       color: var(--ink);
       font-family: var(--font-ui);
       line-height: 1.45;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
     }
 
     body::before {
@@ -43,6 +46,7 @@ html:
       width: min(1120px, calc(100% - 2rem));
       margin: 0 auto;
       padding: 2.25rem 0 3.5rem;
+      min-width: 0;
     }
 
     .brand {
@@ -50,15 +54,17 @@ html:
       gap: 0.55rem;
       margin-bottom: 1.75rem;
       animation: rise 0.7s ease both;
+      min-width: 0;
     }
 
     .brand h1 {
       margin: 0;
       font-family: var(--font-display);
-      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      font-size: clamp(2rem, 8vw, 3.6rem);
       font-weight: 700;
       letter-spacing: -0.02em;
       line-height: 1.05;
+      overflow-wrap: anywhere;
     }
 
     .brand h1 span { color: var(--seal); }
@@ -68,7 +74,52 @@ html:
       max-width: 38rem;
       color: var(--muted);
       font-size: 1.05rem;
+      overflow-wrap: break-word;
     }
+
+    .country-picker {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 0.75rem;
+      margin-bottom: 1.25rem;
+      animation: rise 0.72s ease 0.04s both;
+      min-width: 0;
+    }
+
+    .country-picker label {
+      font-size: 0.92rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .country-picker select {
+      flex: 1 1 12rem;
+      max-width: 22rem;
+      min-height: 2.75rem;
+      border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+      background: color-mix(in srgb, #fff 80%, transparent);
+      color: var(--ink);
+      padding: 0.55rem 0.75rem;
+      font: inherit;
+      font-size: 1rem;
+      min-width: 0;
+    }
+
+    .country-picker select:focus {
+      outline: 2px solid color-mix(in srgb, var(--jade) 55%, transparent);
+      outline-offset: 1px;
+    }
+
+    .country-picker .status {
+      flex: 1 1 100%;
+      margin: 0;
+      font-size: 0.88rem;
+      color: var(--muted);
+      min-height: 1.2em;
+    }
+
+    .country-picker .status.is-error { color: var(--seal); }
 
     .filters {
       display: grid;
@@ -79,6 +130,7 @@ html:
       background: color-mix(in srgb, #fff 72%, var(--paper));
       backdrop-filter: blur(8px);
       animation: rise 0.75s ease 0.08s both;
+      min-width: 0;
     }
 
     .filters h2 {
@@ -88,14 +140,20 @@ html:
       font-weight: 600;
     }
 
-    .denom-row { display: grid; gap: 0.55rem; }
+    .denom-row { display: grid; gap: 0.55rem; min-width: 0; }
 
     .filter-meta {
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
-      gap: 1rem;
+      gap: 0.35rem 1rem;
       font-size: 0.92rem;
       color: var(--muted);
+    }
+
+    .filter-meta span {
+      min-width: 0;
+      overflow-wrap: break-word;
     }
 
     .chips {
@@ -109,10 +167,14 @@ html:
       border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
       background: transparent;
       color: var(--ink);
-      padding: 0.35rem 0.7rem;
+      padding: 0.45rem 0.75rem;
+      min-height: 2.5rem;
       font: inherit;
       font-size: 0.9rem;
+      line-height: 1.2;
       cursor: pointer;
+      max-width: 100%;
+      overflow-wrap: anywhere;
       transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
     }
 
@@ -140,6 +202,7 @@ html:
       gap: 0.75rem;
       margin-bottom: 0.85rem;
       animation: rise 0.8s ease 0.14s both;
+      min-width: 0;
     }
 
     .count {
@@ -155,11 +218,14 @@ html:
     .search {
       flex: 1 1 14rem;
       max-width: 22rem;
+      width: 100%;
       border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
       background: color-mix(in srgb, #fff 80%, transparent);
       color: var(--ink);
-      padding: 0.55rem 0.75rem;
+      padding: 0.65rem 0.75rem;
+      min-height: 2.75rem;
       font: inherit;
+      font-size: 1rem;
     }
 
     .search:focus {
@@ -169,9 +235,10 @@ html:
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(min(168px, 100%), 1fr));
       gap: 0.85rem;
       animation: rise 0.85s ease 0.18s both;
+      min-width: 0;
     }
 
     .set {
@@ -184,6 +251,7 @@ html:
       cursor: pointer;
       font: inherit;
       color: inherit;
+      min-width: 0;
       transition: border-color 0.18s ease, transform 0.18s ease, background 0.18s ease;
     }
 
@@ -214,23 +282,39 @@ html:
       cursor: zoom-out;
     }
 
-    .set .meta { display: grid; gap: 0.15rem; }
+    .set .meta {
+      display: grid;
+      gap: 0.15rem;
+      min-width: 0;
+    }
 
     .set .name {
       font-family: var(--font-display);
       font-size: 1rem;
       font-weight: 600;
-      line-height: 1.2;
+      line-height: 1.25;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      overflow: hidden;
+      overflow-wrap: anywhere;
     }
 
     .set .name-zh {
       color: var(--seal);
       font-size: 0.92rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .set .facts {
       color: var(--muted);
       font-size: 0.82rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .detail {
@@ -239,6 +323,7 @@ html:
       border-left: 3px solid var(--jade);
       background: color-mix(in srgb, #fff 70%, var(--paper));
       min-height: 5.5rem;
+      min-width: 0;
       animation: rise 0.9s ease 0.22s both;
     }
 
@@ -247,17 +332,21 @@ html:
     .detail h3 {
       margin: 0 0 0.25rem;
       font-family: var(--font-display);
-      font-size: 1.35rem;
+      font-size: clamp(1.15rem, 4.5vw, 1.35rem);
+      line-height: 1.25;
+      overflow-wrap: anywhere;
     }
 
     .detail .zh {
       margin: 0 0 0.55rem;
       color: var(--seal);
+      overflow-wrap: anywhere;
     }
 
     .detail p {
       margin: 0.35rem 0;
       color: var(--muted);
+      overflow-wrap: anywhere;
     }
 
     .detail .denoms {
@@ -269,30 +358,37 @@ html:
 
     .detail .denoms span {
       border: 1px solid color-mix(in srgb, var(--jade) 40%, var(--mist));
-      padding: 0.2rem 0.5rem;
+      padding: 0.25rem 0.5rem;
       font-size: 0.85rem;
       color: var(--jade);
+      max-width: 100%;
+      overflow-wrap: anywhere;
     }
 
     .detail .stamp-thumbs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.55rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+      gap: 0.65rem;
       margin-top: 0.85rem;
+      min-width: 0;
     }
 
     .detail .stamp-thumbs figure {
       margin: 0;
       display: grid;
-      gap: 0.25rem;
-      width: 4.5rem;
+      grid-template-rows: auto minmax(2.4rem, auto);
+      gap: 0.3rem;
+      min-width: 0;
+      width: 100%;
     }
 
     .detail .stamp-thumbs img,
     .detail .stamp-thumbs .stamp-missing {
-      width: 4.5rem;
-      height: 6rem;
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      height: auto;
       object-fit: contain;
+      object-position: center;
       background: var(--mist);
       display: block;
     }
@@ -308,9 +404,21 @@ html:
 
     .detail .stamp-thumbs figcaption {
       color: var(--muted);
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       text-align: center;
-      line-height: 1.2;
+      line-height: 1.25;
+      min-width: 0;
+      overflow-wrap: anywhere;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      overflow: hidden;
+    }
+
+    .detail .stamp-thumbs figcaption .stamp-no {
+      display: block;
+      color: color-mix(in srgb, var(--muted) 80%, var(--ink));
     }
 
     .empty {
@@ -318,6 +426,7 @@ html:
       padding: 2rem 1rem;
       text-align: center;
       color: var(--muted);
+      overflow-wrap: break-word;
     }
 
     .sr-only {
@@ -343,19 +452,90 @@ html:
         transition: none !important;
       }
     }
+
+    @media (max-width: 720px) {
+      .app {
+        width: calc(100% - 1.25rem);
+        padding: 1.25rem 0 2.75rem;
+      }
+
+      .brand { margin-bottom: 1.25rem; }
+
+      .brand p { font-size: 0.98rem; }
+
+      .country-picker select { max-width: none; }
+
+      .filters {
+        gap: 0.85rem;
+        padding: 0.9rem;
+        margin-bottom: 1.15rem;
+      }
+
+      .filter-meta {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search { max-width: none; }
+
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.65rem;
+      }
+
+      .set { padding: 0.45rem; }
+
+      .set:hover,
+      .set[aria-selected="true"] {
+        transform: none;
+      }
+
+      .chip:hover { transform: none; }
+
+      .detail {
+        margin-top: 1rem;
+        padding: 0.9rem;
+        border-left-width: 3px;
+      }
+
+      .detail .stamp-thumbs {
+        grid-template-columns: repeat(auto-fill, minmax(4.75rem, 1fr));
+        gap: 0.5rem;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .detail .stamp-thumbs {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
     </style>
   _content: |
     <main class="app">
       <header class="brand">
-        <h1>Find <span>Chinese</span> Sets</h1>
+        <h1>Set <span>Finder</span></h1>
         <p>{{ tagline }}</p>
       </header>
 
+      <div class="country-picker">
+        <label for="country-select">Country catalog</label>
+        <select id="country-select" aria-label="Country catalog" disabled>
+          <option value="">Loading countries…</option>
+        </select>
+        <p class="status" id="catalog-status" aria-live="polite"></p>
+      </div>
+
       <section class="filters" aria-label="Visual filters">
         <h2>Select denominations</h2>
-
-        {# Touch filter so finder_sets materializes; denom UI is built in-browser from catalog-data. #}
-        <!-- {{ filter.denominations }} -->
         <div class="denom-row">
           <div class="filter-meta">
             <span>Face value chips</span>
@@ -369,7 +549,7 @@ html:
 
       <div class="toolbar">
         <div class="count"><strong id="match-count">0</strong> matching sets</div>
-        <input class="search" id="text-filter" type="search" placeholder="Search name, catalog, Chinese…" autocomplete="off" />
+        <input class="search" id="text-filter" type="search" placeholder="Search name, catalog, local title…" autocomplete="off" />
       </div>
 
       <section class="grid" id="set-grid" aria-live="polite"></section>
@@ -384,10 +564,9 @@ html:
       </aside>
     </main>
 
-    <script type="application/json" id="catalog-data">{{ finder_sets | to_json }}</script>
     <script>
     (() => {
-      const sets = JSON.parse(document.getElementById("catalog-data").textContent);
+      const CATALOG_BASE = new URL("catalogs/", window.location.href);
       const denomChips = document.getElementById("denom-chips");
       const textFilter = document.getElementById("text-filter");
       const grid = document.getElementById("set-grid");
@@ -399,26 +578,52 @@ html:
       const detailNote = document.getElementById("detail-note");
       const detailStamps = document.getElementById("detail-stamps");
       const detailDenoms = document.getElementById("detail-denoms");
+      const countrySelect = document.getElementById("country-select");
+      const catalogStatus = document.getElementById("catalog-status");
+      const brandTitle = document.querySelector(".brand h1");
 
+      let countries = [];
+      let sets = [];
       let selectedDenoms = new Set();
       let selectedId = null;
       let expandedIds = new Set();
+      let loadToken = 0;
+
+      function catalogUrl(file) {
+        return new URL(String(file || "").replace(/^\.\//, ""), CATALOG_BASE).href;
+      }
+
+      function setStatus(message, isError = false) {
+        catalogStatus.textContent = message || "";
+        catalogStatus.classList.toggle("is-error", Boolean(isError));
+      }
 
       function denomValue(denom) {
         const s = String(denom ?? "").trim();
+        if (!s) return Number.POSITIVE_INFINITY;
         let m = s.match(/^([\d.]+)\s*元$/u);
         if (m) return Number(m[1]);
         m = s.match(/^([\d.]+)\s*分$/u);
         if (m) return Number(m[1]) / 100;
-        m = s.match(/^([\d.]+)\s*c$/i);
-        if (m) return Number(m[1]) / 100;
+        m = s.match(/^B?([\d.]+)\s*g$/i);
+        if (m) return 1e6 + Number(m[1]);
         m = s.match(/^([\d.½¼¾]+)/u);
         if (!m) return Number.POSITIVE_INFINITY;
-        const n = m[1].replace("½", ".5").replace("¼", ".25").replace("¾", ".75");
-        return Number(n);
+        const n = Number(
+          m[1].replace("½", ".5").replace("¼", ".25").replace("¾", ".75"),
+        );
+        if (!Number.isFinite(n)) return Number.POSITIVE_INFINITY;
+        if (/^\d[\d.½¼¾]*\s*c\b/i.test(s)) return n / 100;
+        if (/\$/.test(s)) return n;
+        // Icelandic / Nordic: skilling, aur/eyrir (1/100 króna), króna
+        if (/\dSk\b/i.test(s) || /\bSk\b/i.test(s)) return -100 + n;
+        if (/kr\s*\/\s*aur/i.test(s)) return n;
+        if (/aur\s*\/\s*kr/i.test(s)) return n / 100;
+        if (/aur|eyr/i.test(s)) return n / 100;
+        if (/kr\b/i.test(s)) return n;
+        return n;
       }
 
-      /** Denomination chips from the compiled set list. */
       function denomsFromSets(list) {
         const seen = new Set();
         const denoms = [];
@@ -444,6 +649,7 @@ html:
           btn.textContent = d;
           denomChips.appendChild(btn);
         }
+        syncChipPressed();
       }
 
       function matches(set) {
@@ -465,6 +671,21 @@ html:
         return true;
       }
 
+      function stampsForSet(set) {
+        const stamps = Array.isArray(set.stamps) ? set.stamps.filter(Boolean) : [];
+        if (stamps.length) return stamps;
+        const denoms = set.denominations || [];
+        const fallbackImage = set.image_full || set.image || "";
+        if (!denoms.length) {
+          return fallbackImage ? [{ denom: "", no: "", image: fallbackImage }] : [];
+        }
+        return denoms.map((denom) => ({
+          denom: String(denom),
+          no: "",
+          image: fallbackImage || null,
+        }));
+      }
+
       function showDetail(set) {
         if (!set) {
           detail.hidden = true;
@@ -478,16 +699,17 @@ html:
         const years = set.year_end && set.year_end !== set.year
           ? `${set.year}–${set.year_end}`
           : String(set.year);
-        detailFacts.textContent = `${years} · ${set.era} · ${set.catalog || "—"}`;
+        const era = set.era ? ` · ${set.era}` : "";
+        detailFacts.textContent = `${years}${era} · ${set.catalog || "—"}`;
         detailNote.textContent = set.note || "";
 
         detailStamps.innerHTML = "";
-        for (const stamp of set.stamps || []) {
+        for (const stamp of stampsForSet(set)) {
           const fig = document.createElement("figure");
           if (stamp.image) {
             const img = document.createElement("img");
             img.src = stamp.image;
-            img.alt = stamp.denom || stamp.no || "";
+            img.alt = stamp.denom || stamp.no || set.name || "";
             img.loading = "lazy";
             fig.appendChild(img);
           } else {
@@ -497,7 +719,21 @@ html:
             fig.appendChild(missing);
           }
           const cap = document.createElement("figcaption");
-          cap.textContent = [stamp.denom, stamp.no].filter(Boolean).join(" · ");
+          const denomLine = String(stamp.denom || "").trim();
+          const noLine = String(stamp.no || "").trim();
+          if (denomLine) {
+            cap.appendChild(document.createTextNode(denomLine));
+          }
+          if (noLine) {
+            const noEl = document.createElement("span");
+            noEl.className = "stamp-no";
+            noEl.textContent = noLine;
+            if (denomLine) cap.appendChild(document.createElement("br"));
+            cap.appendChild(noEl);
+          }
+          if (!denomLine && !noLine) {
+            cap.textContent = "—";
+          }
           fig.appendChild(cap);
           detailStamps.appendChild(fig);
         }
@@ -522,6 +758,17 @@ html:
         const matched = sets.filter(matches);
         matchCount.textContent = String(matched.length);
         grid.innerHTML = "";
+
+        if (!sets.length) {
+          const empty = document.createElement("div");
+          empty.className = "empty";
+          empty.textContent = catalogStatus.classList.contains("is-error")
+            ? "Catalog failed to load."
+            : "Choose a country catalog to begin.";
+          grid.appendChild(empty);
+          showDetail(null);
+          return;
+        }
 
         if (!matched.length) {
           const empty = document.createElement("div");
@@ -582,6 +829,91 @@ html:
         }
       }
 
+      function updateBrand(country) {
+        const name = country?.name || "Sets";
+        brandTitle.innerHTML = `Set <span>Finder</span>`;
+        brandTitle.setAttribute("data-country", country?.id || "");
+        document.title = country ? `Set Finder — ${name}` : "Set Finder";
+      }
+
+      function preferredCountryId(list, indexDefault) {
+        const params = new URLSearchParams(window.location.search);
+        const fromQuery = params.get("country");
+        if (fromQuery && list.some((c) => c.id === fromQuery)) return fromQuery;
+        if (indexDefault && list.some((c) => c.id === indexDefault)) return indexDefault;
+        return list[0]?.id || "";
+      }
+
+      async function loadCountry(countryId) {
+        const country = countries.find((c) => c.id === countryId);
+        const token = ++loadToken;
+        selectedDenoms = new Set();
+        selectedId = null;
+        expandedIds = new Set();
+        sets = [];
+        initControls([]);
+        showDetail(null);
+        updateBrand(country);
+        render();
+
+        if (!country) {
+          setStatus("No country selected.", true);
+          return;
+        }
+
+        countrySelect.disabled = true;
+        setStatus(`Loading ${country.name}…`);
+        try {
+          const res = await fetch(catalogUrl(country.catalog), { cache: "no-cache" });
+          if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+          const doc = await res.json();
+          if (token !== loadToken) return;
+          sets = Array.isArray(doc) ? doc : (doc.sets || []);
+          initControls(sets);
+          setStatus(`${sets.length} sets · ${country.catalog}`);
+          const url = new URL(window.location.href);
+          url.searchParams.set("country", country.id);
+          history.replaceState(null, "", url);
+          render();
+        } catch (err) {
+          if (token !== loadToken) return;
+          sets = [];
+          initControls([]);
+          setStatus(`Failed to load ${country.catalog}: ${err.message || err}`, true);
+          render();
+        } finally {
+          if (token === loadToken) countrySelect.disabled = false;
+        }
+      }
+
+      async function boot() {
+        setStatus("Loading country list…");
+        try {
+          const res = await fetch(catalogUrl("countries.json"), { cache: "no-cache" });
+          if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+          const index = await res.json();
+          countries = Array.isArray(index.countries) ? index.countries : [];
+          if (!countries.length) throw new Error("countries.json has no entries");
+
+          countrySelect.innerHTML = "";
+          for (const c of countries) {
+            const opt = document.createElement("option");
+            opt.value = c.id;
+            opt.textContent = c.name;
+            countrySelect.appendChild(opt);
+          }
+          countrySelect.disabled = false;
+
+          const initial = preferredCountryId(countries, index.default);
+          countrySelect.value = initial;
+          await loadCountry(initial);
+        } catch (err) {
+          countrySelect.innerHTML = `<option value="">Unavailable</option>`;
+          setStatus(`Failed to load countries.json: ${err.message || err}`, true);
+          render();
+        }
+      }
+
       textFilter.addEventListener("input", render);
 
       denomChips.addEventListener("click", (ev) => {
@@ -595,8 +927,11 @@ html:
         render();
       });
 
-      initControls(sets);
-      render();
+      countrySelect.addEventListener("change", () => {
+        loadCountry(countrySelect.value);
+      });
+
+      boot();
     })();
     </script>
 ---

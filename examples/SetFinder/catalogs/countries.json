@@ -1,0 +1,20 @@
+{
+  "default": "cn",
+  "countries": [
+    {
+      "id": "cn",
+      "name": "China",
+      "catalog": "cn.json"
+    },
+    {
+      "id": "is",
+      "name": "Iceland",
+      "catalog": "is.json"
+    },
+    {
+      "id": "cn-demo",
+      "name": "China (demo)",
+      "catalog": "demo.json"
+    }
+  ]
+}

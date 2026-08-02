@@ -1,12 +1,17 @@
 /**
  * Scrape StampWorld catalogue listings for a catalog_query.
  * Sync (curl) so it can run as a capability `_transform` filter.
+ *
+ * Prefer `collect_catalogue` for the load-or-fetch workflow; this module
+ * always downloads the requested periods.
  */
 import { execFileSync } from "node:child_process";
+import path from "node:path";
 import { to_catalogue_string } from "../types/catalogue.js";
 
 const BASE = "https://www.stampworld.com";
 const UA = "PhilateLister-stamp-collector/1.0 (+https://github.com/exergy-connect)";
+const FETCH_RETRIES = 6;
 
 function decodeEntities(s) {
   return String(s ?? "")
@@ -167,11 +172,51 @@ function parsePage(html, pageUrl) {
 }
 
 function fetchHtml(url) {
-  return execFileSync(
-    "curl",
-    ["-sL", "-A", UA, "--fail", "--max-time", "60", url],
-    { encoding: "utf8", maxBuffer: 16 * 1024 * 1024 },
-  );
+  let lastErr;
+  for (let attempt = 1; attempt <= FETCH_RETRIES; attempt++) {
+    try {
+      // Capture HTTP status so we can back off on 429 without --fail exiting first.
+      const out = execFileSync(
+        "curl",
+        [
+          "-sL",
+          "-A",
+          UA,
+          "--max-time",
+          "60",
+          "-w",
+          "\n__HTTP_STATUS__:%{http_code}",
+          url,
+        ],
+        { encoding: "utf8", maxBuffer: 16 * 1024 * 1024 },
+      );
+      const m = out.match(/\n__HTTP_STATUS__:(\d+)\s*$/);
+      const status = m ? Number(m[1]) : 0;
+      const body = m ? out.slice(0, m.index) : out;
+      if (status === 429 || status === 503) {
+        const waitMs = Math.min(30_000, 2_000 * attempt);
+        console.error(
+          `[stamp_collector] HTTP ${status} for ${url} — retry ${attempt}/${FETCH_RETRIES} in ${waitMs}ms`,
+        );
+        pause(waitMs);
+        lastErr = new Error(`HTTP ${status}: ${url}`);
+        continue;
+      }
+      if (status < 200 || status >= 300) {
+        throw new Error(`HTTP ${status}: ${url}`);
+      }
+      return body;
+    } catch (err) {
+      lastErr = err;
+      if (attempt >= FETCH_RETRIES) break;
+      const waitMs = Math.min(30_000, 2_000 * attempt);
+      console.error(
+        `[stamp_collector] fetch error — retry ${attempt}/${FETCH_RETRIES} in ${waitMs}ms: ${err instanceof Error ? err.message : String(err)}`,
+      );
+      pause(waitMs);
+    }
+  }
+  throw lastErr instanceof Error ? lastErr : new Error(String(lastErr));
 }
 
 function pause(ms) {
@@ -272,20 +317,45 @@ function asInt(value, fallback) {
   return Number.isFinite(n) ? n : fallback;
 }
 
+/** Filesystem-safe country directory name (StampWorld slug, no path separators). */
+export function country_dir(country) {
+  const s = String(country ?? "").trim();
+  if (!s) throw new Error("country_dir: country is required");
+  if (s.includes("..") || s.includes("/") || s.includes("\\")) {
+    throw new Error(`country_dir: invalid country slug: ${s}`);
+  }
+  return s;
+}
+
+/** `output/<country>` path for period JSON / collection.xp. */
+export function country_output_dir(country, output_dir = "output") {
+  const root = String(output_dir ?? "output").trim() || "output";
+  return path.join(root, country_dir(country));
+}
+
 /**
- * @param {object} query catalog_query: { country, categories, periods }
+ * Download catalogue listings for every period in `query` (no disk cache).
+ *
+ * @param {object} query catalog_query: { id, country (stampworld), categories, periods }
  * @param {unknown} max_pages
  * @param {unknown} delay_ms
  * @param {unknown} year
  */
-export function scrape_catalogue(query, max_pages = 0, delay_ms = 250, year = "") {
+export function scrape_catalogue(
+  query,
+  max_pages = 0,
+  delay_ms = 250,
+  year = "",
+) {
   if (!query || typeof query !== "object" || Array.isArray(query)) {
     throw new Error("scrape_catalogue expects a catalog_query object");
   }
-  const country = String(query.country ?? "").trim();
+  const stampworld = String(query.country ?? "").trim();
+  const outputId = String(query.id ?? "").trim();
   const categories = asList(query.categories);
   const periods = asList(query.periods);
-  if (!country) throw new Error("scrape_catalogue: query.country is required");
+  if (!stampworld) throw new Error("scrape_catalogue: query.country (stampworld) is required");
+  if (!outputId) throw new Error("scrape_catalogue: query.id is required");
   if (categories.length === 0) {
     throw new Error("scrape_catalogue: query.categories is required");
   }
@@ -309,12 +379,17 @@ export function scrape_catalogue(query, max_pages = 0, delay_ms = 250, year = ""
   const byPeriod = {};
   for (let pi = 0; pi < periods.length; pi++) {
     const period = periods[pi];
+    console.error(`[stamp_collector] fetch ${outputId}/${period}`);
     /** @type {Map<string, object>} */
     const byId = new Map();
     let baseDoc = null;
     for (let ci = 0; ci < categories.length; ci++) {
       const category = categories[ci];
-      const url = to_catalogue_string({ country, category, period });
+      const url = to_catalogue_string({
+        country: stampworld,
+        category,
+        period,
+      });
       const doc = scrapePeriod(url, opts);
       baseDoc ??= doc;
       for (const set of doc.sets) byId.set(set.id, set);
@@ -332,11 +407,12 @@ export function scrape_catalogue(query, max_pages = 0, delay_ms = 250, year = ""
 
   return {
     base: BASE,
-    country,
+    id: outputId,
+    country: stampworld,
     categories,
     fetchedAt: new Date().toISOString(),
     periods: byPeriod,
   };
 }
 
-export default { scrape_catalogue };
+export default { scrape_catalogue, country_dir, country_output_dir };

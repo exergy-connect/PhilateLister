@@ -1,12 +1,8 @@
 ---
-# One output file per query period (segment stream).
+# Period JSON is written by write_period_json under output/<country>/.
+# This final emits a small compile-tree companion next to the package output/.
 ---
-{% for period in query.periods %}
----
-_document:
-  _output:
-    _basename: "{{ period }}"
-    _extension: json
 ===
-{{ collection.periods[period] | to_json }}
-{% endfor %}
+{{ collection | to_json }}
+---
+{# end segment stream #}

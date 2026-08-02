@@ -1,0 +1,61 @@
+---
+# Set Finder — identify stamp sets by picture and denomination.
+# Compose with --final html. Catalogs load at runtime from ./catalogs/.
+#
+# Demo / build:
+#   node scripts/build-catalogs.mjs
+#   xform filters.js index.xp --final html
+#
+# Refresh China catalogue from stamp_collector:
+#   1) xform ../stamp_collector/stamp_collector.xp --final json --auto-approve --with country=china
+#   2) xform ../stamp_collector/consolidate.xp --final xp --with country=china
+#   3) node scripts/build-catalogs.mjs
+#   4) xform filters.js index.xp --final html
+
+title: Set Finder
+tagline: Match a stamp to its set by looking, then selecting the face values you see.
+
+_final:
+  _templates: file://./templates/_final/
+
+{% include "file://./filters/finder_catalog.js" %}
+
+application:
+  _templates: file://./templates/application/
+
+style:
+  _templates: file://./templates/style/
+  ink: "#141210"
+  paper: "#f2f0eb"
+  seal: "#b91c1c"
+  jade: "#0f766e"
+  mist: "#d6d3cd"
+  muted: "#5c574f"
+  font_display: '"Source Serif 4", "Noto Serif SC", "Songti SC", serif'
+  font_ui: '"IBM Plex Sans", "Noto Sans SC", "PingFang SC", sans-serif'
+
+# Shape for catalog entries (documentation / body directives).
+stamp_set:
+  _attributes:
+    id: _string
+    name: _string
+    name_zh: _string
+    year:
+      _type: _integer
+      _required: true
+    year_end: _integer
+    denominations:
+      _type: [_string]
+      _required: true
+    catalog: _string
+    era: _string
+    image: _string
+    image_full: _string
+    _content: _string
+
+_document:
+  application: finder
+---
+# Optional body directives — same shape as catalog set entries.
+# Country catalogues live in catalogs/*.json (see catalogs/countries.json).
+...

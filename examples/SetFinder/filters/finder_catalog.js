@@ -1,5 +1,5 @@
 /**
- * Adapt stamp_collector catalogue → FindChineseSets stamp_set rows.
+ * Adapt stamp_collector catalogue → SetFinder stamp_set rows.
  *
  * Collector shape (per set): id, ref, year, title, stamps[{no,denom}], thumbnail?
  * Finder shape: id, name, name_zh, year, denominations, catalog, era, image, note
@@ -27,7 +27,7 @@ export function from_json(value) {
   return JSON.parse(value);
 }
 
-/** Resolve file:// or relative URI against the FindChineseSets package root. */
+/** Resolve file:// or relative URI against the SetFinder package root. */
 function resolvePackageUri(uri) {
   let p = String(uri ?? "").trim();
   if (!p) return null;
@@ -69,18 +69,42 @@ export function load_finder_sets(uri, fallback = []) {
   return to_finder_sets(load_collection(uri));
 }
 
+/**
+ * Comparable face-value key for sorting denominations.
+ * Normalizes common units to a major-currency float (yuan / króna / dollar).
+ */
 function denomValue(denom) {
   const s = String(denom ?? "").trim();
+  if (!s) return Number.POSITIVE_INFINITY;
+
   let m = s.match(/^([\d.]+)\s*元$/u);
   if (m) return Number(m[1]);
   m = s.match(/^([\d.]+)\s*分$/u);
   if (m) return Number(m[1]) / 100;
-  m = s.match(/^([\d.]+)\s*c$/i);
-  if (m) return Number(m[1]) / 100;
+
+  // Parcel weight labels (not currency) — after face values
+  m = s.match(/^B?([\d.]+)\s*g$/i);
+  if (m) return 1e6 + Number(m[1]);
+
   m = s.match(/^([\d.½¼¾]+)/u);
   if (!m) return Number.POSITIVE_INFINITY;
-  const n = m[1].replace("½", ".5").replace("¼", ".25").replace("¾", ".75");
-  return Number(n);
+  const n = Number(
+    m[1].replace("½", ".5").replace("¼", ".25").replace("¾", ".75"),
+  );
+  if (!Number.isFinite(n)) return Number.POSITIVE_INFINITY;
+
+  if (/^\d[\d.½¼¾]*\s*c\b/i.test(s)) return n / 100;
+  if (/\$/.test(s)) return n;
+
+  // Icelandic / Nordic: skilling, aur/eyrir (1/100 króna), króna
+  // Skilling (pre-decimal): keep as its own band before aurar/króna
+  if (/\dSk\b/i.test(s) || /\bSk\b/i.test(s)) return -100 + n;
+  if (/kr\s*\/\s*aur/i.test(s)) return n;
+  if (/aur\s*\/\s*kr/i.test(s)) return n / 100;
+  if (/aur|eyr/i.test(s)) return n / 100;
+  if (/kr\b/i.test(s)) return n;
+
+  return n;
 }
 
 function uniqueDenoms(stamps) {

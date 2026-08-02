@@ -24,17 +24,32 @@ export function to_pretty_json(value) {
 }
 
 /**
- * Convert StampWorld denomination strings to a comparable yuan value.
- *   "8分" → 0.08, "1.60元" → 1.6, unknown → +Infinity
+ * Convert StampWorld denomination strings to a comparable major-unit value.
+ *   "8分" → 0.08, "1.60元" → 1.6, "5aur" → 0.05, "1Kr" → 1, unknown → +Infinity
  */
 export function denomValue(denom) {
   const s = String(denom ?? "").trim();
+  if (!s) return Number.POSITIVE_INFINITY;
   let m = s.match(/^([\d.]+)\s*元$/u);
   if (m) return Number(m[1]);
   m = s.match(/^([\d.]+)\s*分$/u);
   if (m) return Number(m[1]) / 100;
-  m = s.match(/^([\d.]+)/);
-  return m ? Number(m[1]) : Number.POSITIVE_INFINITY;
+  m = s.match(/^B?([\d.]+)\s*g$/i);
+  if (m) return 1e6 + Number(m[1]);
+  m = s.match(/^([\d.½¼¾]+)/u);
+  if (!m) return Number.POSITIVE_INFINITY;
+  const n = Number(
+    m[1].replace("½", ".5").replace("¼", ".25").replace("¾", ".75"),
+  );
+  if (!Number.isFinite(n)) return Number.POSITIVE_INFINITY;
+  if (/^\d[\d.½¼¾]*\s*c\b/i.test(s)) return n / 100;
+  if (/\$/.test(s)) return n;
+  if (/\dSk\b/i.test(s) || /\bSk\b/i.test(s)) return -100 + n;
+  if (/kr\s*\/\s*aur/i.test(s)) return n;
+  if (/aur\s*\/\s*kr/i.test(s)) return n / 100;
+  if (/aur|eyr/i.test(s)) return n / 100;
+  if (/kr\b/i.test(s)) return n;
+  return n;
 }
 
 /** Pick the lowest-denomination stamp that has an image (then lowest catalogue no.). */
@@ -102,6 +117,10 @@ export function add_thumbnails(collection) {
   return {
     ...collection,
     sets: sets.map((set) => {
+      // Keep cached thumbnails from on-disk period JSON (skip re-fetch).
+      if (typeof set.thumbnail === "string" && set.thumbnail.startsWith("data:")) {
+        return set;
+      }
       const stamp = lowestDenomStamp(set.stamps);
       const url = imageUrl(collection, stamp);
       if (!url) return { ...set, thumbnail: null };

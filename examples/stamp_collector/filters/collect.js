@@ -17,8 +17,6 @@ import {
 import {
   category_period_path,
   country_code,
-  legacy_doc_matches_category,
-  legacy_period_path,
 } from "./paths.js";
 import { add_thumbnails } from "./thumbnails.js";
 
@@ -179,25 +177,6 @@ export function collect_catalogue(
         console.error(`[stamp_collector] load ${label}`);
         byPeriodCategory[period][category] = loadDoc(filePath);
         continue;
-      }
-      // Fall back to legacy output/<id>/<period>.json (postage-only merges).
-      const legacyPath = legacy_period_path(outRoot, outputId, period);
-      if (!refreshAll && existsSync(legacyPath)) {
-        const legacy = loadDoc(legacyPath);
-        if (legacy_doc_matches_category(legacy, category)) {
-          const migrated = {
-            ...legacy,
-            category,
-            period,
-            code,
-          };
-          console.error(
-            `[stamp_collector] load legacy ${outputId}/${period}.json → ${path.basename(filePath)}`,
-          );
-          writeDoc(filePath, migrated, label);
-          byPeriodCategory[period][category] = migrated;
-          continue;
-        }
       }
       missing.push({ period, category });
     }

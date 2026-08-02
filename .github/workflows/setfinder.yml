@@ -84,7 +84,7 @@ jobs:
           mkdir -p public/setfinder/catalogs public/setfinder/images
           cp "$src_html" public/setfinder/index.html
           cp examples/SetFinder/catalogs/*.json public/setfinder/catalogs/
-          cp examples/SetFinder/images/* public/setfinder/images/ 2>/dev/null || true
+          cp -R examples/SetFinder/images/. public/setfinder/images/
           if [[ -f examples/SetFinder/favicon.ico ]]; then
             cp examples/SetFinder/favicon.ico public/setfinder/favicon.ico
           fi

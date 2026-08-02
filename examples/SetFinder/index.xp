@@ -5,6 +5,9 @@
 # Demo / build:
 #   node scripts/build-catalogs.mjs
 #   xform filters.js index.xp --final html
+#   node server.mjs
+# Then open http://localhost:8080. The local server is required for right-click
+# image replacement because it persists uploads under images/<country code>/.
 #
 # Refresh China catalogue from stamp_collector:
 #   1) xform ../stamp_collector/stamp_collector.xp --final json --auto-approve --with country=china

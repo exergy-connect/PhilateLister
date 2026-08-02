@@ -168,6 +168,37 @@ body::before {
   gap: 0.4rem;
 }
 
+.denom-groups {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.denom-group {
+  border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+  background: color-mix(in srgb, #fff 48%, transparent);
+}
+
+.denom-group summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  color: var(--ink);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.denom-group summary span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 400;
+}
+
+.denom-group .chips {
+  padding: 0 0.75rem 0.75rem;
+}
+
 .chip {
   appearance: none;
   border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
@@ -399,6 +430,10 @@ body::before {
   display: block;
 }
 
+.detail .stamp-thumbs [data-replaceable="true"] {
+  cursor: context-menu;
+}
+
 .detail .stamp-thumbs .stamp-missing {
   display: grid;
   place-items: center;
@@ -539,6 +574,10 @@ body::before {
     <select id="country-select" aria-label="Country catalog" disabled>
       <option value="">Loading countries…</option>
     </select>
+    <label for="period-select">Period</label>
+    <select id="period-select" aria-label="Catalog period" disabled>
+      <option value="all">All</option>
+    </select>
     <p class="status" id="catalog-status" aria-live="polite"></p>
   </div>
 
@@ -559,8 +598,24 @@ body::before {
         <span>Face value chips</span>
         <span>sets must include every selected value</span>
       </div>
-      <div class="chips" id="denom-chips" role="group" aria-label="Denominations">
+      <div id="denom-chips" role="group" aria-label="Denominations">
+        <div class="chips">
         <button type="button" class="chip chip-clear" data-denom="*" aria-pressed="true">Any</button>
+        </div>
+        <div class="denom-groups">
+          <details class="denom-group" id="regular-denom-group" open>
+            <summary>Regular denominations <span id="regular-denom-count"></span></summary>
+            <div class="chips" id="regular-denom-chips"></div>
+          </details>
+          <details class="denom-group" id="surcharge-denom-group">
+            <summary>Surcharges <span id="surcharge-denom-count"></span></summary>
+            <div class="chips" id="surcharge-denom-chips"></div>
+          </details>
+          <details class="denom-group" id="overprint-denom-group">
+            <summary>Overprints <span id="overprint-denom-count"></span></summary>
+            <div class="chips" id="overprint-denom-chips"></div>
+          </details>
+        </div>
       </div>
     </div>
   </section>
@@ -580,12 +635,30 @@ body::before {
     <div class="stamp-thumbs" id="detail-stamps" aria-label="Stamps in set"></div>
     <div class="denoms" id="detail-denoms"></div>
   </aside>
+  <input class="sr-only" id="replacement-image" type="file" accept="image/jpeg,image/png,image/webp,image/gif" />
 </main>
 
 <script>
 (() => {
   const CATALOG_BASE = new URL("catalogs/", window.location.href);
   const denomChips = document.getElementById("denom-chips");
+  const denomGroups = [
+    {
+      container: document.getElementById("regular-denom-chips"),
+      details: document.getElementById("regular-denom-group"),
+      count: document.getElementById("regular-denom-count"),
+    },
+    {
+      container: document.getElementById("surcharge-denom-chips"),
+      details: document.getElementById("surcharge-denom-group"),
+      count: document.getElementById("surcharge-denom-count"),
+    },
+    {
+      container: document.getElementById("overprint-denom-chips"),
+      details: document.getElementById("overprint-denom-group"),
+      count: document.getElementById("overprint-denom-count"),
+    },
+  ];
   const categoryChips = document.getElementById("category-chips");
   const categoryFilter = document.getElementById("category-filter");
   const textFilter = document.getElementById("text-filter");
@@ -600,16 +673,21 @@ body::before {
   const detailStamps = document.getElementById("detail-stamps");
   const detailDenoms = document.getElementById("detail-denoms");
   const countrySelect = document.getElementById("country-select");
+  const periodSelect = document.getElementById("period-select");
   const catalogStatus = document.getElementById("catalog-status");
   const brandTitle = document.querySelector(".brand h1");
+  const replacementImage = document.getElementById("replacement-image");
 
   let countries = [];
   let sets = [];
+  let periodGroups = [];
+  let selectedPeriod = "all";
   let selectedDenoms = new Set();
   let selectedCategory = "*";
   let selectedId = null;
   let expandedIds = new Set();
   let loadToken = 0;
+  let pendingReplacement = null;
 
   function catalogUrl(file) {
     return new URL(String(file || "").replace(/^\.\//, ""), CATALOG_BASE).href;
@@ -646,6 +724,17 @@ body::before {
     return n;
   }
 
+  function denomKind(denom) {
+    const s = String(denom ?? "");
+    if (s.includes("/")) return 2;
+    if (s.includes("+")) return 1;
+    return 0;
+  }
+
+  function compareDenoms(a, b) {
+    return denomKind(a) - denomKind(b) || denomValue(a) - denomValue(b);
+  }
+
   function denomsFromSets(list) {
     const seen = new Set();
     const denoms = [];
@@ -657,24 +746,63 @@ body::before {
         denoms.push(s);
       }
     }
-    return denoms.sort((a, b) => denomValue(a) - denomValue(b));
+    return denoms.sort(compareDenoms);
   }
 
   function categoriesFromSets(list) {
-    const seen = new Set();
-    const out = [];
+    const counts = new Map();
     for (const set of list) {
       const c = String(set.category || "").trim();
-      if (!c || seen.has(c)) continue;
-      seen.add(c);
-      out.push(c);
+      if (!c) continue;
+      counts.set(c, (counts.get(c) || 0) + 1);
     }
-    return out.sort((a, b) => a.localeCompare(b));
+    return [...counts.keys()].sort((a, b) =>
+      counts.get(b) - counts.get(a) || a.localeCompare(b));
+  }
+
+  function yearSpan(list) {
+    const starts = list.map((set) => Number(set.year)).filter(Number.isFinite);
+    const ends = list
+      .map((set) => Number(set.year_end ?? set.year))
+      .filter(Number.isFinite);
+    if (!starts.length || !ends.length) return "Years unavailable";
+    const first = Math.min(...starts);
+    const last = Math.max(...ends);
+    return first === last ? String(first) : `${first}–${last}`;
+  }
+
+  function initPeriods(list) {
+    const chronological = list
+      .map((set, index) => ({ set, index }))
+      .sort((a, b) =>
+        Number(a.set.year) - Number(b.set.year)
+        || Number(a.set.year_end ?? a.set.year) - Number(b.set.year_end ?? b.set.year)
+        || a.index - b.index)
+      .map(({ set }) => set);
+    periodGroups = [0, 1, 2].map((part) => {
+      const start = Math.round(part * chronological.length / 3);
+      const end = Math.round((part + 1) * chronological.length / 3);
+      return chronological.slice(start, end);
+    });
+
+    const labels = ["Earliest", "Middle", "Most recent"];
+    periodSelect.replaceChildren(new Option(`All (${yearSpan(chronological)})`, "all"));
+    periodGroups.forEach((group, index) => {
+      periodSelect.add(new Option(`${labels[index]} (${yearSpan(group)})`, String(index)));
+    });
+    periodSelect.value = selectedPeriod;
+    periodSelect.disabled = chronological.length === 0;
+  }
+
+  function setsForPeriod() {
+    if (selectedPeriod === "all") return sets;
+    return periodGroups[Number(selectedPeriod)] || [];
   }
 
   function setsForDenomChips() {
-    if (selectedCategory === "*") return sets;
-    return sets.filter((s) => String(s.category || "") === selectedCategory);
+    const periodSets = setsForPeriod();
+    if (selectedCategory === "*") return periodSets;
+    return periodSets.filter((s) => String(s.category || "") === selectedCategory);
   }
 
   function initControls(list) {
@@ -694,18 +822,26 @@ body::before {
       selectedCategory = "*";
     }
 
-    denomChips.querySelectorAll(".chip:not(.chip-clear)").forEach((c) => c.remove());
-    for (const d of denomsFromSets(setsForDenomChips())) {
+    for (const group of denomGroups) group.container.replaceChildren();
+    const denoms = denomsFromSets(setsForDenomChips());
+    const groupCounts = [0, 0, 0];
+    for (const d of denoms) {
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "chip";
       btn.dataset.denom = d;
       btn.setAttribute("aria-pressed", "false");
       btn.textContent = d;
-      denomChips.appendChild(btn);
+      const kind = denomKind(d);
+      denomGroups[kind].container.appendChild(btn);
+      groupCounts[kind] += 1;
+    }
+    for (let i = 0; i < denomGroups.length; i += 1) {
+      denomGroups[i].details.hidden = groupCounts[i] === 0;
+      denomGroups[i].count.textContent = `${groupCounts[i]} value${groupCounts[i] === 1 ? "" : "s"}`;
     }
     // Drop denomination selections that are no longer visible for this category.
-    const available = new Set(denomsFromSets(setsForDenomChips()));
+    const available = new Set(denoms);
     selectedDenoms = new Set([...selectedDenoms].filter((d) => available.has(d)));
     syncChipPressed();
   }
@@ -755,6 +891,44 @@ body::before {
     }));
   }
 
+  function enableImageReplacement(element, set, stamp) {
+    if (!stamp.no) return;
+    element.dataset.replaceable = "true";
+    element.title = `Right-click to replace catalog ${stamp.no}`;
+    element.addEventListener("contextmenu", (ev) => {
+      ev.preventDefault();
+      pendingReplacement = { set, stamp };
+      replacementImage.value = "";
+      replacementImage.click();
+    });
+  }
+
+  async function replaceStampImage(file, target) {
+    const country = countries.find((c) => c.id === countrySelect.value);
+    if (!country || !target?.stamp?.no) return;
+    setStatus(`Uploading image for catalog ${target.stamp.no}…`);
+    try {
+      const params = new URLSearchParams({
+        country: country.id,
+        catalog: String(target.stamp.no),
+        set: String(target.set.id || ""),
+      });
+      const res = await fetch(`/api/setfinder/image?${params}`, {
+        method: "POST",
+        headers: { "Content-Type": file.type },
+        body: file,
+      });
+      const result = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(result.error || `${res.status} ${res.statusText}`);
+      target.stamp.image = `${result.url}?v=${Date.now()}`;
+      setStatus(`Replaced catalog ${target.stamp.no} with ${result.path}.`);
+      showDetail(target.set);
+      render();
+    } catch (err) {
+      setStatus(`Image replacement failed: ${err.message || err}`, true);
+    }
+  }
+
   function showDetail(set) {
     if (!set) {
       detail.hidden = true;
@@ -780,11 +954,13 @@ body::before {
         img.src = stamp.image;
         img.alt = stamp.denom || stamp.no || set.name || "";
         img.loading = "lazy";
+        enableImageReplacement(img, set, stamp);
         fig.appendChild(img);
       } else {
         const missing = document.createElement("div");
         missing.className = "stamp-missing";
         missing.textContent = "No image";
+        enableImageReplacement(missing, set, stamp);
         fig.appendChild(missing);
       }
       const cap = document.createElement("figcaption");
@@ -832,12 +1008,13 @@ body::before {
   }
 
   function render() {
-    const matched = sets.filter(matches);
+    const periodSets = setsForPeriod();
+    const matched = periodSets.filter(matches);
     matchCount.textContent = String(matched.length);
     stampCount.textContent = String(stampTotal(matched));
     grid.innerHTML = "";
 
-    if (!sets.length) {
+    if (!periodSets.length) {
       const empty = document.createElement("div");
       empty.className = "empty";
       empty.textContent = catalogStatus.classList.contains("is-error")
@@ -957,9 +1134,13 @@ body::before {
     const token = ++loadToken;
     selectedDenoms = new Set();
     selectedCategory = "*";
+    selectedPeriod = "all";
     selectedId = null;
     expandedIds = new Set();
     sets = [];
+    periodGroups = [];
+    periodSelect.replaceChildren(new Option("All", "all"));
+    periodSelect.disabled = true;
     initControls([]);
     showDetail(null);
     updateBrand(country);
@@ -978,8 +1159,9 @@ body::before {
       const doc = await res.json();
       if (token !== loadToken) return;
       sets = Array.isArray(doc) ? doc : (doc.sets || []);
+      initPeriods(sets);
       selectedCategory = preferredCategory(sets);
-      initControls(sets);
+      initControls(setsForPeriod());
       const cats = categoriesFromSets(sets);
       setStatus(
         cats.length > 1
@@ -995,6 +1177,9 @@ body::before {
     } catch (err) {
       if (token !== loadToken) return;
       sets = [];
+      periodGroups = [];
+      periodSelect.replaceChildren(new Option("All", "all"));
+      periodSelect.disabled = true;
       initControls([]);
       setStatus(`Failed to load ${country.catalog}: ${err.message || err}`, true);
       render();
@@ -1038,7 +1223,7 @@ body::before {
     if (!chip || !categoryChips.contains(chip)) return;
     selectedCategory = chip.dataset.category || "*";
     selectedDenoms = new Set();
-    initControls(sets);
+    initControls(setsForPeriod());
     syncCategoryUrl();
     render();
   });
@@ -1056,6 +1241,24 @@ body::before {
 
   countrySelect.addEventListener("change", () => {
     loadCountry(countrySelect.value);
+  });
+
+  periodSelect.addEventListener("change", () => {
+    selectedPeriod = periodSelect.value;
+    selectedCategory = "*";
+    selectedDenoms = new Set();
+    selectedId = null;
+    initControls(setsForPeriod());
+    showDetail(null);
+    syncCategoryUrl();
+    render();
+  });
+
+  replacementImage.addEventListener("change", () => {
+    const file = replacementImage.files?.[0];
+    const target = pendingReplacement;
+    pendingReplacement = null;
+    if (file && target) replaceStampImage(file, target);
   });
 
   boot();

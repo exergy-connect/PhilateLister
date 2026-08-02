@@ -12,10 +12,11 @@ on:
       - "public/listings/**"
       - "public/aps/index.html"
       - "public/psag/*"
+      - "public/setfinder/**"
 
-  # Pushes from xFrame consolidate use GITHUB_TOKEN and do not fire `push` workflows; redeploy when consolidate finishes.
+  # Pushes from CI bots use GITHUB_TOKEN and do not fire `push` workflows; redeploy when they finish.
   workflow_run:
-    workflows: ["xFrame consolidate"]
+    workflows: ["xFrame consolidate", "Find Chinese Sets"]
     types: [completed]
     branches: [main]
 

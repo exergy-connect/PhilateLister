@@ -10,7 +10,9 @@ import path from "node:path";
 import { to_catalogue_string } from "../types/catalogue.js";
 
 const BASE = "https://www.stampworld.com";
-const UA = "PhilateLister-stamp-collector/1.0 (+https://github.com/exergy-connect)";
+/** Browser-like UA — StampWorld returns 403 for many bot / datacenter clients. */
+const UA =
+  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
 const FETCH_RETRIES = 6;
 
 function decodeEntities(s) {
@@ -182,6 +184,10 @@ function fetchHtml(url) {
           "-sL",
           "-A",
           UA,
+          "-H",
+          "Accept: text/html,application/xhtml+xml;q=0.9,*/*;q=0.8",
+          "-H",
+          "Accept-Language: en-US,en;q=0.9",
           "--max-time",
           "60",
           "-w",
@@ -193,7 +199,7 @@ function fetchHtml(url) {
       const m = out.match(/\n__HTTP_STATUS__:(\d+)\s*$/);
       const status = m ? Number(m[1]) : 0;
       const body = m ? out.slice(0, m.index) : out;
-      if (status === 429 || status === 503) {
+      if (status === 429 || status === 503 || status === 403) {
         const waitMs = Math.min(30_000, 2_000 * attempt);
         console.error(
           `[stamp_collector] HTTP ${status} for ${url} — retry ${attempt}/${FETCH_RETRIES} in ${waitMs}ms`,

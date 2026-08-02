@@ -1,18 +1,21 @@
 #!/usr/bin/env bash
 #   ./collect.sh china
 #   ./collect.sh china --refresh
+#   ./collect.sh china --offline   # cache/stubs only (CI sets CI=true automatically)
 set -euo pipefail
 cd "$(dirname "$0")"
 
 refresh=false
+offline=false
 country=""
 extra=()
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --refresh) refresh=true; shift ;;
+    --offline) offline=true; shift ;;
     -h|--help)
-      echo "usage: $0 <country> [--refresh] [xform args...]" >&2
+      echo "usage: $0 <country> [--refresh] [--offline] [xform args...]" >&2
       exit 0
       ;;
     *)
@@ -24,11 +27,12 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ -z "$country" ]]; then
-  echo "usage: $0 <country> [--refresh] [xform args...]" >&2
+  echo "usage: $0 <country> [--refresh] [--offline] [xform args...]" >&2
   exit 1
 fi
 
 args=(stamp_collector.xp --final json --auto-approve --with "country=${country}")
 [[ "$refresh" == true ]] && args+=(--with refresh=true)
+[[ "$offline" == true ]] && args+=(--with offline=true)
 [[ ${#extra[@]} -gt 0 ]] && args+=("${extra[@]}")
 exec xform "${args[@]}"

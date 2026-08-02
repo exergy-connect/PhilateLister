@@ -17,6 +17,8 @@ import {
 import {
   category_period_path,
   country_code,
+  legacy_doc_matches_category,
+  legacy_period_path,
 } from "./paths.js";
 import { add_thumbnails } from "./thumbnails.js";
 
@@ -44,6 +46,31 @@ function asBool(value, fallback = false) {
 function wantsRefresh(refreshFlag) {
   if (asBool(refreshFlag, false)) return true;
   return process.argv.includes("--refresh");
+}
+
+/** Offline / CI: never hit StampWorld; use cache + empty stubs for gaps. */
+function wantsOffline(offlineFlag) {
+  if (asBool(offlineFlag, false)) return true;
+  if (process.argv.includes("--offline")) return true;
+  const ci = String(process.env.CI ?? "").trim().toLowerCase();
+  return ci === "1" || ci === "true";
+}
+
+function emptyCategoryDoc(category, period, code, stampworld) {
+  const slug = String(category).trim().replace(/\s+/g, "-");
+  return {
+    base: "https://www.stampworld.com",
+    source: `/stamps/${stampworld}/${category}/${period}`,
+    media: `/media/catalogue/${stampworld}/${slug}/`,
+    pageCount: 0,
+    setCount: 0,
+    stampCount: 0,
+    pages: [],
+    sets: [],
+    category,
+    period,
+    code,
+  };
 }
 
 function loadDoc(filePath) {
@@ -109,6 +136,7 @@ export function collect_catalogue(
   year = "",
   refresh = false,
   output_dir = "output",
+  offline = false,
 ) {
   if (!query || typeof query !== "object" || Array.isArray(query)) {
     throw new Error("collect_catalogue expects a catalog_query object");
@@ -128,6 +156,7 @@ export function collect_catalogue(
   }
 
   const refreshAll = wantsRefresh(refresh);
+  const offlineMode = wantsOffline(offline);
   const outRoot = String(output_dir ?? "output").trim() || "output";
 
   /** @type {Record<string, Record<string, object>>} */
@@ -151,50 +180,92 @@ export function collect_catalogue(
         byPeriodCategory[period][category] = loadDoc(filePath);
         continue;
       }
+      // Fall back to legacy output/<id>/<period>.json (postage-only merges).
+      const legacyPath = legacy_period_path(outRoot, outputId, period);
+      if (!refreshAll && existsSync(legacyPath)) {
+        const legacy = loadDoc(legacyPath);
+        if (legacy_doc_matches_category(legacy, category)) {
+          const migrated = {
+            ...legacy,
+            category,
+            period,
+            code,
+          };
+          console.error(
+            `[stamp_collector] load legacy ${outputId}/${period}.json → ${path.basename(filePath)}`,
+          );
+          writeDoc(filePath, migrated, label);
+          byPeriodCategory[period][category] = migrated;
+          continue;
+        }
+      }
       missing.push({ period, category });
     }
   }
 
   if (missing.length > 0) {
-    console.error(
-      `[stamp_collector] fetch ${outputId}: ${missing.length} categor${missing.length === 1 ? "y" : "ies"}${refreshAll ? " (refresh)" : ""}`,
-    );
-    for (let i = 0; i < missing.length; i++) {
-      const { period, category } = missing[i];
-      const scraped = scrape_catalogue(
-        {
-          id: outputId,
-          country: stampworld,
-          categories: [category],
-          periods: [period],
-        },
-        max_pages,
-        delay_ms,
-        year,
+    if (offlineMode) {
+      const persistStub =
+        asBool(offline, false) || process.argv.includes("--offline");
+      console.error(
+        `[stamp_collector] offline: stub ${missing.length} missing categor${missing.length === 1 ? "y" : "ies"} (no StampWorld fetch)`,
       );
-      const raw = scraped.periods?.[period];
-      if (!raw) {
-        throw new Error(
-          `collect_catalogue: scrape produced no data for ${category}/${period}`,
+      for (const { period, category } of missing) {
+        const stub = emptyCategoryDoc(category, period, code, stampworld);
+        const filePath = category_period_path(
+          outRoot,
+          outputId,
+          category,
+          period,
+          code,
         );
+        const label = `${outputId}/${path.basename(filePath)}`;
+        if (persistStub) writeDoc(filePath, stub, label);
+        else console.error(`[stamp_collector] offline stub ${label}`);
+        byPeriodCategory[period] ??= {};
+        byPeriodCategory[period][category] = stub;
       }
-      const withThumbs = add_thumbnails({
-        ...raw,
-        category,
-        period,
-        code,
-      });
-      const filePath = category_period_path(
-        outRoot,
-        outputId,
-        category,
-        period,
-        code,
+    } else {
+      console.error(
+        `[stamp_collector] fetch ${outputId}: ${missing.length} categor${missing.length === 1 ? "y" : "ies"}${refreshAll ? " (refresh)" : ""}`,
       );
-      writeDoc(filePath, withThumbs, `${outputId}/${path.basename(filePath)}`);
-      byPeriodCategory[period] ??= {};
-      byPeriodCategory[period][category] = withThumbs;
-      if (i + 1 < missing.length) pause(delay_ms);
+      for (let i = 0; i < missing.length; i++) {
+        const { period, category } = missing[i];
+        const scraped = scrape_catalogue(
+          {
+            id: outputId,
+            country: stampworld,
+            categories: [category],
+            periods: [period],
+          },
+          max_pages,
+          delay_ms,
+          year,
+        );
+        const raw = scraped.periods?.[period];
+        if (!raw) {
+          throw new Error(
+            `collect_catalogue: scrape produced no data for ${category}/${period}`,
+          );
+        }
+        const withThumbs = add_thumbnails({
+          ...raw,
+          category,
+          period,
+          code,
+        });
+        const filePath = category_period_path(
+          outRoot,
+          outputId,
+          category,
+          period,
+          code,
+        );
+        writeDoc(filePath, withThumbs, `${outputId}/${path.basename(filePath)}`);
+        byPeriodCategory[period] ??= {};
+        byPeriodCategory[period][category] = withThumbs;
+        if (i + 1 < missing.length) pause(delay_ms);
+      }
     }
   }
 

@@ -47,6 +47,26 @@ export function category_period_path(outputDir, outputId, category, period, code
   );
 }
 
+/** Legacy merged period file: `output/<id>/<period>.json`. */
+export function legacy_period_path(outputDir, outputId, period) {
+  return path.resolve(country_output_dir(outputId, outputDir), `${period}.json`);
+}
+
+/** StampWorld media/source slug form of a category ("Postage stamps" → "Postage-stamps"). */
+export function category_slug(category) {
+  return String(category ?? "")
+    .trim()
+    .replace(/\s+/g, "-");
+}
+
+/** True when a legacy period doc's media/source path matches this category. */
+export function legacy_doc_matches_category(doc, category) {
+  const slug = category_slug(category).toLowerCase();
+  if (!slug) return false;
+  const hay = `${doc?.media ?? ""} ${doc?.source ?? ""}`.toLowerCase();
+  return hay.includes(`/${slug}/`) || hay.includes(`/${slug}`) || hay.endsWith(slug);
+}
+
 export function parse_category_period_filename(name) {
   const m = String(name ?? "").match(CATEGORY_PERIOD_FILE);
   if (!m) return null;
@@ -62,6 +82,9 @@ export default {
   category_file_token,
   category_period_basename,
   category_period_path,
+  legacy_period_path,
+  category_slug,
+  legacy_doc_matches_category,
   parse_category_period_filename,
   country_dir,
   country_output_dir,

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 320" role="img" aria-label="熊猫 1985">
+  <defs>
+    <pattern id="perf" width="12" height="12" patternUnits="userSpaceOnUse">
+      <circle cx="0" cy="0" r="2.2" fill="#f4f4f5"/>
+    </pattern>
+  </defs>
+  <rect width="240" height="320" fill="#18181b"/>
+  <rect x="10" y="10" width="220" height="300" fill="#f4f4f5"/>
+  <rect x="10" y="10" width="220" height="300" fill="url(#perf)" opacity="0.35"/>
+  <rect x="22" y="22" width="196" height="276" fill="none" stroke="#18181b" stroke-width="2.5"/>
+  <text x="120" y="88" text-anchor="middle" font-family="serif" font-size="42" fill="#18181b" font-weight="700">熊猫</text>
+  <text x="120" y="150" text-anchor="middle" font-family="sans-serif" font-size="54" fill="#18181b" opacity="0.2">熊</text>
+  <text x="120" y="210" text-anchor="middle" font-family="sans-serif" font-size="28" fill="#18181b">8分</text>
+  <text x="120" y="255" text-anchor="middle" font-family="sans-serif" font-size="20" fill="#18181b" opacity="0.75">1985</text>
+  <text x="120" y="285" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#18181b" opacity="0.55">CHINA</text>
+</svg>

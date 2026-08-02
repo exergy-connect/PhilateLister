@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Set Finder</title>
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@500;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,700&display=swap" rel="stylesheet" />
+  <style>
+:root {
+  --ink: #141210;
+  --paper: #f2f0eb;
+  --seal: #b91c1c;
+  --jade: #0f766e;
+  --mist: #d6d3cd;
+  --muted: #5c574f;
+  --font-display: "Source Serif 4", "Noto Serif SC", "Songti SC", serif;
+  --font-ui: "IBM Plex Sans", "Noto Sans SC", "PingFang SC", sans-serif;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  overflow-x: clip;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, color-mix(in srgb, var(--seal) 12%, transparent), transparent 60%),
+    radial-gradient(900px 500px at 100% 0%, color-mix(in srgb, var(--jade) 10%, transparent), transparent 55%),
+    linear-gradient(180deg, #ebe8e2 0%, var(--paper) 40%, #e7e4de 100%);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  line-height: 1.45;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+}
+
+.app {
+  position: relative;
+  width: min(1120px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 2.25rem 0 3.5rem;
+  min-width: 0;
+}
+
+.brand {
+  display: grid;
+  gap: 0.55rem;
+  margin-bottom: 1.75rem;
+  animation: rise 0.7s ease both;
+  min-width: 0;
+}
+
+.brand h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 8vw, 3.6rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+
+.brand h1 span { color: var(--seal); }
+
+.brand p {
+  margin: 0;
+  max-width: 38rem;
+  color: var(--muted);
+  font-size: 1.05rem;
+  overflow-wrap: break-word;
+}
+
+.country-picker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin-bottom: 1.25rem;
+  animation: rise 0.72s ease 0.04s both;
+  min-width: 0;
+}
+
+.country-picker label {
+  font-size: 0.92rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.country-picker select {
+  flex: 1 1 12rem;
+  max-width: 22rem;
+  min-height: 2.75rem;
+  border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+  background: color-mix(in srgb, #fff 80%, transparent);
+  color: var(--ink);
+  padding: 0.55rem 0.75rem;
+  font: inherit;
+  font-size: 1rem;
+  min-width: 0;
+}
+
+.country-picker select:focus {
+  outline: 2px solid color-mix(in srgb, var(--jade) 55%, transparent);
+  outline-offset: 1px;
+}
+
+.country-picker .status {
+  flex: 1 1 100%;
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+  min-height: 1.2em;
+}
+
+.country-picker .status.is-error { color: var(--seal); }
+
+.filters {
+  display: grid;
+  gap: 1.1rem;
+  margin-bottom: 1.5rem;
+  padding: 1.1rem 1.15rem 1.2rem;
+  border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+  background: color-mix(in srgb, #fff 72%, var(--paper));
+  backdrop-filter: blur(8px);
+  animation: rise 0.75s ease 0.08s both;
+  min-width: 0;
+}
+
+.filters h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.denom-row { display: grid; gap: 0.55rem; min-width: 0; }
+
+.filter-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.35rem 1rem;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.filter-meta span {
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.chip {
+  appearance: none;
+  border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
+  background: transparent;
+  color: var(--ink);
+  padding: 0.45rem 0.75rem;
+  min-height: 2.5rem;
+  font: inherit;
+  font-size: 0.9rem;
+  line-height: 1.2;
+  cursor: pointer;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+
+.chip:hover {
+  border-color: var(--seal);
+  transform: translateY(-1px);
+}
+
+.chip[aria-pressed="true"] {
+  background: var(--seal);
+  border-color: var(--seal);
+  color: #fff;
+}
+
+.chip-clear {
+  border-style: dashed;
+  color: var(--muted);
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+  animation: rise 0.8s ease 0.14s both;
+  min-width: 0;
+}
+
+.count {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.count strong {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.search {
+  flex: 1 1 14rem;
+  max-width: 22rem;
+  width: 100%;
+  border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+  background: color-mix(in srgb, #fff 80%, transparent);
+  color: var(--ink);
+  padding: 0.65rem 0.75rem;
+  min-height: 2.75rem;
+  font: inherit;
+  font-size: 1rem;
+}
+
+.search:focus {
+  outline: 2px solid color-mix(in srgb, var(--jade) 55%, transparent);
+  outline-offset: 1px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(168px, 100%), 1fr));
+  gap: 0.85rem;
+  animation: rise 0.85s ease 0.18s both;
+  min-width: 0;
+}
+
+.set {
+  display: grid;
+  gap: 0.55rem;
+  padding: 0.55rem;
+  border: 1px solid transparent;
+  background: color-mix(in srgb, #fff 55%, transparent);
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  min-width: 0;
+  transition: border-color 0.18s ease, transform 0.18s ease, background 0.18s ease;
+}
+
+.set:hover,
+.set[aria-selected="true"] {
+  border-color: color-mix(in srgb, var(--seal) 55%, var(--mist));
+  background: #fff;
+  transform: translateY(-2px);
+}
+
+.set img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  background: var(--mist);
+  display: block;
+}
+
+.set img.is-full {
+  object-fit: contain;
+}
+
+.set img.has-full {
+  cursor: zoom-in;
+}
+
+.set img.is-full.has-full {
+  cursor: zoom-out;
+}
+
+.set .meta {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.set .name {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.set .name-zh {
+  color: var(--seal);
+  font-size: 0.92rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.set .facts {
+  color: var(--muted);
+  font-size: 0.82rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.detail {
+  margin-top: 1.25rem;
+  padding: 1.1rem 1.15rem;
+  border-left: 3px solid var(--jade);
+  background: color-mix(in srgb, #fff 70%, var(--paper));
+  min-height: 5.5rem;
+  min-width: 0;
+  animation: rise 0.9s ease 0.22s both;
+}
+
+.detail[hidden] { display: none; }
+
+.detail h3 {
+  margin: 0 0 0.25rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 4.5vw, 1.35rem);
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.detail .zh {
+  margin: 0 0 0.55rem;
+  color: var(--seal);
+  overflow-wrap: anywhere;
+}
+
+.detail p {
+  margin: 0.35rem 0;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.detail .denoms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.65rem;
+}
+
+.detail .denoms span {
+  border: 1px solid color-mix(in srgb, var(--jade) 40%, var(--mist));
+  padding: 0.25rem 0.5rem;
+  font-size: 0.85rem;
+  color: var(--jade);
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.detail .stamp-thumbs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+  gap: 0.65rem;
+  margin-top: 0.85rem;
+  min-width: 0;
+}
+
+.detail .stamp-thumbs figure {
+  margin: 0;
+  display: grid;
+  grid-template-rows: auto minmax(2.4rem, auto);
+  gap: 0.3rem;
+  min-width: 0;
+  width: 100%;
+}
+
+.detail .stamp-thumbs img,
+.detail .stamp-thumbs .stamp-missing {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+  background: var(--mist);
+  display: block;
+}
+
+.detail .stamp-thumbs .stamp-missing {
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-size: 0.7rem;
+  text-align: center;
+  padding: 0.25rem;
+}
+
+.detail .stamp-thumbs figcaption {
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-align: center;
+  line-height: 1.25;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+.detail .stamp-thumbs figcaption .stamp-no {
+  display: block;
+  color: color-mix(in srgb, var(--muted) 80%, var(--ink));
+}
+
+.empty {
+  grid-column: 1 / -1;
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--muted);
+  overflow-wrap: break-word;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .app {
+    width: calc(100% - 1.25rem);
+    padding: 1.25rem 0 2.75rem;
+  }
+
+  .brand { margin-bottom: 1.25rem; }
+
+  .brand p { font-size: 0.98rem; }
+
+  .country-picker select { max-width: none; }
+
+  .filters {
+    gap: 0.85rem;
+    padding: 0.9rem;
+    margin-bottom: 1.15rem;
+  }
+
+  .filter-meta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search { max-width: none; }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+  }
+
+  .set { padding: 0.45rem; }
+
+  .set:hover,
+  .set[aria-selected="true"] {
+    transform: none;
+  }
+
+  .chip:hover { transform: none; }
+
+  .detail {
+    margin-top: 1rem;
+    padding: 0.9rem;
+    border-left-width: 3px;
+  }
+
+  .detail .stamp-thumbs {
+    grid-template-columns: repeat(auto-fill, minmax(4.75rem, 1fr));
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .detail .stamp-thumbs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+</style>
+
+</head>
+<body>
+<main class="app">
+  <header class="brand">
+    <h1>Set <span>Finder</span></h1>
+    <p>Match a stamp to its set by looking, then selecting the face values you see.</p>
+  </header>
+
+  <div class="country-picker">
+    <label for="country-select">Country catalog</label>
+    <select id="country-select" aria-label="Country catalog" disabled>
+      <option value="">Loading countries…</option>
+    </select>
+    <p class="status" id="catalog-status" aria-live="polite"></p>
+  </div>
+
+  <section class="filters" aria-label="Visual filters">
+    <div class="denom-row" id="category-filter" hidden>
+      <h2>Select category</h2>
+      <div class="filter-meta">
+        <span>Catalogue sections</span>
+        <span>show sets from one StampWorld category</span>
+      </div>
+      <div class="chips" id="category-chips" role="radiogroup" aria-label="Categories">
+        <button type="button" class="chip chip-clear" data-category="*" aria-pressed="true">Any</button>
+      </div>
+    </div>
+    <h2>Select denominations</h2>
+    <div class="denom-row">
+      <div class="filter-meta">
+        <span>Face value chips</span>
+        <span>sets must include every selected value</span>
+      </div>
+      <div class="chips" id="denom-chips" role="group" aria-label="Denominations">
+        <button type="button" class="chip chip-clear" data-denom="*" aria-pressed="true">Any</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="toolbar">
+    <div class="count"><strong id="match-count">0</strong> matching sets · <strong id="stamp-count">0</strong> stamps</div>
+    <input class="search" id="text-filter" type="search" placeholder="Search name, catalog, local title…" autocomplete="off" />
+  </div>
+
+  <section class="grid" id="set-grid" aria-live="polite"></section>
+
+  <aside class="detail" id="set-detail" hidden>
+    <h3 id="detail-name"></h3>
+    <p class="zh" id="detail-zh"></p>
+    <p id="detail-facts"></p>
+    <p id="detail-note"></p>
+    <div class="stamp-thumbs" id="detail-stamps" aria-label="Stamps in set"></div>
+    <div class="denoms" id="detail-denoms"></div>
+  </aside>
+</main>
+
+<script>
+(() => {
+  const CATALOG_BASE = new URL("catalogs/", window.location.href);
+  const denomChips = document.getElementById("denom-chips");
+  const categoryChips = document.getElementById("category-chips");
+  const categoryFilter = document.getElementById("category-filter");
+  const textFilter = document.getElementById("text-filter");
+  const grid = document.getElementById("set-grid");
+  const matchCount = document.getElementById("match-count");
+  const stampCount = document.getElementById("stamp-count");
+  const detail = document.getElementById("set-detail");
+  const detailName = document.getElementById("detail-name");
+  const detailZh = document.getElementById("detail-zh");
+  const detailFacts = document.getElementById("detail-facts");
+  const detailNote = document.getElementById("detail-note");
+  const detailStamps = document.getElementById("detail-stamps");
+  const detailDenoms = document.getElementById("detail-denoms");
+  const countrySelect = document.getElementById("country-select");
+  const catalogStatus = document.getElementById("catalog-status");
+  const brandTitle = document.querySelector(".brand h1");
+
+  let countries = [];
+  let sets = [];
+  let selectedDenoms = new Set();
+  let selectedCategory = "*";
+  let selectedId = null;
+  let expandedIds = new Set();
+  let loadToken = 0;
+
+  function catalogUrl(file) {
+    return new URL(String(file || "").replace(/^\.\//, ""), CATALOG_BASE).href;
+  }
+
+  function setStatus(message, isError = false) {
+    catalogStatus.textContent = message || "";
+    catalogStatus.classList.toggle("is-error", Boolean(isError));
+  }
+
+  function denomValue(denom) {
+    const s = String(denom ?? "").trim();
+    if (!s) return Number.POSITIVE_INFINITY;
+    let m = s.match(/^([\d.]+)\s*元$/u);
+    if (m) return Number(m[1]);
+    m = s.match(/^([\d.]+)\s*分$/u);
+    if (m) return Number(m[1]) / 100;
+    m = s.match(/^B?([\d.]+)\s*g$/i);
+    if (m) return 1e6 + Number(m[1]);
+    m = s.match(/^([\d.½¼¾]+)/u);
+    if (!m) return Number.POSITIVE_INFINITY;
+    const n = Number(
+      m[1].replace("½", ".5").replace("¼", ".25").replace("¾", ".75"),
+    );
+    if (!Number.isFinite(n)) return Number.POSITIVE_INFINITY;
+    if (/^\d[\d.½¼¾]*\s*c\b/i.test(s)) return n / 100;
+    if (/\$/.test(s)) return n;
+    // Icelandic / Nordic: skilling, aur/eyrir (1/100 króna), króna
+    if (/\dSk\b/i.test(s) || /\bSk\b/i.test(s)) return -100 + n;
+    if (/kr\s*\/\s*aur/i.test(s)) return n;
+    if (/aur\s*\/\s*kr/i.test(s)) return n / 100;
+    if (/aur|eyr/i.test(s)) return n / 100;
+    if (/kr\b/i.test(s)) return n;
+    return n;
+  }
+
+  function denomsFromSets(list) {
+    const seen = new Set();
+    const denoms = [];
+    for (const set of list) {
+      for (const d of set.denominations || []) {
+        const s = String(d).trim();
+        if (!s || seen.has(s)) continue;
+        seen.add(s);
+        denoms.push(s);
+      }
+    }
+    return denoms.sort((a, b) => denomValue(a) - denomValue(b));
+  }
+
+  function categoriesFromSets(list) {
+    const seen = new Set();
+    const out = [];
+    for (const set of list) {
+      const c = String(set.category || "").trim();
+      if (!c || seen.has(c)) continue;
+      seen.add(c);
+      out.push(c);
+    }
+    return out.sort((a, b) => a.localeCompare(b));
+  }
+
+  function setsForDenomChips() {
+    if (selectedCategory === "*") return sets;
+    return sets.filter((s) => String(s.category || "") === selectedCategory);
+  }
+
+  function initControls(list) {
+    const cats = categoriesFromSets(list);
+    categoryChips.querySelectorAll(".chip:not(.chip-clear)").forEach((c) => c.remove());
+    for (const cat of cats) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "chip";
+      btn.dataset.category = cat;
+      btn.setAttribute("aria-pressed", "false");
+      btn.textContent = cat;
+      categoryChips.appendChild(btn);
+    }
+    categoryFilter.hidden = cats.length <= 1;
+    if (selectedCategory !== "*" && !cats.includes(selectedCategory)) {
+      selectedCategory = "*";
+    }
+
+    denomChips.querySelectorAll(".chip:not(.chip-clear)").forEach((c) => c.remove());
+    for (const d of denomsFromSets(setsForDenomChips())) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "chip";
+      btn.dataset.denom = d;
+      btn.setAttribute("aria-pressed", "false");
+      btn.textContent = d;
+      denomChips.appendChild(btn);
+    }
+    // Drop denomination selections that are no longer visible for this category.
+    const available = new Set(denomsFromSets(setsForDenomChips()));
+    selectedDenoms = new Set([...selectedDenoms].filter((d) => available.has(d)));
+    syncChipPressed();
+  }
+
+  function matches(set) {
+    if (selectedCategory !== "*" && String(set.category || "") !== selectedCategory) {
+      return false;
+    }
+    if (selectedDenoms.size) {
+      const setDenoms = new Set(set.denominations || []);
+      for (const d of selectedDenoms) {
+        if (!setDenoms.has(d)) return false;
+      }
+    }
+
+    const q = textFilter.value.trim().toLowerCase();
+    if (q) {
+      const hay = [
+        set.name,
+        set.name_zh,
+        set.catalog,
+        set.note,
+        set.era,
+        set.category,
+        ...(set.denominations || []),
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  }
+
+  function stampsForSet(set) {
+    const stamps = Array.isArray(set.stamps) ? set.stamps.filter(Boolean) : [];
+    if (stamps.length) return stamps;
+    const denoms = set.denominations || [];
+    const fallbackImage = set.image_full || set.image || "";
+    if (!denoms.length) {
+      return fallbackImage ? [{ denom: "", no: "", image: fallbackImage }] : [];
+    }
+    return denoms.map((denom) => ({
+      denom: String(denom),
+      no: "",
+      image: fallbackImage || null,
+    }));
+  }
+
+  function showDetail(set) {
+    if (!set) {
+      detail.hidden = true;
+      selectedId = null;
+      return;
+    }
+    selectedId = set.id;
+    detail.hidden = false;
+    detailName.textContent = set.name;
+    detailZh.textContent = set.name_zh || "";
+    const years = set.year_end && set.year_end !== set.year
+      ? `${set.year}–${set.year_end}`
+      : String(set.year);
+    const category = set.category ? ` · ${set.category}` : "";
+    detailFacts.textContent = `${years}${category} · ${set.catalog || "—"}`;
+    detailNote.textContent = set.note || "";
+
+    detailStamps.innerHTML = "";
+    for (const stamp of stampsForSet(set)) {
+      const fig = document.createElement("figure");
+      if (stamp.image) {
+        const img = document.createElement("img");
+        img.src = stamp.image;
+        img.alt = stamp.denom || stamp.no || set.name || "";
+        img.loading = "lazy";
+        fig.appendChild(img);
+      } else {
+        const missing = document.createElement("div");
+        missing.className = "stamp-missing";
+        missing.textContent = "No image";
+        fig.appendChild(missing);
+      }
+      const cap = document.createElement("figcaption");
+      const denomLine = String(stamp.denom || "").trim();
+      const noLine = String(stamp.no || "").trim();
+      if (denomLine) {
+        cap.appendChild(document.createTextNode(denomLine));
+      }
+      if (noLine) {
+        const noEl = document.createElement("span");
+        noEl.className = "stamp-no";
+        noEl.textContent = noLine;
+        if (denomLine) cap.appendChild(document.createElement("br"));
+        cap.appendChild(noEl);
+      }
+      if (!denomLine && !noLine) {
+        cap.textContent = "—";
+      }
+      fig.appendChild(cap);
+      detailStamps.appendChild(fig);
+    }
+
+    detailDenoms.innerHTML = "";
+    for (const d of set.denominations || []) {
+      const span = document.createElement("span");
+      span.textContent = d;
+      detailDenoms.appendChild(span);
+    }
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
+  }
+
+  function stampTotal(list) {
+    let n = 0;
+    for (const set of list) {
+      n += stampsForSet(set).length;
+    }
+    return n;
+  }
+
+  function render() {
+    const matched = sets.filter(matches);
+    matchCount.textContent = String(matched.length);
+    stampCount.textContent = String(stampTotal(matched));
+    grid.innerHTML = "";
+
+    if (!sets.length) {
+      const empty = document.createElement("div");
+      empty.className = "empty";
+      empty.textContent = catalogStatus.classList.contains("is-error")
+        ? "Catalog failed to load."
+        : "Choose a country catalog to begin.";
+      grid.appendChild(empty);
+      showDetail(null);
+      return;
+    }
+
+    if (!matched.length) {
+      const empty = document.createElement("div");
+      empty.className = "empty";
+      empty.textContent = selectedCategory !== "*"
+        ? "No sets match this category and denomination filters — clear a chip to widen results."
+        : "No sets include all selected denominations — clear a value to widen results.";
+      grid.appendChild(empty);
+      if (selectedId && !matched.some((s) => s.id === selectedId)) showDetail(null);
+      return;
+    }
+
+    for (const set of matched) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "set";
+      btn.setAttribute("aria-selected", set.id === selectedId ? "true" : "false");
+      const yearLabel = set.year_end && set.year_end !== set.year
+        ? `${set.year}–${set.year_end}`
+        : String(set.year);
+      const denoms = set.denominations || [];
+      const denomLabel = denoms.slice(0, 3).join(" · ") + (denoms.length > 3 ? "…" : "");
+      const catLabel = set.category ? `${set.category} · ` : "";
+      const expanded = expandedIds.has(set.id) && set.image_full;
+      const imgSrc = expanded ? set.image_full : set.image;
+      const imgClass = [
+        set.image_full ? "has-full" : "",
+        expanded ? "is-full" : "",
+      ].filter(Boolean).join(" ");
+      btn.innerHTML = `
+        <img class="${imgClass}" src="${escapeHtml(imgSrc)}" alt="" loading="lazy" />
+        <div class="meta">
+          <div class="name">${escapeHtml(set.name)}</div>
+          <div class="name-zh">${escapeHtml(set.name_zh)}</div>
+          <div class="facts">${escapeHtml(catLabel)}${escapeHtml(yearLabel)} · ${escapeHtml(denomLabel)}</div>
+        </div>`;
+      btn.addEventListener("click", (ev) => {
+        if (ev.target.closest("img") && set.image_full) {
+          if (expandedIds.has(set.id)) expandedIds.delete(set.id);
+          else expandedIds.add(set.id);
+        }
+        showDetail(set);
+        render();
+      });
+      grid.appendChild(btn);
+    }
+
+    if (selectedId) {
+      const still = matched.find((s) => s.id === selectedId);
+      if (still) showDetail(still);
+    }
+  }
+
+  function syncChipPressed() {
+    for (const c of categoryChips.querySelectorAll(".chip")) {
+      const value = c.dataset.category;
+      c.setAttribute(
+        "aria-pressed",
+        value === "*"
+          ? selectedCategory === "*" ? "true" : "false"
+          : selectedCategory === value ? "true" : "false",
+      );
+    }
+    for (const c of denomChips.querySelectorAll(".chip")) {
+      if (c.dataset.denom === "*") {
+        c.setAttribute("aria-pressed", selectedDenoms.size ? "false" : "true");
+      } else {
+        c.setAttribute("aria-pressed", selectedDenoms.has(c.dataset.denom) ? "true" : "false");
+      }
+    }
+  }
+
+  function updateBrand(country) {
+    const name = country?.name || "Sets";
+    brandTitle.innerHTML = `Set <span>Finder</span>`;
+    brandTitle.setAttribute("data-country", country?.id || "");
+    document.title = country ? `Set Finder — ${name}` : "Set Finder";
+  }
+
+  function preferredCountryId(list, indexDefault) {
+    const params = new URLSearchParams(window.location.search);
+    const fromQuery = params.get("country");
+    if (fromQuery && list.some((c) => c.id === fromQuery)) return fromQuery;
+    if (indexDefault && list.some((c) => c.id === indexDefault)) return indexDefault;
+    return list[0]?.id || "";
+  }
+
+  function preferredCategory(list) {
+    const params = new URLSearchParams(window.location.search);
+    const fromQuery = params.get("category");
+    if (fromQuery === "*" || fromQuery === "" || fromQuery == null) return "*";
+    if (list.some((s) => String(s.category || "") === fromQuery)) return fromQuery;
+    return "*";
+  }
+
+  function syncCategoryUrl() {
+    const url = new URL(window.location.href);
+    if (selectedCategory && selectedCategory !== "*") {
+      url.searchParams.set("category", selectedCategory);
+    } else {
+      url.searchParams.delete("category");
+    }
+    history.replaceState(null, "", url);
+  }
+
+  async function loadCountry(countryId) {
+    const country = countries.find((c) => c.id === countryId);
+    const token = ++loadToken;
+    selectedDenoms = new Set();
+    selectedCategory = "*";
+    selectedId = null;
+    expandedIds = new Set();
+    sets = [];
+    initControls([]);
+    showDetail(null);
+    updateBrand(country);
+    render();
+
+    if (!country) {
+      setStatus("No country selected.", true);
+      return;
+    }
+
+    countrySelect.disabled = true;
+    setStatus(`Loading ${country.name}…`);
+    try {
+      const res = await fetch(catalogUrl(country.catalog), { cache: "no-cache" });
+      if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+      const doc = await res.json();
+      if (token !== loadToken) return;
+      sets = Array.isArray(doc) ? doc : (doc.sets || []);
+      selectedCategory = preferredCategory(sets);
+      initControls(sets);
+      const cats = categoriesFromSets(sets);
+      setStatus(
+        cats.length > 1
+          ? `${sets.length} sets · ${cats.length} categories · ${country.catalog}`
+          : `${sets.length} sets · ${country.catalog}`,
+      );
+      const url = new URL(window.location.href);
+      url.searchParams.set("country", country.id);
+      if (selectedCategory !== "*") url.searchParams.set("category", selectedCategory);
+      else url.searchParams.delete("category");
+      history.replaceState(null, "", url);
+      render();
+    } catch (err) {
+      if (token !== loadToken) return;
+      sets = [];
+      initControls([]);
+      setStatus(`Failed to load ${country.catalog}: ${err.message || err}`, true);
+      render();
+    } finally {
+      if (token === loadToken) countrySelect.disabled = false;
+    }
+  }
+
+  async function boot() {
+    setStatus("Loading country list…");
+    try {
+      const res = await fetch(catalogUrl("countries.json"), { cache: "no-cache" });
+      if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+      const index = await res.json();
+      countries = Array.isArray(index.countries) ? index.countries : [];
+      if (!countries.length) throw new Error("countries.json has no entries");
+
+      countrySelect.innerHTML = "";
+      for (const c of countries) {
+        const opt = document.createElement("option");
+        opt.value = c.id;
+        opt.textContent = c.name;
+        countrySelect.appendChild(opt);
+      }
+      countrySelect.disabled = false;
+
+      const initial = preferredCountryId(countries, index.default);
+      countrySelect.value = initial;
+      await loadCountry(initial);
+    } catch (err) {
+      countrySelect.innerHTML = `<option value="">Unavailable</option>`;
+      setStatus(`Failed to load countries.json: ${err.message || err}`, true);
+      render();
+    }
+  }
+
+  textFilter.addEventListener("input", render);
+
+  categoryChips.addEventListener("click", (ev) => {
+    const chip = ev.target.closest(".chip");
+    if (!chip || !categoryChips.contains(chip)) return;
+    selectedCategory = chip.dataset.category || "*";
+    selectedDenoms = new Set();
+    initControls(sets);
+    syncCategoryUrl();
+    render();
+  });
+
+  denomChips.addEventListener("click", (ev) => {
+    const chip = ev.target.closest(".chip");
+    if (!chip || !denomChips.contains(chip)) return;
+    const value = chip.dataset.denom;
+    if (value === "*") selectedDenoms = new Set();
+    else if (selectedDenoms.has(value)) selectedDenoms.delete(value);
+    else selectedDenoms.add(value);
+    syncChipPressed();
+    render();
+  });
+
+  countrySelect.addEventListener("change", () => {
+    loadCountry(countrySelect.value);
+  });
+
+  boot();
+})();
+</script>
+
+</body>
+</html>

@@ -2,6 +2,12 @@ token.txt
 .venv/
 xframe/output/
 examples/**/output/
+# Keep StampWorld country catalogues (period JSON + collection.xp)
+!examples/stamp_collector/output/
+!examples/stamp_collector/output/*/
+!examples/stamp_collector/output/*/**
+# Ignore xform compile trees / leftover artefacts at output root
+examples/stamp_collector/output/*.*
 scripts/node_modules/
 
 # Python cache

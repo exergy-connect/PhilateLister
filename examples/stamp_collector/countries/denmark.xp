@@ -3,6 +3,7 @@
 # Select with: --with country=denmark
 
 Denmark:
+  code: dk
   stampworld: Denmark
   categories:
     - "Postage stamps"

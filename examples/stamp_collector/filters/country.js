@@ -91,8 +91,16 @@ export function as_catalog_query(country) {
   if (!Array.isArray(periods) || periods.length === 0) {
     throw new Error("as_catalog_query: country.periods is required");
   }
+  const code = String(country.code ?? id).trim();
+  if (!code) {
+    throw new Error("as_catalog_query: country.code (or id) is required");
+  }
+  if (code.includes("..") || code.includes("/") || code.includes("\\")) {
+    throw new Error(`as_catalog_query: invalid country.code: ${code}`);
+  }
   return {
     id,
+    code,
     country: stampworld,
     categories,
     periods,

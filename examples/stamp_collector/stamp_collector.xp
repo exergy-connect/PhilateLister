@@ -1,7 +1,8 @@
 ---
 # StampWorld catalogue collector.
-# For each period: load output/<country>/<period>.json when present,
-# otherwise download, attach thumbnails, and write that file.
+# For each category×period: load
+#   output/<country>/<category>.<period>.<code>.json
+# when present, otherwise download, attach thumbnails, and write that file.
 #
 #   xform stamp_collector.xp --final json --auto-approve --with country=china
 #

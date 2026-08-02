@@ -3,6 +3,7 @@
 # Select with: --with country=china
 
 China:
+  code: cn
   stampworld: China,-Peoples-Rep.
   categories:
     - "Postage stamps"

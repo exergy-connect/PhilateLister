@@ -535,6 +535,16 @@ html:
       </div>
 
       <section class="filters" aria-label="Visual filters">
+        <div class="denom-row" id="category-filter" hidden>
+          <h2>Select category</h2>
+          <div class="filter-meta">
+            <span>Catalogue sections</span>
+            <span>show sets from one StampWorld category</span>
+          </div>
+          <div class="chips" id="category-chips" role="radiogroup" aria-label="Categories">
+            <button type="button" class="chip chip-clear" data-category="*" aria-pressed="true">Any</button>
+          </div>
+        </div>
         <h2>Select denominations</h2>
         <div class="denom-row">
           <div class="filter-meta">
@@ -548,7 +558,7 @@ html:
       </section>
 
       <div class="toolbar">
-        <div class="count"><strong id="match-count">0</strong> matching sets</div>
+        <div class="count"><strong id="match-count">0</strong> matching sets · <strong id="stamp-count">0</strong> stamps</div>
         <input class="search" id="text-filter" type="search" placeholder="Search name, catalog, local title…" autocomplete="off" />
       </div>
 
@@ -568,9 +578,12 @@ html:
     (() => {
       const CATALOG_BASE = new URL("catalogs/", window.location.href);
       const denomChips = document.getElementById("denom-chips");
+      const categoryChips = document.getElementById("category-chips");
+      const categoryFilter = document.getElementById("category-filter");
       const textFilter = document.getElementById("text-filter");
       const grid = document.getElementById("set-grid");
       const matchCount = document.getElementById("match-count");
+      const stampCount = document.getElementById("stamp-count");
       const detail = document.getElementById("set-detail");
       const detailName = document.getElementById("detail-name");
       const detailZh = document.getElementById("detail-zh");
@@ -585,6 +598,7 @@ html:
       let countries = [];
       let sets = [];
       let selectedDenoms = new Set();
+      let selectedCategory = "*";
       let selectedId = null;
       let expandedIds = new Set();
       let loadToken = 0;
@@ -638,9 +652,42 @@ html:
         return denoms.sort((a, b) => denomValue(a) - denomValue(b));
       }
 
+      function categoriesFromSets(list) {
+        const seen = new Set();
+        const out = [];
+        for (const set of list) {
+          const c = String(set.category || "").trim();
+          if (!c || seen.has(c)) continue;
+          seen.add(c);
+          out.push(c);
+        }
+        return out.sort((a, b) => a.localeCompare(b));
+      }
+
+      function setsForDenomChips() {
+        if (selectedCategory === "*") return sets;
+        return sets.filter((s) => String(s.category || "") === selectedCategory);
+      }
+
       function initControls(list) {
+        const cats = categoriesFromSets(list);
+        categoryChips.querySelectorAll(".chip:not(.chip-clear)").forEach((c) => c.remove());
+        for (const cat of cats) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "chip";
+          btn.dataset.category = cat;
+          btn.setAttribute("aria-pressed", "false");
+          btn.textContent = cat;
+          categoryChips.appendChild(btn);
+        }
+        categoryFilter.hidden = cats.length <= 1;
+        if (selectedCategory !== "*" && !cats.includes(selectedCategory)) {
+          selectedCategory = "*";
+        }
+
         denomChips.querySelectorAll(".chip:not(.chip-clear)").forEach((c) => c.remove());
-        for (const d of denomsFromSets(list)) {
+        for (const d of denomsFromSets(setsForDenomChips())) {
           const btn = document.createElement("button");
           btn.type = "button";
           btn.className = "chip";
@@ -649,10 +696,16 @@ html:
           btn.textContent = d;
           denomChips.appendChild(btn);
         }
+        // Drop denomination selections that are no longer visible for this category.
+        const available = new Set(denomsFromSets(setsForDenomChips()));
+        selectedDenoms = new Set([...selectedDenoms].filter((d) => available.has(d)));
         syncChipPressed();
       }
 
       function matches(set) {
+        if (selectedCategory !== "*" && String(set.category || "") !== selectedCategory) {
+          return false;
+        }
         if (selectedDenoms.size) {
           const setDenoms = new Set(set.denominations || []);
           for (const d of selectedDenoms) {
@@ -662,7 +715,15 @@ html:
 
         const q = textFilter.value.trim().toLowerCase();
         if (q) {
-          const hay = [set.name, set.name_zh, set.catalog, set.note, set.era, ...(set.denominations || [])]
+          const hay = [
+            set.name,
+            set.name_zh,
+            set.catalog,
+            set.note,
+            set.era,
+            set.category,
+            ...(set.denominations || []),
+          ]
             .filter(Boolean)
             .join(" ")
             .toLowerCase();
@@ -699,8 +760,8 @@ html:
         const years = set.year_end && set.year_end !== set.year
           ? `${set.year}–${set.year_end}`
           : String(set.year);
-        const era = set.era ? ` · ${set.era}` : "";
-        detailFacts.textContent = `${years}${era} · ${set.catalog || "—"}`;
+        const category = set.category ? ` · ${set.category}` : "";
+        detailFacts.textContent = `${years}${category} · ${set.catalog || "—"}`;
         detailNote.textContent = set.note || "";
 
         detailStamps.innerHTML = "";
@@ -754,9 +815,18 @@ html:
           .replaceAll('"', "&quot;");
       }
 
+      function stampTotal(list) {
+        let n = 0;
+        for (const set of list) {
+          n += stampsForSet(set).length;
+        }
+        return n;
+      }
+
       function render() {
         const matched = sets.filter(matches);
         matchCount.textContent = String(matched.length);
+        stampCount.textContent = String(stampTotal(matched));
         grid.innerHTML = "";
 
         if (!sets.length) {
@@ -773,7 +843,9 @@ html:
         if (!matched.length) {
           const empty = document.createElement("div");
           empty.className = "empty";
-          empty.textContent = "No sets include all selected denominations — clear a value to widen results.";
+          empty.textContent = selectedCategory !== "*"
+            ? "No sets match this category and denomination filters — clear a chip to widen results."
+            : "No sets include all selected denominations — clear a value to widen results.";
           grid.appendChild(empty);
           if (selectedId && !matched.some((s) => s.id === selectedId)) showDetail(null);
           return;
@@ -789,6 +861,7 @@ html:
             : String(set.year);
           const denoms = set.denominations || [];
           const denomLabel = denoms.slice(0, 3).join(" · ") + (denoms.length > 3 ? "…" : "");
+          const catLabel = set.category ? `${set.category} · ` : "";
           const expanded = expandedIds.has(set.id) && set.image_full;
           const imgSrc = expanded ? set.image_full : set.image;
           const imgClass = [
@@ -800,7 +873,7 @@ html:
             <div class="meta">
               <div class="name">${escapeHtml(set.name)}</div>
               <div class="name-zh">${escapeHtml(set.name_zh)}</div>
-              <div class="facts">${escapeHtml(yearLabel)} · ${escapeHtml(denomLabel)}</div>
+              <div class="facts">${escapeHtml(catLabel)}${escapeHtml(yearLabel)} · ${escapeHtml(denomLabel)}</div>
             </div>`;
           btn.addEventListener("click", (ev) => {
             if (ev.target.closest("img") && set.image_full) {
@@ -820,6 +893,15 @@ html:
       }
 
       function syncChipPressed() {
+        for (const c of categoryChips.querySelectorAll(".chip")) {
+          const value = c.dataset.category;
+          c.setAttribute(
+            "aria-pressed",
+            value === "*"
+              ? selectedCategory === "*" ? "true" : "false"
+              : selectedCategory === value ? "true" : "false",
+          );
+        }
         for (const c of denomChips.querySelectorAll(".chip")) {
           if (c.dataset.denom === "*") {
             c.setAttribute("aria-pressed", selectedDenoms.size ? "false" : "true");
@@ -844,10 +926,29 @@ html:
         return list[0]?.id || "";
       }
 
+      function preferredCategory(list) {
+        const params = new URLSearchParams(window.location.search);
+        const fromQuery = params.get("category");
+        if (fromQuery === "*" || fromQuery === "" || fromQuery == null) return "*";
+        if (list.some((s) => String(s.category || "") === fromQuery)) return fromQuery;
+        return "*";
+      }
+
+      function syncCategoryUrl() {
+        const url = new URL(window.location.href);
+        if (selectedCategory && selectedCategory !== "*") {
+          url.searchParams.set("category", selectedCategory);
+        } else {
+          url.searchParams.delete("category");
+        }
+        history.replaceState(null, "", url);
+      }
+
       async function loadCountry(countryId) {
         const country = countries.find((c) => c.id === countryId);
         const token = ++loadToken;
         selectedDenoms = new Set();
+        selectedCategory = "*";
         selectedId = null;
         expandedIds = new Set();
         sets = [];
@@ -869,10 +970,18 @@ html:
           const doc = await res.json();
           if (token !== loadToken) return;
           sets = Array.isArray(doc) ? doc : (doc.sets || []);
+          selectedCategory = preferredCategory(sets);
           initControls(sets);
-          setStatus(`${sets.length} sets · ${country.catalog}`);
+          const cats = categoriesFromSets(sets);
+          setStatus(
+            cats.length > 1
+              ? `${sets.length} sets · ${cats.length} categories · ${country.catalog}`
+              : `${sets.length} sets · ${country.catalog}`,
+          );
           const url = new URL(window.location.href);
           url.searchParams.set("country", country.id);
+          if (selectedCategory !== "*") url.searchParams.set("category", selectedCategory);
+          else url.searchParams.delete("category");
           history.replaceState(null, "", url);
           render();
         } catch (err) {
@@ -915,6 +1024,16 @@ html:
       }
 
       textFilter.addEventListener("input", render);
+
+      categoryChips.addEventListener("click", (ev) => {
+        const chip = ev.target.closest(".chip");
+        if (!chip || !categoryChips.contains(chip)) return;
+        selectedCategory = chip.dataset.category || "*";
+        selectedDenoms = new Set();
+        initControls(sets);
+        syncCategoryUrl();
+        render();
+      });
 
       denomChips.addEventListener("click", (ev) => {
         const chip = ev.target.closest(".chip");

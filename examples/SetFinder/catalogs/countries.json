@@ -7,6 +7,11 @@
       "catalog": "cn.json"
     },
     {
+      "id": "dk",
+      "name": "Denmark",
+      "catalog": "dk.json"
+    },
+    {
       "id": "is",
       "name": "Iceland",
       "catalog": "is.json"

@@ -61,14 +61,20 @@ const countries = [];
 for (const entry of sources) {
   const collection = load_collection(entry.source);
   const sets = to_finder_sets(collection);
+  const categories = [
+    ...new Set(sets.map((s) => String(s.category || "").trim()).filter(Boolean)),
+  ].sort((a, b) => a.localeCompare(b));
   const doc = {
     id: entry.id,
     name: entry.name,
     country: collection.country ?? entry.name,
+    categories,
     sets,
   };
   fs.writeFileSync(entry.out, `${JSON.stringify(doc)}\n`, "utf8");
-  console.log(`wrote ${path.relative(ROOT, entry.out)} (${sets.length} sets)`);
+  console.log(
+    `wrote ${path.relative(ROOT, entry.out)} (${sets.length} sets, ${categories.length} categories)`,
+  );
   countries.push({
     id: entry.id,
     name: entry.name,

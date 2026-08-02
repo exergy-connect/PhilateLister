@@ -3,6 +3,7 @@
 # Select with: --with country=iceland
 
 Iceland:
+  code: is
   stampworld: Iceland
   categories:
     - "Postage stamps"

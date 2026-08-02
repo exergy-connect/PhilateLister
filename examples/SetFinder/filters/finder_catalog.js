@@ -148,11 +148,14 @@ function lowestDenomStamp(stamps) {
   })[0];
 }
 
-/** Resolve a collector stamp image path against collection.base / collection.media. */
-function stampImageUrl(collection, stamp) {
+/**
+ * Resolve a collector stamp image path against set.media (preferred) or
+ * collection.media — needed when multiple StampWorld categories share a period.
+ */
+function stampImageUrl(collection, stamp, set = null) {
   if (!stamp?.image) return null;
   const base = String(collection?.base ?? "").replace(/\/$/, "");
-  const media = String(collection?.media ?? "");
+  const media = String(set?.media ?? collection?.media ?? "");
   const img = String(stamp.image);
   if (img.startsWith("http") || img.startsWith("/")) {
     return img.startsWith("http") ? img : `${base}${img}`;
@@ -189,22 +192,30 @@ export function to_finder_sets(input) {
     throw new Error("to_finder_sets expects a list of collector sets");
   }
   return sets.map((set) => {
+    const category = String(
+      set.category ?? collection?.category ?? categoryFromSource(collection?.source) ?? "",
+    ).trim();
     const thumb = set.thumbnail || set.image || PLACEHOLDER_IMAGE;
     const full =
-      (collection ? stampImageUrl(collection, lowestDenomStamp(set.stamps)) : null) ||
+      (collection
+        ? stampImageUrl(collection, lowestDenomStamp(set.stamps), set)
+        : null) ||
       set.image ||
       null;
     const stamps = Array.isArray(set.stamps)
       ? set.stamps.map((s) => ({
           no: String(s.no ?? ""),
           denom: String(s.denom ?? ""),
-          image: stampImageUrl(collection, s),
+          image: stampImageUrl(collection, s, set),
         }))
       : set.image
         ? [{ no: "", denom: "", image: set.image }]
         : [];
+    const ref = String(set.ref ?? set.id ?? "");
+    // StampWorld reuses g0001-style refs per category — namespace when needed.
+    const id = category && set.ref ? `${set.ref}::${category}` : ref;
     return {
-      id: String(set.ref ?? set.id ?? ""),
+      id,
       name: String(set.title ?? set.name ?? set.ref ?? set.id ?? ""),
       name_zh: String(set.name_zh ?? ""),
       year: Number(set.year),
@@ -214,13 +225,29 @@ export function to_finder_sets(input) {
       catalog: Array.isArray(set.stamps)
         ? catalogRange(set.stamps)
         : String(set.catalog ?? ""),
-      era: set.era ?? "prc",
+      category,
+      era: set.era || category || "prc",
       image: thumb,
       image_full: full && full !== thumb ? full : null,
       stamps,
       note: setNote(set) || String(set.note ?? ""),
     };
   });
+}
+
+function categoryFromSource(source) {
+  const parts = String(source ?? "")
+    .split("/")
+    .map((p) => {
+      try {
+        return decodeURIComponent(p);
+      } catch {
+        return p;
+      }
+    })
+    .filter(Boolean);
+  if (parts[0] === "stamps" && parts[2]) return parts[2];
+  return "";
 }
 
 export function finder_year_min(sets) {

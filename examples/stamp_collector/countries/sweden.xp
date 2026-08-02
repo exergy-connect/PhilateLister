@@ -3,6 +3,7 @@
 # Select with: --with country=sweden
 
 Sweden:
+  code: se
   stampworld: Sweden
   categories:
     - "Postage stamps"

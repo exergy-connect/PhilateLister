@@ -14,6 +14,12 @@ export {
 } from "./filters/scrape.js";
 export { collect_catalogue } from "./filters/collect.js";
 export {
+  category_period_basename,
+  category_period_path,
+  parse_category_period_filename,
+  country_code,
+} from "./filters/paths.js";
+export {
   load_country,
   as_catalog_query,
   country_id,
@@ -26,6 +32,7 @@ export { write_period_json, write_collection_xp } from "./filters/write_output.j
 import thumbnails from "./filters/thumbnails.js";
 import scrape from "./filters/scrape.js";
 import collect from "./filters/collect.js";
+import paths from "./filters/paths.js";
 import country from "./filters/country.js";
 import { consolidate_periods } from "./filters/consolidate.js";
 import writeOutput from "./filters/write_output.js";
@@ -34,6 +41,7 @@ export default {
   ...thumbnails,
   ...scrape,
   ...collect,
+  ...paths,
   ...country,
   consolidate_periods,
   ...writeOutput,

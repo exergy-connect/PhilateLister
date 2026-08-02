@@ -1,24 +1,103 @@
 /**
- * Merge per-period catalogue JSON files into one collection.
+ * Merge catalogue JSON files into one collection.
  *
- * Expects files named `YYYY-YYYY.json` under a country directory, e.g.
- * `output/china/1990-1999.json`.
+ * Prefers per-category artefacts:
+ *   <category>.<period>.<code>.json
+ * and still accepts legacy merged period files:
+ *   <period>.json
  */
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
+import {
+  CATEGORY_PERIOD_FILE,
+  LEGACY_PERIOD_FILE,
+  parse_category_period_filename,
+} from "./paths.js";
 
-const PERIOD_FILE = /^(\d{4}-\d{4})\.json$/;
-
-function listPeriodFiles(dir) {
+function listCatalogueFiles(dir) {
   return readdirSync(dir)
-    .filter((name) => PERIOD_FILE.test(name))
+    .filter(
+      (name) => CATEGORY_PERIOD_FILE.test(name) || LEGACY_PERIOD_FILE.test(name),
+    )
     .map((name) => path.join(dir, name))
     .filter((filePath) => statSync(filePath).isFile());
 }
 
+function categoryFromSource(source) {
+  const parts = String(source ?? "")
+    .split("/")
+    .map((p) => {
+      try {
+        return decodeURIComponent(p);
+      } catch {
+        return p;
+      }
+    })
+    .filter(Boolean);
+  // /stamps/{country}/{category}/{period}
+  if (parts[0] === "stamps" && parts[2]) return parts[2];
+  return "";
+}
+
+/** Resolve relative stamp images against this category doc's media prefix. */
+function resolveStampImage(doc, image) {
+  const img = String(image ?? "").trim();
+  if (!img) return img;
+  if (img.startsWith("http") || img.startsWith("/")) return img;
+  const media = String(doc.media ?? "");
+  if (!media) return img;
+  return `${media}${img}`;
+}
+
+function tagSets(doc, category) {
+  const cat = String(
+    category || doc.category || categoryFromSource(doc.source) || "",
+  ).trim();
+  const media = String(doc.media ?? "");
+  return (doc.sets ?? []).map((set) => ({
+    ...set,
+    ...(cat ? { category: set.category || cat } : {}),
+    ...(media ? { media: set.media || media } : {}),
+    stamps: (set.stamps ?? []).map((stamp) => ({
+      ...stamp,
+      image: resolveStampImage(doc, stamp.image),
+    })),
+  }));
+}
+
+function mergeSets(periods, period, doc, category) {
+  const tagged = tagSets(doc, category);
+  const existing = periods[period];
+  if (!existing) {
+    periods[period] = {
+      base: doc.base,
+      sets: tagged,
+      setCount: tagged.length,
+      stampCount: tagged.reduce((n, s) => n + (s.stamps?.length ?? 0), 0),
+    };
+    return;
+  }
+  /** @type {Map<string, object>} */
+  const byId = new Map();
+  for (const set of existing.sets ?? []) {
+    if (set?.id != null) byId.set(String(set.id), set);
+  }
+  for (const set of tagged) {
+    if (set?.id != null) byId.set(String(set.id), set);
+  }
+  const sets = [...byId.values()];
+  // Do not keep a single period-level media/source — sets carry their own media.
+  periods[period] = {
+    base: existing.base ?? doc.base,
+    sets,
+    setCount: sets.length,
+    stampCount: sets.reduce((n, s) => n + (s.stamps?.length ?? 0), 0),
+  };
+}
+
 /**
- * Load and merge `YYYY-YYYY.json` files from a directory (or an explicit path list).
- * @param {string | string[]} dirOrPaths  Country output directory, or list of file paths
+ * Load and merge catalogue JSON from a country output directory (or path list).
+ * @param {string | string[]} dirOrPaths
  * @returns {object} collection with `.periods` keyed by period id
  */
 export function consolidate_periods(dirOrPaths) {
@@ -28,7 +107,7 @@ export function consolidate_periods(dirOrPaths) {
     list = dirOrPaths.map(String);
   } else {
     const dir = String(dirOrPaths ?? "output");
-    list = listPeriodFiles(dir);
+    list = listCatalogueFiles(dir);
   }
 
   /** @type {Record<string, object>} */
@@ -36,18 +115,22 @@ export function consolidate_periods(dirOrPaths) {
   let country;
   let base;
   let countryDir;
+  let code;
 
   for (const filePath of list) {
     const name = path.basename(filePath);
-    const m = name.match(PERIOD_FILE);
-    if (!m) continue;
-    const period = m[1];
+    const parsed = parse_category_period_filename(name);
+    const legacy = name.match(LEGACY_PERIOD_FILE);
+    if (!parsed && !legacy) continue;
+
+    const period = parsed?.period ?? legacy[1];
     const doc = JSON.parse(readFileSync(filePath, "utf8"));
     if (!doc || typeof doc !== "object" || Array.isArray(doc)) {
       throw new Error(`consolidate_periods: expected object in ${name}`);
     }
-    periods[period] = doc;
+    mergeSets(periods, period, doc, parsed?.category ?? doc.category);
     base ??= doc.base;
+    code ??= parsed?.code ?? doc.code;
     countryDir ??= path.basename(path.dirname(path.resolve(filePath)));
     if (!country && typeof doc.source === "string") {
       const parts = doc.source.split("/").filter(Boolean);
@@ -60,7 +143,7 @@ export function consolidate_periods(dirOrPaths) {
   const keys = Object.keys(periods).sort();
   if (keys.length === 0) {
     throw new Error(
-      "consolidate_periods: no period JSON files (expected names like 1990-1999.json)",
+      "consolidate_periods: no catalogue JSON files (expected <category>.<period>.<code>.json)",
     );
   }
 
@@ -71,6 +154,7 @@ export function consolidate_periods(dirOrPaths) {
   return {
     ...(base ? { base } : {}),
     ...(country ? { country } : {}),
+    ...(code ? { code } : {}),
     periods: Object.fromEntries(keys.map((k) => [k, periods[k]])),
   };
 }

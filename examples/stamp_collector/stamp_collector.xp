@@ -1,0 +1,51 @@
+---
+# StampWorld catalogue collector.
+# Scrapes each query period, attaches thumbnails, emits one file per period.
+#
+#   xform stamp_collector.xp --final json --auto-approve
+#
+# Optional overrides:
+#   --with max_pages=2          # 0 = all pages (default)
+#   --with delay_ms=250         # pause between page fetches
+#   --with year=1990            # keep only sets from this year ("" = all)
+
+{% include "file://./types/local_type.xpt" %}
+{% include "file://./filters/thumbnails.js" %}
+{% include "file://./filters/scrape.js" %}
+
+_final:
+  _templates: file://./templates/_final/
+
+query:
+  _attributes:
+    country: _string
+    categories: [catalogue.category]
+    periods: [catalogue.period]
+  country: China,-Peoples-Rep.
+  categories:
+    - "Postage stamps"
+  periods:
+    - "1949-1949"
+    - "1950-1959"
+    - "1960-1969"
+    - "1970-1979"
+    - "1980-1989"
+    - "1990-1999"
+    - "2000-2009"
+    - "2010-2019"
+    - "2020-2026"
+
+year: ""
+max_pages: "0"
+delay_ms: "250"
+
+_capability:
+  collect:
+    stamps:
+      _input: query
+      _output: collection
+      _transform: "{{ _input | scrape_catalogue(max_pages, delay_ms, year) | add_thumbnails }}"
+
+_document:
+  _final: collect.stamps
+---

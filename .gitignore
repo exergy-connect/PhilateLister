@@ -1,6 +1,7 @@
 token.txt
 .venv/
 xframe/output/
+examples/**/output/
 scripts/node_modules/
 
 # Python cache

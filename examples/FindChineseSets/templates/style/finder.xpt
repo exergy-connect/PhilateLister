@@ -1,0 +1,12 @@
+---
+# Optional style preset — tokens usually come from index.xp `style:`.
+# Load with `style: finder` when composing without document-level tokens.
+ink: "#141210"
+paper: "#f2f0eb"
+seal: "#b91c1c"
+jade: "#0f766e"
+mist: "#d6d3cd"
+muted: "#5c574f"
+font_display: '"Source Serif 4", "Noto Serif SC", "Songti SC", serif'
+font_ui: '"IBM Plex Sans", "Noto Sans SC", "PingFang SC", sans-serif'
+---

@@ -1,0 +1,11 @@
+---
+# Application-local type index (parallel to system `_type`, without redefining it).
+local_type:
+  _templates:
+    _location: file://./
+    _mappings:
+      ".xpt": _xp_file
+      ".js": _javascript
+
+catalogue: local_type
+---

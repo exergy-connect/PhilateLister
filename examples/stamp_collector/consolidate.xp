@@ -1,0 +1,28 @@
+---
+# Consolidate per-period catalogue JSON under output/ into one XP artefact.
+#
+#   xform consolidate.xp --final xp
+#
+# Merges every `output/YYYY-YYYY.json` into `output/china_collection.xp`.
+# Pass a different directory with: --with output_dir=path/to/jsons
+
+{% include "file://./filters/consolidate.js" %}
+
+_final:
+  _templates: file://./templates/_final/
+
+output_dir: output
+
+_capability:
+  consolidate:
+    periods:
+      _input: output_dir
+      _output: collection
+      _transform: "{{ _input | consolidate_periods }}"
+
+_document:
+  _final: consolidate.periods
+  _output:
+    _basename: china_collection
+    _extension: xp
+---

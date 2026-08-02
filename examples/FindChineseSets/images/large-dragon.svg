@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 320" role="img" aria-label="大龙 1878">
+  <defs>
+    <pattern id="perf" width="12" height="12" patternUnits="userSpaceOnUse">
+      <circle cx="0" cy="0" r="2.2" fill="#fef3c7"/>
+    </pattern>
+  </defs>
+  <rect width="240" height="320" fill="#7f1d1d"/>
+  <rect x="10" y="10" width="220" height="300" fill="#fef3c7"/>
+  <rect x="10" y="10" width="220" height="300" fill="url(#perf)" opacity="0.35"/>
+  <rect x="22" y="22" width="196" height="276" fill="none" stroke="#7f1d1d" stroke-width="2.5"/>
+  <text x="120" y="88" text-anchor="middle" font-family="serif" font-size="42" fill="#7f1d1d" font-weight="700">大龙</text>
+  <text x="120" y="150" text-anchor="middle" font-family="sans-serif" font-size="54" fill="#7f1d1d" opacity="0.2">DRAGON</text>
+  <text x="120" y="210" text-anchor="middle" font-family="sans-serif" font-size="28" fill="#7f1d1d">5c</text>
+  <text x="120" y="255" text-anchor="middle" font-family="sans-serif" font-size="20" fill="#7f1d1d" opacity="0.75">1878</text>
+  <text x="120" y="285" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7f1d1d" opacity="0.55">CHINA</text>
+</svg>

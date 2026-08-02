@@ -1,0 +1,12 @@
+---
+# One output file per query period (segment stream).
+---
+{% for period in query.periods %}
+---
+_document:
+  _output:
+    _basename: "{{ period }}"
+    _extension: json
+===
+{{ collection.periods[period] | to_json }}
+{% endfor %}

@@ -1,0 +1,7 @@
+---
+# One file named from source `_document._output` (_basename / _extension).
+---
+===
+{{ collection | to_json }}
+---
+{# end segment stream #}

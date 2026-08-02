@@ -1,0 +1,20 @@
+{
+  "name": "xform",
+  "image": "ghcr.io/exergy-connect/experiments/xform:latest",
+  "remoteUser": "node",
+  "runArgs": ["--privileged"],
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/${localWorkspaceFolderBasename},type=bind",
+  "forwardPorts": [42042],
+  "portsAttributes": {
+    "42042": {
+      "label": "xForm Lab UI",
+      "onAutoForward": "notify"
+    }
+  },
+  "containerEnv": {
+    "XFORM_WORKSPACE": "/tmp/xform-ws",
+    "XFORM_EXAMPLES": "/workspaces/${localWorkspaceFolderBasename}/examples"
+  },
+  "postStartCommand": "sudo /usr/local/bin/docker-entrypoint.sh true && (curl -sf http://127.0.0.1:42042/ >/dev/null || setsid node /app/server/index.js >/tmp/xform-server.log 2>&1 < /dev/null &)"
+}

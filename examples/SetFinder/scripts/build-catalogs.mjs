@@ -21,6 +21,7 @@ const COUNTRY_META = {
   china: { id: "cn", name: "China" },
   iceland: { id: "is", name: "Iceland" },
   denmark: { id: "dk", name: "Denmark" },
+  netherlands: { id: "nl", name: "Netherlands" },
   sweden: { id: "se", name: "Sweden" },
   taiwan: { id: "tw", name: "Taiwan" },
 };

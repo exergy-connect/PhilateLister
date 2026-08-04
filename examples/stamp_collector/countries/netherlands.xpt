@@ -1,0 +1,39 @@
+---
+# Netherlands — StampWorld catalogue country.
+# Select with: --with target_country=netherlands
+#
+# StampWorld: https://www.stampworld.com/en/stamps/Netherlands/
+# Coverage: 1852–2026 (decade buckets; first slice starts 1852)
+
+code: nl
+stampworld: Netherlands
+categories:
+  - "Postage stamps"
+  - "Postage due stamps"
+  - "Official stamps"
+  - "Parcel post"
+  - "Telegraph stamps"
+  - "Franchise stamps"
+  - "Marine Insurance stamps"
+  - "Postal order stamps"
+  - "Crypto stamps"
+periods:
+  - "1852-1859"
+  - "1860-1869"
+  - "1870-1879"
+  - "1880-1889"
+  - "1890-1899"
+  - "1900-1909"
+  - "1910-1919"
+  - "1920-1929"
+  - "1930-1939"
+  - "1940-1949"
+  - "1950-1959"
+  - "1960-1969"
+  - "1970-1979"
+  - "1980-1989"
+  - "1990-1999"
+  - "2000-2009"
+  - "2010-2019"
+  - "2020-2026"
+---

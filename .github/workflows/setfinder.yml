@@ -39,28 +39,34 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends imagemagick
 
+      # collect.sh / consolidate.sh need `xform` on PATH (--with args the action
+      # does not expose). The compile step below uses the action; it does not
+      # need this install — the action already bundles skills/xform-run.
       - name: Install xform CLI
         run: |
           set -euo pipefail
-          git clone --depth 1 https://github.com/exergy-connect/xFrame.ai.git /tmp/xframe-ai
-          printf '%s\n' '#!/usr/bin/env bash' 'exec node /tmp/xframe-ai/skills/xform/scripts/xform.min.js "$@"' | sudo tee /usr/local/bin/xform >/dev/null
+          mkdir -p /tmp/xform-run/scripts
+          curl -fsSL \
+            https://raw.githubusercontent.com/exergy-connect/xFrame.ai/main/skills/xform-run/scripts/xform.min.js \
+            -o /tmp/xform-run/scripts/xform.min.js
+          printf '%s\n' '#!/usr/bin/env bash' 'exec node /tmp/xform-run/scripts/xform.min.js "$@"' | sudo tee /usr/local/bin/xform >/dev/null
           sudo chmod +x /usr/local/bin/xform
           xform -h | head -3
 
-      - name: Collect StampWorld catalogue JSON
-        working-directory: examples/stamp_collector
-        run: ./collect.sh china
+      # - name: Collect StampWorld catalogue JSON
+      #   working-directory: examples/stamp_collector
+      #   run: ./collect.sh china
 
-      - name: Consolidate period JSON into country collection.xp
-        working-directory: examples/stamp_collector
-        run: ./consolidate.sh china
+      # - name: Consolidate period JSON into country collection.xp
+      #   working-directory: examples/stamp_collector
+      #   run: ./consolidate.sh china
 
-      - name: Export country catalog JSON
-        run: |
-          set -euo pipefail
-          node examples/SetFinder/scripts/build-catalogs.mjs
-          test -f examples/SetFinder/catalogs/countries.json
-          test -f examples/SetFinder/catalogs/cn.json
+      # - name: Export country catalog JSON
+      #   run: |
+      #     set -euo pipefail
+      #     node examples/SetFinder/scripts/build-catalogs.mjs
+      #     test -f examples/SetFinder/catalogs/countries.json
+      #     test -f examples/SetFinder/catalogs/cn.json
 
       - name: Compile SetFinder viewer
         uses: exergy-connect/xFrame.ai/actions/xform@main

@@ -5,16 +5,17 @@
   "runArgs": ["--privileged"],
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/${localWorkspaceFolderBasename},type=bind",
-  "forwardPorts": [42042],
+  "forwardPorts": [42142],
   "portsAttributes": {
-    "42042": {
-      "label": "xForm Lab UI",
-      "onAutoForward": "notify"
+    "42142": {
+      "label": "xForm Philatelister Lab UI",
+      "onAutoForward": "openBrowser"
     }
   },
   "containerEnv": {
     "XFORM_WORKSPACE": "/tmp/xform-ws",
-    "XFORM_EXAMPLES": "/workspaces/${localWorkspaceFolderBasename}/examples"
+    "XFORM_EXAMPLES": "/workspaces/${localWorkspaceFolderBasename}/examples",
+    "PORT": "42142"
   },
-  "postStartCommand": "sudo /usr/local/bin/docker-entrypoint.sh true && (curl -sf http://127.0.0.1:42042/ >/dev/null || setsid node /app/server/index.js >/tmp/xform-server.log 2>&1 < /dev/null &)"
+  "postStartCommand": "sudo /usr/local/bin/docker-entrypoint.sh true && (curl -sf http://127.0.0.1:42142/ >/dev/null || setsid -f env PORT=42142 node /app/server/index.js >/tmp/xform-server.log 2>&1 < /dev/null)"
 }

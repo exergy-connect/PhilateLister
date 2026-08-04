@@ -4,7 +4,7 @@
 #   output/<country>/<category>.<period>.<code>.json
 # when present, otherwise download, attach thumbnails, and write that file.
 #
-#   xform stamp_collector.xp --final json --auto-approve --with country=china
+#   xform stamp_collector.xp --final json --auto-approve --with target_country=china
 #
 # Re-fetch existing periods with:
 #   --with refresh=true
@@ -25,8 +25,13 @@
 _final:
   _templates: file://./templates/_final/
 
-# Selected via --with country=china → loads countries/china.xp
-country: ""
+# Country instance type. xForm resolves its named-root instances from this
+# location and derives `_id` from the selected instance name.
+country:
+  _templates: file://./countries/
+
+# Selected via --with target_country=china.
+target_country: ""
 
 year: ""
 max_pages: "0"
@@ -35,13 +40,18 @@ refresh: false
 offline: false
 output_dir: output
 
+# Declare an abstract collection concept
+collection:
+
 _capability:
   collect:
     stamps:
       _input: country
       _output: collection
-      _transform: "{{ _input | load_country | as_catalog_query | collect_catalogue(max_pages, delay_ms, year, refresh, output_dir, offline) }}"
+      _content:
+        scrape: "{{ _input | as_catalog_query | collect_catalogue(max_pages, delay_ms, year, refresh, output_dir, offline) }}"
 
-_document:
-  _final: collect.stamps
 ---
+===
+{{ country[ target_country ] | collect.stamps | _final() }}
+...

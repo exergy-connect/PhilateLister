@@ -20,7 +20,6 @@ export {
   country_code,
 } from "./filters/paths.js";
 export {
-  load_country,
   as_catalog_query,
   country_id,
   with_country_meta,

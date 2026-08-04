@@ -73,7 +73,23 @@ export function write_collection_xp(collection, output_dir = "output") {
   const filePath = path.join(dir, "collection.xp");
   writeFileSync(filePath, `---\n---\n${JSON.stringify(collection)}\n`, "utf8");
   console.error(`[stamp_collector] wrote ${path.join(id, "collection.xp")}`);
-  return collection;
+  // Drop null/undefined so `… | consolidate.periods | _final()` can walk the result.
+  return stripNulls(collection);
+}
+
+function stripNulls(value) {
+  if (Array.isArray(value)) {
+    return value.map(stripNulls).filter((v) => v !== null && v !== undefined);
+  }
+  if (value && typeof value === "object") {
+    const out = {};
+    for (const [k, v] of Object.entries(value)) {
+      if (v === null || v === undefined) continue;
+      out[k] = stripNulls(v);
+    }
+    return out;
+  }
+  return value;
 }
 
 export default { write_period_json, write_collection_xp };

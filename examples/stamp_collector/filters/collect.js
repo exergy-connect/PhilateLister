@@ -255,7 +255,8 @@ export function collect_catalogue(
     byPeriod[period] = mergePeriodCategories(Object.values(cats));
   }
 
-  return {
+  // Drop null/undefined so `… | collect.stamps | _final()` can walk the result.
+  return stripNulls({
     base: scrapedBase(byPeriod) ?? "https://www.stampworld.com",
     id: outputId,
     code,
@@ -265,7 +266,22 @@ export function collect_catalogue(
     periods: byPeriod,
     categories_by_period: byPeriodCategory,
     output_dir: country_output_dir(outputId, outRoot),
-  };
+  });
+}
+
+function stripNulls(value) {
+  if (Array.isArray(value)) {
+    return value.map(stripNulls).filter((v) => v !== null && v !== undefined);
+  }
+  if (value && typeof value === "object") {
+    const out = {};
+    for (const [k, v] of Object.entries(value)) {
+      if (v === null || v === undefined) continue;
+      out[k] = stripNulls(v);
+    }
+    return out;
+  }
+  return value;
 }
 
 function scrapedBase(byPeriod) {

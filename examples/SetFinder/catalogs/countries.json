@@ -22,6 +22,11 @@
       "catalog": "se.json"
     },
     {
+      "id": "tw",
+      "name": "Taiwan",
+      "catalog": "tw.json"
+    },
+    {
       "id": "cn-demo",
       "name": "China (demo)",
       "catalog": "demo.json"

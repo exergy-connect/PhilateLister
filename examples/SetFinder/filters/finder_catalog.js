@@ -6,9 +6,17 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const PACKAGE_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const MAX_IMAGE_BYTES = 20 * 1024 * 1024;
+const IMAGE_TYPES = new Map([
+  ["image/jpeg", ".jpg"],
+  ["image/png", ".png"],
+  ["image/webp", ".webp"],
+  ["image/gif", ".gif"],
+]);
 
 const PLACEHOLDER_IMAGE =
   "data:image/svg+xml," +
@@ -25,6 +33,88 @@ export function from_json(value) {
     throw new Error("from_json expects a JSON string or object");
   }
   return JSON.parse(value);
+}
+
+function safeSegment(value, label) {
+  const segment = String(value ?? "").trim();
+  if (!/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(segment)) {
+    throw new Error(`Invalid ${label}`);
+  }
+  return segment;
+}
+
+function imageType(body) {
+  if (body[0] === 0xff && body[1] === 0xd8 && body[2] === 0xff) return "image/jpeg";
+  if (body.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) return "image/png";
+  if (/^GIF8[79]a$/.test(body.subarray(0, 6).toString("ascii"))) return "image/gif";
+  if (body.subarray(0, 4).toString("ascii") === "RIFF" && body.subarray(8, 12).toString("ascii") === "WEBP") return "image/webp";
+  return null;
+}
+
+/** Persist an image and update its stamp entry in the selected country catalogue. */
+function persistImage(input) {
+  if (!input || typeof input !== "object" || Array.isArray(input)) {
+    throw new Error("Image upload expects an object");
+  }
+  const country = safeSegment(input.country, "country code").toLowerCase();
+  const catalog = safeSegment(input.catalog, "catalog number");
+  const setId = String(input.set ?? "");
+  const stampIndex = Number(input.index);
+  if (!Number.isInteger(stampIndex) || stampIndex < 0) throw new Error("Invalid stamp index");
+
+  const catalogPath = path.join(PACKAGE_DIR, "catalogs", `${country}.json`);
+  const doc = JSON.parse(fs.readFileSync(catalogPath, "utf8"));
+  const sets = Array.isArray(doc) ? doc : doc.sets;
+  const set = sets?.find((entry) => String(entry.id ?? "") === setId);
+  const stamp = set?.stamps?.[stampIndex];
+  if (!stamp) throw new Error("Catalog entry was not found in the selected set");
+  let inheritedCatalog = "";
+  for (let index = 0; index <= stampIndex; index += 1) {
+    inheritedCatalog = String(set.stamps[index]?.no || inheritedCatalog).trim();
+  }
+  if (inheritedCatalog !== catalog) {
+    throw new Error("Catalog entry does not match the selected stamp");
+  }
+
+  let body;
+  if (input.data) {
+    body = Buffer.from(String(input.data), "base64");
+  } else if (input.url) {
+    const source = new URL(String(input.url));
+    if (!/^https?:$/.test(source.protocol)) throw new Error("Image URL must use HTTP or HTTPS");
+    body = execFileSync("curl", ["-fsSL", "--max-filesize", String(MAX_IMAGE_BYTES), source.href], {
+      encoding: "buffer",
+      maxBuffer: MAX_IMAGE_BYTES + 1,
+      timeout: 30_000,
+    });
+  } else {
+    throw new Error("Provide image data or an image URL");
+  }
+  if (!body.length) throw new Error("The uploaded image is empty");
+  if (body.length > MAX_IMAGE_BYTES) throw new Error("Image is larger than 20 MB");
+  const detectedType = imageType(body);
+  if (!detectedType) throw new Error("Use a JPEG, PNG, WebP, or GIF image");
+  const declaredType = String(input.content_type ?? "").toLowerCase();
+  if (declaredType && declaredType !== detectedType) {
+    throw new Error("File contents do not match the selected image type");
+  }
+
+  const filename = `${catalog}${IMAGE_TYPES.get(detectedType)}`;
+  const imageDir = path.join(PACKAGE_DIR, "images", country);
+  fs.mkdirSync(imageDir, { recursive: true });
+  fs.writeFileSync(path.join(imageDir, filename), body);
+  const relativeUrl = `images/${country}/${filename}`;
+  stamp.image = relativeUrl;
+  fs.writeFileSync(catalogPath, `${JSON.stringify(doc)}\n`, "utf8");
+  return { path: relativeUrl, url: relativeUrl };
+}
+
+export function upload_image(input) {
+  try {
+    return persistImage(input);
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : String(error) };
+  }
 }
 
 /** Resolve file:// or relative URI against the SetFinder package root. */

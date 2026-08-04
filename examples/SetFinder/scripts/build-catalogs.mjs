@@ -22,6 +22,7 @@ const COUNTRY_META = {
   iceland: { id: "is", name: "Iceland" },
   denmark: { id: "dk", name: "Denmark" },
   sweden: { id: "se", name: "Sweden" },
+  taiwan: { id: "tw", name: "Taiwan" },
 };
 
 function metaFor(folder) {

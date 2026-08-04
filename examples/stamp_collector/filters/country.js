@@ -1,107 +1,42 @@
 /**
- * Country packs live at countries/<id>.xp and declare one named concept, e.g.:
+ * Country packs live at countries/<id>.xpt as flat instance attributes, e.g.:
  *
- *   China:
- *     stampworld: China,-Peoples-Rep.
- *     categories: ["Postage stamps"]
- *     periods: ["1990-1999", ...]
+ *   stampworld: China,-Peoples-Rep.
+ *   categories: ["Postage stamps"]
+ *   periods: ["1990-1999", ...]
  *
- * Select with: --with country=china
+ * xForm resolves these through `country._templates` (`country[<id>]`) and
+ * derives the instance id as `_id` / `name`. Select with:
+ *   --with target_country=china
  */
-import { readFileSync } from "node:fs";
-import { createRequire } from "node:module";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { consolidate_periods } from "./consolidate.js";
 import { country_output_dir } from "./scrape.js";
 
-const PACKAGE_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-
-/** Resolve `yaml` from Lab (/app) or local stamp_collector node_modules (CI). */
-function loadYamlParse() {
-  const anchors = [
-    path.join(PACKAGE_DIR, "package.json"),
-    "/app/package.json",
-    fileURLToPath(import.meta.url),
-  ];
-  const errors = [];
-  for (const anchor of anchors) {
-    try {
-      const { parse } = createRequire(anchor)("yaml");
-      return parse;
-    } catch (err) {
-      errors.push(`${anchor}: ${err instanceof Error ? err.message : String(err)}`);
-    }
-  }
-  throw new Error(
-    `load_country: cannot find module 'yaml' (npm install in examples/stamp_collector).\n${errors.join("\n")}`,
-  );
-}
-
-const parseYaml = loadYamlParse();
-
-/**
- * Load countries/<id>.xp and return its country concept.
- * `id` comes from `--with country=<id>` (also used as output/ folder name).
- */
-export function load_country(id) {
-  const key = String(id ?? "").trim();
-  if (!key) {
-    throw new Error("load_country: pass --with country=<id> (e.g. country=china)");
-  }
-  if (key.includes("..") || key.includes("/") || key.includes("\\")) {
-    throw new Error(`load_country: invalid country id: ${key}`);
-  }
-  const filePath = path.join(PACKAGE_DIR, "countries", `${key}.xp`);
-  let text;
-  try {
-    text = readFileSync(filePath, "utf8");
-  } catch {
-    throw new Error(`load_country: missing country pack ${filePath}`);
-  }
-  const parts = text.split(/^---\s*$/m).map((p) => p.trim()).filter(Boolean);
-  if (parts.length === 0) {
-    throw new Error(`load_country: empty country pack ${filePath}`);
-  }
-  const doc = parseYaml(parts[0]);
-  if (!doc || typeof doc !== "object" || Array.isArray(doc)) {
-    throw new Error(`load_country: expected a mapping in ${filePath}`);
-  }
-  const names = Object.keys(doc).filter((k) => !k.startsWith("_"));
-  if (names.length !== 1) {
-    throw new Error(
-      `load_country: ${path.basename(filePath)} must declare exactly one country concept (found ${names.join(", ") || "none"})`,
-    );
-  }
-  const concept = doc[names[0]];
-  if (!concept || typeof concept !== "object" || Array.isArray(concept)) {
-    throw new Error(`load_country: concept ${names[0]} must be a mapping`);
-  }
-  return {
-    ...concept,
-    id: key,
-    name: names[0],
-  };
+/** xForm instance id: `_id` when bound, else template `name` from country[<id>]. */
+function instance_id(country) {
+  return String(country?._id ?? country?.name ?? "").trim();
 }
 
 /**
  * Map a country concept → catalogue scrape query.
- * `country` is the StampWorld slug (URL); `id` is the output/ folder name.
+ * `country` is the StampWorld slug (URL); the instance id is the output/ folder.
  */
 export function as_catalog_query(country) {
   if (!country || typeof country !== "object" || Array.isArray(country)) {
-    throw new Error("as_catalog_query expects a country concept object");
+    throw new Error(
+      `as_catalog_query expects a country concept object; received: ${JSON.stringify(country)}`,
+    );
   }
   const stampworld = String(country.stampworld ?? "").trim();
   if (!stampworld) {
     throw new Error("as_catalog_query: country.stampworld is required");
   }
-  const id = String(country.id ?? "").trim();
+  const id = instance_id(country);
   if (!id) {
-    throw new Error("as_catalog_query: country.id is required");
+    throw new Error("as_catalog_query: country._id (or name) is required");
   }
   if (id.includes("..") || id.includes("/") || id.includes("\\")) {
-    throw new Error(`as_catalog_query: invalid country.id: ${id}`);
+    throw new Error(`as_catalog_query: invalid country id: ${id}`);
   }
   const categories = country.categories;
   const periods = country.periods;
@@ -127,14 +62,13 @@ export function as_catalog_query(country) {
   };
 }
 
-/** Output directory key for a country concept (`id`). */
+/** Output directory key for a country concept (xForm-derived instance id). */
 export function country_id(country) {
-  if (typeof country === "string") return country.trim();
   if (country && typeof country === "object") {
-    const id = String(country.id ?? "").trim();
+    const id = instance_id(country);
     if (id) return id;
   }
-  throw new Error("country_id expects a country concept with .id");
+  throw new Error("country_id expects a country concept with ._id or .name");
 }
 
 /**
@@ -155,7 +89,8 @@ export function with_country_meta(collection, country) {
  * `output_dir` is the root (default `output`).
  */
 export function consolidate_country(country, output_dir = "output") {
-  const dir = country_output_dir(country_id(country), output_dir);
+  const id = country_id(country);
+  const dir = country_output_dir(id, output_dir);
   return with_country_meta(
     consolidate_periods(dir, country.denominations ?? {}),
     country,
@@ -163,7 +98,6 @@ export function consolidate_country(country, output_dir = "output") {
 }
 
 export default {
-  load_country,
   as_catalog_query,
   country_id,
   with_country_meta,

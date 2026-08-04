@@ -1,0 +1,25 @@
+---
+# Taiwan — StampWorld catalogue country.
+# Select with: --with target_country=taiwan
+#
+# StampWorld: https://www.stampworld.com/en/stamps/Taiwan/
+# Categories: Postage stamps, Postage due stamps, Parcel Post
+# Coverage: 1945–2026 (decade buckets; first slice starts 1945)
+
+code: tw
+stampworld: Taiwan
+categories:
+  - "Postage stamps"
+  - "Postage due stamps"
+  - "Parcel Post"
+periods:
+  - "1945-1949"
+  - "1950-1959"
+  - "1960-1969"
+  - "1970-1979"
+  - "1980-1989"
+  - "1990-1999"
+  - "2000-2009"
+  - "2010-2019"
+  - "2020-2026"
+---

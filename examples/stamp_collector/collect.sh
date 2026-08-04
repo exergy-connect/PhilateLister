@@ -31,7 +31,7 @@ if [[ -z "$country" ]]; then
   exit 1
 fi
 
-args=(stamp_collector.xp --final json --auto-approve --with "country=${country}")
+args=(stamp_collector.xp --final json --auto-approve --with "target_country=${country}")
 [[ "$refresh" == true ]] && args+=(--with refresh=true)
 [[ "$offline" == true ]] && args+=(--with offline=true)
 [[ ${#extra[@]} -gt 0 ]] && args+=("${extra[@]}")

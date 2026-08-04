@@ -1,7 +1,7 @@
 ---
 # Consolidate per-period catalogue JSON for one country into an XP artefact.
 #
-#   xform consolidate.xp --final xp --with country=china
+#   xform consolidate.xp --final xp --with target_country=china
 #
 # Merges output/<country>/YYYY-YYYY.json → output/<country>/collection.xp.
 
@@ -13,16 +13,24 @@
 _final:
   _templates: file://./templates/_final/
 
-country: ""
+country:
+  _templates: file://./countries/
+
+target_country: ""
 output_dir: output
+
+# Declare an abstract collection concept
+collection:
 
 _capability:
   consolidate:
     periods:
       _input: country
       _output: collection
-      _transform: "{{ _input | load_country | consolidate_country(output_dir) | write_collection_xp(output_dir) }}"
+      _content:
+        merge: "{{ _input | consolidate_country(output_dir) | write_collection_xp(output_dir) }}"
 
-_document:
-  _final: consolidate.periods
 ---
+===
+{{ country[ target_country ] | consolidate.periods | _final() }}
+...

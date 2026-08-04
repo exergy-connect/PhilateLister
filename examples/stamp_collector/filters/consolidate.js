@@ -131,6 +131,7 @@ function summarizeDenominations(periods, countryCode, denominationModel = {}) {
 /**
  * Load and merge catalogue JSON from a country output directory (or path list).
  * @param {string | string[]} dirOrPaths
+ * @param {object} [denominationModel]
  * @returns {object} collection with `.periods` keyed by period id
  */
 export function consolidate_periods(dirOrPaths, denominationModel = {}) {
@@ -145,7 +146,7 @@ export function consolidate_periods(dirOrPaths, denominationModel = {}) {
 
   /** @type {Record<string, object>} */
   const periods = {};
-  let country;
+  let stampworld;
   let base;
   let countryDir;
   let code;
@@ -165,10 +166,10 @@ export function consolidate_periods(dirOrPaths, denominationModel = {}) {
     base ??= doc.base;
     code ??= parsed?.code ?? doc.code;
     countryDir ??= path.basename(path.dirname(path.resolve(filePath)));
-    if (!country && typeof doc.source === "string") {
+    if (!stampworld && typeof doc.source === "string") {
       const parts = doc.source.split("/").filter(Boolean);
       if (parts[0] === "stamps" && parts[1]) {
-        country = decodeURIComponent(parts[1]);
+        stampworld = decodeURIComponent(parts[1]);
       }
     }
   }
@@ -180,13 +181,13 @@ export function consolidate_periods(dirOrPaths, denominationModel = {}) {
     );
   }
 
-  country ??= countryDir && countryDir !== "output" && countryDir !== "."
+  stampworld ??= countryDir && countryDir !== "output" && countryDir !== "."
     ? countryDir
     : undefined;
 
   return {
     ...(base ? { base } : {}),
-    ...(country ? { country } : {}),
+    ...(stampworld ? { country: stampworld } : {}),
     ...(code ? { code } : {}),
     summary: {
       denominations: summarizeDenominations(periods, code, denominationModel),

@@ -9,4 +9,5 @@ export {
   finder_year_max,
   finder_denominations,
   finder_controls,
+  upload_image,
 } from "./filters/finder_catalog.js";

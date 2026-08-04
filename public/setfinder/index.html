@@ -960,22 +960,33 @@ body::before {
     if (!country || !target?.catalog) return;
     setStatus(`Uploading image for catalog ${target.catalog}…`);
     try {
-      const params = new URLSearchParams({
+      const request = {
         country: country.id,
         catalog: String(target.catalog),
         set: String(target.set.id || ""),
-        index: String(target.stampIndex),
-      });
-      const res = await fetch(`/api/setfinder/image?${params}`, {
+        index: target.stampIndex,
+        content_type: file.type,
+        data: await file.arrayBuffer().then((buffer) => {
+          const bytes = new Uint8Array(buffer);
+          let binary = "";
+          for (let offset = 0; offset < bytes.length; offset += 0x8000) {
+            binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
+          }
+          return btoa(binary);
+        }),
+      };
+      const res = await fetch("/api/index/image/upload", {
         method: "POST",
-        headers: { "Content-Type": file.type },
-        body: file,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(request),
       });
       if (res.status === 404) {
-        throw new Error("Image replacement API is unavailable. Open SetFinder through its writable server (node examples/SetFinder/server.mjs), not a static file server.");
+        throw new Error("Image replacement API is unavailable. Deploy SetFinder's image.upload capability in xFrame.");
       }
-      const result = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(result.error || `${res.status} ${res.statusText}`);
+      const response = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(response.error || `${res.status} ${res.statusText}`);
+      const result = response.result || response;
+      if (result.error) throw new Error(result.error);
       target.stamp.image = `${result.url}?v=${Date.now()}`;
       setStatus(`Replaced catalog ${target.catalog} with ${result.path}.`);
       showDetail(target.set);
@@ -990,22 +1001,25 @@ body::before {
     if (!country || !target?.catalog) return;
     setStatus(`Downloading image for catalog ${target.catalog}…`);
     try {
-      const params = new URLSearchParams({
+      const request = {
         country: country.id,
         catalog: String(target.catalog),
         set: String(target.set.id || ""),
-        index: String(target.stampIndex),
-      });
-      const res = await fetch(`/api/setfinder/image?${params}`, {
+        index: target.stampIndex,
+        url,
+      };
+      const res = await fetch("/api/index/image/upload", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify(request),
       });
       if (res.status === 404) {
-        throw new Error("Image replacement API is unavailable. Open SetFinder through its writable server (node examples/SetFinder/server.mjs), not a static file server.");
+        throw new Error("Image replacement API is unavailable. Deploy SetFinder's image.upload capability in xFrame.");
       }
-      const result = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(result.error || `${res.status} ${res.statusText}`);
+      const response = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(response.error || `${res.status} ${res.statusText}`);
+      const result = response.result || response;
+      if (result.error) throw new Error(result.error);
       target.stamp.image = `${result.url}?v=${Date.now()}`;
       setStatus(`Replaced catalog ${target.catalog} with ${result.path}.`);
       showDetail(target.set);
@@ -1416,8 +1430,8 @@ body::before {
     const text = ev.clipboardData?.getData("text/plain")?.trim();
     if (/^https?:\/\//i.test(text || "")) {
       ev.preventDefault();
-      replaceDialog.close();
-      replaceStampUrl(text, target);
+      replacementUrl.value = text;
+      replacementUrl.focus();
     }
   });
 

@@ -10,4 +10,4 @@ if [[ -z "$country" ]]; then
 fi
 shift || true
 
-exec xform consolidate.xp --final xp --with "country=${country}" "$@"
+exec xform consolidate.xp --final xp --with "target_country=${country}" "$@"

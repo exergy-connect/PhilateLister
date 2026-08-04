@@ -5,19 +5,18 @@
 # Demo / build:
 #   node scripts/build-catalogs.mjs
 #   xform filters.js index.xp --final html
-#   node server.mjs
-# Then open http://localhost:8080. The local server is required for right-click
-# image replacement because it persists uploads under images/<country code>/.
+# Then compile and deploy the exported API in the xFrame lab. Image replacement
+# is provided by /api/index/image/upload and persists images under
+# images/<country code>/.
 #
 # Refresh China catalogue from stamp_collector:
-#   1) xform ../stamp_collector/stamp_collector.xp --final json --auto-approve --with country=china
-#   2) xform ../stamp_collector/consolidate.xp --final xp --with country=china
+#   1) xform ../stamp_collector/stamp_collector.xp --final json --auto-approve --with target_country=china
+#   2) xform ../stamp_collector/consolidate.xp --final xp --with target_country=china
 #   3) node scripts/build-catalogs.mjs
 #   4) xform filters.js index.xp --final html
 
 title: Set Finder
 tagline: Match a stamp to its set by looking, then selecting the face values you see.
-
 _final:
   _templates: file://./templates/_final/
 
@@ -55,6 +54,39 @@ stamp_set:
     image: _string
     image_full: _string
     _content: _string
+
+image_upload:
+  _attributes:
+    country:
+      _type: _string
+      _required: true
+    catalog:
+      _type: _string
+      _required: true
+    set:
+      _type: _string
+      _required: true
+    index:
+      _type: _integer
+      _required: true
+    content_type: _string
+    data: _string
+    url: _url
+
+image_upload_result:
+  _attributes:
+    path: _string
+    url: _url
+    error: _string
+
+_capability:
+  image:
+    upload:
+      _api: _true
+      _input: image_upload
+      _output: image_upload_result
+      _content:
+        store: "{{ _input | _validate() | upload_image }}"
 
 _document:
   application: finder

@@ -1,0 +1,117 @@
+# Compile Set Finder + Album View in parallel, then publish shared catalogs
+# and both viewers in one commit so the apps cannot race on pushes to main.
+name: Catalog Viewers
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "examples/stamp_collector/**"
+      - "examples/SetFinder/**"
+      - "examples/AlbumView/**"
+      - ".github/workflows/catalog-viewers.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: catalog-viewers-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - app: setfinder
+            working-directory: examples/SetFinder
+          - app: albumview
+            working-directory: examples/AlbumView
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+
+      - name: Compile ${{ matrix.app }}
+        uses: exergy-connect/xFrame.ai/actions/xform@main
+        with:
+          working-directory: ${{ matrix.working-directory }}
+          sources: filters.js index.xp
+          materialization: html
+
+      - name: Verify HTML output
+        run: |
+          set -euo pipefail
+          src_html="${{ matrix.working-directory }}/output/index.html"
+          if [[ ! -f "$src_html" ]]; then
+            echo "::error file=${src_html}::${{ matrix.app }} HTML was not produced"
+            exit 1
+          fi
+
+      - name: Upload compiled HTML
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.app }}-html
+          path: ${{ matrix.working-directory }}/output/index.html
+          if-no-files-found: error
+
+  publish:
+    needs: compile
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+
+      - name: Download compiled HTML
+        uses: actions/download-artifact@v4
+        with:
+          pattern: "*-html"
+          path: compiled
+
+      - name: Publish viewers and shared catalogs
+        run: |
+          set -euo pipefail
+          built_at="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          mkdir -p public/catalogs
+
+          for entry in "setfinder:examples/SetFinder" "albumview:examples/AlbumView"; do
+            app="${entry%%:*}"
+            src="${entry#*:}"
+            html="compiled/${app}-html/index.html"
+            if [[ ! -f "$html" ]]; then
+              echo "::error file=${html}::${app} HTML artifact missing"
+              exit 1
+            fi
+            mkdir -p "public/${app}"
+            cp "$html" "public/${app}/index.html"
+            sed -i "s/<html /<html data-built=\"${built_at}\" /" "public/${app}/index.html"
+            if [[ -f "${src}/favicon.ico" ]]; then
+              cp "${src}/favicon.ico" "public/${app}/favicon.ico"
+            fi
+            if [[ -d "${src}/images" ]]; then
+              mkdir -p "public/${app}/images"
+              cp -R "${src}/images/." "public/${app}/images/"
+            fi
+          done
+
+          # Single shared catalogue tree for SetFinder + AlbumView.
+          cp examples/SetFinder/catalogs/*.json public/catalogs/
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/setfinder public/albumview public/catalogs
+          if git diff --staged --quiet; then
+            echo "No changes to public/setfinder/, public/albumview/, or public/catalogs/."
+            exit 0
+          fi
+          git commit -m "public: refresh catalog viewers and shared catalogs (CI)"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

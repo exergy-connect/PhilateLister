@@ -16,6 +16,9 @@ test("Netherlands collapses (C)/Gld and euro surcharge spellings", () => {
   assert.equal(normalize_denomination("nl", "1+0.48 €"), "1+€0.48");
   assert.equal(normalize_denomination("nl", "+€0.54 1"), "1+€0.54");
   assert.equal(normalize_denomination("nl", "2.50/10Gld"), "2.50/10G");
+  assert.equal(normalize_denomination("nl", "0.29C"), "29C");
+  assert.equal(normalize_denomination("nl", "0.44C"), "44C");
+  assert.equal(normalize_denomination("nl", "29C"), "29C");
   assert.equal(normalize_denomination("cn", "5(C)"), "5(C)");
 });
 

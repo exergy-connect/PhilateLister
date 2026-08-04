@@ -703,7 +703,8 @@ body::before {
 
 <script>
 (() => {
-  const CATALOG_BASE = new URL("catalogs/", window.location.href);
+  /** Shared catalogues: public/catalogs/ (../catalogs/ from /setfinder/). */
+  const CATALOG_BASE = new URL("../catalogs/", window.location.href);
   const denomChips = document.getElementById("denom-chips");
   const denomGroups = [
     {

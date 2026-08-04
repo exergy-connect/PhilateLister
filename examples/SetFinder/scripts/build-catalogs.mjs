@@ -6,6 +6,7 @@
  *
  * Discovers ../stamp_collector/output/<id>/collection.xp and writes
  * catalogs/<id>.json plus catalogs/countries.json (demo entry kept).
+ * CI publishes this folder once to public/catalogs/ for SetFinder and AlbumView.
  */
 import fs from "node:fs";
 import path from "node:path";

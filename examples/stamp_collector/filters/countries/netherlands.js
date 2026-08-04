@@ -4,6 +4,7 @@ import { numericPrefix } from "./common.js";
 /**
  * Canonical Netherlands denomination label:
  * - `(C)` → `C` (`5(C)` → `5C`)
+ * - decimal cents → integer cents (`0.29C` → `29C`)
  * - `Gld` → `G` (`1Gld` → `1G`)
  * - decimal commas → dots (`1+€0,25` → `1+€0.25`)
  * - drop redundant surcharge parentheses (`1+(1) C` → `1+1 C`)
@@ -18,6 +19,11 @@ export function normalizeDenomination(denomination) {
     .replace(/\(C\)/gi, "C")
     .replace(/Gld/gi, "G")
     .replace(/\+\(([\d.½¼¾]+)\)/gu, "+$1");
+
+  const decimalCents = value.match(/^(0\.\d+)\s*C$/i);
+  if (decimalCents) {
+    value = `${Math.round(Number(decimalCents[1]) * 100)}C`;
+  }
 
   value = value.replace(
     /^([\d.½¼¾]+)\+(\d+(?:\.\d+)?)\s*€$/u,

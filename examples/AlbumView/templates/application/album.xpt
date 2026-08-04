@@ -1,0 +1,1796 @@
+---
+# Album application — promotes html.head / html._content for --final html.
+html:
+  head: |
+    <style>
+    :root {
+      --ink: {{ style.ink }};
+      --paper: {{ style.paper }};
+      --seal: {{ style.seal }};
+      --jade: {{ style.jade }};
+      --mist: {{ style.mist }};
+      --muted: {{ style.muted }};
+      --desk: {{ style.desk }};
+      --mount: {{ style.mount }};
+      --font-display: {{ style.font_display }};
+      --font-ui: {{ style.font_ui }};
+      --flip-ms: 720ms;
+      color-scheme: light;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      background:
+        radial-gradient(900px 500px at 8% -5%, color-mix(in srgb, var(--seal) 10%, transparent), transparent 55%),
+        radial-gradient(800px 480px at 100% 0%, color-mix(in srgb, var(--jade) 12%, transparent), transparent 50%),
+        linear-gradient(165deg, #e8e2d6 0%, #d9d2c4 45%, #cfc6b6 100%);
+      color: var(--ink);
+      font-family: var(--font-ui);
+      line-height: 1.45;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+    }
+
+    .app {
+      position: relative;
+      width: min(1120px, calc(100% - 1.25rem));
+      height: 100dvh;
+      max-height: 100dvh;
+      margin: 0 auto;
+      padding: 0.75rem 0 0.85rem;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      overflow: hidden;
+    }
+
+    .brand {
+      display: grid;
+      gap: 0.15rem;
+      flex: 0 0 auto;
+      animation: rise 0.65s ease both;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: clamp(1.35rem, 3.2vh, 2.15rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.08;
+    }
+
+    .brand h1 span { color: var(--seal); }
+
+    .brand p {
+      margin: 0;
+      max-width: 42rem;
+      color: var(--muted);
+      font-size: clamp(0.8rem, 1.6vh, 0.95rem);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.45rem 0.85rem;
+      flex: 0 0 auto;
+      animation: rise 0.7s ease 0.04s both;
+    }
+
+    .controls label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .controls select {
+      min-height: 2.15rem;
+      border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+      background: color-mix(in srgb, #fff 82%, transparent);
+      color: var(--ink);
+      padding: 0.3rem 0.55rem;
+      font: inherit;
+      font-size: 0.9rem;
+      border-radius: 2px;
+      max-width: 14rem;
+    }
+
+    .controls select:focus {
+      outline: 2px solid color-mix(in srgb, var(--jade) 55%, transparent);
+      outline-offset: 1px;
+    }
+
+    .controls .toggle {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .controls .toggle input {
+      accent-color: var(--jade);
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .status {
+      margin: 0;
+      font-size: 0.8rem;
+      color: var(--muted);
+      min-height: 1.1em;
+      flex: 0 0 auto;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      animation: rise 0.72s ease 0.06s both;
+    }
+
+    .status[data-tone="error"] { color: var(--seal); }
+    .status strong { color: var(--ink); font-weight: 600; }
+
+    .stage {
+      flex: 1 1 auto;
+      min-height: 0;
+      width: 100%;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr);
+      justify-items: center;
+      animation: rise 0.75s ease 0.08s both;
+    }
+
+    .book-wrap {
+      perspective: 2200px;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      display: grid;
+      place-items: center;
+      container-type: size;
+    }
+
+    .book {
+      position: relative;
+      /* Fit A4 leaf inside the remaining viewport box */
+      width: min(100cqw, calc(100cqh / 1.414));
+      height: min(100cqh, calc(100cqw * 1.414));
+      transform-style: preserve-3d;
+    }
+
+    .leaf {
+      position: absolute;
+      inset: 0;
+      transform-origin: left center;
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+      border-radius: 2px 6px 6px 2px;
+      box-shadow:
+        0 1px 0 color-mix(in srgb, #fff 55%, transparent),
+        0 18px 40px color-mix(in srgb, var(--desk) 45%, transparent),
+        0 2px 6px color-mix(in srgb, #000 25%, transparent);
+      background:
+        linear-gradient(90deg, color-mix(in srgb, #000 6%, transparent) 0, transparent 14px),
+        var(--paper);
+      overflow: hidden;
+    }
+
+    .leaf::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='80' height='80' filter='url(%23n)'/%3E%3C/svg%3E");
+      z-index: 2;
+    }
+
+    .leaf-face {
+      position: absolute;
+      inset: 0;
+      padding: clamp(0.55rem, 2.2cqi, 1.1rem) clamp(0.6rem, 2.4cqi, 1.25rem);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+      container-type: size;
+    }
+
+    .leaf.is-under {
+      z-index: 1;
+    }
+
+    .leaf.is-front {
+      z-index: 3;
+    }
+
+    .leaf.is-flipping-next {
+      z-index: 4;
+      animation: flipNext var(--flip-ms) ease forwards;
+    }
+
+    .leaf.is-flipping-prev {
+      z-index: 4;
+      animation: flipPrev var(--flip-ms) ease forwards;
+    }
+
+    @keyframes flipNext {
+      from { transform: rotateY(0deg); }
+      to { transform: rotateY(-180deg); }
+    }
+
+    @keyframes flipPrev {
+      from { transform: rotateY(0deg); }
+      to { transform: rotateY(180deg); }
+    }
+
+    .leaf-header {
+      display: grid;
+      gap: 0.1rem;
+      padding-bottom: 0.4rem;
+      margin-bottom: 0.45rem;
+      border-bottom: 2px solid var(--ink);
+      flex: 0 0 auto;
+    }
+
+    .leaf-header .country {
+      font-family: var(--font-display);
+      font-size: clamp(0.95rem, 3.2cqi, 1.4rem);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .leaf-header .meta {
+      font-size: clamp(0.65rem, 1.8cqi, 0.78rem);
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+
+    .leaf-fit {
+      flex: 1 1 auto;
+      min-height: 0;
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .leaf-body {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.75rem;
+      box-sizing: border-box;
+    }
+
+    .set-block {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      min-width: 0;
+    }
+
+    .set-heading {
+      display: grid;
+      gap: 0.05rem;
+    }
+
+    .set-heading h2 {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: clamp(0.8rem, 2.4cqi, 1.05rem);
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .set-heading .facts {
+      margin: 0;
+      font-size: clamp(0.62rem, 1.7cqi, 0.72rem);
+      color: var(--muted);
+    }
+
+    .set-heading .continued {
+      font-style: italic;
+      color: var(--seal);
+    }
+
+    .mounts {
+      --mount-cols: 4;
+      --mount-gap: clamp(0.15rem, 1.3cqi, 0.65rem);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      row-gap: clamp(0.18rem, 1.2cqh, 0.55rem);
+      width: 100%;
+    }
+
+    .mount-row {
+      display: grid;
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+      justify-items: center;
+      align-items: flex-end;
+      column-gap: var(--mount-gap);
+      width: var(--row-width, 100%);
+    }
+
+    .mount-row.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .mount-row.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .mount-row.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .mount-row.cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+
+    .mount {
+      display: grid;
+      gap: 0.2rem;
+      justify-items: center;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+    }
+
+    /* Black mount hugs the stamp — fixed stamp size, even padding */
+    .mount-frame {
+      background: transparent;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      justify-self: center;
+      width: auto;
+      max-width: 100%;
+      height: auto;
+      box-sizing: border-box;
+      box-shadow: none;
+      cursor: zoom-in;
+    }
+
+    .mount-frame img {
+      display: block;
+      max-width: min(4.25rem, 100%);
+      max-height: min(5rem, 16cqh);
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      background: transparent;
+      box-shadow:
+        0 0 0 0.14rem var(--mount),
+        0 0 0 calc(0.14rem + 1px) color-mix(in srgb, #fff 8%, transparent);
+      pointer-events: none;
+    }
+
+    .mount-frame .placeholder {
+      width: 3.4rem;
+      height: 4rem;
+      max-width: 100%;
+      max-height: 16cqh;
+      display: grid;
+      place-items: center;
+      color: #888;
+      font-size: 0.55rem;
+      text-align: center;
+      padding: 0.15rem;
+      background: var(--mount);
+    }
+
+    .mount figcaption {
+      margin: 0;
+      text-align: center;
+      font-size: 0.62rem;
+      line-height: 1.15;
+      color: var(--ink);
+      max-width: 5.2rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* 10–12 stamps: slightly smaller so three rows fit cleanly */
+    .mounts.is-crowded .mount-frame img {
+      max-width: min(3.55rem, 100%);
+      max-height: min(4.2rem, 12cqh);
+    }
+
+    .mounts.is-crowded .mount-frame .placeholder {
+      width: 3rem;
+      height: 3.6rem;
+      max-width: 100%;
+      max-height: 12cqh;
+    }
+
+    .mounts.is-crowded .mount figcaption {
+      max-width: 4.4rem;
+      font-size: 0.58rem;
+    }
+
+    .mounts.is-crowded {
+      --mount-gap: clamp(0.12rem, 1cqi, 0.5rem);
+      row-gap: clamp(0.15rem, 0.9cqh, 0.4rem);
+    }
+
+    /* A true one-stamp leaf should present the stamp as the page's focal point. */
+    .leaf-face[data-stamps="1"] .mount-frame img {
+      height: min(14rem, 58cqh);
+      width: auto;
+      max-width: min(12rem, 72cqi);
+      max-height: 58cqh;
+    }
+
+    .leaf-face[data-stamps="1"] .mount-frame .placeholder {
+      width: min(8rem, 55cqi);
+      height: min(10rem, 48cqh);
+      max-width: 72cqi;
+      max-height: 58cqh;
+    }
+
+    .leaf-face[data-stamps="1"] .mount figcaption {
+      max-width: min(14rem, 80cqi);
+      font-size: clamp(0.68rem, 2cqi, 0.85rem);
+    }
+
+    .book.is-collector .mount-frame img:not(.is-own) {
+      filter: grayscale(1) contrast(1.05);
+    }
+
+    .book.is-collector .mount-frame[data-stamp-key] {
+      cursor: zoom-in;
+    }
+
+    .book.is-collector .mount-frame[data-stamp-key]:hover {
+      outline: 1px solid color-mix(in srgb, var(--jade) 55%, transparent);
+      outline-offset: 1px;
+    }
+
+    .stamp-zoom {
+      border: none;
+      padding: 0;
+      margin: 0;
+      max-width: none;
+      max-height: none;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+    }
+
+    .stamp-zoom::backdrop {
+      background: color-mix(in srgb, #0c0a08 78%, transparent);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+    }
+
+    .stamp-zoom-inner {
+      box-sizing: border-box;
+      min-height: 100dvh;
+      min-height: 100svh;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      gap: 0.45rem;
+      padding:
+        max(0.5rem, env(safe-area-inset-top, 0px))
+        max(0.5rem, env(safe-area-inset-right, 0px))
+        max(0.5rem, env(safe-area-inset-bottom, 0px))
+        max(0.5rem, env(safe-area-inset-left, 0px));
+      color: #f4efe6;
+    }
+
+    .stamp-zoom-toolbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .stamp-zoom-caption {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: clamp(1rem, 2.8vw, 1.35rem);
+      line-height: 1.25;
+      max-width: 40rem;
+    }
+
+    .stamp-zoom-caption .sub {
+      display: block;
+      margin-top: 0.2rem;
+      font-family: var(--font-ui);
+      font-size: 0.85rem;
+      color: color-mix(in srgb, #f4efe6 70%, transparent);
+      font-weight: 400;
+    }
+
+    .stamp-zoom-close {
+      flex: 0 0 auto;
+      min-height: 2.5rem;
+      min-width: 2.5rem;
+      border: 1px solid color-mix(in srgb, #fff 28%, transparent);
+      background: color-mix(in srgb, #1a1814 55%, transparent);
+      color: #f4efe6;
+      border-radius: 999px;
+      font: inherit;
+      font-size: 1.25rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .stamp-zoom-stage {
+      display: grid;
+      place-items: center;
+      min-height: 0;
+      width: 100%;
+      height: 100%;
+      cursor: zoom-out;
+    }
+
+    .stamp-zoom-stage .frame {
+      background: #0c0c0c;
+      padding: clamp(0.4rem, 1.2vw, 0.7rem);
+      box-shadow:
+        0 0 0 1px color-mix(in srgb, #fff 12%, transparent),
+        0 18px 50px color-mix(in srgb, #000 55%, transparent);
+      /* Large enough to upscale thumbs; small enough to fit with chrome */
+      width: min(28rem, 78vw);
+      height: min(62dvh, 62svh, 78vw);
+      max-width: 100%;
+      max-height: 100%;
+      display: grid;
+      place-items: center;
+    }
+
+    .stamp-zoom-stage img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      object-position: center;
+      background: #111;
+    }
+
+    .stamp-zoom-stage img.is-bw {
+      filter: grayscale(1) contrast(1.05);
+    }
+
+    .stamp-zoom-hint {
+      margin: 0;
+      text-align: center;
+      font-size: 0.78rem;
+      color: color-mix(in srgb, #f4efe6 55%, transparent);
+    }
+
+    .mount .cv {
+      color: var(--jade);
+      font-weight: 500;
+    }
+
+    .set-footer {
+      margin: 0;
+      font-size: 0.72rem;
+      color: var(--muted);
+      flex: 0 0 auto;
+    }
+
+    .leaf-empty {
+      margin: auto;
+      text-align: center;
+      color: var(--muted);
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem 0.75rem;
+      flex: 0 0 auto;
+      animation: rise 0.78s ease 0.1s both;
+    }
+
+    .nav button {
+      min-height: 2.15rem;
+      min-width: 5rem;
+      border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
+      background: color-mix(in srgb, #fff 88%, transparent);
+      color: var(--ink);
+      font: inherit;
+      font-size: 0.88rem;
+      font-weight: 500;
+      padding: 0.3rem 0.75rem;
+      border-radius: 2px;
+      cursor: pointer;
+    }
+
+    .nav button:hover:not(:disabled) {
+      border-color: color-mix(in srgb, var(--jade) 45%, transparent);
+      background: #fff;
+    }
+
+    .nav button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .nav .page-label {
+      font-variant-numeric: tabular-nums;
+      font-size: 0.92rem;
+      color: var(--muted);
+      min-width: 6.5rem;
+      text-align: center;
+    }
+
+    .nav .page-label strong { color: var(--ink); }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(0.55rem); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @media (max-width: 640px) {
+      .brand p { display: none; }
+    }
+
+    /*
+     * iPhone layout — full-bleed safe-area shell, compact chrome,
+     * squatter leaf for stamp rows, and a bottom nav dock.
+     * Targets iOS phones (touch + narrow) in portrait and landscape.
+     */
+    @supports (-webkit-touch-callout: none) {
+      @media (max-width: 450px) and (hover: none) {
+        html, body {
+          background:
+            radial-gradient(120% 60% at 50% -10%, color-mix(in srgb, var(--seal) 14%, transparent), transparent 55%),
+            linear-gradient(180deg, #e4ddd0 0%, #d2c9b8 100%);
+        }
+
+        .app {
+          width: 100%;
+          max-width: none;
+          height: 100dvh;
+          height: 100svh;
+          padding:
+            max(0.45rem, env(safe-area-inset-top, 0px))
+            max(0.55rem, env(safe-area-inset-right, 0px))
+            0
+            max(0.55rem, env(safe-area-inset-left, 0px));
+          gap: 0.35rem;
+        }
+
+        .brand {
+          gap: 0;
+        }
+
+        .brand h1 {
+          font-size: 1.35rem;
+          letter-spacing: -0.01em;
+        }
+
+        .brand p { display: none; }
+
+        .controls {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 0.35rem 0.45rem;
+          padding: 0.35rem 0.45rem;
+          border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+          background: color-mix(in srgb, #fff 72%, transparent);
+          border-radius: 10px;
+          -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+        }
+
+        .controls label {
+          display: grid;
+          gap: 0.15rem;
+          font-size: 0.68rem;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          min-width: 0;
+        }
+
+        .controls select {
+          width: 100%;
+          max-width: none;
+          min-height: 2.55rem;
+          font-size: 0.95rem;
+          border-radius: 8px;
+          padding: 0.35rem 0.45rem;
+        }
+
+        .controls .toggle {
+          display: inline-flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 0.45rem;
+          min-height: 2.55rem;
+          padding: 0 0.35rem;
+          text-transform: none;
+          letter-spacing: 0;
+          font-size: 0.82rem;
+          font-weight: 500;
+          border-radius: 8px;
+          background: color-mix(in srgb, #fff 55%, transparent);
+        }
+
+        .controls .toggle input {
+          width: 1.15rem;
+          height: 1.15rem;
+        }
+
+        .status {
+          font-size: 0.72rem;
+          text-align: center;
+          padding: 0 0.25rem;
+        }
+
+        .stage {
+          gap: 0;
+          grid-template-rows: minmax(0, 1fr);
+        }
+
+        .book-wrap {
+          padding: 0.15rem 0.1rem;
+        }
+
+        .book {
+          /* Squatter than A4 so stamp rows breathe on a tall phone */
+          width: min(100cqw, calc(100cqh / 1.22));
+          height: min(100cqh, calc(100cqw * 1.22));
+          border-radius: 4px;
+        }
+
+        .leaf {
+          border-radius: 3px 8px 8px 3px;
+          box-shadow:
+            0 1px 0 color-mix(in srgb, #fff 50%, transparent),
+            0 10px 28px color-mix(in srgb, var(--desk) 40%, transparent);
+        }
+
+        .leaf-face {
+          padding: 0.55rem 0.6rem 0.65rem;
+        }
+
+        .leaf-header {
+          padding-bottom: 0.3rem;
+          margin-bottom: 0.35rem;
+        }
+
+        .leaf-header .country {
+          font-size: clamp(0.9rem, 4.5cqi, 1.15rem);
+        }
+
+        .set-heading h2 {
+          font-size: clamp(0.78rem, 3.6cqi, 0.95rem);
+        }
+
+        .mount-frame {
+          border-radius: 1px;
+        }
+
+        .nav {
+          width: 100%;
+          display: grid;
+          grid-template-columns: 1fr auto 1fr;
+          gap: 0.45rem;
+          align-items: center;
+          padding:
+            0.45rem 0.15rem
+            max(0.55rem, calc(0.35rem + env(safe-area-inset-bottom, 0px)));
+          background:
+            linear-gradient(180deg, transparent, color-mix(in srgb, #d8d0c0 88%, transparent) 28%);
+        }
+
+        .nav button {
+          min-height: 2.85rem;
+          min-width: 0;
+          width: 100%;
+          border-radius: 12px;
+          font-size: 1rem;
+          font-weight: 600;
+          background: color-mix(in srgb, #fff 92%, transparent);
+          box-shadow: 0 1px 2px color-mix(in srgb, #000 8%, transparent);
+          -webkit-tap-highlight-color: transparent;
+        }
+
+        .nav #prev-page { justify-self: stretch; }
+        .nav #next-page { justify-self: stretch; }
+
+        .nav .page-label {
+          min-width: 4.5rem;
+          font-size: 0.85rem;
+        }
+      }
+
+      /* iPhone landscape — wide leaf, slim top chrome, side-safe padding */
+      @media (orientation: landscape) and (max-height: 450px) and (hover: none) {
+        .app {
+          width: 100%;
+          max-width: none;
+          height: 100dvh;
+          height: 100svh;
+          padding:
+            max(0.25rem, env(safe-area-inset-top, 0px))
+            max(0.45rem, env(safe-area-inset-right, 0px))
+            max(0.25rem, env(safe-area-inset-bottom, 0px))
+            max(0.45rem, env(safe-area-inset-left, 0px));
+          display: grid;
+          grid-template-columns: minmax(9.5rem, 12rem) minmax(0, 1fr);
+          grid-template-rows: auto minmax(0, 1fr) auto;
+          grid-template-areas:
+            "brand stage"
+            "controls stage"
+            "status nav";
+          gap: 0.3rem 0.55rem;
+          align-content: stretch;
+        }
+
+        .brand {
+          grid-area: brand;
+        }
+
+        .brand h1 { font-size: 1.15rem; }
+        .brand p { display: none; }
+
+        .controls {
+          grid-area: controls;
+          display: flex;
+          flex-direction: column;
+          flex-wrap: nowrap;
+          align-items: stretch;
+          gap: 0.3rem;
+          padding: 0.35rem;
+          border-radius: 10px;
+          border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+          background: color-mix(in srgb, #fff 72%, transparent);
+          overflow: auto;
+          min-height: 0;
+        }
+
+        .controls label {
+          display: grid;
+          gap: 0.1rem;
+          font-size: 0.65rem;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
+        }
+
+        .controls select {
+          width: 100%;
+          max-width: none;
+          min-height: 2.2rem;
+          font-size: 0.85rem;
+        }
+
+        .controls .toggle {
+          display: inline-flex;
+          flex-direction: row;
+          align-items: center;
+          min-height: 2.1rem;
+          text-transform: none;
+          letter-spacing: 0;
+          font-size: 0.78rem;
+        }
+
+        .status {
+          grid-area: status;
+          font-size: 0.68rem;
+          white-space: normal;
+        }
+
+        .stage {
+          grid-area: stage;
+          grid-row: 1 / span 3;
+          display: grid;
+          grid-template-rows: minmax(0, 1fr);
+          min-height: 0;
+          width: 100%;
+        }
+
+        .book-wrap {
+          min-height: 0;
+          height: 100%;
+        }
+
+        .book {
+          /* Landscape leaf — wider than tall for stamp strips */
+          width: min(100cqw, calc(100cqh * 1.45));
+          height: min(100cqh, calc(100cqw / 1.45));
+        }
+
+        .nav {
+          grid-area: nav;
+          display: flex;
+          flex-direction: row;
+          width: auto;
+          padding: 0;
+          background: none;
+          gap: 0.35rem;
+        }
+
+        .nav button {
+          min-height: 2.4rem;
+          min-width: 4.25rem;
+          flex: 1;
+          border-radius: 10px;
+          font-size: 0.9rem;
+        }
+
+        .nav .page-label {
+          min-width: 3.5rem;
+          font-size: 0.75rem;
+        }
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      :root { --flip-ms: 1ms; }
+      .brand, .controls, .status, .stage, .nav { animation: none; }
+      .leaf.is-flipping-next,
+      .leaf.is-flipping-prev {
+        animation: none;
+      }
+    }
+    </style>
+
+  _content: |
+    <main class="app">
+      <header class="brand">
+        <h1>Album <span>View</span></h1>
+        <p>{{ tagline }}</p>
+      </header>
+
+      <div class="controls">
+        <label>
+          Country
+          <select id="country-select" aria-label="Country"></select>
+        </label>
+        <label>
+          Category
+          <select id="category-select" aria-label="Category">
+            <option value="Postage stamps">Postage stamps</option>
+            <option value="*">All categories</option>
+          </select>
+        </label>
+        <label>
+          Decade
+          <select id="decade-select" aria-label="Jump to decade">
+            <option value="">All years</option>
+          </select>
+        </label>
+        <label class="toggle">
+          <input type="checkbox" id="show-cv" />
+          Show catalog value
+        </label>
+        <label class="toggle" title="Greyscale catalog images; right-click a stamp to upload your own">
+          <input type="checkbox" id="collector-mode" />
+          Collector mode
+        </label>
+      </div>
+
+      <p class="status" id="catalog-status" role="status">Loading catalogue…</p>
+
+      <input class="sr-only" id="collector-image" type="file" accept="image/jpeg,image/png,image/webp,image/gif" />
+
+      <dialog class="stamp-zoom" id="stamp-zoom" aria-label="Stamp zoom">
+        <div class="stamp-zoom-inner">
+          <div class="stamp-zoom-toolbar">
+            <p class="stamp-zoom-caption" id="zoom-caption"></p>
+            <button type="button" class="stamp-zoom-close" id="zoom-close" aria-label="Close zoom">×</button>
+          </div>
+          <div class="stamp-zoom-stage" id="zoom-stage">
+            <div class="frame">
+              <img id="zoom-image" alt="" />
+            </div>
+          </div>
+          <p class="stamp-zoom-hint" id="zoom-hint">Click anywhere or press Esc to close</p>
+        </div>
+      </dialog>
+
+      <section class="stage" aria-label="Album pages">
+        <div class="book-wrap">
+          <div class="book" id="book" aria-live="polite"></div>
+        </div>
+      </section>
+      <nav class="nav" aria-label="Page navigation">
+        <button type="button" id="prev-page" disabled>Previous</button>
+        <span class="page-label" id="page-label"><strong>0</strong> / 0</span>
+        <button type="button" id="next-page" disabled>Next</button>
+      </nav>
+    </main>
+
+    <script>
+    (() => {
+      /** Shared catalogues live one level above the app folder (public/catalogs/). */
+      const CATALOG_BASE = new URL("../catalogs/", window.location.href);
+      const PLACEHOLDER =
+        "data:image/svg+xml," +
+        encodeURIComponent(
+          `<svg xmlns="http://www.w3.org/2000/svg" width="90" height="120" viewBox="0 0 90 120">
+            <rect width="90" height="120" fill="#2a2a2a"/>
+            <text x="45" y="64" text-anchor="middle" fill="#888" font-family="sans-serif" font-size="10">No image</text>
+          </svg>`
+        );
+
+      const MONTHS = {
+        january: 1, february: 2, march: 3, april: 4, may: 5, june: 6,
+        july: 7, august: 8, september: 9, october: 10, november: 11, december: 12,
+      };
+
+      const LARGE_SET = 7;
+      const SMALL_SET = 5;
+      const MAX_MOUNTS = 15;
+      const PAIR_MAX = 8;
+
+      const countrySelect = document.getElementById("country-select");
+      const categorySelect = document.getElementById("category-select");
+      const decadeSelect = document.getElementById("decade-select");
+      const showCv = document.getElementById("show-cv");
+      const collectorMode = document.getElementById("collector-mode");
+      const collectorImage = document.getElementById("collector-image");
+      const stampZoom = document.getElementById("stamp-zoom");
+      const zoomImage = document.getElementById("zoom-image");
+      const zoomCaption = document.getElementById("zoom-caption");
+      const zoomClose = document.getElementById("zoom-close");
+      const zoomStage = document.getElementById("zoom-stage");
+      const catalogStatus = document.getElementById("catalog-status");
+      const book = document.getElementById("book");
+      const prevBtn = document.getElementById("prev-page");
+      const nextBtn = document.getElementById("next-page");
+      const pageLabel = document.getElementById("page-label");
+
+      let countries = [];
+      let catalog = null;
+      let leaves = [];
+      let pageIndex = 0;
+      let flipping = false;
+      let countryName = "";
+      let pendingCollectorKey = null;
+      let suppressZoomClick = false;
+      const overrides = new Map();
+
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const OVERRIDE_STORE = "albumview.collectorOverrides";
+
+      function syncCollectorClass() {
+        book.classList.toggle("is-collector", collectorMode.checked);
+      }
+
+      function stampKey(setId, stampIndex, no) {
+        return `${countrySelect.value}::${setId}::${stampIndex}::${String(no || "")}`;
+      }
+
+      function loadOverrides() {
+        overrides.clear();
+        try {
+          const raw = localStorage.getItem(OVERRIDE_STORE);
+          if (!raw) return;
+          const doc = JSON.parse(raw);
+          if (doc && typeof doc === "object") {
+            for (const [key, value] of Object.entries(doc)) {
+              if (typeof value === "string" && value.startsWith("data:image/")) {
+                overrides.set(key, value);
+              }
+            }
+          }
+        } catch (_) { /* ignore corrupt store */ }
+      }
+
+      function persistOverrides() {
+        const doc = Object.fromEntries(overrides.entries());
+        try {
+          localStorage.setItem(OVERRIDE_STORE, JSON.stringify(doc));
+        } catch (err) {
+          setStatus(`Saved in this session only (browser storage full): ${err.message || err}`, "error");
+        }
+      }
+
+      function readFileAsDataUrl(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result || ""));
+          reader.onerror = () => reject(reader.error || new Error("Could not read image"));
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function catalogUrl(file) {
+        return new URL(String(file || "").replace(/^\.\//, ""), CATALOG_BASE).href;
+      }
+
+      function parseIssueOrder(set) {
+        const year = Number(set.year);
+        const y = Number.isFinite(year) ? year : 0;
+        const note = String(set.note || "");
+        const m = note.match(/^(\d{1,2})\.\s*([A-Za-z]+)/) || note.match(/^([A-Za-z]+)\b/);
+        let month = 0;
+        let day = 0;
+        if (m) {
+          if (m[2]) {
+            day = Number(m[1]) || 0;
+            month = MONTHS[m[2].toLowerCase()] || 0;
+          } else {
+            month = MONTHS[m[1].toLowerCase()] || 0;
+          }
+        }
+        const catalogKey = String(set.catalog || set.id || "");
+        return [y, month, day, catalogKey];
+      }
+
+      function compareSets(a, b) {
+        const aa = parseIssueOrder(a);
+        const bb = parseIssueOrder(b);
+        for (let i = 0; i < 3; i += 1) {
+          if (aa[i] !== bb[i]) return aa[i] - bb[i];
+        }
+        return String(aa[3]).localeCompare(String(bb[3]), undefined, { numeric: true });
+      }
+
+      function stampCount(set) {
+        return Array.isArray(set.stamps) && set.stamps.length
+          ? set.stamps.length
+          : Math.max(1, (set.denominations || []).length || 1);
+      }
+
+      function stampPrice(stamp) {
+        const prices = stamp?.prices;
+        if (!prices || typeof prices !== "object") return null;
+        for (const key of ["mint", "mnh", "used"]) {
+          const n = Number(prices[key]);
+          if (Number.isFinite(n) && n > 0) return n;
+        }
+        return null;
+      }
+
+      function formatCv(amount) {
+        if (!Number.isFinite(amount)) return "";
+        return amount >= 100
+          ? `$${amount.toLocaleString(undefined, { maximumFractionDigits: 0 })}`
+          : `$${amount.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+      }
+
+      function issueLine(set) {
+        const years = set.year_end && set.year_end !== set.year
+          ? `${set.year}–${set.year_end}`
+          : String(set.year ?? "");
+        const noteHead = String(set.note || "").split("·")[0].trim();
+        const perforation = String(set.perforation || "").trim();
+        const parts = [years];
+        if (noteHead) parts.push(noteHead);
+        if (set.catalog) parts.push(set.catalog);
+        if (perforation && !/^perf/i.test(noteHead)) parts.push(`Perf: ${perforation}`);
+        return parts.filter(Boolean).join(" · ");
+      }
+
+      function stampsForSet(set) {
+        if (Array.isArray(set.stamps) && set.stamps.length) return set.stamps;
+        const denoms = set.denominations || [];
+        if (!denoms.length) {
+          return [{ no: set.catalog || "", denom: "", image: set.image_full || set.image || null }];
+        }
+        return denoms.map((denom, i) => ({
+          no: i === 0 ? (set.catalog || "") : "",
+          denom,
+          image: i === 0 ? (set.image_full || set.image || null) : null,
+        }));
+      }
+
+      function packLeaves(sets) {
+        const pages = [];
+        let i = 0;
+        while (i < sets.length) {
+          const set = sets[i];
+          const stamps = stampsForSet(set);
+          if (stamps.length > MAX_MOUNTS) {
+            let offset = 0;
+            let part = 0;
+            while (offset < stamps.length) {
+              const slice = stamps.slice(offset, offset + MAX_MOUNTS);
+              pages.push({
+                blocks: [{
+                  set,
+                  stamps: slice,
+                  continued: part > 0,
+                  part: part + 1,
+                  parts: Math.ceil(stamps.length / MAX_MOUNTS),
+                }],
+              });
+              offset += MAX_MOUNTS;
+              part += 1;
+            }
+            i += 1;
+            continue;
+          }
+
+          const n = stamps.length;
+          const alone = n >= LARGE_SET;
+          const next = sets[i + 1];
+          const nextN = next ? stampCount(next) : 0;
+          const canPair = !alone
+            && next
+            && nextN <= SMALL_SET
+            && n <= SMALL_SET
+            && n + nextN <= PAIR_MAX;
+
+          if (canPair) {
+            pages.push({
+              blocks: [
+                { set, stamps, continued: false },
+                { set: next, stamps: stampsForSet(next), continued: false },
+              ],
+            });
+            i += 2;
+          } else {
+            pages.push({ blocks: [{ set, stamps, continued: false }] });
+            i += 1;
+          }
+        }
+        return pages;
+      }
+
+      function setStatus(message, tone) {
+        catalogStatus.textContent = message;
+        if (tone) catalogStatus.dataset.tone = tone;
+        else delete catalogStatus.dataset.tone;
+      }
+
+      function renderMount(stamp, showValues, set, stampIndex) {
+        const key = stampKey(set?.id || "", stampIndex, stamp.no);
+        const own = overrides.get(key);
+        const src = own || stamp.image || PLACEHOLDER;
+        const no = String(stamp.no || "").trim();
+        const denom = String(stamp.denom || "").trim();
+        const caption = [no, denom].filter(Boolean).join(" · ") || "—";
+        const price = showValues ? stampPrice(stamp) : null;
+        const cv = price != null ? `<div class="cv">${escapeHtml(formatCv(price))}</div>` : "";
+        const hasImage = Boolean(own || stamp.image);
+        const img = hasImage
+          ? `<img class="${own ? "is-own" : ""}" src="${escapeHtml(src)}" alt="" loading="lazy" decoding="async" />`
+          : `<div class="placeholder">No image</div>`;
+        const setName = String(set?.name || "").trim();
+        const tips = ["Click to zoom"];
+        if (collectorMode.checked) tips.push("Right-click to upload your stamp");
+        return `<figure class="mount">
+          <div class="mount-frame"
+            data-stamp-key="${escapeHtml(key)}"
+            data-zoom-src="${escapeHtml(hasImage ? src : "")}"
+            data-zoom-own="${own ? "1" : ""}"
+            data-zoom-caption="${escapeHtml(caption)}"
+            data-zoom-set="${escapeHtml(setName)}"
+            title="${escapeHtml(tips.join(" · "))}"
+          >${img}</div>
+          <figcaption>${escapeHtml(caption)}${cv}</figcaption>
+        </figure>`;
+      }
+
+      function mountColumns(count) {
+        const n = Math.max(1, count);
+        if (n <= 5) return n;
+        if (n === 6) return 3;
+        if (n === 7 || n === 8) return 4;
+        if (n === 9) return 3;
+        if (n === 10) return 5;
+        if (n === 11 || n === 12) return 4;
+        if (n >= 13 && n <= 15) return 5;
+        return 4;
+      }
+
+      function mountRowSizes(count) {
+        const dedicated = {
+          4: [2, 2],
+          11: [3, 3, 3, 2],
+          12: [3, 3, 3, 3],
+          13: [3, 4, 3, 3],
+          14: [3, 4, 4, 3],
+          15: [4, 4, 3, 4],
+        };
+        if (dedicated[count]) return dedicated[count];
+
+        const columns = mountColumns(count);
+        const rows = [];
+        for (let remaining = count; remaining > 0; remaining -= columns) {
+          rows.push(Math.min(columns, remaining));
+        }
+        return rows;
+      }
+
+      function renderBlock(block, showValues) {
+        const { set, stamps, continued, part, parts } = block;
+        let sum = 0;
+        let priced = 0;
+        for (const stamp of stamps) {
+          const p = stampPrice(stamp);
+          if (p != null) { sum += p; priced += 1; }
+        }
+        const cont = continued
+          ? `<span class="continued"> (continued${parts > 1 ? ` ${part}/${parts}` : ""})</span>`
+          : "";
+        const footer = showValues && priced
+          ? `<p class="set-footer">Set CV (shown): ${escapeHtml(formatCv(sum))}</p>`
+          : "";
+        const rowSizes = mountRowSizes(stamps.length);
+        const cols = Math.max(...rowSizes);
+        const crowded = stamps.length >= 10 ? " is-crowded" : "";
+        const rows = [];
+        let offset = 0;
+        for (const rowSize of rowSizes) {
+          const rowWidth = `${(rowSize / cols) * 100}%`;
+          rows.push(`<div class="mount-row cols-${rowSize}" style="--row-width:${rowWidth}">
+            ${stamps.slice(offset, offset + rowSize).map((s, j) => renderMount(s, showValues, set, offset + j)).join("")}
+          </div>`);
+          offset += rowSize;
+        }
+        return `<article class="set-block">
+          <header class="set-heading">
+            <h2>${escapeHtml(set.name || "Untitled")}${cont}</h2>
+            <p class="facts">${escapeHtml(issueLine(set))}</p>
+          </header>
+          <div class="mounts${crowded}" style="--mount-cols:${cols}">
+            ${rows.join("")}
+          </div>
+          ${footer}
+        </article>`;
+      }
+
+      function leafHtml(leaf, index, total) {
+        if (!leaf || !leaf.blocks.length) {
+          return `<div class="leaf-face">
+            <header class="leaf-header">
+              <div class="country">${escapeHtml(countryName || "Album")}</div>
+            </header>
+            <p class="leaf-empty">No sets on this page.</p>
+          </div>`;
+        }
+        const years = leaf.blocks.map((b) => b.set.year).filter(Number.isFinite);
+        const yMin = years.length ? Math.min(...years) : "";
+        const yMax = years.length ? Math.max(...years) : "";
+        const yearLabel = yMin === yMax ? String(yMin) : `${yMin}–${yMax}`;
+        const showValues = showCv.checked;
+        const stampTotal = leaf.blocks.reduce((n, b) => n + (b.stamps?.length || 0), 0);
+        return `<div class="leaf-face" data-stamps="${stampTotal}">
+          <header class="leaf-header">
+            <div class="country">${escapeHtml(countryName || "Album")}</div>
+            <div class="meta">Page ${index + 1} of ${total} · ${escapeHtml(yearLabel)}</div>
+          </header>
+          <div class="leaf-fit">
+            <div class="leaf-body">
+              ${leaf.blocks.map((b) => renderBlock(b, showValues)).join("")}
+            </div>
+          </div>
+        </div>`;
+      }
+
+      function updateNav() {
+        const total = leaves.length;
+        pageLabel.innerHTML = `<strong>${total ? pageIndex + 1 : 0}</strong> / ${total}`;
+        prevBtn.disabled = flipping || pageIndex <= 0;
+        nextBtn.disabled = flipping || pageIndex >= total - 1 || total === 0;
+      }
+
+      function preloadAround(index) {
+        const range = [index - 1, index, index + 1];
+        for (const i of range) {
+          const leaf = leaves[i];
+          if (!leaf) continue;
+          for (const block of leaf.blocks) {
+            for (const stamp of block.stamps) {
+              if (!stamp.image) continue;
+              const img = new Image();
+              img.decoding = "async";
+              img.src = stamp.image;
+            }
+          }
+        }
+      }
+
+      function paintBook(frontIndex) {
+        const total = leaves.length;
+        book.replaceChildren();
+        if (!total) {
+          const empty = document.createElement("div");
+          empty.className = "leaf is-front";
+          empty.innerHTML = leafHtml(null, 0, 0);
+          book.appendChild(empty);
+          updateNav();
+          return;
+        }
+
+        const underIndex = Math.min(frontIndex + 1, total - 1);
+        if (underIndex !== frontIndex) {
+          const under = document.createElement("div");
+          under.className = "leaf is-under";
+          under.dataset.page = String(underIndex);
+          under.innerHTML = leafHtml(leaves[underIndex], underIndex, total);
+          book.appendChild(under);
+        }
+
+        const front = document.createElement("div");
+        front.className = "leaf is-front";
+        front.dataset.page = String(frontIndex);
+        front.innerHTML = leafHtml(leaves[frontIndex], frontIndex, total);
+        book.appendChild(front);
+        preloadAround(frontIndex);
+        syncCollectorClass();
+        updateNav();
+      }
+
+      function goTo(index, direction) {
+        if (flipping || !leaves.length) return;
+        const next = Math.max(0, Math.min(leaves.length - 1, index));
+        if (next === pageIndex) return;
+
+        if (reduceMotion || !direction) {
+          pageIndex = next;
+          paintBook(pageIndex);
+          return;
+        }
+
+        flipping = true;
+        updateNav();
+
+        const total = leaves.length;
+        const front = book.querySelector(".leaf.is-front");
+        let under = book.querySelector(".leaf.is-under");
+
+        if (direction === "next") {
+          const underIndex = next;
+          if (!under) {
+            under = document.createElement("div");
+            under.className = "leaf is-under";
+            book.insertBefore(under, front);
+          }
+          under.dataset.page = String(underIndex);
+          under.innerHTML = leafHtml(leaves[underIndex], underIndex, total);
+
+          let done = false;
+          const finish = () => {
+            if (done) return;
+            done = true;
+            front.removeEventListener("animationend", finish);
+            pageIndex = next;
+            flipping = false;
+            paintBook(pageIndex);
+          };
+          front.addEventListener("animationend", finish);
+          front.classList.remove("is-front");
+          front.classList.add("is-flipping-next");
+          window.setTimeout(finish, 800);
+        } else {
+          const incoming = document.createElement("div");
+          incoming.className = "leaf is-front";
+          incoming.style.transformOrigin = "left center";
+          incoming.style.transform = "rotateY(-180deg)";
+          incoming.dataset.page = String(next);
+          incoming.innerHTML = leafHtml(leaves[next], next, total);
+          book.appendChild(incoming);
+
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              incoming.style.transition = `transform var(--flip-ms) ease`;
+              incoming.style.transform = "rotateY(0deg)";
+            });
+          });
+
+          let done = false;
+          const finish = () => {
+            if (done) return;
+            done = true;
+            incoming.removeEventListener("transitionend", finish);
+            pageIndex = next;
+            flipping = false;
+            paintBook(pageIndex);
+          };
+          incoming.addEventListener("transitionend", finish);
+          window.setTimeout(finish, 800);
+        }
+      }
+
+      function rebuildLeaves() {
+        if (!catalog) {
+          leaves = [];
+          pageIndex = 0;
+          paintBook(0);
+          return;
+        }
+
+        const category = categorySelect.value;
+        let sets = Array.isArray(catalog.sets) ? catalog.sets.slice() : [];
+        if (category && category !== "*") {
+          sets = sets.filter((s) => String(s.category || s.era || "") === category);
+        }
+        sets.sort(compareSets);
+
+        const decade = decadeSelect.value;
+        if (decade) {
+          const start = Number(decade);
+          sets = sets.filter((s) => {
+            const y = Number(s.year);
+            return Number.isFinite(y) && y >= start && y < start + 10;
+          });
+        }
+
+        leaves = packLeaves(sets);
+        pageIndex = 0;
+        const stampTotal = sets.reduce((n, s) => n + stampCount(s), 0);
+        setStatus(
+          `${countryName}: ${sets.length.toLocaleString()} sets · ${stampTotal.toLocaleString()} stamps · ${leaves.length.toLocaleString()} pages`
+        );
+        paintBook(pageIndex);
+      }
+
+      function fillDecades(sets) {
+        const years = sets.map((s) => Number(s.year)).filter(Number.isFinite);
+        const current = decadeSelect.value;
+        decadeSelect.replaceChildren(new Option("All years", ""));
+        if (!years.length) return;
+        const min = Math.min(...years);
+        const max = Math.max(...years);
+        const start = Math.floor(min / 10) * 10;
+        const end = Math.floor(max / 10) * 10;
+        for (let d = start; d <= end; d += 10) {
+          decadeSelect.add(new Option(`${d}s`, String(d)));
+        }
+        if ([...decadeSelect.options].some((o) => o.value === current)) {
+          decadeSelect.value = current;
+        }
+      }
+
+      function fillCategories(doc) {
+        const current = categorySelect.value || "Postage stamps";
+        const cats = Array.isArray(doc.categories) ? doc.categories.slice() : [];
+        const fromSets = new Set(
+          (doc.sets || []).map((s) => s.category || s.era).filter(Boolean)
+        );
+        for (const c of fromSets) {
+          if (!cats.includes(c)) cats.push(c);
+        }
+        cats.sort((a, b) => a.localeCompare(b));
+        categorySelect.replaceChildren(new Option("All categories", "*"));
+        for (const c of cats) categorySelect.add(new Option(c, c));
+        if ([...categorySelect.options].some((o) => o.value === current)) {
+          categorySelect.value = current;
+        } else if (cats.includes("Postage stamps")) {
+          categorySelect.value = "Postage stamps";
+        } else {
+          categorySelect.value = "*";
+        }
+      }
+
+      async function loadCountries() {
+        const res = await fetch(catalogUrl("countries.json"));
+        if (!res.ok) throw new Error(`countries.json (${res.status})`);
+        const doc = await res.json();
+        countries = Array.isArray(doc.countries) ? doc.countries : [];
+        const params = new URLSearchParams(window.location.search);
+        const wanted = params.get("country") || "nl";
+        countrySelect.replaceChildren();
+        for (const c of countries) {
+          if (c.id === "cn-demo") continue;
+          countrySelect.add(new Option(c.name, c.id));
+        }
+        if ([...countrySelect.options].some((o) => o.value === wanted)) {
+          countrySelect.value = wanted;
+        } else if (countries.length) {
+          countrySelect.value = countries[0].id;
+        }
+      }
+
+      async function loadCatalog(countryId) {
+        const entry = countries.find((c) => c.id === countryId);
+        if (!entry) throw new Error("Unknown country");
+        setStatus(`Loading ${entry.name}…`);
+        const res = await fetch(catalogUrl(entry.catalog));
+        if (!res.ok) throw new Error(`${entry.catalog} (${res.status})`);
+        catalog = await res.json();
+        countryName = catalog.name || catalog.country || entry.name;
+        fillCategories(catalog);
+        fillDecades(catalog.sets || []);
+        const url = new URL(window.location.href);
+        url.searchParams.set("country", countryId);
+        history.replaceState(null, "", url);
+        rebuildLeaves();
+      }
+
+      async function boot() {
+        try {
+          await loadCountries();
+          await loadCatalog(countrySelect.value);
+        } catch (err) {
+          console.error(err);
+          setStatus(`Could not load catalogue: ${err.message || err}`, "error");
+          leaves = [];
+          paintBook(0);
+        }
+      }
+
+      countrySelect.addEventListener("change", () => {
+        loadCatalog(countrySelect.value).catch((err) => {
+          setStatus(`Could not load catalogue: ${err.message || err}`, "error");
+        });
+      });
+      categorySelect.addEventListener("change", rebuildLeaves);
+      decadeSelect.addEventListener("change", rebuildLeaves);
+      showCv.addEventListener("change", () => paintBook(pageIndex));
+      collectorMode.addEventListener("change", () => {
+        syncCollectorClass();
+        paintBook(pageIndex);
+        if (collectorMode.checked) {
+          setStatus("Collector mode: catalog images are greyscale — right-click a stamp to upload yours.");
+        }
+      });
+
+      function openStampZoom(frame) {
+        const src = frame.getAttribute("data-zoom-src");
+        if (!src) return;
+        const caption = frame.getAttribute("data-zoom-caption") || "";
+        const setName = frame.getAttribute("data-zoom-set") || "";
+        const own = frame.getAttribute("data-zoom-own") === "1";
+        zoomImage.src = src;
+        zoomImage.classList.toggle("is-bw", collectorMode.checked && !own);
+        zoomImage.alt = caption || setName || "Stamp";
+        zoomCaption.innerHTML = `${escapeHtml(caption || "Stamp")}${
+          setName ? `<span class="sub">${escapeHtml(setName)}</span>` : ""
+        }`;
+        if (typeof stampZoom.showModal === "function") stampZoom.showModal();
+        else stampZoom.setAttribute("open", "");
+      }
+
+      function closeStampZoom() {
+        if (stampZoom.open) stampZoom.close();
+        zoomImage.removeAttribute("src");
+      }
+
+      book.addEventListener("click", (ev) => {
+        if (suppressZoomClick) {
+          suppressZoomClick = false;
+          return;
+        }
+        const frame = ev.target.closest?.(".mount-frame[data-zoom-src]");
+        if (!frame || !frame.getAttribute("data-zoom-src")) return;
+        ev.preventDefault();
+        openStampZoom(frame);
+      });
+
+      zoomClose.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        closeStampZoom();
+      });
+
+      zoomStage.addEventListener("click", () => closeStampZoom());
+
+      stampZoom.addEventListener("click", (ev) => {
+        if (ev.target === stampZoom) closeStampZoom();
+      });
+
+      stampZoom.addEventListener("cancel", (ev) => {
+        ev.preventDefault();
+        closeStampZoom();
+      });
+
+      book.addEventListener("contextmenu", (ev) => {
+        if (!collectorMode.checked) return;
+        const frame = ev.target.closest?.("[data-stamp-key]");
+        if (!frame) return;
+        ev.preventDefault();
+        pendingCollectorKey = frame.getAttribute("data-stamp-key");
+        collectorImage.value = "";
+        collectorImage.click();
+      });
+
+      collectorImage.addEventListener("change", async () => {
+        const key = pendingCollectorKey;
+        const file = collectorImage.files?.[0];
+        pendingCollectorKey = null;
+        if (!key || !file) return;
+        if (!file.type.startsWith("image/")) {
+          setStatus("Choose a JPEG, PNG, WebP, or GIF image.", "error");
+          return;
+        }
+        try {
+          const dataUrl = await readFileAsDataUrl(file);
+          if (!dataUrl.startsWith("data:image/")) throw new Error("Invalid image data");
+          overrides.set(key, dataUrl);
+          persistOverrides();
+          setStatus(`Replaced with your image (${file.name}).`);
+          paintBook(pageIndex);
+        } catch (err) {
+          setStatus(`Could not use image: ${err.message || err}`, "error");
+        }
+      });
+
+      prevBtn.addEventListener("click", () => goTo(pageIndex - 1, "prev"));
+      nextBtn.addEventListener("click", () => goTo(pageIndex + 1, "next"));
+
+      window.addEventListener("keydown", (ev) => {
+        if (ev.target && /^(INPUT|SELECT|TEXTAREA)$/.test(ev.target.tagName)) return;
+        if (ev.key === "ArrowLeft") {
+          ev.preventDefault();
+          goTo(pageIndex - 1, "prev");
+        } else if (ev.key === "ArrowRight") {
+          ev.preventDefault();
+          goTo(pageIndex + 1, "next");
+        }
+      });
+
+      /* iPhone / iOS phone: mark shell + swipe to flip pages */
+      const isIosPhone = () => {
+        const ua = navigator.userAgent || "";
+        const iPhone = /iPhone|iPod/i.test(ua);
+        const iPadAsPhone = /iPad/i.test(ua) && window.matchMedia("(max-width: 450px)").matches;
+        const touchMac = navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1
+          && window.matchMedia("(max-width: 450px)").matches;
+        return iPhone || iPadAsPhone || touchMac;
+      };
+      if (isIosPhone()) document.body.classList.add("is-iphone");
+
+      (() => {
+        let startX = 0;
+        let startY = 0;
+        let tracking = false;
+        const threshold = 48;
+        const bookEl = book;
+
+        bookEl.addEventListener("touchstart", (ev) => {
+          if (!ev.touches?.[0]) return;
+          tracking = true;
+          startX = ev.touches[0].clientX;
+          startY = ev.touches[0].clientY;
+        }, { passive: true });
+
+        bookEl.addEventListener("touchend", (ev) => {
+          if (!tracking || !ev.changedTouches?.[0]) return;
+          tracking = false;
+          const dx = ev.changedTouches[0].clientX - startX;
+          const dy = ev.changedTouches[0].clientY - startY;
+          if (Math.abs(dx) < threshold || Math.abs(dx) < Math.abs(dy)) return;
+          suppressZoomClick = true;
+          if (dx < 0) goTo(pageIndex + 1, "next");
+          else goTo(pageIndex - 1, "prev");
+        }, { passive: true });
+
+        bookEl.addEventListener("touchcancel", () => { tracking = false; }, { passive: true });
+      })();
+
+      loadOverrides();
+      boot();
+    })();
+    </script>
+---

@@ -266,6 +266,7 @@ export function to_finder_sets(input) {
     const ref = String(set.ref ?? set.id ?? "");
     // StampWorld reuses g0001-style refs per category — namespace when needed.
     const id = category && set.ref ? `${set.ref}::${category}` : ref;
+    const perforation = String(set.perforation ?? "").trim();
     return {
       id,
       name: String(set.title ?? set.name ?? set.ref ?? set.id ?? ""),
@@ -281,6 +282,7 @@ export function to_finder_sets(input) {
       era: set.era || category || "prc",
       image: thumb,
       image_full: full && full !== thumb ? full : null,
+      ...(perforation ? { perforation } : {}),
       stamps,
       note: setNote(set) || String(set.note ?? ""),
     };

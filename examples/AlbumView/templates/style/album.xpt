@@ -1,0 +1,13 @@
+---
+# Album View style tokens — cooler printed-album paper than SetFinder.
+ink: "#1a1814"
+paper: "#f7f3ea"
+seal: "#8b2942"
+jade: "#2d4a3e"
+mist: "#d4cfc4"
+muted: "#5c574f"
+desk: "#3d3429"
+mount: "#0c0c0c"
+font_display: '"Source Serif 4", "Noto Serif SC", "Songti SC", Georgia, serif'
+font_ui: '"IBM Plex Sans", "Noto Sans SC", "PingFang SC", sans-serif'
+---

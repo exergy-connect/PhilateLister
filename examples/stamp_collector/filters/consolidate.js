@@ -14,6 +14,7 @@ import {
   parse_category_period_filename,
 } from "./paths.js";
 import { normalize_denomination, order_denominations } from "./denominations.js";
+import { normalize_perforation } from "./perforations.js";
 
 function listCatalogueFiles(dir) {
   return readdirSync(dir)
@@ -104,6 +105,18 @@ function normalizePeriodDenominations(periods, countryCode) {
         if (stamp?.denom == null) continue;
         stamp.denom = normalize_denomination(countryCode, stamp.denom);
       }
+    }
+  }
+}
+
+/** Rewrite set-level perforation details into a stable catalog representation. */
+function normalizePeriodPerforations(periods) {
+  for (const period of Object.values(periods)) {
+    for (const set of period?.sets ?? []) {
+      if (set?.perforation == null) continue;
+      const perforation = normalize_perforation(set.perforation);
+      if (perforation) set.perforation = perforation;
+      else delete set.perforation;
     }
   }
 }
@@ -205,6 +218,7 @@ export function consolidate_periods(dirOrPaths, denominationModel = {}) {
     : undefined;
 
   normalizePeriodDenominations(periods, code);
+  normalizePeriodPerforations(periods);
 
   return {
     ...(base ? { base } : {}),

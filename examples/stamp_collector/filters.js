@@ -26,6 +26,7 @@ export {
   consolidate_country,
 } from "./filters/country.js";
 export { consolidate_periods } from "./filters/consolidate.js";
+export { normalize_perforation } from "./filters/perforations.js";
 export { write_period_json, write_collection_xp } from "./filters/write_output.js";
 
 import thumbnails from "./filters/thumbnails.js";
@@ -34,6 +35,7 @@ import collect from "./filters/collect.js";
 import paths from "./filters/paths.js";
 import country from "./filters/country.js";
 import { consolidate_periods } from "./filters/consolidate.js";
+import perforations from "./filters/perforations.js";
 import writeOutput from "./filters/write_output.js";
 
 export default {
@@ -43,5 +45,6 @@ export default {
   ...paths,
   ...country,
   consolidate_periods,
+  ...perforations,
   ...writeOutput,
 };

@@ -1,0 +1,64 @@
+---
+# Album View — browse a country’s issues as Davo-style album pages.
+# Compose with --final html. Catalogs load at runtime from the shared
+# public/catalogs/ tree (../catalogs/ relative to the deployed page).
+#
+# Demo / build:
+#   xform filters.js index.xp --final html
+#   node server.mjs
+# Open http://localhost:8090/ — catalogs are served from ../SetFinder/catalogs
+# (same JSON that CI publishes once to public/catalogs/).
+#
+# Deployed URL layout (GitHub Pages):
+#   /albumview/index.html
+#   /catalogs/*.json          ← shared with /setfinder/
+
+title: Album View
+tagline: Flip through a country’s stamp sets in issue order, laid out like a printed album.
+_final:
+  _templates: file://./templates/_final/
+
+{% include "file://./filters/album_catalog.js" %}
+
+application:
+  _templates: file://./templates/application/
+
+style:
+  _templates: file://./templates/style/
+  ink: "#1a1814"
+  paper: "#f7f3ea"
+  seal: "#8b2942"
+  jade: "#2d4a3e"
+  mist: "#d4cfc4"
+  muted: "#5c574f"
+  desk: "#3d3429"
+  mount: "#0c0c0c"
+  font_display: '"Source Serif 4", "Noto Serif SC", "Songti SC", Georgia, serif'
+  font_ui: '"IBM Plex Sans", "Noto Sans SC", "PingFang SC", sans-serif'
+
+stamp_set:
+  _attributes:
+    id: _string
+    name: _string
+    name_zh: _string
+    year:
+      _type: _integer
+      _required: true
+    year_end: _integer
+    denominations:
+      _type: [_string]
+      _required: true
+    catalog: _string
+    era: _string
+    category: _string
+    image: _string
+    image_full: _string
+    perforation: _string
+    _content: _string
+
+_document:
+  application: album
+---
+# Optional body directives — same shape as SetFinder catalog set entries.
+# Shared catalogues: public/catalogs/*.json (see countries.json).
+...

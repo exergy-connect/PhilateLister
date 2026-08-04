@@ -1,6 +1,9 @@
 ---
 # Set Finder — identify stamp sets by picture and denomination.
-# Compose with --final html. Catalogs load at runtime from ./catalogs/.
+# Compose with --final html. Catalogs load at runtime from the shared
+# public/catalogs/ tree (../catalogs/ relative to the deployed page).
+# Build artefacts are still written to ./catalogs/ by scripts/build-catalogs.mjs;
+# CI publishes that folder once to public/catalogs/ for SetFinder and AlbumView.
 #
 # Demo / build:
 #   node scripts/build-catalogs.mjs
@@ -53,6 +56,7 @@ stamp_set:
     era: _string
     image: _string
     image_full: _string
+    perforation: _string
     _content: _string
 
 image_upload:
@@ -92,5 +96,5 @@ _document:
   application: finder
 ---
 # Optional body directives — same shape as catalog set entries.
-# Country catalogues live in catalogs/*.json (see catalogs/countries.json).
+# Country catalogues: build into catalogs/*.json; served from public/catalogs/.
 ...

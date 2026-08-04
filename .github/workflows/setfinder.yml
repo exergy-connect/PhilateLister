@@ -75,7 +75,7 @@ jobs:
           sources: filters.js index.xp
           materialization: html
 
-      - name: Publish to public/setfinder
+      - name: Publish to public/setfinder and shared catalogs
         run: |
           set -euo pipefail
           src_html="examples/SetFinder/output/index.html"
@@ -83,20 +83,23 @@ jobs:
             echo "::error file=${src_html}::SetFinder HTML was not produced"
             exit 1
           fi
-          mkdir -p public/setfinder/catalogs public/setfinder/images
+          mkdir -p public/setfinder/images public/catalogs
           cp "$src_html" public/setfinder/index.html
-          cp examples/SetFinder/catalogs/*.json public/setfinder/catalogs/
+          # Single shared catalogue tree for SetFinder + AlbumView (not per-app copies).
+          cp examples/SetFinder/catalogs/*.json public/catalogs/
           cp -R examples/SetFinder/images/. public/setfinder/images/
           if [[ -f examples/SetFinder/favicon.ico ]]; then
             cp examples/SetFinder/favicon.ico public/setfinder/favicon.ico
           fi
+          # Drop legacy per-app catalogue copies if present.
+          rm -rf public/setfinder/catalogs
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/setfinder
+          git add public/setfinder public/catalogs
           if git diff --staged --quiet; then
-            echo "No changes to public/setfinder/."
+            echo "No changes to public/setfinder/ or public/catalogs/."
             exit 0
           fi
-          git commit -m "public: refresh setfinder viewer (CI)"
+          git commit -m "public: refresh setfinder viewer and shared catalogs (CI)"
           git push origin "HEAD:${GITHUB_REF_NAME}"

@@ -1,6 +1,10 @@
 import { denominationValue as chinaDenominationValue } from "./countries/china.js";
 import { denominationValue as denmarkDenominationValue } from "./countries/denmark.js";
 import {
+  denominationValue as netherlandsDenominationValue,
+  normalizeDenomination as netherlandsNormalizeDenomination,
+} from "./countries/netherlands.js";
+import {
   denominationValue as taiwanDenominationValue,
   normalizeDenomination as taiwanNormalizeDenomination,
 } from "./countries/taiwan.js";
@@ -8,10 +12,12 @@ import {
 const COUNTRY_VALUE = {
   cn: chinaDenominationValue,
   dk: denmarkDenominationValue,
+  nl: netherlandsDenominationValue,
   tw: taiwanDenominationValue,
 };
 
 const COUNTRY_NORMALIZE = {
+  nl: netherlandsNormalizeDenomination,
   tw: taiwanNormalizeDenomination,
 };
 

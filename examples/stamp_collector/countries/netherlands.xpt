@@ -7,6 +7,9 @@
 
 code: nl
 stampworld: Netherlands
+denominations:
+  special:
+    - DECEMBER
 categories:
   - "Postage stamps"
   - "Postage due stamps"

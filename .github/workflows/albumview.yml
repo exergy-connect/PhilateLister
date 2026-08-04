@@ -48,6 +48,8 @@ jobs:
           if [[ -f examples/AlbumView/favicon.ico ]]; then
             cp examples/AlbumView/favicon.ico public/albumview/favicon.ico
           fi
+          built_at="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          sed -i "s/<html /<html data-built=\"${built_at}\" /" public/albumview/index.html
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

@@ -599,6 +599,24 @@ html:
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
+
+    .last-updated {
+      position: fixed;
+      right: max(0.65rem, env(safe-area-inset-right, 0px));
+      bottom: max(0.45rem, env(safe-area-inset-bottom, 0px));
+      z-index: 30;
+      margin: 0;
+      padding: 0.15rem 0.4rem;
+      font-size: 0.7rem;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.01em;
+      color: var(--muted);
+      background: color-mix(in srgb, var(--paper) 82%, transparent);
+      border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+      border-radius: 2px;
+      pointer-events: none;
+      white-space: nowrap;
+    }
     </style>
   _content: |
     <main class="app">
@@ -692,11 +710,28 @@ html:
         </form>
       </dialog>
     </main>
+    <time class="last-updated" id="last-updated"></time>
 
     <script>
     (() => {
       /** Shared catalogues: public/catalogs/ (../catalogs/ from /setfinder/). */
       const CATALOG_BASE = new URL("../catalogs/", window.location.href);
+
+      (() => {
+        const el = document.getElementById("last-updated");
+        if (!el) return;
+        const raw = document.documentElement.dataset.built || document.lastModified;
+        const d = new Date(raw);
+        if (Number.isNaN(d.getTime())) return;
+        el.dateTime = d.toISOString();
+        el.textContent = `Last updated ${d.toLocaleString(undefined, {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "numeric",
+          minute: "2-digit",
+        })}`;
+      })();
       const denomChips = document.getElementById("denom-chips");
       const denomGroups = [
         {

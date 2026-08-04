@@ -13,10 +13,11 @@ on:
       - "public/aps/index.html"
       - "public/psag/*"
       - "public/setfinder/**"
+      - "public/albumview/**"
 
   # Pushes from CI bots use GITHUB_TOKEN and do not fire `push` workflows; redeploy when they finish.
   workflow_run:
-    workflows: ["xFrame consolidate", "Find Chinese Sets"]
+    workflows: ["xFrame consolidate", "Set Finder", "Album View"]
     types: [completed]
     branches: [main]
 

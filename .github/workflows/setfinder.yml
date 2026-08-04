@@ -33,11 +33,11 @@ jobs:
         with:
           node-version: "24"
 
-      - name: Install ImageMagick (thumbnails)
-        run: |
-          set -euo pipefail
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends imagemagick
+      # - name: Install ImageMagick (thumbnails)
+      #   run: |
+      #     set -euo pipefail
+      #     sudo apt-get update
+      #     sudo apt-get install -y --no-install-recommends imagemagick
 
       # collect.sh / consolidate.sh need `xform` on PATH (--with args the action
       # does not expose). The compile step below uses the action; it does not
@@ -91,8 +91,6 @@ jobs:
           if [[ -f examples/SetFinder/favicon.ico ]]; then
             cp examples/SetFinder/favicon.ico public/setfinder/favicon.ico
           fi
-          # Drop legacy per-app catalogue copies if present.
-          rm -rf public/setfinder/catalogs
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

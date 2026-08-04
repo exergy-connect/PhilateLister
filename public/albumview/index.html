@@ -1245,7 +1245,16 @@ body::before {
   }
 
   function stampsForSet(set) {
-    if (Array.isArray(set.stamps) && set.stamps.length) return set.stamps;
+    if (Array.isArray(set.stamps) && set.stamps.length) {
+      // Drop unnamed shells with no image (common StampWorld perf variants).
+      return set.stamps.filter((stamp) => {
+        const no = String(stamp?.no ?? "").trim();
+        const catalogs = stamp?.catalogs;
+        const hasCatalogs = catalogs && typeof catalogs === "object"
+          && Object.keys(catalogs).length > 0;
+        return Boolean(no || stamp?.image || hasCatalogs);
+      });
+    }
     const denoms = set.denominations || [];
     if (!denoms.length) {
       return [{ no: set.catalog || "", denom: "", image: set.image_full || set.image || null }];

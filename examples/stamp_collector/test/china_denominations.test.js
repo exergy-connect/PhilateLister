@@ -15,3 +15,35 @@ test("China orders early $ before normalized fen and yuan", () => {
     ],
   );
 });
+
+test("China orders overprints by new face then old face", () => {
+  assert.deepEqual(
+    order_denominations("cn", [
+      "50/20$/C",
+      "100/5.00$",
+      "50/2$",
+      "50/10$",
+      "400/5.00$",
+      "50/10$/C",
+      "100/2.50$",
+      "20000/10000$",
+    ]),
+    [
+      "50/2$",
+      "50/10$",
+      "50/10$/C",
+      "50/20$/C",
+      "100/2.50$",
+      "100/5.00$",
+      "400/5.00$",
+      "20000/10000$",
+    ],
+  );
+});
+
+test("China orders surcharges by base then added value", () => {
+  assert.deepEqual(
+    order_denominations("cn", ["8+4 分", "8+2 分", "10+2分"]),
+    ["8+2 分", "8+4 分", "10+2分"],
+  );
+});

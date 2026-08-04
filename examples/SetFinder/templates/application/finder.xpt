@@ -220,6 +220,22 @@ html:
       color: #fff;
     }
 
+    .chip:disabled,
+    .chip[aria-disabled="true"] {
+      opacity: 0.38;
+      cursor: not-allowed;
+      transform: none;
+      border-color: color-mix(in srgb, var(--ink) 12%, transparent);
+      color: var(--muted);
+      background: transparent;
+    }
+
+    .chip:disabled:hover,
+    .chip[aria-disabled="true"]:hover {
+      border-color: color-mix(in srgb, var(--ink) 12%, transparent);
+      transform: none;
+    }
+
     .chip-clear {
       border-style: dashed;
       color: var(--muted);
@@ -444,16 +460,30 @@ html:
       line-height: 1.25;
       min-width: 0;
       overflow-wrap: anywhere;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
-      line-clamp: 2;
-      overflow: hidden;
     }
 
     .detail .stamp-thumbs figcaption .stamp-no {
       display: block;
       color: color-mix(in srgb, var(--muted) 80%, var(--ink));
+    }
+
+    .detail .stamp-thumbs figcaption .stamp-prices {
+      display: none;
+      margin-top: 0.25rem;
+      color: var(--jade);
+      font-size: 0.68rem;
+      line-height: 1.3;
+      white-space: pre-line;
+    }
+
+    @media (hover: none), (max-width: 720px) {
+      .detail .stamp-thumbs {
+        grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+      }
+
+      .detail .stamp-thumbs figcaption .stamp-prices {
+        display: block;
+      }
     }
 
     .empty {
@@ -555,7 +585,7 @@ html:
       }
 
       .detail .stamp-thumbs {
-        grid-template-columns: repeat(auto-fill, minmax(4.75rem, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
         gap: 0.5rem;
       }
     }
@@ -566,7 +596,7 @@ html:
       }
 
       .detail .stamp-thumbs {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
     </style>
@@ -816,6 +846,31 @@ html:
         return periodSets.filter((s) => String(s.category || "") === selectedCategory);
       }
 
+      /** Sets that pass category + $10+ (not denomination chips) — used to enable/disable denom chips. */
+      function setsForDenomAvailability() {
+        let list = setsForDenomChips();
+        if (highValueOnly) {
+          list = list.filter((s) => stampsForSet(s).some(stampHasHighValue));
+        }
+        return list;
+      }
+
+      function syncDenomAvailability() {
+        const available = new Set(denomsFromSets(setsForDenomAvailability()));
+        for (const chip of denomChips.querySelectorAll(".chip")) {
+          if (chip.dataset.denom === "*") {
+            chip.disabled = false;
+            chip.setAttribute("aria-disabled", "false");
+            continue;
+          }
+          const ok = available.has(chip.dataset.denom);
+          chip.disabled = !ok;
+          chip.setAttribute("aria-disabled", ok ? "false" : "true");
+          if (!ok) selectedDenoms.delete(chip.dataset.denom);
+        }
+        syncChipPressed();
+      }
+
       function initControls(list) {
         const cats = categoriesFromSets(list);
         categoryChips.querySelectorAll(".chip:not(.chip-clear)").forEach((c) => c.remove());
@@ -1043,19 +1098,20 @@ html:
         for (const [stampIndex, stamp] of stampsForSet(set).entries()) {
           inheritedCatalog = String(stamp.no || inheritedCatalog).trim();
           const fig = document.createElement("figure");
+          const pricing = stampPricingText(stamp);
           if (stamp.image) {
             const img = document.createElement("img");
             img.src = stamp.image;
             img.alt = stamp.denom || stamp.no || set.name || "";
             img.loading = "lazy";
-            img.title = stampPricingText(stamp);
+            if (pricing) img.title = pricing;
             enableImageReplacement(img, set, stamp, stampIndex, inheritedCatalog);
             fig.appendChild(img);
           } else {
             const missing = document.createElement("div");
             missing.className = "stamp-missing";
             missing.textContent = "No image";
-            missing.title = stampPricingText(stamp);
+            if (pricing) missing.title = pricing;
             enableImageReplacement(missing, set, stamp, stampIndex, inheritedCatalog);
             fig.appendChild(missing);
           }
@@ -1073,7 +1129,13 @@ html:
             cap.appendChild(noEl);
           }
           if (!denomLine && !noLine) {
-            cap.textContent = "—";
+            cap.appendChild(document.createTextNode("—"));
+          }
+          if (pricing) {
+            const priceEl = document.createElement("span");
+            priceEl.className = "stamp-prices";
+            priceEl.textContent = pricing;
+            cap.appendChild(priceEl);
           }
           fig.appendChild(cap);
           detailStamps.appendChild(fig);
@@ -1104,6 +1166,7 @@ html:
       }
 
       function render() {
+        syncDenomAvailability();
         const periodSets = setsForPeriod();
         const matched = periodSets.filter(matches);
         if (selectedId && !matched.some((set) => set.id === selectedId)) {
@@ -1358,6 +1421,7 @@ html:
       denomChips.addEventListener("click", (ev) => {
         const chip = ev.target.closest(".chip");
         if (!chip || !denomChips.contains(chip)) return;
+        if (chip.disabled) return;
         const value = chip.dataset.denom;
         if (value === "*") selectedDenoms = new Set();
         else if (selectedDenoms.has(value)) selectedDenoms.delete(value);

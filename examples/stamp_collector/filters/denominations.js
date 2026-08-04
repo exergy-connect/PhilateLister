@@ -11,5 +11,7 @@ export function order_denominations(countryCode, denominations) {
   const values = [...denominations];
   const valueOf = COUNTRY_VALUE[String(countryCode ?? "").toLowerCase()];
   if (!valueOf) return values;
-  return values.sort((a, b) => valueOf(a) - valueOf(b));
+  return values.sort(
+    (a, b) => valueOf(a) - valueOf(b) || String(a).localeCompare(String(b), "en"),
+  );
 }

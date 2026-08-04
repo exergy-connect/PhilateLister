@@ -49,12 +49,13 @@ const isDoc = JSON.parse(fs.readFileSync(isPath, "utf8"));
 // Merge into existing maps (commemorative extensions live in extend_scott_commemoratives.mjs).
 const isMap = { ...isDoc.mappings };
 
-// Skillings — StampWorld order matches common US Scott 1-5 (2/3/4/8/16 sk).
-putIs(isMap, "Postage stamps", "g0001", "0001", "1", "exact", "verified");
-putIs(isMap, "Postage stamps", "g0001", "0002", "2", "exact", "verified");
-putIs(isMap, "Postage stamps", "g0001", "0003", "3", "exact", "verified");
-putIs(isMap, "Postage stamps", "g0001", "0004", "4", "exact", "verified");
-putIs(isMap, "Postage stamps", "g0001", "0005", "5", "exact", "verified");
+// Skillings — Scott/Facit are NOT StampWorld order. Mostly Classics album:
+//   perf 14×13½: 2sk=1, 4sk=2, 8sk=3, 16sk=4; perf ~12½: 3sk=5, 4sk=6, 16sk=7.
+putIs(isMap, "Postage stamps", "g0001", "0001", "1", "exact", "verified"); // 2Sk blue
+putIs(isMap, "Postage stamps", "g0001", "0002", "5", "exact", "verified"); // 3Sk grey, perf 12¾
+putIs(isMap, "Postage stamps", "g0001", "0003", "2", "exact", "verified"); // 4Sk carmine
+putIs(isMap, "Postage stamps", "g0001", "0004", "3", "exact", "verified"); // 8Sk brown
+putIs(isMap, "Postage stamps", "g0001", "0005", "4", "exact", "verified"); // 16Sk yellow
 
 // First aur majors (perf 14×13½): Scott 9-14 (Scott 8 is the perf 12½ 5aur).
 putIs(isMap, "Postage stamps", "g0006", "0006", "9");

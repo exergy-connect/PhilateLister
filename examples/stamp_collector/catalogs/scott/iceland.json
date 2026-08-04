@@ -7,27 +7,27 @@
     "Postage stamps::g0001::0001": {
       "number": "1",
       "relation": "exact",
-      "status": "inferred"
+      "status": "verified"
     },
     "Postage stamps::g0001::0002": {
-      "number": "2",
-      "relation": "exact",
-      "status": "inferred"
-    },
-    "Postage stamps::g0001::0003": {
-      "number": "3",
-      "relation": "exact",
-      "status": "inferred"
-    },
-    "Postage stamps::g0001::0004": {
-      "number": "4",
-      "relation": "exact",
-      "status": "inferred"
-    },
-    "Postage stamps::g0001::0005": {
       "number": "5",
       "relation": "exact",
-      "status": "inferred"
+      "status": "verified"
+    },
+    "Postage stamps::g0001::0003": {
+      "number": "2",
+      "relation": "exact",
+      "status": "verified"
+    },
+    "Postage stamps::g0001::0004": {
+      "number": "3",
+      "relation": "exact",
+      "status": "verified"
+    },
+    "Postage stamps::g0001::0005": {
+      "number": "4",
+      "relation": "exact",
+      "status": "verified"
     },
     "Postage stamps::g0006::0006": {
       "number": "9",

@@ -13,7 +13,7 @@ import {
   LEGACY_PERIOD_FILE,
   parse_category_period_filename,
 } from "./paths.js";
-import { order_denominations } from "./denominations.js";
+import { normalize_denomination, order_denominations } from "./denominations.js";
 
 function listCatalogueFiles(dir) {
   return readdirSync(dir)
@@ -96,6 +96,18 @@ function mergeSets(periods, period, doc, category) {
   };
 }
 
+/** Rewrite stamp denoms in place using the country normalizer (if any). */
+function normalizePeriodDenominations(periods, countryCode) {
+  for (const period of Object.values(periods)) {
+    for (const set of period?.sets ?? []) {
+      for (const stamp of set?.stamps ?? []) {
+        if (stamp?.denom == null) continue;
+        stamp.denom = normalize_denomination(countryCode, stamp.denom);
+      }
+    }
+  }
+}
+
 /** Collect unique denomination strings for collection-level filtering. */
 function summarizeDenominations(periods, countryCode, denominationModel = {}) {
   const groups = {
@@ -104,12 +116,19 @@ function summarizeDenominations(periods, countryCode, denominationModel = {}) {
     overprints: new Set(),
     special: new Set(),
   };
-  const special = new Set((denominationModel.special ?? []).map(String));
+  const special = new Set(
+    (denominationModel.special ?? []).map((d) =>
+      normalize_denomination(countryCode, d),
+    ),
+  );
 
   for (const period of Object.values(periods)) {
     for (const set of period?.sets ?? []) {
       for (const stamp of set?.stamps ?? []) {
-        const denomination = String(stamp?.denom ?? "").trim();
+        const denomination = normalize_denomination(
+          countryCode,
+          stamp?.denom,
+        );
         if (!denomination) continue;
         if (special.has(denomination)) groups.special.add(denomination);
         // A slash takes precedence when a combined surcharge/overprint has both.
@@ -184,6 +203,8 @@ export function consolidate_periods(dirOrPaths, denominationModel = {}) {
   stampworld ??= countryDir && countryDir !== "output" && countryDir !== "."
     ? countryDir
     : undefined;
+
+  normalizePeriodDenominations(periods, code);
 
   return {
     ...(base ? { base } : {}),

@@ -1,14 +1,34 @@
 import { denominationValue as chinaDenominationValue } from "./countries/china.js";
 import { denominationValue as denmarkDenominationValue } from "./countries/denmark.js";
+import {
+  denominationValue as taiwanDenominationValue,
+  normalizeDenomination as taiwanNormalizeDenomination,
+} from "./countries/taiwan.js";
 
 const COUNTRY_VALUE = {
   cn: chinaDenominationValue,
   dk: denmarkDenominationValue,
+  tw: taiwanDenominationValue,
 };
+
+const COUNTRY_NORMALIZE = {
+  tw: taiwanNormalizeDenomination,
+};
+
+/** Country-owned canonical denomination label; unknown countries pass through. */
+export function normalize_denomination(countryCode, denomination) {
+  const value = String(denomination ?? "").trim();
+  const normalize = COUNTRY_NORMALIZE[String(countryCode ?? "").toLowerCase()];
+  return normalize ? normalize(value) : value;
+}
 
 /** Apply country-owned denomination ordering; unknown countries retain source order. */
 export function order_denominations(countryCode, denominations) {
-  const values = [...denominations];
+  const values = [
+    ...new Set(
+      [...denominations].map((d) => normalize_denomination(countryCode, d)),
+    ),
+  ].filter(Boolean);
   const valueOf = COUNTRY_VALUE[String(countryCode ?? "").toLowerCase()];
   if (!valueOf) return values;
   return values.sort(

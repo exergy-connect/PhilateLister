@@ -1,32 +1,3880 @@
 {
   "catalog": "scott",
   "country": "iceland",
-  "version": 1,
+  "version": 2,
   "key_format": "<StampWorld category>::<StampWorld set ref>::<StampWorld stamp number>",
   "mappings": {
-    "Postage stamps::g0001::0001": { "number": "1", "relation": "exact", "status": "verified" },
-    "Postage stamps::g0001::0002": { "number": "2", "relation": "exact", "status": "verified" },
-    "Postage stamps::g0001::0003": { "number": "3", "relation": "exact", "status": "verified" },
-    "Postage stamps::g0001::0004": { "number": "4", "relation": "exact", "status": "verified" },
-    "Postage stamps::g0001::0005": { "number": "5", "relation": "exact", "status": "verified" },
-    "Postage stamps::g0006::0006": { "number": "8", "relation": "exact", "status": "verified" },
-    "Postage stamps::g0006::0007": { "number": "9", "relation": "exact", "status": "verified" },
-    "Postage stamps::g0006::0008": { "number": "10", "relation": "exact", "status": "verified" },
-    "Postage stamps::g0006::0009": { "number": "11", "relation": "exact", "status": "verified" },
-    "Postage stamps::g0006::0010": { "number": "12", "relation": "exact", "status": "verified" },
-    "Postage stamps::g0006::0011": { "number": "13", "relation": "exact", "status": "verified" },
-    "Official stamps::g01::0001": { "number": "O1", "relation": "exact", "status": "verified" },
-    "Official stamps::g01::0002": { "number": "O2", "relation": "exact", "status": "verified" },
-    "Official stamps::g03::0003": { "number": "O3", "relation": "exact", "status": "verified" },
-    "Official stamps::g03::0004": { "number": "O4", "relation": "exact", "status": "verified" },
-    "Official stamps::g03::0005": { "number": "O5", "relation": "exact", "status": "verified" },
-    "Official stamps::g03::0006": { "number": "O6", "relation": "exact", "status": "verified" },
-    "Official stamps::g03::0007": { "number": "O7", "relation": "exact", "status": "verified" },
-    "Official stamps::g03::0008": { "number": "O8", "relation": "exact", "status": "verified" },
-    "Official stamps::g03::0009": { "number": "O9", "relation": "exact", "status": "verified" }
+    "Postage stamps::g0001::0001": {
+      "number": "1",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0001::0002": {
+      "number": "2",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0001::0003": {
+      "number": "3",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0001::0004": {
+      "number": "4",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0001::0005": {
+      "number": "5",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0006::0006": {
+      "number": "9",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0006::0007": {
+      "number": "10",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0006::0008": {
+      "number": "11",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0006::0009": {
+      "number": "12",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0006::0010": {
+      "number": "13",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0006::0011": {
+      "number": "14",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g01::0001": {
+      "number": "O1",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g01::0002": {
+      "number": "O2",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g03::0003": {
+      "number": "O3",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g03::0004": {
+      "number": "O4",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g03::0005": {
+      "number": "O5",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g03::0006": {
+      "number": "O6",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g03::0007": {
+      "number": "O7",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g03::0008": {
+      "number": "O8",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g03::0009": {
+      "number": "O9",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0012::0012": {
+      "number": "15",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0012::0013": {
+      "number": "16",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0012::0014": {
+      "number": "17",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0012::0015": {
+      "number": "18",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0016::0016": {
+      "number": "19",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0016::0017": {
+      "number": "20",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0018::0018": {
+      "number": "32",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0019::0019": {
+      "number": "33",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0020::0020": {
+      "number": "23",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0020::0021": {
+      "number": "29",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0022::0022": {
+      "number": "22",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0023::0023": {
+      "number": "50",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0023::0024": {
+      "number": "49",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0023::0025": {
+      "number": "51",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0023::0026": {
+      "number": "52",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0023::0027": {
+      "number": "53",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0023::0028": {
+      "number": "54",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0023::0029": {
+      "number": "55",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0023::0030": {
+      "number": "56",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0023::0031": {
+      "number": "57",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0023::0032": {
+      "number": "58",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0033::0033": {
+      "number": "59",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0033::0034": {
+      "number": "68",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0035::0035": {
+      "number": "34",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0035::0036": {
+      "number": "35",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0035::0037": {
+      "number": "36",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0035::0038": {
+      "number": "37",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0035::0039": {
+      "number": "38",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0035::0040": {
+      "number": "39",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0035::0041": {
+      "number": "40",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0035::0042": {
+      "number": "41",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0035::0043": {
+      "number": "42",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0035::0044": {
+      "number": "43",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0035::0045": {
+      "number": "44",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0035::0046": {
+      "number": "44A",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0035::0047": {
+      "number": "44B",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0048::0048": {
+      "number": "71",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0048::0049": {
+      "number": "72",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0048::0050": {
+      "number": "73",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0048::0051": {
+      "number": "74",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0048::0052": {
+      "number": "75",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0048::0053": {
+      "number": "76",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0048::0054": {
+      "number": "77",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0048::0055": {
+      "number": "78",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0048::0056": {
+      "number": "79",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0048::0057": {
+      "number": "80",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0048::0058": {
+      "number": "81",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0048::0059": {
+      "number": "82",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0048::0060": {
+      "number": "83",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0048::0061": {
+      "number": "84",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0048::0062": {
+      "number": "85",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g10::0010": {
+      "number": "O20",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g10::0011": {
+      "number": "O21",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g10::0012": {
+      "number": "O22",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g10::0013": {
+      "number": "O23",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g10::0014": {
+      "number": "O24",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g10::0015": {
+      "number": "O25",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g10::0016": {
+      "number": "O26",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g17::0017": {
+      "number": "O13",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g17::0018": {
+      "number": "O14",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g17::0019": {
+      "number": "O15",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g17::0020": {
+      "number": "O16",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g17::0021": {
+      "number": "O17",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g17::0022": {
+      "number": "O18",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g17::0023": {
+      "number": "O19",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g24::0024": {
+      "number": "O31",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g24::0025": {
+      "number": "O32",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g24::0026": {
+      "number": "O33",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g24::0027": {
+      "number": "O34",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g24::0028": {
+      "number": "O35",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g24::0029": {
+      "number": "O36",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g24::0030": {
+      "number": "O37",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Official stamps::g24::0031": {
+      "number": "O38",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0063::0063": {
+      "number": "86",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0063::0064": {
+      "number": "87",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0063::0065": {
+      "number": "88",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0063::0066": {
+      "number": "89",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0063::0067": {
+      "number": "90",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0063::0068": {
+      "number": "91",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0069::0069": {
+      "number": "92",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0069::0070": {
+      "number": "93",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0069::0071": {
+      "number": "94",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0069::0072": {
+      "number": "95",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0069::0073": {
+      "number": "96",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0069::0074": {
+      "number": "97",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0069::0075": {
+      "number": "98",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0076::0076": {
+      "number": "99",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0076::0077": {
+      "number": "100",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0076::0078": {
+      "number": "101",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0076::0079": {
+      "number": "102",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0076::0080": {
+      "number": "103",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0076::0081": {
+      "number": "104",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0076::0082": {
+      "number": "107",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0083::0083": {
+      "number": "108",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0083::0084": {
+      "number": "109",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0083::0085": {
+      "number": "110",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0083::0086": {
+      "number": "111",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0083::0087": {
+      "number": "113",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0083::0088": {
+      "number": "114",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0083::0089": {
+      "number": "115",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0083::0090": {
+      "number": "117",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0083::0091": {
+      "number": "118",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0083::0092": {
+      "number": "120",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0083::0093": {
+      "number": "122",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0083::0094": {
+      "number": "123",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0083::0095": {
+      "number": "125",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0083::0096": {
+      "number": "126",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0083::0097": {
+      "number": "127",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0083::0098": {
+      "number": "128",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g33::0033": {
+      "number": "109",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g33::0034": {
+      "number": "110",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g33::0035": {
+      "number": "111",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g33::0036": {
+      "number": "115",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g33::0037": {
+      "number": "117",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g33::0038": {
+      "number": "118",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g33::0039": {
+      "number": "125",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g33::0040": {
+      "number": "126",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0099::0099": {
+      "number": "112",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0099::0100": {
+      "number": "116",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0099::0101": {
+      "number": "119",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0099::0102": {
+      "number": "121",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0099::0103": {
+      "number": "124",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0104::0104": {
+      "number": "130",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0104::0105": {
+      "number": "131",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0104::0106": {
+      "number": "139",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0104::0107": {
+      "number": "132",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0104::0108": {
+      "number": "133",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0104::0109": {
+      "number": "134",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0104::0110": {
+      "number": "135",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0111::0111": {
+      "number": "140",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0112::0112": {
+      "number": "137",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0112::0113": {
+      "number": "138",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0114::0114": {
+      "number": "144",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0114::0115": {
+      "number": "145",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0114::0116": {
+      "number": "146",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0114::0117": {
+      "number": "147",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0114::0118": {
+      "number": "148",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0119::0119": {
+      "number": "149",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0119::0120": {
+      "number": "143",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0121::0121": {
+      "number": "150",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0122::0122": {
+      "number": "C1",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0122::0123": {
+      "number": "C2",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0124::0124": {
+      "number": "141",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0125::0125": {
+      "number": "152",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0125::0126": {
+      "number": "153",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0125::0127": {
+      "number": "154",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0125::0128": {
+      "number": "155",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0125::0129": {
+      "number": "156",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0125::0130": {
+      "number": "157",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0125::0131": {
+      "number": "158",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0125::0132": {
+      "number": "159",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0125::0133": {
+      "number": "160",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0125::0134": {
+      "number": "161",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0125::0135": {
+      "number": "162",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0125::0136": {
+      "number": "163",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0125::0137": {
+      "number": "164",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0125::0138": {
+      "number": "165",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0125::0139": {
+      "number": "166",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0141::0141": {
+      "number": "142",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0142::0142": {
+      "number": "C4",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0142::0143": {
+      "number": "C5",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0142::0144": {
+      "number": "C6",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0142::0145": {
+      "number": "C7",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0142::0146": {
+      "number": "C8",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0147::0147": {
+      "number": "C9",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0147::0148": {
+      "number": "C10",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0147::0149": {
+      "number": "C11",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0150::0150": {
+      "number": "170",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0150::0151": {
+      "number": "171",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0150::0152": {
+      "number": "172",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0150::0153": {
+      "number": "173",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0150::0154": {
+      "number": "174",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0150::0155": {
+      "number": "175",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0156::0156": {
+      "number": "176",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0156::0157": {
+      "number": "177",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0156::0158": {
+      "number": "178",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0156::0159": {
+      "number": "179",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0156::0160": {
+      "number": "180",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0156::0161": {
+      "number": "181",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0156::0162": {
+      "number": "182",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0156::0163": {
+      "number": "183",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0156::0164": {
+      "number": "184",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0156::0165": {
+      "number": "185",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0156::0166": {
+      "number": "186",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0156::0167": {
+      "number": "187",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0168::0168": {
+      "number": "B1",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0168::0169": {
+      "number": "B2",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0168::0170": {
+      "number": "B3",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0168::0171": {
+      "number": "B4",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0172::0172": {
+      "number": "C12",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0172::0173": {
+      "number": "C13",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0172::0174": {
+      "number": "C14",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0175::0175": {
+      "number": "C15",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0175::0176": {
+      "number": "C16",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0175::0177": {
+      "number": "C17",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0175::0178": {
+      "number": "C18",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0175::0179": {
+      "number": "C19",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0175::0180": {
+      "number": "C20",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0181::0181": {
+      "number": "193",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0181::0182": {
+      "number": "194",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0183::0183": {
+      "number": "195",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0183::0184": {
+      "number": "196",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0183::0185": {
+      "number": "197",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0183::0186": {
+      "number": "198",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0187::0187": {
+      "number": "199",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0187::0188": {
+      "number": "200",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0187::0189": {
+      "number": "201",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0193::0193": {
+      "number": "202",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0194::0194": {
+      "number": "203",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0194::0195": {
+      "number": "204",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0194::0196": {
+      "number": "205",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0194::0197": {
+      "number": "206",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0194::0198": {
+      "number": "208A",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0199::0199": {
+      "number": "B5",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0199::0200": {
+      "number": "B6",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0199::0201": {
+      "number": "B7",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0202::0202": {
+      "number": "209",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0202::0203": {
+      "number": "210",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0202::0204": {
+      "number": "211",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0205::0205": {
+      "number": "212",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0206::0206": {
+      "number": "213",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0206::0207": {
+      "number": "214",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0206::0208": {
+      "number": "215",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0206::0209": {
+      "number": "216",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0210::0210": {
+      "number": "217",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0210::0211": {
+      "number": "218",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0210::0212": {
+      "number": "219",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0210::0213": {
+      "number": "220",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0210::0214": {
+      "number": "221",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0210::0215": {
+      "number": "224",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0216::0216": {
+      "number": "229",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0217::0217": {
+      "number": "228",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0218::0218": {
+      "number": "208",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0219::0219": {
+      "number": "232",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0219::0220": {
+      "number": "233",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0219::0221": {
+      "number": "234",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0219::0222": {
+      "number": "235",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0223::0223": {
+      "number": "236",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0224::0224": {
+      "number": "243",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0224::0225": {
+      "number": "244",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0224::0226": {
+      "number": "245",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0227::0227": {
+      "number": "223",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0227::0228": {
+      "number": "226",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0227::0229": {
+      "number": "227",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0227::0230": {
+      "number": "208B",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0227::0231": {
+      "number": "231",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0232::0232": {
+      "number": "240",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0232::0233": {
+      "number": "241",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0232::0234": {
+      "number": "242",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0232::0235": {
+      "number": "237",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0232::0236": {
+      "number": "238",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0232::0237": {
+      "number": "239",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0238::0238": {
+      "number": "221a",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0238::0239": {
+      "number": "224a",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0238::0240": {
+      "number": "238",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0238::0241": {
+      "number": "230",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0242::0242": {
+      "number": "C21",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0242::0243": {
+      "number": "C22",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0242::0244": {
+      "number": "C23",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0242::0245": {
+      "number": "C24",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0242::0246": {
+      "number": "C25",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0242::0247": {
+      "number": "C26",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0248::0248": {
+      "number": "246",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0248::0249": {
+      "number": "247",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0248::0250": {
+      "number": "248",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0248::0251": {
+      "number": "249",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0248::0252": {
+      "number": "250",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0248::0253": {
+      "number": "251",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0248::0254": {
+      "number": "252",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0255::0255": {
+      "number": "B8",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0255::0256": {
+      "number": "B9",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0255::0257": {
+      "number": "B10",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0255::0258": {
+      "number": "B11",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0255::0259": {
+      "number": "B11",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0260::0260": {
+      "number": "253",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0260::0261": {
+      "number": "254",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0260::0262": {
+      "number": "255",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0260::0263": {
+      "number": "256",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0264::0264": {
+      "number": "257",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0264::0265": {
+      "number": "258",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0264::0266": {
+      "number": "259",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0264::0267": {
+      "number": "260",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0264::0268": {
+      "number": "261",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0264::0269": {
+      "number": "262",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0264::0270": {
+      "number": "263",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0264::0271": {
+      "number": "264",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0272::0272": {
+      "number": "269",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0272::0273": {
+      "number": "270",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0274::0274": {
+      "number": "271",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0274::0275": {
+      "number": "272",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0276::0276": {
+      "number": "265",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0276::0277": {
+      "number": "266",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0278::0278": {
+      "number": "273",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0279::0279": {
+      "number": "C27",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0279::0280": {
+      "number": "C28",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0279::0281": {
+      "number": "C29",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0282::0282": {
+      "number": "274",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0282::0283": {
+      "number": "275",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0282::0284": {
+      "number": "276",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0282::0285": {
+      "number": "277",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0286::0286": {
+      "number": "B12",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0286::0287": {
+      "number": "B13",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0288::0288": {
+      "number": "278",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0288::0289": {
+      "number": "279",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0288::0290": {
+      "number": "280",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0288::0291": {
+      "number": "281",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0288::0292": {
+      "number": "282",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0293::0293": {
+      "number": "283",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0294::0294": {
+      "number": "284",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0294::0295": {
+      "number": "285",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0294::0296": {
+      "number": "286",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0297::0297": {
+      "number": "267",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0297::0298": {
+      "number": "268",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0299::0299": {
+      "number": "287",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0299::0300": {
+      "number": "288",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0301::0301": {
+      "number": "B14",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0301::0302": {
+      "number": "B15",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0301::0303": {
+      "number": "B16",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0304::0304": {
+      "number": "289",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0304::0305": {
+      "number": "290",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0304::0306": {
+      "number": "291",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0304::0307": {
+      "number": "292",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0304::0308": {
+      "number": "293",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0304::0309": {
+      "number": "294",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0304::0310": {
+      "number": "295",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0304::0311": {
+      "number": "296",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0312::0312": {
+      "number": "297",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0313::0313": {
+      "number": "298",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0313::0314": {
+      "number": "299",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0315::0315": {
+      "number": "300",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0315::0316": {
+      "number": "301",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0317::0317": {
+      "number": "302",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0317::0318": {
+      "number": "303",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0317::0319": {
+      "number": "304",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0320::0320": {
+      "number": "305",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0321::0321": {
+      "number": "306",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0321::0322": {
+      "number": "307",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0323::0323": {
+      "number": "308",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0324::0324": {
+      "number": "309",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0324::0325": {
+      "number": "310",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0326::0326": {
+      "number": "311",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0326::0327": {
+      "number": "312",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0328::0328": {
+      "number": "313",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0328::0329": {
+      "number": "314",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0330::0330": {
+      "number": "315",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0330::0331": {
+      "number": "316",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0332::0332": {
+      "number": "317",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0332::0333": {
+      "number": "318",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0334::0334": {
+      "number": "C30",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0334::0335": {
+      "number": "C31",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0336::0336": {
+      "number": "319",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0336::0337": {
+      "number": "320",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0336::0338": {
+      "number": "321",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0336::0339": {
+      "number": "322",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0340::0340": {
+      "number": "323",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0341::0341": {
+      "number": "324",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0341::0342": {
+      "number": "325",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0343::0343": {
+      "number": "326",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0344::0344": {
+      "number": "327",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0344::0345": {
+      "number": "328",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0346::0346": {
+      "number": "329",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0346::0347": {
+      "number": "330",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0348::0348": {
+      "number": "331",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0348::0349": {
+      "number": "332",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0350::0350": {
+      "number": "333",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0350::0351": {
+      "number": "334",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0350::0352": {
+      "number": "335",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0353::0353": {
+      "number": "336",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0353::0354": {
+      "number": "337",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0355::0355": {
+      "number": "338",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0355::0356": {
+      "number": "339",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0357::0357": {
+      "number": "340",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0357::0358": {
+      "number": "341",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0357::0359": {
+      "number": "342",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0360::0360": {
+      "number": "343",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0360::0361": {
+      "number": "344",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0362::0362": {
+      "number": "345",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0362::0363": {
+      "number": "346",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0362::0364": {
+      "number": "347",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0365::0365": {
+      "number": "348",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0365::0366": {
+      "number": "349",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0367::0367": {
+      "number": "350",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0367::0368": {
+      "number": "351",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0369::0369": {
+      "number": "352",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0369::0370": {
+      "number": "353",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0371::0371": {
+      "number": "354",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0371::0372": {
+      "number": "355",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0373::0373": {
+      "number": "356",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0374::0374": {
+      "number": "357",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0374::0375": {
+      "number": "358",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0376::0376": {
+      "number": "B17",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0376::0377": {
+      "number": "B18",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0378::0378": {
+      "number": "359",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0379::0379": {
+      "number": "360",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0379::0380": {
+      "number": "361",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0381::0381": {
+      "number": "362",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0382::0382": {
+      "number": "363",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0382::0383": {
+      "number": "364",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0382::0384": {
+      "number": "365",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0382::0385": {
+      "number": "366",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0386::0386": {
+      "number": "367",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0386::0387": {
+      "number": "368",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0388::0388": {
+      "number": "369",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0389::0389": {
+      "number": "B19",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0389::0390": {
+      "number": "B20",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0391::0391": {
+      "number": "370",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0391::0392": {
+      "number": "371",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0393::0393": {
+      "number": "372",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0393::0394": {
+      "number": "373",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0393::0395": {
+      "number": "374",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0396::0396": {
+      "number": "375",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0396::0397": {
+      "number": "376",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0398::0398": {
+      "number": "377",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0399::0399": {
+      "number": "378",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0400::0400": {
+      "number": "379",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0401::0401": {
+      "number": "380",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0401::0402": {
+      "number": "381",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0401::0403": {
+      "number": "382",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0401::0404": {
+      "number": "383",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0405::0405": {
+      "number": "384",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0405::0406": {
+      "number": "385",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0407::0407": {
+      "number": "386",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0407::0408": {
+      "number": "387",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0409::0409": {
+      "number": "388",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0410::0410": {
+      "number": "389",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0410::0411": {
+      "number": "390",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0412::0412": {
+      "number": "391",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0413::0413": {
+      "number": "392",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0414::0414": {
+      "number": "B21",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0414::0415": {
+      "number": "B22",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0416::0416": {
+      "number": "393",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0416::0417": {
+      "number": "394",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0418::0418": {
+      "number": "395",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0418::0419": {
+      "number": "396",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0420::0420": {
+      "number": "397",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0420::0421": {
+      "number": "398",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0422::0422": {
+      "number": "399",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0423::0423": {
+      "number": "400",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0423::0424": {
+      "number": "401",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0425::0425": {
+      "number": "402",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0425::0426": {
+      "number": "403",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0427::0427": {
+      "number": "404",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0427::0428": {
+      "number": "405",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0429::0429": {
+      "number": "406",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0429::0430": {
+      "number": "407",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0431::0431": {
+      "number": "408",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0431::0432": {
+      "number": "409",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0433::0433": {
+      "number": "410",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0433::0434": {
+      "number": "411",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0435::0435": {
+      "number": "412",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0435::0436": {
+      "number": "413",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0435::0437": {
+      "number": "414",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0435::0438": {
+      "number": "415",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0439::0439": {
+      "number": "416",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0440::0440": {
+      "number": "417",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0440::0441": {
+      "number": "418",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0440::0442": {
+      "number": "419",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0443::0443": {
+      "number": "420",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0443::0444": {
+      "number": "421",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0445::0445": {
+      "number": "422",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0446::0446": {
+      "number": "423",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0447::0447": {
+      "number": "424",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0448::0448": {
+      "number": "425",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0448::0449": {
+      "number": "426",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0450::0450": {
+      "number": "427",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0451::0451": {
+      "number": "428",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0452::0452": {
+      "number": "429",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0452::0453": {
+      "number": "430",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0454::0454": {
+      "number": "431",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0454::0455": {
+      "number": "432",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0456::0456": {
+      "number": "433",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0456::0457": {
+      "number": "434",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0458::0458": {
+      "number": "435",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0458::0459": {
+      "number": "436",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0458::0460": {
+      "number": "437",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0461::0461": {
+      "number": "438",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0462::0462": {
+      "number": "439",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0462::0463": {
+      "number": "440",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0464::0464": {
+      "number": "441",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0465::0465": {
+      "number": "442",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0466::0466": {
+      "number": "443",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0466::0467": {
+      "number": "444",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0466::0468": {
+      "number": "445",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0469::0469": {
+      "number": "446",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0470::0470": {
+      "number": "B23",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0470::0471": {
+      "number": "B24",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0472::0472": {
+      "number": "447",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0472::0473": {
+      "number": "448",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0474::0474": {
+      "number": "449",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0474::0475": {
+      "number": "450",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0474::0476": {
+      "number": "451",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0474::0477": {
+      "number": "452",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0474::0478": {
+      "number": "453",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0479::0479": {
+      "number": "454",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0479::0480": {
+      "number": "455",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0481::0481": {
+      "number": "456",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0481::0482": {
+      "number": "457",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0483::0483": {
+      "number": "458",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0483::0484": {
+      "number": "459",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0485::0485": {
+      "number": "460",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0486::0486": {
+      "number": "461",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0486::0487": {
+      "number": "462",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0486::0488": {
+      "number": "463",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0486::0489": {
+      "number": "464",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0490::0490": {
+      "number": "465",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0490::0491": {
+      "number": "466",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0492::0492": {
+      "number": "467",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0492::0493": {
+      "number": "468",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0492::0494": {
+      "number": "469",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0495::0495": {
+      "number": "470",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0495::0496": {
+      "number": "471",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0495::0497": {
+      "number": "472",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0495::0498": {
+      "number": "473",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0499::0499": {
+      "number": "474",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0499::0500": {
+      "number": "475",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0501::0501": {
+      "number": "476",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0501::0502": {
+      "number": "477",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0503::0503": {
+      "number": "478",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0503::0504": {
+      "number": "479",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0505::0505": {
+      "number": "480",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0506::0506": {
+      "number": "481",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0506::0507": {
+      "number": "482",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0506::0508": {
+      "number": "483",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0506::0509": {
+      "number": "484",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0510::0510": {
+      "number": "485",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0511::0511": {
+      "number": "486",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0512::0512": {
+      "number": "487",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0513::0513": {
+      "number": "488",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0514::0514": {
+      "number": "489",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0515::0515": {
+      "number": "490",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0515::0516": {
+      "number": "491",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0517::0517": {
+      "number": "492",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0517::0518": {
+      "number": "493",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0519::0519": {
+      "number": "494",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0520::0520": {
+      "number": "495",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0521::0521": {
+      "number": "496",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0521::0522": {
+      "number": "497",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0523::0523": {
+      "number": "498",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0523::0524": {
+      "number": "499",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0525::0525": {
+      "number": "500",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0526::0526": {
+      "number": "501",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0527::0527": {
+      "number": "502",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0528::0528": {
+      "number": "503",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0529::0529": {
+      "number": "504",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0529::0530": {
+      "number": "505",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0531::0531": {
+      "number": "506",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0531::0532": {
+      "number": "507",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0533::0533": {
+      "number": "508",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0533::0534": {
+      "number": "509",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0535::0535": {
+      "number": "510",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0536::0536": {
+      "number": "511",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0537::0537": {
+      "number": "512",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0538::0538": {
+      "number": "513",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0539::0539": {
+      "number": "514",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0540::0540": {
+      "number": "515",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0540::0541": {
+      "number": "516",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0542::0542": {
+      "number": "517",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0542::0543": {
+      "number": "518",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0544::0544": {
+      "number": "519",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0545::0545": {
+      "number": "520",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0546::0546": {
+      "number": "521",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0547::0547": {
+      "number": "522",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0548::0548": {
+      "number": "523",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0548::0549": {
+      "number": "524",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0548::0550": {
+      "number": "525",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0551::0551": {
+      "number": "526",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0551::0552": {
+      "number": "527",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0553::0553": {
+      "number": "528",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0553::0554": {
+      "number": "529",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0555::0555": {
+      "number": "530",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0556::0556": {
+      "number": "531",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0557::0557": {
+      "number": "532",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0557::0558": {
+      "number": "533",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0559::0559": {
+      "number": "534",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0559::0560": {
+      "number": "535",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0559::0561": {
+      "number": "536",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0562::0562": {
+      "number": "537",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0563::0563": {
+      "number": "538",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0564::0564": {
+      "number": "539",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0564::0565": {
+      "number": "540",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0566::0566": {
+      "number": "541",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0566::0567": {
+      "number": "542",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0568::0568": {
+      "number": "543",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0568::0569": {
+      "number": "544",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0568::0570": {
+      "number": "545",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0571::0571": {
+      "number": "546",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0572::0572": {
+      "number": "547",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0573::0573": {
+      "number": "548",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0574::0574": {
+      "number": "549",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0575::0575": {
+      "number": "550",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0575::0576": {
+      "number": "551",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0577::0577": {
+      "number": "552",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0577::0578": {
+      "number": "553",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0579::0579": {
+      "number": "554",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0579::0580": {
+      "number": "555",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0581::0581": {
+      "number": "556",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0581::0582": {
+      "number": "557",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0581::0583": {
+      "number": "558",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0584::0584": {
+      "number": "559",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0585::0585": {
+      "number": "560",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0586::0586": {
+      "number": "561",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0587::0587": {
+      "number": "562",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0588::0588": {
+      "number": "563",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0589::0589": {
+      "number": "564",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0589::0590": {
+      "number": "565",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0591::0591": {
+      "number": "566",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0591::0592": {
+      "number": "567",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0593::0593": {
+      "number": "568",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0593::0594": {
+      "number": "569",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0593::0595": {
+      "number": "570",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0593::0596": {
+      "number": "571",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0597::0597": {
+      "number": "572",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0597::0598": {
+      "number": "573",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0599::0599": {
+      "number": "574",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0599::0600": {
+      "number": "575",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0601::0601": {
+      "number": "576",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0601::0602": {
+      "number": "577",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0603::0603": {
+      "number": "578",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0604::0604": {
+      "number": "579",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0604::0605": {
+      "number": "580",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0606::0606": {
+      "number": "581",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0607::0607": {
+      "number": "582",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0607::0608": {
+      "number": "583",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0609::0609": {
+      "number": "584",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0609::0610": {
+      "number": "585",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0611::0611": {
+      "number": "586",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0611::0612": {
+      "number": "587",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0613::0613": {
+      "number": "588",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0613::0614": {
+      "number": "589",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0615::0615": {
+      "number": "590",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0615::0616": {
+      "number": "591",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0617::0617": {
+      "number": "592",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0618::0618": {
+      "number": "593",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0619::0619": {
+      "number": "594",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0620::0620": {
+      "number": "595",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0620::0621": {
+      "number": "596",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0622::0622": {
+      "number": "597",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0623::0623": {
+      "number": "598",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0623::0624": {
+      "number": "599",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0625::0625": {
+      "number": "600",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0625::0626": {
+      "number": "601",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0627::0627": {
+      "number": "602",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0627::0628": {
+      "number": "603",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0629::0629": {
+      "number": "604",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0629::0630": {
+      "number": "605",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0629::0631": {
+      "number": "606",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0629::0632": {
+      "number": "607",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0633::0633": {
+      "number": "608",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0633::0634": {
+      "number": "609",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0635::0635": {
+      "number": "610",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0636::0636": {
+      "number": "611",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0637::0637": {
+      "number": "612",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0637::0638": {
+      "number": "613",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0637::0639": {
+      "number": "614",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0640::0640": {
+      "number": "615",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0640::0641": {
+      "number": "616",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0642::0642": {
+      "number": "617",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0643::0643": {
+      "number": "618",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0643::0644": {
+      "number": "619",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0645::0645": {
+      "number": "620",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0645::0646": {
+      "number": "621",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0645::0647": {
+      "number": "622",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0645::0648": {
+      "number": "623",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0649::0649": {
+      "number": "624",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0649::0650": {
+      "number": "625",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0651::0651": {
+      "number": "626",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0651::0652": {
+      "number": "627",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0653::0653": {
+      "number": "628",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0653::0654": {
+      "number": "629",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0655::0655": {
+      "number": "630",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0655::0656": {
+      "number": "631",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0655::0657": {
+      "number": "632",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0655::0658": {
+      "number": "633",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0659::0659": {
+      "number": "634",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0659::0660": {
+      "number": "635",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0661::0661": {
+      "number": "636",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0662::0662": {
+      "number": "637",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0662::0663": {
+      "number": "638",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0664::0664": {
+      "number": "639",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0665::0665": {
+      "number": "640",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0666::0666": {
+      "number": "641",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0666::0667": {
+      "number": "642",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0668::0668": {
+      "number": "643",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0669::0669": {
+      "number": "644",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0669::0670": {
+      "number": "645",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0669::0671": {
+      "number": "646",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0669::0672": {
+      "number": "647",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0673::0673": {
+      "number": "648",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0674::0674": {
+      "number": "649",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0674::0675": {
+      "number": "650",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0674::0676": {
+      "number": "651",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0674::0677": {
+      "number": "652",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0678::0678": {
+      "number": "653",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0679::0679": {
+      "number": "654",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0679::0680": {
+      "number": "655",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0681::0681": {
+      "number": "656",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0681::0682": {
+      "number": "657",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0683::0683": {
+      "number": "658",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0683::0684": {
+      "number": "659",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0685::0685": {
+      "number": "660",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0685::0686": {
+      "number": "661",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0685::0687": {
+      "number": "662",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0685::0688": {
+      "number": "663",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0689::0689": {
+      "number": "664",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0689::0690": {
+      "number": "665",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0691::0691": {
+      "number": "666",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0692::0692": {
+      "number": "667",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0692::0693": {
+      "number": "668",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0694::0694": {
+      "number": "669",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0695::0695": {
+      "number": "670",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0696::0696": {
+      "number": "671",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0696::0697": {
+      "number": "672",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0698::0698": {
+      "number": "673",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0698::0699": {
+      "number": "674",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0700::0700": {
+      "number": "675",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0700::0701": {
+      "number": "676",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0702::0702": {
+      "number": "677",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0702::0703": {
+      "number": "678",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0704::0704": {
+      "number": "679",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0705::0705": {
+      "number": "680",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0706::0706": {
+      "number": "681",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0706::0707": {
+      "number": "682",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0708::0708": {
+      "number": "683",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0708::0709": {
+      "number": "684",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0708::0710": {
+      "number": "685",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0711::0711": {
+      "number": "686",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0711::0712": {
+      "number": "687",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0713::0713": {
+      "number": "688",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0713::0714": {
+      "number": "689",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0715::0715": {
+      "number": "690",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0715::0716": {
+      "number": "691",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0717::0717": {
+      "number": "692",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0717::0718": {
+      "number": "693",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0717::0719": {
+      "number": "694",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0717::0720": {
+      "number": "695",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0721::0721": {
+      "number": "696",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0721::0722": {
+      "number": "697",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0721::0723": {
+      "number": "698",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0721::0724": {
+      "number": "699",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0725::0725": {
+      "number": "700",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0725::0726": {
+      "number": "701",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0727::0727": {
+      "number": "702",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0727::0728": {
+      "number": "703",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0729::0729": {
+      "number": "704",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0729::0730": {
+      "number": "705",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0731::0731": {
+      "number": "706",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0731::0732": {
+      "number": "707",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0733::0733": {
+      "number": "708",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0734::0734": {
+      "number": "709",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0734::0735": {
+      "number": "710",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0734::0736": {
+      "number": "711",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0737::0737": {
+      "number": "712",
+      "relation": "exact",
+      "status": "inferred"
+    },
+    "Postage stamps::g0737::0738": {
+      "number": "713",
+      "relation": "exact",
+      "status": "inferred"
+    }
   },
   "sources": [
     "https://www.jaysmith.com/Lists/Iceland/Iceland-Stamps-Scott-0001-0007.html",
-    "https://www.jaysmith.com/Lists/Iceland/Iceland-Stamps-Scott-O0001-O0012-Officials.html"
+    "https://www.jaysmith.com/Lists/Iceland/Iceland-Stamps-Scott-O0001-O0012-Officials.html",
+    "https://www.jaysmith.com/Lists/Iceland/IcelandTOC.html",
+    "https://www.mostlyclassics.net/philatelic/Iceland_1873-1944_nopix.pdf",
+    "https://www.birdtheme.org/country/iceland.html"
   ]
 }

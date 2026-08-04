@@ -257,6 +257,9 @@ export function to_finder_sets(input) {
           no: String(s.no ?? ""),
           denom: String(s.denom ?? ""),
           image: stampImageUrl(collection, s, set),
+          ...(s.catalogs && typeof s.catalogs === "object" && Object.keys(s.catalogs).length
+            ? { catalogs: s.catalogs }
+            : {}),
           issued_count: Number.isFinite(Number(s.issued_count)) ? Number(s.issued_count) : null,
           prices: s.prices && typeof s.prices === "object" ? s.prices : null,
         }))

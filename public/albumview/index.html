@@ -208,12 +208,13 @@ body::before {
   pointer-events: none;
   opacity: 0.035;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='80' height='80' filter='url(%23n)'/%3E%3C/svg%3E");
-  z-index: 2;
+  z-index: 0;
 }
 
 .leaf-face {
   position: absolute;
   inset: 0;
+  z-index: 1;
   padding: clamp(0.55rem, 2.2cqi, 1.1rem) clamp(0.6rem, 2.4cqi, 1.25rem);
   display: flex;
   flex-direction: column;
@@ -1319,7 +1320,12 @@ body::before {
     const key = stampKey(set?.id || "", stampIndex, stamp.no);
     const own = overrides.get(key);
     const src = own || stamp.image || PLACEHOLDER;
-    const no = String(stamp.no || "").trim();
+    const scottNumbers = Array.isArray(stamp.catalogs?.scott)
+      ? stamp.catalogs.scott.map((number) => String(number).trim()).filter(Boolean)
+      : [];
+    const no = scottNumbers.length
+      ? `Scott ${scottNumbers.join("/")}`
+      : String(stamp.no || "").trim();
     const denom = String(stamp.denom || "").trim();
     const caption = [no, denom].filter(Boolean).join(" · ") || "—";
     const price = showValues ? stampPrice(stamp) : null;

@@ -27,6 +27,10 @@ export {
 } from "./filters/country.js";
 export { consolidate_periods } from "./filters/consolidate.js";
 export { normalize_perforation } from "./filters/perforations.js";
+export {
+  load_catalog_crosswalk,
+  apply_catalog_crosswalk,
+} from "./filters/catalog_crosswalks.js";
 export { write_period_json, write_collection_xp } from "./filters/write_output.js";
 
 import thumbnails from "./filters/thumbnails.js";
@@ -36,6 +40,7 @@ import paths from "./filters/paths.js";
 import country from "./filters/country.js";
 import { consolidate_periods } from "./filters/consolidate.js";
 import perforations from "./filters/perforations.js";
+import catalogCrosswalks from "./filters/catalog_crosswalks.js";
 import writeOutput from "./filters/write_output.js";
 
 export default {
@@ -46,5 +51,6 @@ export default {
   ...country,
   consolidate_periods,
   ...perforations,
+  ...catalogCrosswalks,
   ...writeOutput,
 };

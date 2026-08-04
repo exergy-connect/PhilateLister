@@ -15,6 +15,10 @@ import {
 } from "./paths.js";
 import { normalize_denomination, order_denominations } from "./denominations.js";
 import { normalize_perforation } from "./perforations.js";
+import {
+  apply_catalog_crosswalk,
+  load_catalog_crosswalk,
+} from "./catalog_crosswalks.js";
 
 function listCatalogueFiles(dir) {
   return readdirSync(dir)
@@ -219,6 +223,11 @@ export function consolidate_periods(dirOrPaths, denominationModel = {}) {
 
   normalizePeriodDenominations(periods, code);
   normalizePeriodPerforations(periods);
+  apply_catalog_crosswalk(
+    periods,
+    "scott",
+    load_catalog_crosswalk("scott", countryDir),
+  );
 
   return {
     ...(base ? { base } : {}),

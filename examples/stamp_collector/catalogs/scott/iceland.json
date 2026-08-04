@@ -1,0 +1,32 @@
+{
+  "catalog": "scott",
+  "country": "iceland",
+  "version": 1,
+  "key_format": "<StampWorld category>::<StampWorld set ref>::<StampWorld stamp number>",
+  "mappings": {
+    "Postage stamps::g0001::0001": { "number": "1", "relation": "exact", "status": "verified" },
+    "Postage stamps::g0001::0002": { "number": "2", "relation": "exact", "status": "verified" },
+    "Postage stamps::g0001::0003": { "number": "3", "relation": "exact", "status": "verified" },
+    "Postage stamps::g0001::0004": { "number": "4", "relation": "exact", "status": "verified" },
+    "Postage stamps::g0001::0005": { "number": "5", "relation": "exact", "status": "verified" },
+    "Postage stamps::g0006::0006": { "number": "8", "relation": "exact", "status": "verified" },
+    "Postage stamps::g0006::0007": { "number": "9", "relation": "exact", "status": "verified" },
+    "Postage stamps::g0006::0008": { "number": "10", "relation": "exact", "status": "verified" },
+    "Postage stamps::g0006::0009": { "number": "11", "relation": "exact", "status": "verified" },
+    "Postage stamps::g0006::0010": { "number": "12", "relation": "exact", "status": "verified" },
+    "Postage stamps::g0006::0011": { "number": "13", "relation": "exact", "status": "verified" },
+    "Postage stamps::g01::0001": { "number": "O1", "relation": "exact", "status": "verified" },
+    "Postage stamps::g01::0002": { "number": "O2", "relation": "exact", "status": "verified" },
+    "Postage stamps::g03::0003": { "number": "O3", "relation": "exact", "status": "verified" },
+    "Postage stamps::g03::0004": { "number": "O4", "relation": "exact", "status": "verified" },
+    "Postage stamps::g03::0005": { "number": "O5", "relation": "exact", "status": "verified" },
+    "Postage stamps::g03::0006": { "number": "O6", "relation": "exact", "status": "verified" },
+    "Postage stamps::g03::0007": { "number": "O7", "relation": "exact", "status": "verified" },
+    "Postage stamps::g03::0008": { "number": "O8", "relation": "exact", "status": "verified" },
+    "Postage stamps::g03::0009": { "number": "O9", "relation": "exact", "status": "verified" }
+  },
+  "sources": [
+    "https://www.jaysmith.com/Lists/Iceland/Iceland-Stamps-Scott-0001-0007.html",
+    "https://www.jaysmith.com/Lists/Iceland/Iceland-Stamps-Scott-O0001-O0012-Officials.html"
+  ]
+}

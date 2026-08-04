@@ -437,13 +437,6 @@ body::before {
 }
 
 /* A true one-stamp leaf should present the stamp as the page's focal point. */
-.leaf-face[data-stamps="1"] .mount-frame img {
-  height: min(14rem, 58cqh);
-  width: auto;
-  max-width: min(12rem, 72cqi);
-  max-height: 58cqh;
-}
-
 .leaf-face[data-stamps="1"] .mount-frame .placeholder {
   width: min(8rem, 55cqi);
   height: min(10rem, 48cqh);
@@ -1079,6 +1072,46 @@ body::before {
   const nextBtn = document.getElementById("next-page");
   const pageLabel = document.getElementById("page-label");
 
+  const ROW_SIZE = {
+    1: { height: 0.42, maxRem: 13 },
+    2: { height: 0.25, maxRem: 9 },
+    3: { height: 0.17, maxRem: 7 },
+    4: { height: 0.12, maxRem: 5.25 },
+  };
+
+  function sizeMountImage(image) {
+    if (!image.naturalWidth || !image.naturalHeight) return;
+    const leaf = image.closest(".leaf-face");
+    const mount = image.closest(".mount");
+    if (!leaf || !mount) return;
+
+    const rows = Number(leaf.dataset.rows) || 4;
+    const sizing = ROW_SIZE[Math.min(rows, 4)] || ROW_SIZE[4];
+    const rootFont = Number.parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+    const targetHeight = Math.min(leaf.clientHeight * sizing.height, rootFont * sizing.maxRem);
+    const availableWidth = Math.max(1, mount.clientWidth - rootFont * 0.4);
+    const ratio = image.naturalWidth / image.naturalHeight;
+    const height = Math.min(targetHeight, availableWidth / ratio);
+    const width = height * ratio;
+
+    image.style.width = `${width}px`;
+    image.style.height = `${height}px`;
+    image.style.maxWidth = `${width}px`;
+    image.style.maxHeight = `${height}px`;
+  }
+
+  function sizeMountImages(root = book) {
+    for (const image of root.querySelectorAll(".mount-frame img")) {
+      if (image.complete) sizeMountImage(image);
+    }
+  }
+
+  book.addEventListener("load", (event) => {
+    if (event.target instanceof HTMLImageElement) sizeMountImage(event.target);
+  }, true);
+
+  new ResizeObserver(() => requestAnimationFrame(() => sizeMountImages())).observe(book);
+
   let countries = [];
   let catalog = null;
   let leaves = [];
@@ -1326,6 +1359,7 @@ body::before {
   function mountRowSizes(count) {
     const dedicated = {
       4: [2, 2],
+      5: [3, 2],
       11: [3, 3, 3, 2],
       12: [3, 3, 3, 3],
       13: [3, 4, 3, 3],
@@ -1395,7 +1429,11 @@ body::before {
     const yearLabel = yMin === yMax ? String(yMin) : `${yMin}–${yMax}`;
     const showValues = showCv.checked;
     const stampTotal = leaf.blocks.reduce((n, b) => n + (b.stamps?.length || 0), 0);
-    return `<div class="leaf-face" data-stamps="${stampTotal}">
+    const rowTotal = leaf.blocks.reduce(
+      (n, block) => n + mountRowSizes(block.stamps?.length || 0).length,
+      0
+    );
+    return `<div class="leaf-face" data-stamps="${stampTotal}" data-rows="${rowTotal}">
       <header class="leaf-header">
         <div class="country">${escapeHtml(countryName || "Album")}</div>
         <div class="meta">Page ${index + 1} of ${total} · ${escapeHtml(yearLabel)}</div>
@@ -1457,6 +1495,7 @@ body::before {
     front.dataset.page = String(frontIndex);
     front.innerHTML = leafHtml(leaves[frontIndex], frontIndex, total);
     book.appendChild(front);
+    sizeMountImages();
     preloadAround(frontIndex);
     syncCollectorClass();
     updateNav();

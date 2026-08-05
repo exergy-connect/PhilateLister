@@ -14,6 +14,7 @@ on:
       - "public/psag/*"
       - "public/setfinder/**"
       - "public/albumview/**"
+      - "public/cancelfilters/**"
 
   # Pushes from CI bots use GITHUB_TOKEN and do not fire `push` workflows; redeploy when they finish.
   workflow_run:

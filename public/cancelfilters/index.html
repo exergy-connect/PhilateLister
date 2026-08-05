@@ -350,6 +350,117 @@
       .frame canvas.hidden { display: none; }
       .frame canvas.panning { cursor: grabbing; }
 
+      .ruler-overlay {
+        display: none;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 0;
+        height: 0;
+        z-index: 3;
+        pointer-events: none;
+        --ruler-thickness: 18px;
+        --ruler-ink: rgba(232, 229, 220, 0.92);
+        --ruler-bg: rgba(28, 27, 24, 0.78);
+        --ruler-accent: #e8c547;
+        --ruler-hair: rgba(232, 197, 71, 0.45);
+      }
+      .frame.rulers-on .ruler-overlay { display: block; }
+      .ruler-overlay .ruler-x,
+      .ruler-overlay .ruler-y {
+        position: absolute;
+        display: block;
+        max-width: none;
+        max-height: none;
+        width: auto;
+        height: auto;
+        cursor: default;
+        touch-action: none;
+        image-rendering: auto;
+      }
+      .ruler-overlay .ruler-x {
+        left: 0;
+        top: 0;
+        height: var(--ruler-thickness);
+      }
+      .ruler-overlay .ruler-y {
+        left: 0;
+        top: 0;
+        width: var(--ruler-thickness);
+      }
+      .ruler-overlay .ruler-corner {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: var(--ruler-thickness);
+        height: var(--ruler-thickness);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--ruler-bg);
+        color: var(--ruler-ink);
+        font-family: ui-monospace, Menlo, Consolas, monospace;
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1;
+        border-right: 1px solid rgba(232, 229, 220, 0.25);
+        border-bottom: 1px solid rgba(232, 229, 220, 0.25);
+        z-index: 2;
+      }
+      .ruler-overlay .ruler-size {
+        position: absolute;
+        right: 0.35rem;
+        top: calc(var(--ruler-thickness) + 0.25rem);
+        padding: 0.12rem 0.35rem;
+        border-radius: 4px;
+        background: rgba(28, 27, 24, 0.72);
+        color: var(--ruler-ink);
+        font-family: ui-monospace, Menlo, Consolas, monospace;
+        font-size: 0.68rem;
+        font-weight: 700;
+        line-height: 1.2;
+        white-space: nowrap;
+        pointer-events: none;
+        z-index: 2;
+      }
+      .ruler-overlay .ruler-hair-x,
+      .ruler-overlay .ruler-hair-y {
+        position: absolute;
+        background: var(--ruler-hair);
+        pointer-events: none;
+        z-index: 1;
+      }
+      .ruler-overlay .ruler-hair-x {
+        left: 0;
+        width: 100%;
+        height: 1px;
+      }
+      .ruler-overlay .ruler-hair-y {
+        top: 0;
+        width: 1px;
+        height: 100%;
+      }
+      .ruler-overlay .ruler-origin {
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        margin: -7px 0 0 -7px;
+        border: 2px solid var(--ruler-accent);
+        border-radius: 50%;
+        background: rgba(232, 197, 71, 0.2);
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.55);
+        cursor: grab;
+        pointer-events: auto;
+        touch-action: none;
+        z-index: 5;
+      }
+      .ruler-overlay .ruler-origin:active,
+      .ruler-overlay .ruler-origin.dragging {
+        cursor: grabbing;
+        background: rgba(232, 197, 71, 0.4);
+      }
+
       .drop-zone {
         border-width: 2px;
         border-style: dashed;
@@ -506,6 +617,51 @@
         line-height: 1.5;
       }
 
+      .modal-root {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 11000;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+      }
+      .modal-root.open { display: flex; }
+      .modal-root .modal-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(28, 27, 24, 0.45);
+      }
+      .modal-root .modal-card {
+        position: relative;
+        z-index: 1;
+        width: min(22rem, calc(100vw - 2rem));
+        padding: 1rem 1.1rem 0.95rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--surface);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+      }
+      .modal-root .modal-card h3 {
+        margin: 0 0 0.45rem;
+        font-size: var(--fs-h2);
+        font-weight: 700;
+      }
+      .modal-root .modal-card p {
+        margin: 0 0 0.9rem;
+        font-size: var(--fs-body);
+        color: var(--muted);
+        line-height: 1.4;
+      }
+      .modal-root .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+      }
+      .modal-root .modal-actions button {
+        min-width: 4.5rem;
+      }
+
       @media (max-width: 1100px) {
         :root { --ctrl-w: 13.5rem; }
         html, body { font-size: 17px; }
@@ -544,7 +700,7 @@
             <div
               class="blurb has-tip"
               data-tip-title="Original"
-              data-tip-body="This is your reference photo — a stamp on a dark studio mat, or a full cover scan. Trim dark bg cuts away the black backdrop so the stamp fills the view (leave it off for covers with dark edges you want to keep). Auto-zoom frames the stamp or cover for you. Use Zoom, pan (drag the image), and Rotation to line up the original only; each filter has its own rotation slider beside its image."
+              data-tip-body="This is your reference photo — a stamp on a dark studio mat, or a full cover scan. Trim dark bg cuts away the black backdrop so the stamp fills the view (leave it off for covers with dark edges you want to keep). Auto-zoom frames the stamp or cover for you. Use Zoom and pan (drag the image) in the panel; use the rotation slider beside the image to line up the original. Each filter has its own rotation slider beside its image."
             >
               <p>Stamp or cover reference — any aspect ratio.</p>
             </div>
@@ -564,28 +720,27 @@
                 </label>
                 <input id="zoom-level" type="range" min="0.5" max="6" step="0.05" value="1" />
               </div>
-              <div class="param">
-                <label class="param-label" for="rotation-angle">
-                  <span>Rotation</span>
-                  <span id="rotation-value" class="value">0°</span>
-                </label>
-                <input id="rotation-angle" type="range" min="-180" max="180" step="1" value="0" />
-              </div>
               <div class="side-actions">
                 <button type="button" id="auto-zoom-btn">Auto-zoom</button>
                 <button type="button" id="reset-view-btn">Reset</button>
               </div>
             </div>
           </div>
-          <div id="drop-zone" class="drop-zone frame">
-            <div id="placeholder-original" class="drop-placeholder">
-              <p class="title">Drop stamp or cover</p>
-              <p class="hint">PNG / JPG · any size</p>
-              <label for="image-file" id="browse-label" class="btn-label disabled">Browse…</label>
+          <div class="view-stage">
+            <div id="drop-zone" class="drop-zone frame">
+              <div id="placeholder-original" class="drop-placeholder">
+                <p class="title">Drop stamp or cover</p>
+                <p class="hint">PNG / JPG · any size</p>
+                <label for="image-file" id="browse-label" class="btn-label disabled">Browse…</label>
+              </div>
+              <canvas id="canvas-original" class="hidden"></canvas>
+              <label for="image-file" id="replace-label" class="btn-label frame-corner-btn disabled">Replace</label>
+              <input id="image-file" type="file" accept="image/png,image/jpeg,image/webp,image/*" class="sr-only" disabled />
             </div>
-            <canvas id="canvas-original" class="hidden"></canvas>
-            <label for="image-file" id="replace-label" class="btn-label frame-corner-btn disabled">Replace</label>
-            <input id="image-file" type="file" accept="image/png,image/jpeg,image/webp,image/*" class="sr-only" disabled />
+            <div class="view-rot">
+              <span id="rotation-value" class="view-rot-value">0°</span>
+              <input id="rotation-angle" type="range" min="-180" max="180" step="0.2" value="0" aria-label="Rotate original" />
+            </div>
           </div>
         </article>
 
@@ -597,7 +752,7 @@
             </div>
             <div class="view-rot">
               <span id="rg-rot-value" class="view-rot-value">0°</span>
-              <input id="rg-rot" class="strategy-rot" type="range" min="-180" max="180" step="1" value="0" disabled aria-label="Rotate R − G result" />
+              <input id="rg-rot" class="strategy-rot" type="range" min="-180" max="180" step="0.2" value="0" disabled aria-label="Rotate R − G result" />
             </div>
           </div>
           <div class="side-panel">
@@ -677,7 +832,7 @@
             </div>
             <div class="view-rot">
               <span id="lab-rot-value" class="view-rot-value">0°</span>
-              <input id="lab-rot" class="strategy-rot" type="range" min="-180" max="180" step="1" value="0" disabled aria-label="Rotate Lab a* result" />
+              <input id="lab-rot" class="strategy-rot" type="range" min="-180" max="180" step="0.2" value="0" disabled aria-label="Rotate Lab a* result" />
             </div>
           </div>
         </article>
@@ -690,7 +845,7 @@
             </div>
             <div class="view-rot">
               <span id="ridge-rot-value" class="view-rot-value">0°</span>
-              <input id="ridge-rot" class="strategy-rot" type="range" min="-180" max="180" step="1" value="0" disabled aria-label="Rotate Ridge result" />
+              <input id="ridge-rot" class="strategy-rot" type="range" min="-180" max="180" step="0.2" value="0" disabled aria-label="Rotate Ridge result" />
             </div>
           </div>
           <div class="side-panel">
@@ -733,7 +888,7 @@
           class="footer-version"
           id="export-settings-btn"
           title="Copy all saved per-image settings to the clipboard"
-        >v1.0.0 · <time datetime="2026-08-05">2026-08-05</time></button>
+        >v1.1.0 · <time datetime="2026-08-05">2026-08-05</time></button>
       </footer>
     </main>
 
@@ -744,6 +899,17 @@
       <p id="tip-body"></p>
     </div>
     <div id="image-meta" class="meta-box" role="tooltip" aria-hidden="true"></div>
+    <div id="ruler-save-dialog" class="modal-root" aria-hidden="true">
+      <div class="modal-backdrop" data-ruler-save="no"></div>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="ruler-save-title">
+        <h3 id="ruler-save-title">Include ruler overlay?</h3>
+        <p>The ruler origin has been moved. Include the ruler overlay in the saved image?</p>
+        <div class="modal-actions">
+          <button type="button" id="ruler-save-no" data-ruler-save="no">No</button>
+          <button type="button" id="ruler-save-yes" class="primary" data-ruler-save="yes">Yes</button>
+        </div>
+      </div>
+    </div>
 
     <script>
       (function () {
@@ -771,6 +937,15 @@
           rotation: 0,
           panX: 0,
           panY: 0,
+        };
+
+        /** Shared ruler origin as fractions of each canvas box (0–1). */
+        const rulerState = {
+          originNx: 0,
+          originNy: 0,
+          dragging: false,
+          /** Zoom last baked into filter canvases (may lag the slider). */
+          filterZoom: 1,
         };
 
         const els = {
@@ -859,6 +1034,15 @@
           return Math.min(hi, Math.max(lo, Number(n)));
         }
 
+        /** Snap/format degrees for 0.2° rotation steps. */
+        function snapDegrees(n) {
+          return Math.round(clamp(n, -180, 180) * 5) / 5;
+        }
+        function formatDegrees(n) {
+          const v = snapDegrees(n);
+          return (Math.abs(v % 1) < 1e-9 ? String(Math.round(v)) : v.toFixed(1)) + "°";
+        }
+
         function oddAtLeast(v, min) {
           let n = Math.max(min, Math.round(Number(v) || min));
           if (n % 2 === 0) n += 1;
@@ -911,6 +1095,7 @@
           if (!visible && els.imageDetailsTrigger) {
             els.imageDetailsTrigger.classList.remove("visible");
           }
+          if (!visible) scheduleRulerUpdate();
         }
 
         function enableImageControls(enabled) {
@@ -954,13 +1139,26 @@
               : "cancel-ink") || "cancel-ink";
           const safeBase = base.replace(/[^\w\-]+/g, "_").replace(/^_+|_+$/g, "") || "cancel-ink";
           const slug = strategyLabels[key] || key;
-          const a = document.createElement("a");
-          a.href = canvas.toDataURL("image/png");
-          a.download = safeBase + "-" + slug + ".png";
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          setStatus("Saved " + a.download, "ok");
+          const filename = safeBase + "-" + slug + ".png";
+
+          function finish(exportCanvas, withRulers) {
+            const a = document.createElement("a");
+            a.href = exportCanvas.toDataURL("image/png");
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setStatus("Saved " + filename + (withRulers ? " (with rulers)" : ""), "ok");
+          }
+
+          if (hasDpiMeta() && isRulerOriginMoved()) {
+            askIncludeRulers().then(function (include) {
+              if (include) finish(composeCanvasWithRulers(canvas, key), true);
+              else finish(canvas, false);
+            });
+            return;
+          }
+          finish(canvas, false);
         }
 
         function showCanvas(key) {
@@ -1458,6 +1656,7 @@
           ctx.drawImage(els.workCanvas, -baseW / 2, -baseH / 2, baseW, baseH);
           ctx.restore();
           showCanvas("original");
+          scheduleRulerUpdate();
         }
 
         function putRgbaOnCanvas(canvas, width, height, buffer) {
@@ -1979,6 +2178,7 @@
           try {
             await workerReady;
             const drawn = drawScaledRgba(sourceImage);
+            rulerState.filterZoom = clamp(viewState.zoom, 0.5, 6);
             const params = readParams(strategies);
             const id = "req-" + ++reqSeq;
             const result = await new Promise(function (resolve, reject) {
@@ -2002,6 +2202,7 @@
               putRgbaOnCanvas(els.canvases[key], img.width, img.height, img.buffer);
               showCanvas(key);
             });
+            scheduleRulerUpdate();
           } catch (err) {
             dbgError("processStrategies failed", err);
             setStatus(err instanceof Error ? err.message : String(err), "error");
@@ -2032,6 +2233,463 @@
 
         let sourceMeta = null;
         let currentSettingsKey = null;
+
+        const RULER_KEYS = ["original", "rg", "lab", "ridge"];
+        let rulerRaf = 0;
+
+        function hasDpiMeta() {
+          return !!(sourceMeta && sourceMeta.dpiX > 0 && sourceMeta.dpiY > 0);
+        }
+
+        function getRasterScaleFactor() {
+          if (!sourceImage) return 1;
+          const natW = sourceImage.naturalWidth || sourceImage.width;
+          const natH = sourceImage.naturalHeight || sourceImage.height;
+          const maxSide = chooseMaxSide(natW, natH);
+          return Math.min(1, maxSide / Math.max(natW, natH));
+        }
+
+        function getPrintSizeMm() {
+          if (!hasDpiMeta() || !sourceImage) return null;
+          const w = sourceImage.naturalWidth || sourceImage.width;
+          const h = sourceImage.naturalHeight || sourceImage.height;
+          return {
+            w: (w / sourceMeta.dpiX) * 25.4,
+            h: (h / sourceMeta.dpiY) * 25.4,
+          };
+        }
+
+        /**
+         * CSS pixels per millimetre along X/Y for a displayed canvas,
+         * accounting for downscale, view zoom, and CSS object-fit sizing.
+         */
+        function getCssPxPerMm(canvas, canvasKey) {
+          if (!hasDpiMeta() || !canvas || !canvas.width || !canvas.height || !canvas.clientWidth) {
+            return null;
+          }
+          const rasterScale = getRasterScaleFactor();
+          const zoom =
+            canvasKey === "original"
+              ? clamp(viewState.zoom, 0.5, 6)
+              : clamp(rulerState.filterZoom, 0.5, 6);
+          const bufPerMmX = (sourceMeta.dpiX / 25.4) * rasterScale * zoom;
+          const bufPerMmY = (sourceMeta.dpiY / 25.4) * rasterScale * zoom;
+          const cssPerBufX = canvas.clientWidth / canvas.width;
+          const cssPerBufY = canvas.clientHeight / canvas.height;
+          return {
+            x: bufPerMmX * cssPerBufX,
+            y: bufPerMmY * cssPerBufY,
+          };
+        }
+
+        function chooseTickMm(pxPerMm) {
+          // Prefer major steps that keep labels readable (~40–90px apart).
+          const candidates = [0.5, 1, 2, 5, 10, 20, 25, 50, 100];
+          let major = candidates[candidates.length - 1];
+          for (let i = 0; i < candidates.length; i++) {
+            if (candidates[i] * pxPerMm >= 36) {
+              major = candidates[i];
+              break;
+            }
+          }
+          let minor = null;
+          let sub = null;
+          if (major >= 10) {
+            minor = major / 5;
+            if (minor * pxPerMm >= 6) sub = minor / 2;
+          } else if (major >= 2) {
+            minor = 1;
+            if (major === 2 && 0.5 * pxPerMm >= 5) sub = 0.5;
+            else if (major >= 5 && (major / 5) * pxPerMm >= 5) minor = major / 5;
+          } else if (major === 1) {
+            if (0.5 * pxPerMm >= 5) minor = 0.5;
+            if (0.1 * pxPerMm >= 4) sub = 0.1;
+            else if (0.2 * pxPerMm >= 4) sub = 0.2;
+          } else {
+            // major 0.5
+            if (0.1 * pxPerMm >= 4) minor = 0.1;
+          }
+          if (minor != null && Math.abs(minor - major) < 1e-9) minor = null;
+          if (sub != null && minor != null && Math.abs(sub - minor) < 1e-9) sub = null;
+          return { major: major, minor: minor, sub: sub };
+        }
+
+        function formatTickLabel(mm) {
+          const a = Math.abs(mm);
+          if (a < 1e-6) return "0";
+          if (Number.isInteger(mm) || Math.abs(mm - Math.round(mm)) < 1e-6) return String(Math.round(mm));
+          if (a >= 10) return mm.toFixed(0);
+          if (a >= 1) return (Math.round(mm * 10) / 10).toFixed(1);
+          return (Math.round(mm * 100) / 100).toFixed(2).replace(/0+$/, "").replace(/\.$/, "");
+        }
+
+        function ensureRulerOverlay(frame) {
+          let overlay = frame.querySelector(".ruler-overlay");
+          if (overlay) return overlay;
+          overlay = document.createElement("div");
+          overlay.className = "ruler-overlay";
+          overlay.setAttribute("aria-hidden", "true");
+          overlay.innerHTML =
+            '<canvas class="ruler-x"></canvas>' +
+            '<canvas class="ruler-y"></canvas>' +
+            '<div class="ruler-corner">mm</div>' +
+            '<div class="ruler-hair-x"></div>' +
+            '<div class="ruler-hair-y"></div>' +
+            '<div class="ruler-origin" title="Drag origin" role="slider" aria-label="Ruler origin"></div>' +
+            '<div class="ruler-size"></div>';
+          frame.appendChild(overlay);
+
+          const originEl = overlay.querySelector(".ruler-origin");
+          let dragPointer = null;
+
+          originEl.addEventListener("pointerdown", function (e) {
+            if (!frame.classList.contains("rulers-on")) return;
+            e.preventDefault();
+            e.stopPropagation();
+            dragPointer = e.pointerId;
+            rulerState.dragging = true;
+            originEl.classList.add("dragging");
+            originEl.setPointerCapture(e.pointerId);
+            moveOriginFromClient(frame, e.clientX, e.clientY);
+          });
+
+          originEl.addEventListener("pointermove", function (e) {
+            if (!rulerState.dragging || dragPointer !== e.pointerId) return;
+            e.preventDefault();
+            e.stopPropagation();
+            moveOriginFromClient(frame, e.clientX, e.clientY);
+          });
+
+          function endOriginDrag(e) {
+            if (!rulerState.dragging || (e && dragPointer != null && e.pointerId !== dragPointer)) return;
+            rulerState.dragging = false;
+            dragPointer = null;
+            originEl.classList.remove("dragging");
+            try {
+              if (e) originEl.releasePointerCapture(e.pointerId);
+            } catch (_) {}
+          }
+
+          originEl.addEventListener("pointerup", endOriginDrag);
+          originEl.addEventListener("pointercancel", endOriginDrag);
+          return overlay;
+        }
+
+        function moveOriginFromClient(frame, clientX, clientY) {
+          const canvas = frame.querySelector("canvas:not(.ruler-x):not(.ruler-y)");
+          if (!canvas || canvas.classList.contains("hidden")) return;
+          const rect = canvas.getBoundingClientRect();
+          if (rect.width < 1 || rect.height < 1) return;
+          rulerState.originNx = clamp((clientX - rect.left) / rect.width, 0, 1);
+          rulerState.originNy = clamp((clientY - rect.top) / rect.height, 0, 1);
+          updateAllRulers();
+        }
+
+        function drawAxisRuler(ctx, lengthCss, thicknessCss, pxPerMm, originCss, horizontal, dprOpt) {
+          const dpr = dprOpt != null ? dprOpt : Math.min(2, window.devicePixelRatio || 1);
+          const w = horizontal ? Math.max(1, Math.round(lengthCss * dpr)) : Math.max(1, Math.round(thicknessCss * dpr));
+          const h = horizontal ? Math.max(1, Math.round(thicknessCss * dpr)) : Math.max(1, Math.round(lengthCss * dpr));
+          ctx.canvas.width = w;
+          ctx.canvas.height = h;
+          if (dprOpt == null) {
+            ctx.canvas.style.width = (horizontal ? lengthCss : thicknessCss) + "px";
+            ctx.canvas.style.height = (horizontal ? thicknessCss : lengthCss) + "px";
+          }
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          const clearW = horizontal ? lengthCss : thicknessCss;
+          const clearH = horizontal ? thicknessCss : lengthCss;
+          ctx.clearRect(0, 0, clearW, clearH);
+
+          ctx.fillStyle = "rgba(28, 27, 24, 0.78)";
+          ctx.fillRect(0, 0, clearW, clearH);
+
+          const ticks = chooseTickMm(pxPerMm);
+          const originMm = originCss / pxPerMm;
+          const startMm = -originMm;
+          const endMm = (lengthCss - originCss) / pxPerMm;
+
+          function forEachTick(step, fn) {
+            if (!step || step <= 0) return;
+            const first = Math.ceil((startMm - 1e-9) / step) * step;
+            for (let v = first; v <= endMm + 1e-9; v += step) {
+              fn(v);
+            }
+          }
+
+          function paintTick(mm, len, alpha) {
+            const pos = originCss + mm * pxPerMm;
+            ctx.strokeStyle = "rgba(232, 229, 220," + alpha + ")";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            if (horizontal) {
+              ctx.moveTo(pos + 0.5, thicknessCss);
+              ctx.lineTo(pos + 0.5, thicknessCss - len);
+            } else {
+              ctx.moveTo(thicknessCss, pos + 0.5);
+              ctx.lineTo(thicknessCss - len, pos + 0.5);
+            }
+            ctx.stroke();
+          }
+
+          if (ticks.sub) {
+            forEachTick(ticks.sub, function (mm) {
+              if (ticks.minor && Math.abs(mm / ticks.minor - Math.round(mm / ticks.minor)) < 1e-6) return;
+              if (Math.abs(mm / ticks.major - Math.round(mm / ticks.major)) < 1e-6) return;
+              paintTick(mm, thicknessCss * 0.28, 0.45);
+            });
+          }
+          if (ticks.minor) {
+            forEachTick(ticks.minor, function (mm) {
+              if (Math.abs(mm / ticks.major - Math.round(mm / ticks.major)) < 1e-6) return;
+              paintTick(mm, thicknessCss * 0.48, 0.7);
+            });
+          }
+          forEachTick(ticks.major, function (mm) {
+            paintTick(mm, thicknessCss * 0.78, 0.95);
+          });
+
+          const fontPx = Math.max(9, Math.round(thicknessCss * 0.5));
+          ctx.fillStyle = "rgba(232, 229, 220, 0.95)";
+          ctx.font = "600 " + fontPx + "px ui-monospace, Menlo, Consolas, monospace";
+          ctx.textBaseline = horizontal ? "top" : "middle";
+          ctx.textAlign = horizontal ? "center" : "left";
+
+          forEachTick(ticks.major, function (mm) {
+            const label = formatTickLabel(mm);
+            const pos = originCss + mm * pxPerMm;
+            if (horizontal) {
+              if (pos < thicknessCss + 4 || pos > lengthCss - 12) return;
+              ctx.fillText(label, pos, 1);
+            } else {
+              if (pos < thicknessCss + 4 || pos > lengthCss - 8) return;
+              ctx.save();
+              ctx.translate(thicknessCss * 0.45, pos);
+              ctx.rotate(-Math.PI / 2);
+              ctx.textAlign = "center";
+              ctx.textBaseline = "middle";
+              ctx.fillText(label, 0, 0);
+              ctx.restore();
+            }
+          });
+        }
+
+        function updateRulerForFrame(frame, canvasKey) {
+          const canvas = els.canvases[canvasKey];
+          const overlay = ensureRulerOverlay(frame);
+          const enabled =
+            hasDpiMeta() &&
+            sourceImage &&
+            canvas &&
+            !canvas.classList.contains("hidden") &&
+            canvas.width > 0 &&
+            canvas.clientWidth > 0;
+
+          frame.classList.toggle("rulers-on", !!enabled);
+          if (!enabled) {
+            overlay.setAttribute("aria-hidden", "true");
+            return;
+          }
+          overlay.setAttribute("aria-hidden", "false");
+
+          const frameRect = frame.getBoundingClientRect();
+          const canvasRect = canvas.getBoundingClientRect();
+          const left = canvasRect.left - frameRect.left;
+          const top = canvasRect.top - frameRect.top;
+          const width = canvasRect.width;
+          const height = canvasRect.height;
+
+          overlay.style.left = left + "px";
+          overlay.style.top = top + "px";
+          overlay.style.width = width + "px";
+          overlay.style.height = height + "px";
+
+          const scale = getCssPxPerMm(canvas, canvasKey);
+          if (!scale) return;
+
+          const thickness = 18;
+          const originX = rulerState.originNx * width;
+          const originY = rulerState.originNy * height;
+
+          const xCanvas = overlay.querySelector(".ruler-x");
+          const yCanvas = overlay.querySelector(".ruler-y");
+          const xCtx = xCanvas.getContext("2d");
+          const yCtx = yCanvas.getContext("2d");
+          drawAxisRuler(xCtx, width, thickness, scale.x, originX, true);
+          drawAxisRuler(yCtx, height, thickness, scale.y, originY, false);
+
+          xCanvas.style.left = "0px";
+          xCanvas.style.top = "0px";
+          yCanvas.style.left = "0px";
+          yCanvas.style.top = "0px";
+
+          const hairX = overlay.querySelector(".ruler-hair-x");
+          const hairY = overlay.querySelector(".ruler-hair-y");
+          hairX.style.top = originY + "px";
+          hairY.style.left = originX + "px";
+
+          const originEl = overlay.querySelector(".ruler-origin");
+          originEl.style.left = originX + "px";
+          originEl.style.top = originY + "px";
+
+          const sizeEl = overlay.querySelector(".ruler-size");
+          const print = getPrintSizeMm();
+          if (print) {
+            sizeEl.textContent =
+              print.w.toFixed(1) + " × " + print.h.toFixed(1) + " mm";
+          } else {
+            sizeEl.textContent = "";
+          }
+        }
+
+        function updateAllRulers() {
+          RULER_KEYS.forEach(function (key) {
+            const canvas = els.canvases[key];
+            if (!canvas) return;
+            const frame = canvas.closest(".frame");
+            if (!frame) return;
+            updateRulerForFrame(frame, key);
+          });
+        }
+
+        function scheduleRulerUpdate() {
+          if (rulerRaf) cancelAnimationFrame(rulerRaf);
+          rulerRaf = requestAnimationFrame(function () {
+            rulerRaf = 0;
+            updateAllRulers();
+          });
+        }
+
+        function resetRulerOrigin() {
+          rulerState.originNx = 0;
+          rulerState.originNy = 0;
+        }
+
+        function isRulerOriginMoved() {
+          return rulerState.originNx > 1e-4 || rulerState.originNy > 1e-4;
+        }
+
+        function getBufPxPerMm(canvasKey) {
+          if (!hasDpiMeta()) return null;
+          const rasterScale = getRasterScaleFactor();
+          const zoom =
+            canvasKey === "original"
+              ? clamp(viewState.zoom, 0.5, 6)
+              : clamp(rulerState.filterZoom, 0.5, 6);
+          return {
+            x: (sourceMeta.dpiX / 25.4) * rasterScale * zoom,
+            y: (sourceMeta.dpiY / 25.4) * rasterScale * zoom,
+          };
+        }
+
+        function composeCanvasWithRulers(sourceCanvas, canvasKey) {
+          const w = sourceCanvas.width;
+          const h = sourceCanvas.height;
+          const out = document.createElement("canvas");
+          out.width = w;
+          out.height = h;
+          const ctx = out.getContext("2d");
+          ctx.drawImage(sourceCanvas, 0, 0);
+
+          const bufPerMm = getBufPxPerMm(canvasKey);
+          if (!bufPerMm || bufPerMm.x <= 0 || bufPerMm.y <= 0) return out;
+
+          const cssScale =
+            sourceCanvas.clientWidth > 0 ? w / sourceCanvas.clientWidth : Math.max(1, w / 400);
+          const thickness = Math.max(14, Math.round(18 * cssScale));
+          const originX = rulerState.originNx * w;
+          const originY = rulerState.originNy * h;
+          const hairW = Math.max(1, cssScale);
+
+          ctx.strokeStyle = "rgba(232, 197, 71, 0.45)";
+          ctx.lineWidth = hairW;
+          ctx.beginPath();
+          ctx.moveTo(0, originY + 0.5);
+          ctx.lineTo(w, originY + 0.5);
+          ctx.moveTo(originX + 0.5, 0);
+          ctx.lineTo(originX + 0.5, h);
+          ctx.stroke();
+
+          const xCan = document.createElement("canvas");
+          const yCan = document.createElement("canvas");
+          drawAxisRuler(xCan.getContext("2d"), w, thickness, bufPerMm.x, originX, true, 1);
+          drawAxisRuler(yCan.getContext("2d"), h, thickness, bufPerMm.y, originY, false, 1);
+          ctx.drawImage(xCan, 0, 0);
+          ctx.drawImage(yCan, 0, 0);
+
+          ctx.fillStyle = "rgba(28, 27, 24, 0.78)";
+          ctx.fillRect(0, 0, thickness, thickness);
+          ctx.fillStyle = "rgba(232, 229, 220, 0.95)";
+          const cornerFont = Math.max(9, Math.round(thickness * 0.42));
+          ctx.font = "700 " + cornerFont + "px ui-monospace, Menlo, Consolas, monospace";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText("mm", thickness / 2, thickness / 2);
+
+          const r = Math.max(5, 7 * cssScale);
+          ctx.beginPath();
+          ctx.arc(originX, originY, r, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(232, 197, 71, 0.2)";
+          ctx.fill();
+          ctx.strokeStyle = "#e8c547";
+          ctx.lineWidth = Math.max(1.5, 2 * cssScale);
+          ctx.stroke();
+
+          const print = getPrintSizeMm();
+          if (print) {
+            const label = print.w.toFixed(1) + " × " + print.h.toFixed(1) + " mm";
+            const labelFont = Math.max(11, Math.round(12 * cssScale));
+            ctx.font = "700 " + labelFont + "px ui-monospace, Menlo, Consolas, monospace";
+            ctx.textAlign = "right";
+            ctx.textBaseline = "top";
+            const pad = Math.max(4, Math.round(6 * cssScale));
+            const metrics = ctx.measureText(label);
+            const boxW = metrics.width + pad * 2;
+            const boxH = labelFont + pad * 1.6;
+            const boxX = w - pad - boxW;
+            const boxY = thickness + pad;
+            ctx.fillStyle = "rgba(28, 27, 24, 0.72)";
+            ctx.fillRect(boxX, boxY, boxW, boxH);
+            ctx.fillStyle = "rgba(232, 229, 220, 0.95)";
+            ctx.fillText(label, w - pad * 2, boxY + pad * 0.7);
+          }
+
+          return out;
+        }
+
+        function askIncludeRulers() {
+          const dialog = document.getElementById("ruler-save-dialog");
+          const yesBtn = document.getElementById("ruler-save-yes");
+          if (!dialog || !yesBtn) return Promise.resolve(true);
+
+          return new Promise(function (resolve) {
+            function close(include) {
+              dialog.classList.remove("open");
+              dialog.setAttribute("aria-hidden", "true");
+              document.removeEventListener("keydown", onKey, true);
+              dialog.removeEventListener("click", onClick);
+              resolve(!!include);
+            }
+            function onKey(e) {
+              if (e.key === "Escape") {
+                e.preventDefault();
+                close(false);
+              } else if (e.key === "Enter") {
+                e.preventDefault();
+                close(true);
+              }
+            }
+            function onClick(e) {
+              const action = e.target && e.target.getAttribute && e.target.getAttribute("data-ruler-save");
+              if (action === "yes") close(true);
+              else if (action === "no") close(false);
+            }
+            dialog.addEventListener("click", onClick);
+            document.addEventListener("keydown", onKey, true);
+            dialog.classList.add("open");
+            dialog.setAttribute("aria-hidden", "false");
+            yesBtn.focus();
+          });
+        }
 
         const SETTINGS_LS = "inkCmp.settings.v1";
         const SETTINGS_MAX_ENTRIES = 50;
@@ -2138,13 +2796,13 @@
           if (els.autoZoom) els.autoZoom.checked = s.autoZoom !== false;
 
           viewState.zoom = clamp(s.zoom != null ? s.zoom : 1, 0.5, 6);
-          viewState.rotation = clamp(s.rotation != null ? s.rotation : 0, -180, 180);
+          viewState.rotation = snapDegrees(s.rotation != null ? s.rotation : 0);
           viewState.panX = Number(s.panX) || 0;
           viewState.panY = Number(s.panY) || 0;
           els.zoom.value = String(viewState.zoom);
           els.zoomValue.textContent = viewState.zoom.toFixed(2) + "×";
-          els.rotation.value = String(Math.round(viewState.rotation));
-          els.rotationValue.textContent = Math.round(viewState.rotation) + "°";
+          els.rotation.value = String(viewState.rotation);
+          els.rotationValue.textContent = formatDegrees(viewState.rotation);
 
           els.rgClahe.value = String(clamp(s.rgClahe != null ? s.rgClahe : DEFAULT_FILTER_SETTINGS.rgClahe, 0.5, 10));
           els.rgClaheValue.textContent = Number(els.rgClahe.value).toFixed(1);
@@ -2157,8 +2815,8 @@
           );
           els.rgThreshValue.textContent = els.rgThresh.value;
           if (els.rgRot) {
-            els.rgRot.value = String(clamp(s.rgRot != null ? s.rgRot : 0, -180, 180));
-            if (els.rgRotValue) els.rgRotValue.textContent = Math.round(Number(els.rgRot.value)) + "°";
+            els.rgRot.value = String(snapDegrees(s.rgRot != null ? s.rgRot : 0));
+            if (els.rgRotValue) els.rgRotValue.textContent = formatDegrees(els.rgRot.value);
           }
 
           const labMedian = oddAtLeast(
@@ -2179,8 +2837,8 @@
             els.labInvert.checked = s.labInvert != null ? !!s.labInvert : !!DEFAULT_FILTER_SETTINGS.labInvert;
           }
           if (els.labRot) {
-            els.labRot.value = String(clamp(s.labRot != null ? s.labRot : 0, -180, 180));
-            if (els.labRotValue) els.labRotValue.textContent = Math.round(Number(els.labRot.value)) + "°";
+            els.labRot.value = String(snapDegrees(s.labRot != null ? s.labRot : 0));
+            if (els.labRotValue) els.labRotValue.textContent = formatDegrees(els.labRot.value);
           }
 
           els.ridgeThresh.value = String(
@@ -2198,8 +2856,8 @@
               s.ridgeInvert != null ? !!s.ridgeInvert : !!DEFAULT_FILTER_SETTINGS.ridgeInvert;
           }
           if (els.ridgeRot) {
-            els.ridgeRot.value = String(clamp(s.ridgeRot != null ? s.ridgeRot : 0, -180, 180));
-            if (els.ridgeRotValue) els.ridgeRotValue.textContent = Math.round(Number(els.ridgeRot.value)) + "°";
+            els.ridgeRot.value = String(snapDegrees(s.ridgeRot != null ? s.ridgeRot : 0));
+            if (els.ridgeRotValue) els.ridgeRotValue.textContent = formatDegrees(els.ridgeRot.value);
           }
         }
 
@@ -2597,6 +3255,7 @@
 
           showStrategyPanels(true);
           enableImageControls(true);
+          resetRulerOrigin();
           renderImageMeta(sourceMeta, img);
 
           let didZoom = false;
@@ -2852,8 +3511,9 @@
         });
 
         els.rotation.addEventListener("input", function () {
-          viewState.rotation = Number(els.rotation.value);
-          els.rotationValue.textContent = viewState.rotation + "°";
+          viewState.rotation = snapDegrees(els.rotation.value);
+          els.rotation.value = String(viewState.rotation);
+          els.rotationValue.textContent = formatDegrees(viewState.rotation);
           debouncedOriginal();
           persistImageSettings();
         });
@@ -2867,6 +3527,7 @@
           els.zoomValue.textContent = "1.00×";
           els.rotation.value = "0";
           els.rotationValue.textContent = "0°";
+          resetRulerOrigin();
           drawOriginal();
           syncFiltersToView();
           persistImageSettings();
@@ -2876,7 +3537,9 @@
           input.addEventListener("input", function () {
             const strategy = input.id.replace(/-rot$/, "");
             const valueEl = els[strategy + "RotValue"];
-            if (valueEl) valueEl.textContent = Number(input.value) + "°";
+            const snapped = snapDegrees(input.value);
+            input.value = String(snapped);
+            if (valueEl) valueEl.textContent = formatDegrees(snapped);
             if (strategy === "rg") debouncedRG();
             else if (strategy === "lab") debouncedLab();
             else if (strategy === "ridge") debouncedRidge();
@@ -2957,6 +3620,18 @@
           exportSettingsBtn.addEventListener("click", exportAllSettingsToClipboard);
         }
 
+        if (typeof ResizeObserver !== "undefined") {
+          const rulerRo = new ResizeObserver(function () {
+            scheduleRulerUpdate();
+          });
+          if (els.comparisonGrid) rulerRo.observe(els.comparisonGrid);
+          RULER_KEYS.forEach(function (key) {
+            const canvas = els.canvases[key];
+            if (canvas) rulerRo.observe(canvas);
+          });
+        }
+        window.addEventListener("resize", scheduleRulerUpdate);
+
         setFileEnabled(false);
         enableImageControls(false);
         showStrategyPanels(false);
@@ -2979,7 +3654,7 @@
               opencvReady = true;
               setFileEnabled(true);
               dbg("OpenCV worker ready");
-              setStatus("OpenCV ready — drop an image or browse to open one.", "ok");
+              setStatus("OpenCV ready — drop an image or pick a sample.", "ok");
             })
             .catch(function (err) {
               dbgError("ensureWorker failed", err);

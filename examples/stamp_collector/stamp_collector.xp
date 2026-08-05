@@ -48,8 +48,8 @@ _capability:
     stamps:
       _input: country
       _output: collection
-      _content:
-        scrape: "{{ _input | as_catalog_query | collect_catalogue(max_pages, delay_ms, year, refresh, output_dir, offline) }}"
+      _realization:
+        jinja: "{{ _input | as_catalog_query | collect_catalogue(max_pages, delay_ms, year, refresh, output_dir, offline) }}"
 
 ---
 ===

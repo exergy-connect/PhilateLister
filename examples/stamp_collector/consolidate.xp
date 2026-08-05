@@ -27,8 +27,8 @@ _capability:
     periods:
       _input: country
       _output: collection
-      _content:
-        merge: "{{ _input | consolidate_country(output_dir) | write_collection_xp(output_dir) }}"
+      _realization:
+        jinja: "{{ _input | consolidate_country(output_dir) | write_collection_xp(output_dir) }}"
 
 ---
 ===

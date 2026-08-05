@@ -89,8 +89,8 @@ _capability:
       _api: _true
       _input: image_upload
       _output: image_upload_result
-      _content:
-        store: "{{ _input | _validate() | upload_image }}"
+      _realization:
+        jinja: "{{ _input | _validate() | upload_image }}"
 
 _document:
   application: finder

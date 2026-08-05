@@ -1,0 +1,2992 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="copyright" content="Copyright (C) 2026 Exergy ∞ LLC" />
+    <title>OpenCV — Cancellation Ink Separation Comparison</title>
+    <style>
+      :root {
+        --bg: #f7f4ee;
+        --surface: #fffdf8;
+        --ink: #1c1b18;
+        --muted: #3f3c37;
+        --accent: #2d4a3e;
+        --accent-hover: #1f342b;
+        --danger: #8b2942;
+        --ok: #2d6a4f;
+        --border: #c4bdb0;
+        --radius: 8px;
+        --ctrl-w: 15.5rem;
+        --font-ui: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+        --fs-title: 1.35rem;
+        --fs-h2: 1.15rem;
+        --fs-body: 1.05rem;
+        --fs-label: 1rem;
+        --fs-tip: 1.15rem;
+        font-family: var(--font-ui);
+      }
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        background: var(--bg);
+        color: var(--ink);
+        line-height: 1.45;
+        font-size: 18px;
+      }
+      main {
+        height: 100%;
+        padding: 0.5rem 0.65rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+        min-height: 0;
+      }
+      .topbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.55rem 0.85rem;
+        flex-shrink: 0;
+      }
+      .topbar h1 {
+        font-size: var(--fs-title);
+        font-weight: 700;
+        margin: 0;
+        white-space: nowrap;
+      }
+      #status {
+        font-size: var(--fs-body);
+        color: var(--muted);
+        flex: 1 1 10rem;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      #status.error { color: var(--danger); }
+      #status.ok { color: var(--ok); }
+
+      footer.site-footer {
+        margin-top: 0;
+        padding: 0.2rem 0.15rem 0.15rem;
+        border-top: 1px solid var(--border);
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: baseline;
+        gap: 0.35rem 0.75rem;
+        font-size: 0.75rem;
+        color: var(--muted);
+        flex-shrink: 0;
+      }
+      footer.site-footer .footer-copy {
+        grid-column: 2;
+        text-align: center;
+        justify-self: center;
+      }
+      footer.site-footer .footer-version {
+        grid-column: 3;
+        justify-self: end;
+        font: inherit;
+        font-size: inherit;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+        color: inherit;
+        background: none;
+        border: none;
+        border-bottom: 1px dotted var(--border);
+        padding: 0;
+        margin: 0;
+        cursor: pointer;
+        line-height: inherit;
+      }
+      footer.site-footer .footer-version:hover {
+        color: var(--ink);
+      }
+      footer.site-footer .footer-version:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      #comparison-grid {
+        flex: 1;
+        min-height: 0;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 0.55rem;
+        align-content: stretch;
+      }
+
+      .quadrant {
+        display: grid;
+        min-height: 0;
+        min-width: 0;
+        gap: 0.45rem;
+        align-items: stretch;
+        position: relative;
+      }
+      .quadrant.side-left {
+        grid-template-columns: var(--ctrl-w) minmax(0, 1fr);
+      }
+      .quadrant.side-right {
+        grid-template-columns: minmax(0, 1fr) var(--ctrl-w);
+      }
+      .quadrant.hidden { display: none; }
+
+      .side-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+        min-height: 0;
+        min-width: 0;
+        padding: 0.55rem 0.6rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        position: relative;
+        z-index: 2;
+      }
+      .panel-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 0.5rem;
+        min-width: 0;
+      }
+      .panel-head h2 {
+        min-width: 0;
+      }
+      .side-panel h2 {
+        margin: 0;
+        font-size: var(--fs-h2);
+        font-weight: 700;
+        line-height: 1.25;
+      }
+      .blurb {
+        margin: 0;
+        font-size: var(--fs-body);
+        color: var(--ink);
+        line-height: 1.4;
+      }
+      .blurb > p { margin: 0; }
+      .blurb.has-tip {
+        cursor: help;
+        border-bottom: 1px dotted var(--border);
+        padding-bottom: 0.1rem;
+      }
+
+      .controls {
+        display: flex;
+        flex-direction: column;
+        gap: 0.55rem;
+        margin-top: 0.15rem;
+      }
+      #view-controls {
+        display: none;
+      }
+      #view-controls.visible,
+      .quadrant.has-image #view-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 0.55rem;
+      }
+      .param {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+      }
+      .param-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 0.35rem;
+        font-size: var(--fs-label);
+        font-weight: 700;
+      }
+      .param-label .value {
+        font-family: ui-monospace, Menlo, Consolas, monospace;
+        font-weight: 600;
+        font-size: var(--fs-label);
+        color: var(--muted);
+      }
+
+      input[type="range"] {
+        width: 100%;
+        accent-color: var(--accent);
+        margin: 0;
+        height: 1.35rem;
+      }
+      button,
+      .btn-label {
+        font: inherit;
+        font-size: var(--fs-label);
+        font-weight: 700;
+        padding: 0.4rem 0.7rem;
+        min-height: 2.25rem;
+        border-radius: 6px;
+        border: 2px solid var(--border);
+        background: #fff;
+        color: var(--ink);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+      }
+      button:hover:not(:disabled),
+      .btn-label:hover { background: #f3eee4; }
+      button.primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+      button.primary:hover:not(:disabled) { background: var(--accent-hover); }
+      button:disabled,
+      input:disabled { opacity: 0.55; cursor: not-allowed; }
+      .side-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin-top: auto;
+        padding-top: 0.35rem;
+      }
+
+      .view-stage {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 2.15rem;
+        gap: 0.3rem;
+        min-height: 0;
+        min-width: 0;
+        width: 100%;
+        height: 100%;
+        justify-self: stretch;
+        align-self: stretch;
+      }
+      .view-rot {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.3rem;
+        min-height: 0;
+        padding: 0.1rem 0;
+      }
+      .view-rot-value {
+        flex-shrink: 0;
+        font-family: ui-monospace, Menlo, Consolas, monospace;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--muted);
+        line-height: 1;
+      }
+      .view-rot input[type="range"] {
+        flex: 1 1 auto;
+        width: 1.35rem;
+        height: auto;
+        min-height: 7rem;
+        margin: 0;
+        writing-mode: vertical-lr;
+        direction: rtl;
+        appearance: slider-vertical;
+        -webkit-appearance: slider-vertical;
+      }
+      .frame-corner-btn {
+        position: absolute;
+        right: 0.5rem;
+        bottom: 0.5rem;
+        z-index: 4;
+        width: auto;
+        min-width: 4.25rem;
+        min-height: 2.1rem;
+        margin: 0;
+        padding: 0.35rem 0.75rem;
+        font-size: 1rem !important;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+      }
+      #replace-label {
+        display: none;
+        border-color: var(--accent);
+        background: var(--accent);
+        color: #fff;
+        cursor: pointer;
+      }
+      #replace-label:hover { background: var(--accent-hover); }
+      .drop-zone.has-image #replace-label { display: inline-flex; align-items: center; justify-content: center; }
+      #replace-label.disabled {
+        pointer-events: none;
+        opacity: 0.55;
+      }
+
+      .frame {
+        background: #1c1b18;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        min-height: 0;
+        min-width: 0;
+        width: 100%;
+        height: 100%;
+        justify-self: stretch;
+        align-self: stretch;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        position: relative;
+        z-index: 1;
+      }
+      .frame canvas {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        display: block;
+        cursor: grab;
+        touch-action: none;
+      }
+      .frame canvas.hidden { display: none; }
+      .frame canvas.panning { cursor: grabbing; }
+
+      .drop-zone {
+        border-width: 2px;
+        border-style: dashed;
+        border-color: var(--border);
+      }
+      .drop-zone.has-image { border-style: solid; border-width: 1px; }
+      .drop-zone.dragover {
+        border-color: #7d9b8c;
+        background-color: #2a322e;
+      }
+      .drop-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.45rem;
+        padding: 1rem;
+        text-align: center;
+      }
+      .drop-placeholder.hidden { display: none; }
+      .drop-placeholder .title {
+        margin: 0;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #e8e4dc;
+      }
+      .drop-placeholder .hint {
+        margin: 0;
+        font-size: 1rem;
+        color: #c5bfb4;
+      }
+      #browse-label {
+        border-color: #5c5852;
+        background: #2a2824;
+        color: #e8e4dc;
+        font-size: 1.05rem;
+        min-height: 2.5rem;
+        padding: 0.45rem 0.9rem;
+      }
+      #browse-label:hover { background: #3a3732; }
+      #browse-label.disabled {
+        pointer-events: none;
+        opacity: 0.55;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+      #work-canvas { display: none; }
+
+      .check-row {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        font-size: var(--fs-label);
+        font-weight: 700;
+      }
+      .check-row input {
+        width: 1.25rem;
+        height: 1.25rem;
+        accent-color: var(--accent);
+      }
+
+      .meta-details-trigger {
+        display: none;
+        flex-shrink: 0;
+        margin: 0;
+        padding: 0;
+        border: none;
+        border-bottom: 1px dotted var(--border);
+        background: none;
+        color: var(--muted);
+        font: inherit;
+        font-size: var(--fs-label);
+        font-weight: 700;
+        cursor: help;
+        line-height: 1.25;
+      }
+      .meta-details-trigger.visible { display: inline-block; }
+      .meta-box {
+        display: none;
+        position: fixed;
+        z-index: 10001;
+        width: max-content;
+        max-width: calc(100vw - 1.5rem);
+        margin: 0;
+        padding: 0.55rem 0.65rem;
+        border: 2px solid var(--border);
+        border-radius: 10px;
+        background: #fffdf8;
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+        font-size: var(--fs-label);
+        line-height: 1.45;
+        pointer-events: none;
+      }
+      .meta-box.open { display: block; }
+      .meta-box .meta-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 1.25rem;
+        margin: 0.15rem 0;
+        white-space: nowrap;
+      }
+      .meta-box .meta-k {
+        color: var(--muted);
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+      .meta-box .meta-v {
+        font-weight: 600;
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      #comparison-grid.orient-portrait { --ctrl-w: 14.5rem; }
+      #comparison-grid.orient-landscape { --ctrl-w: 15.75rem; }
+      .frame.studio-bg { background: #121212; }
+      .frame.paper-bg { background: #cfc8bb; }
+
+      /* Hover tip — fixed so canvases never cover it */
+      #tip-float {
+        display: none;
+        position: fixed;
+        z-index: 10000;
+        width: min(22rem, calc(100vw - 1.5rem));
+        max-width: 22rem;
+        pointer-events: none;
+        background: #fffdf8;
+        color: var(--ink);
+        border: 2px solid var(--border);
+        border-radius: 10px;
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+        padding: 0.75rem 0.9rem 0.85rem;
+      }
+      #tip-float.open { display: block; }
+      #tip-float strong {
+        display: block;
+        margin: 0 0 0.4rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+        line-height: 1.25;
+      }
+      #tip-float p {
+        margin: 0;
+        font-size: var(--fs-tip);
+        line-height: 1.5;
+      }
+
+      @media (max-width: 1100px) {
+        :root { --ctrl-w: 13.5rem; }
+        html, body { font-size: 17px; }
+      }
+      @media (max-width: 720px) {
+        html, body { overflow: auto; height: auto; font-size: 18px; }
+        main { height: auto; min-height: 100vh; }
+        #comparison-grid {
+          grid-template-columns: 1fr;
+          grid-template-rows: none;
+        }
+        .quadrant.side-left,
+        .quadrant.side-right {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto minmax(14rem, 42vh);
+        }
+        .side-right .view-stage { order: -1; }
+        .frame { min-height: 14rem; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="topbar">
+        <h1>Cancellation ink comparison</h1>
+        <div id="status" role="status" aria-live="polite">Loading OpenCV.js in worker…</div>
+      </div>
+
+      <section id="comparison-grid" aria-label="Strategy comparison grid">
+        <article id="quad-original" class="quadrant side-left" data-strategy="original">
+          <div class="side-panel">
+            <div class="panel-head">
+              <h2>Original</h2>
+              <button type="button" id="image-details-trigger" class="meta-details-trigger" aria-describedby="image-meta">details</button>
+            </div>
+            <div
+              class="blurb has-tip"
+              data-tip-title="Original"
+              data-tip-body="This is your reference photo — a stamp on a dark studio mat, or a full cover scan. Trim dark bg cuts away the black backdrop so the stamp fills the view (leave it off for covers with dark edges you want to keep). Auto-zoom frames the stamp or cover for you. Use Zoom, pan (drag the image), and Rotation to line up the original only; each filter has its own rotation slider beside its image."
+            >
+              <p>Stamp or cover reference — any aspect ratio.</p>
+            </div>
+            <div id="view-controls" class="controls">
+              <label class="check-row" for="trim-dark">
+                <input id="trim-dark" type="checkbox" checked />
+                <span>Trim dark bg</span>
+              </label>
+              <label class="check-row" for="auto-zoom">
+                <input id="auto-zoom" type="checkbox" checked />
+                <span>Auto-zoom</span>
+              </label>
+              <div class="param">
+                <label class="param-label" for="zoom-level">
+                  <span>Zoom</span>
+                  <span id="zoom-value" class="value">1.00×</span>
+                </label>
+                <input id="zoom-level" type="range" min="0.5" max="6" step="0.05" value="1" />
+              </div>
+              <div class="param">
+                <label class="param-label" for="rotation-angle">
+                  <span>Rotation</span>
+                  <span id="rotation-value" class="value">0°</span>
+                </label>
+                <input id="rotation-angle" type="range" min="-180" max="180" step="1" value="0" />
+              </div>
+              <div class="side-actions">
+                <button type="button" id="auto-zoom-btn">Auto-zoom</button>
+                <button type="button" id="reset-view-btn">Reset</button>
+              </div>
+            </div>
+          </div>
+          <div id="drop-zone" class="drop-zone frame">
+            <div id="placeholder-original" class="drop-placeholder">
+              <p class="title">Drop stamp or cover</p>
+              <p class="hint">PNG / JPG · any size</p>
+              <label for="image-file" id="browse-label" class="btn-label disabled">Browse…</label>
+            </div>
+            <canvas id="canvas-original" class="hidden"></canvas>
+            <label for="image-file" id="replace-label" class="btn-label frame-corner-btn disabled">Replace</label>
+            <input id="image-file" type="file" accept="image/png,image/jpeg,image/webp,image/*" class="sr-only" disabled />
+          </div>
+        </article>
+
+        <article id="quad-rg" class="quadrant side-right hidden" data-strategy="rg">
+          <div class="view-stage">
+            <div class="frame">
+              <canvas id="canvas-rg" class="hidden"></canvas>
+              <button type="button" class="save-result primary frame-corner-btn" data-save="rg" disabled>Save</button>
+            </div>
+            <div class="view-rot">
+              <span id="rg-rot-value" class="view-rot-value">0°</span>
+              <input id="rg-rot" class="strategy-rot" type="range" min="-180" max="180" step="1" value="0" disabled aria-label="Rotate R − G result" />
+            </div>
+          </div>
+          <div class="side-panel">
+            <h2>R − G + CLAHE</h2>
+            <div
+              class="blurb has-tip"
+              data-tip-title="R − G + CLAHE"
+              data-tip-body="Looks for red ink by comparing the red and green in the photo — cancellation marks are usually redder than the paper. CLAHE boosts that contrast so faint cancels stand out (higher = stronger boost). Invert CLAHE flips light and dark if the cancels look wrong way round. Thresh decides how strong a mark must be to count as ink (higher = only the strongest marks; lower = picks up weaker ones and more paper speckles)."
+            >
+              <p>Subtract green from red, then contrast-boost and threshold.</p>
+            </div>
+            <div class="controls">
+              <div class="param">
+                <label class="param-label" for="rg-clahe">
+                  <span>CLAHE</span>
+                  <span id="rg-clahe-value" class="value">6.3</span>
+                </label>
+                <input id="rg-clahe" type="range" min="0.5" max="10" step="0.1" value="6.3" disabled />
+              </div>
+              <div class="param">
+                <label class="param-label" for="rg-thresh">
+                  <span>Thresh</span>
+                  <span id="rg-thresh-value" class="value">202</span>
+                </label>
+                <input id="rg-thresh" type="range" min="0" max="255" step="1" value="202" disabled />
+              </div>
+              <label class="check-row" for="rg-invert-clahe">
+                <input id="rg-invert-clahe" type="checkbox" checked disabled />
+                <span>Invert</span>
+              </label>
+            </div>
+          </div>
+        </article>
+
+        <article id="quad-lab" class="quadrant side-left hidden" data-strategy="lab">
+          <div class="side-panel">
+            <h2>Lab a* adaptive</h2>
+            <div
+              class="blurb has-tip"
+              data-tip-title="Lab a* adaptive"
+              data-tip-body="Looks at color tint (how red vs green something is) instead of how light or dark the paper is — handy when brown paper would fool a simple brightness filter. Median softens paper grain and speckles (higher = smoother, but can blur thin strokes). Block is the neighborhood size used when deciding “ink or paper?” locally (larger = broader patches). C nudges that decision: higher keeps less (stricter); lower keeps more (including faint marks). Invert flips black and white in the result if the cancels come out the wrong way round."
+            >
+              <p>Isolate red–green chroma (a*), blur, then adaptive threshold.</p>
+            </div>
+            <div class="controls">
+              <div class="param">
+                <label class="param-label" for="lab-median">
+                  <span>Median</span>
+                  <span id="lab-median-value" class="value">11</span>
+                </label>
+                <input id="lab-median" type="range" min="1" max="15" step="2" value="11" disabled />
+              </div>
+              <div class="param">
+                <label class="param-label" for="lab-block">
+                  <span>Block</span>
+                  <span id="lab-block-value" class="value">87</span>
+                </label>
+                <input id="lab-block" type="range" min="3" max="99" step="2" value="87" disabled />
+              </div>
+              <div class="param">
+                <label class="param-label" for="lab-c">
+                  <span>C</span>
+                  <span id="lab-c-value" class="value">0</span>
+                </label>
+                <input id="lab-c" type="range" min="-10" max="10" step="1" value="0" disabled />
+              </div>
+              <label class="check-row" for="lab-invert">
+                <input id="lab-invert" type="checkbox" checked disabled />
+                <span>Invert</span>
+              </label>
+            </div>
+          </div>
+          <div class="view-stage">
+            <div class="frame">
+              <canvas id="canvas-lab" class="hidden"></canvas>
+              <button type="button" class="save-result primary frame-corner-btn" data-save="lab" disabled>Save</button>
+            </div>
+            <div class="view-rot">
+              <span id="lab-rot-value" class="view-rot-value">0°</span>
+              <input id="lab-rot" class="strategy-rot" type="range" min="-180" max="180" step="1" value="0" disabled aria-label="Rotate Lab a* result" />
+            </div>
+          </div>
+        </article>
+
+        <article id="quad-ridge" class="quadrant side-right hidden" data-strategy="ridge">
+          <div class="view-stage">
+            <div class="frame">
+              <canvas id="canvas-ridge" class="hidden"></canvas>
+              <button type="button" class="save-result primary frame-corner-btn" data-save="ridge" disabled>Save</button>
+            </div>
+            <div class="view-rot">
+              <span id="ridge-rot-value" class="view-rot-value">0°</span>
+              <input id="ridge-rot" class="strategy-rot" type="range" min="-180" max="180" step="1" value="0" disabled aria-label="Rotate Ridge result" />
+            </div>
+          </div>
+          <div class="side-panel">
+            <h2>Ridge / Sobel</h2>
+            <div
+              class="blurb has-tip"
+              data-tip-title="Ridge / Sobel"
+              data-tip-body="Finds thin stroke-like marks (pen or cancel lines) by looking for edges, rather than filled blotches of color. Grad sets how sharp an edge must be to count (higher = only clear strokes; lower = weaker lines and more noise). Close reconnects broken bits of a stroke into a continuous line (higher = thicker joins; too high can blob nearby marks together). Invert flips black and white in the result if the strokes come out the wrong way round."
+            >
+              <p>Edge magnitude on a* (or R−G), then morphological close.</p>
+            </div>
+            <div class="controls">
+              <div class="param">
+                <label class="param-label" for="ridge-thresh">
+                  <span>Grad</span>
+                  <span id="ridge-thresh-value" class="value">9</span>
+                </label>
+                <input id="ridge-thresh" type="range" min="1" max="255" step="1" value="9" disabled />
+              </div>
+              <div class="param">
+                <label class="param-label" for="ridge-kernel">
+                  <span>Close</span>
+                  <span id="ridge-kernel-value" class="value">7</span>
+                </label>
+                <input id="ridge-kernel" type="range" min="1" max="15" step="2" value="7" disabled />
+              </div>
+              <label class="check-row" for="ridge-invert">
+                <input id="ridge-invert" type="checkbox" checked disabled />
+                <span>Invert</span>
+              </label>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <footer class="site-footer">
+        <span class="footer-copy">Copyright (C) 2026 Exergy ∞ LLC</span>
+        <button
+          type="button"
+          class="footer-version"
+          id="export-settings-btn"
+          title="Copy all saved per-image settings to the clipboard"
+        >v1.0.0 · <time datetime="2026-08-05">2026-08-05</time></button>
+      </footer>
+    </main>
+
+    <canvas id="work-canvas" width="1" height="1" aria-hidden="true"></canvas>
+
+    <div id="tip-float" role="tooltip" aria-hidden="true">
+      <strong id="tip-title"></strong>
+      <p id="tip-body"></p>
+    </div>
+    <div id="image-meta" class="meta-box" role="tooltip" aria-hidden="true"></div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        const INIT_TIMEOUT_MS = 90000;
+        const DEBOUNCE_MS = 80;
+        const IS_FILE_ORIGIN = window.location.protocol === "file:";
+        const DARK_TRIM_THRESH = 32;
+
+        let worker = null;
+        let workerUrl = null;
+        let workerReady = null;
+        let reqSeq = 0;
+        const pending = new Map();
+
+        /** @type {HTMLImageElement | null} */
+        let sourceImage = null;
+        let opencvReady = false;
+        let applying = false;
+        let pendingStrategies = null;
+
+        const viewState = {
+          zoom: 1,
+          rotation: 0,
+          panX: 0,
+          panY: 0,
+        };
+
+        const els = {
+          status: document.getElementById("status"),
+          dropZone: document.getElementById("drop-zone"),
+          fileInput: document.getElementById("image-file"),
+          browseLabel: document.getElementById("browse-label"),
+          replaceLabel: document.getElementById("replace-label"),
+          viewControls: document.getElementById("view-controls"),
+          comparisonGrid: document.getElementById("comparison-grid"),
+          trimDark: document.getElementById("trim-dark"),
+          autoZoom: document.getElementById("auto-zoom"),
+          autoZoomBtn: document.getElementById("auto-zoom-btn"),
+          imageMeta: document.getElementById("image-meta"),
+          imageDetailsTrigger: document.getElementById("image-details-trigger"),
+          zoom: document.getElementById("zoom-level"),
+          zoomValue: document.getElementById("zoom-value"),
+          rotation: document.getElementById("rotation-angle"),
+          rotationValue: document.getElementById("rotation-value"),
+          resetView: document.getElementById("reset-view-btn"),
+          workCanvas: document.getElementById("work-canvas"),
+          canvases: {
+            original: document.getElementById("canvas-original"),
+            rg: document.getElementById("canvas-rg"),
+            lab: document.getElementById("canvas-lab"),
+            ridge: document.getElementById("canvas-ridge"),
+          },
+          placeholders: {
+            original: document.getElementById("placeholder-original"),
+          },
+          quads: {
+            original: document.getElementById("quad-original"),
+            rg: document.getElementById("quad-rg"),
+            lab: document.getElementById("quad-lab"),
+            ridge: document.getElementById("quad-ridge"),
+          },
+          rgClahe: document.getElementById("rg-clahe"),
+          rgClaheValue: document.getElementById("rg-clahe-value"),
+          rgInvertClahe: document.getElementById("rg-invert-clahe"),
+          rgThresh: document.getElementById("rg-thresh"),
+          rgThreshValue: document.getElementById("rg-thresh-value"),
+          labMedian: document.getElementById("lab-median"),
+          labMedianValue: document.getElementById("lab-median-value"),
+          labBlock: document.getElementById("lab-block"),
+          labBlockValue: document.getElementById("lab-block-value"),
+          labC: document.getElementById("lab-c"),
+          labCValue: document.getElementById("lab-c-value"),
+          labInvert: document.getElementById("lab-invert"),
+          ridgeThresh: document.getElementById("ridge-thresh"),
+          ridgeThreshValue: document.getElementById("ridge-thresh-value"),
+          ridgeKernel: document.getElementById("ridge-kernel"),
+          ridgeKernelValue: document.getElementById("ridge-kernel-value"),
+          ridgeInvert: document.getElementById("ridge-invert"),
+          rgRot: document.getElementById("rg-rot"),
+          rgRotValue: document.getElementById("rg-rot-value"),
+          labRot: document.getElementById("lab-rot"),
+          labRotValue: document.getElementById("lab-rot-value"),
+          ridgeRot: document.getElementById("ridge-rot"),
+          ridgeRotValue: document.getElementById("ridge-rot-value"),
+        };
+
+        const saveBtns = Array.from(document.querySelectorAll(".save-result"));
+        const strategyRotInputs = Array.from(document.querySelectorAll(".strategy-rot"));
+        const strategyKeys = ["rg", "lab", "ridge"];
+        const strategyLabels = {
+          rg: "rg-clahe",
+          lab: "lab-a",
+          ridge: "ridge",
+        };
+
+        function dbg(...args) {
+          console.log("[InkCmp]", ...args);
+        }
+        function dbgError(...args) {
+          console.error("[InkCmp]", ...args);
+        }
+
+        function setStatus(message, kind) {
+          els.status.textContent = message;
+          els.status.classList.remove("error", "ok");
+          if (kind === "error" || kind === "ok") els.status.classList.add(kind);
+          dbg("status:", message, kind || "");
+        }
+
+        function clamp(n, lo, hi) {
+          return Math.min(hi, Math.max(lo, Number(n)));
+        }
+
+        function oddAtLeast(v, min) {
+          let n = Math.max(min, Math.round(Number(v) || min));
+          if (n % 2 === 0) n += 1;
+          return n;
+        }
+
+        function debounce(fn, wait) {
+          let timer = null;
+          return function () {
+            const ctx = this;
+            const args = arguments;
+            if (timer) clearTimeout(timer);
+            timer = setTimeout(function () {
+              timer = null;
+              fn.apply(ctx, args);
+            }, wait);
+          };
+        }
+
+        function setFileEnabled(enabled) {
+          els.fileInput.disabled = !enabled;
+          if (els.browseLabel) {
+            els.browseLabel.classList.toggle("disabled", !enabled);
+          }
+          if (els.replaceLabel) {
+            els.replaceLabel.classList.toggle("disabled", !enabled);
+          }
+        }
+
+        function showStrategyPanels(visible) {
+          strategyKeys.forEach(function (key) {
+            const quad = els.quads[key];
+            if (!quad) return;
+            quad.classList.toggle("hidden", !visible);
+          });
+          if (els.viewControls) {
+            els.viewControls.classList.toggle("visible", visible);
+          }
+          if (els.quads.original) {
+            els.quads.original.classList.toggle("has-image", visible);
+          }
+          if (els.dropZone) {
+            els.dropZone.classList.toggle("has-image", visible);
+          }
+          if (!visible && els.imageMeta) {
+            els.imageMeta.classList.remove("open");
+            els.imageMeta.setAttribute("aria-hidden", "true");
+            els.imageMeta.innerHTML = "";
+          }
+          if (!visible && els.imageDetailsTrigger) {
+            els.imageDetailsTrigger.classList.remove("visible");
+          }
+        }
+
+        function enableImageControls(enabled) {
+          const list = [
+            els.rgClahe,
+            els.rgInvertClahe,
+            els.rgThresh,
+            els.labMedian,
+            els.labBlock,
+            els.labC,
+            els.labInvert,
+            els.ridgeThresh,
+            els.ridgeKernel,
+            els.ridgeInvert,
+          ]
+            .concat(saveBtns)
+            .concat(strategyRotInputs);
+          list.forEach(function (el) {
+            if (el) el.disabled = !enabled;
+          });
+        }
+
+        function resetStrategyRotations() {
+          strategyKeys.forEach(function (key) {
+            const input = els[key + "Rot"];
+            const valueEl = els[key + "RotValue"];
+            if (input) input.value = "0";
+            if (valueEl) valueEl.textContent = "0°";
+          });
+        }
+
+        function saveStrategyResult(key) {
+          const canvas = els.canvases[key];
+          if (!canvas || !canvas.width || !canvas.height || canvas.classList.contains("hidden")) {
+            setStatus("Nothing to save yet for that filter.", "error");
+            return;
+          }
+          const base =
+            (sourceMeta && sourceMeta.fileName
+              ? String(sourceMeta.fileName).replace(/\.[^.]+$/, "")
+              : "cancel-ink") || "cancel-ink";
+          const safeBase = base.replace(/[^\w\-]+/g, "_").replace(/^_+|_+$/g, "") || "cancel-ink";
+          const slug = strategyLabels[key] || key;
+          const a = document.createElement("a");
+          a.href = canvas.toDataURL("image/png");
+          a.download = safeBase + "-" + slug + ".png";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setStatus("Saved " + a.download, "ok");
+        }
+
+        function showCanvas(key) {
+          const canvas = els.canvases[key];
+          const placeholder = els.placeholders[key];
+          if (placeholder) placeholder.classList.add("hidden");
+          if (canvas) canvas.classList.remove("hidden");
+        }
+
+        function enableNearest(ctx) {
+          ctx.imageSmoothingEnabled = false;
+          if ("webkitImageSmoothingEnabled" in ctx) ctx.webkitImageSmoothingEnabled = false;
+          if ("mozImageSmoothingEnabled" in ctx) ctx.mozImageSmoothingEnabled = false;
+          if ("imageSmoothingQuality" in ctx) ctx.imageSmoothingQuality = "low";
+        }
+
+        function rotatedBounds(w, h, angleDeg) {
+          const rad = (angleDeg * Math.PI) / 180;
+          const c = Math.abs(Math.cos(rad));
+          const s = Math.abs(Math.sin(rad));
+          return {
+            w: Math.max(1, Math.round(w * c + h * s)),
+            h: Math.max(1, Math.round(w * s + h * c)),
+          };
+        }
+
+        function chooseMaxSide(w, h) {
+          const longSide = Math.max(w, h);
+          if (longSide >= 5000) return 2000; // large cover scans
+          if (longSide >= 2500) return 1600;
+          if (longSide >= 1400) return 1400;
+          return Math.max(longSide, 1); // small stamp crops: native
+        }
+
+        function sampleCornerLuma(img) {
+          const s = 24;
+          const c = document.createElement("canvas");
+          c.width = s;
+          c.height = s;
+          const ctx = c.getContext("2d", { willReadFrequently: true });
+          const w = img.naturalWidth || img.width;
+          const h = img.naturalHeight || img.height;
+          const corners = [
+            [0, 0],
+            [w - s, 0],
+            [0, h - s],
+            [w - s, h - s],
+          ];
+          let sum = 0;
+          corners.forEach(function (pt) {
+            ctx.clearRect(0, 0, s, s);
+            ctx.drawImage(img, pt[0], pt[1], s, s, 0, 0, s, s);
+            const d = ctx.getImageData(0, 0, s, s).data;
+            let local = 0;
+            for (let i = 0; i < d.length; i += 4) {
+              local += 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+            }
+            sum += local / (s * s);
+          });
+          return sum / corners.length;
+        }
+
+        function applyImageChrome(img) {
+          const w = img.naturalWidth || img.width;
+          const h = img.naturalHeight || img.height;
+          const aspect = w / Math.max(1, h);
+          if (els.comparisonGrid) {
+            els.comparisonGrid.classList.remove("orient-portrait", "orient-landscape");
+            if (aspect < 0.92) els.comparisonGrid.classList.add("orient-portrait");
+            else if (aspect > 1.15) els.comparisonGrid.classList.add("orient-landscape");
+          }
+          const luma = sampleCornerLuma(img);
+          const studio = luma < 55;
+          document.querySelectorAll(".frame").forEach(function (frame) {
+            frame.classList.toggle("studio-bg", studio);
+            frame.classList.toggle("paper-bg", !studio);
+          });
+          if (els.trimDark && !els.trimDark.dataset.userSet) {
+            els.trimDark.checked = studio;
+          }
+          return { w: w, h: h, studio: studio };
+        }
+
+        function otsuThreshold(gray) {
+          const hist = new Array(256);
+          for (let i = 0; i < 256; i++) hist[i] = 0;
+          for (let i = 0; i < gray.length; i++) hist[gray[i]] += 1;
+          const total = gray.length;
+          let sumAll = 0;
+          for (let i = 0; i < 256; i++) sumAll += i * hist[i];
+          let sumB = 0;
+          let wB = 0;
+          let maxVar = 0;
+          let thresh = 40;
+          for (let t = 0; t < 256; t++) {
+            wB += hist[t];
+            if (!wB) continue;
+            const wF = total - wB;
+            if (!wF) break;
+            sumB += t * hist[t];
+            const mB = sumB / wB;
+            const mF = (sumAll - sumB) / wF;
+            const between = wB * wF * (mB - mF) * (mB - mF);
+            if (between > maxVar) {
+              maxVar = between;
+              thresh = t;
+            }
+          }
+          return thresh;
+        }
+
+        /** Largest 4-connected bright component bbox on a binary mask. */
+        function largestComponentBox(mask, w, h) {
+          const visited = new Uint8Array(w * h);
+          const stack = [];
+          let best = null;
+          let bestArea = 0;
+          for (let y = 0; y < h; y++) {
+            for (let x = 0; x < w; x++) {
+              const start = y * w + x;
+              if (!mask[start] || visited[start]) continue;
+              let area = 0;
+              let minX = x;
+              let maxX = x;
+              let minY = y;
+              let maxY = y;
+              stack.length = 0;
+              stack.push(start);
+              visited[start] = 1;
+              while (stack.length) {
+                const i = stack.pop();
+                const cx = i % w;
+                const cy = (i / w) | 0;
+                area += 1;
+                if (cx < minX) minX = cx;
+                if (cx > maxX) maxX = cx;
+                if (cy < minY) minY = cy;
+                if (cy > maxY) maxY = cy;
+                const neighbors = [i - 1, i + 1, i - w, i + w];
+                for (let n = 0; n < 4; n++) {
+                  const j = neighbors[n];
+                  if (j < 0 || j >= mask.length) continue;
+                  const nx = j % w;
+                  const ny = (j / w) | 0;
+                  if (Math.abs(nx - cx) + Math.abs(ny - cy) !== 1) continue;
+                  if (!mask[j] || visited[j]) continue;
+                  visited[j] = 1;
+                  stack.push(j);
+                }
+              }
+              if (area > bestArea) {
+                bestArea = area;
+                best = {
+                  x: minX,
+                  y: minY,
+                  w: maxX - minX + 1,
+                  h: maxY - minY + 1,
+                  area: area,
+                };
+              }
+            }
+          }
+          return best;
+        }
+
+        function mapAnalyzeBoxToFull(box, scale, w, h, padFrac) {
+          let fx1 = Math.floor(box.x / scale);
+          let fy1 = Math.floor(box.y / scale);
+          let fx2 = Math.ceil((box.x + box.w) / scale) - 1;
+          let fy2 = Math.ceil((box.y + box.h) / scale) - 1;
+          const padX = Math.max(2, Math.round((fx2 - fx1 + 1) * padFrac));
+          const padY = Math.max(2, Math.round((fy2 - fy1 + 1) * padFrac));
+          fx1 = Math.max(0, fx1 - padX);
+          fy1 = Math.max(0, fy1 - padY);
+          fx2 = Math.min(w - 1, fx2 + padX);
+          fy2 = Math.min(h - 1, fy2 + padY);
+          const bw = fx2 - fx1 + 1;
+          const bh = fy2 - fy1 + 1;
+          return {
+            x: fx1,
+            y: fy1,
+            w: bw,
+            h: bh,
+            areaFrac: (bw * bh) / Math.max(1, w * h),
+          };
+        }
+
+        /** Subject bbox via Otsu blob (studio stamps) and/or Sobel edges (covers). */
+        function estimateSubjectBox(data, w, h, studio) {
+          const maxAnalyze = 480;
+          const scale = Math.min(1, maxAnalyze / Math.max(w, h));
+          const aw = Math.max(1, Math.round(w * scale));
+          const ah = Math.max(1, Math.round(h * scale));
+
+          const gray = new Uint8ClampedArray(aw * ah);
+          for (let y = 0; y < ah; y++) {
+            const sy = Math.min(h - 1, Math.round(y / scale));
+            for (let x = 0; x < aw; x++) {
+              const sx = Math.min(w - 1, Math.round(x / scale));
+              const si = (sy * w + sx) * 4;
+              gray[y * aw + x] = (0.299 * data[si] + 0.587 * data[si + 1] + 0.114 * data[si + 2]) | 0;
+            }
+          }
+
+          let best = null;
+
+          // Studio stamps: Otsu + largest bright component (ignores black mat).
+          if (studio) {
+            const t = Math.max(24, Math.min(140, otsuThreshold(gray)));
+            const bright = new Uint8Array(aw * ah);
+            for (let i = 0; i < gray.length; i++) {
+              if (gray[i] > t) bright[i] = 1;
+            }
+            const comp = largestComponentBox(bright, aw, ah);
+            if (comp && comp.area > aw * ah * 0.04) {
+              const mapped = mapAnalyzeBoxToFull(comp, scale, w, h, 0.04);
+              if (mapped.areaFrac >= 0.08 && mapped.areaFrac <= 0.92) {
+                mapped.method = "otsu-blob";
+                best = mapped;
+              }
+            }
+          }
+
+          // Edge bbox (covers, or fallback / refine for stamps).
+          const mag = new Float32Array(aw * ah);
+          let magMax = 0;
+          for (let y = 1; y < ah - 1; y++) {
+            for (let x = 1; x < aw - 1; x++) {
+              const i = y * aw + x;
+              const gx =
+                -gray[i - aw - 1] -
+                2 * gray[i - 1] -
+                gray[i + aw - 1] +
+                gray[i - aw + 1] +
+                2 * gray[i + 1] +
+                gray[i + aw + 1];
+              const gy =
+                -gray[i - aw - 1] -
+                2 * gray[i - aw] -
+                gray[i - aw + 1] +
+                gray[i + aw - 1] +
+                2 * gray[i + aw] +
+                gray[i + aw + 1];
+              const m = Math.abs(gx) + Math.abs(gy);
+              mag[i] = m;
+              if (m > magMax) magMax = m;
+            }
+          }
+
+          if (magMax > 1e-3) {
+            const samples = [];
+            const step = Math.max(1, Math.floor((aw * ah) / 2500));
+            for (let i = 0; i < mag.length; i += step) {
+              if (mag[i] > 0) samples.push(mag[i]);
+            }
+            samples.sort(function (a, b) {
+              return a - b;
+            });
+            const pct = studio ? 0.88 : 0.8;
+            const thresh = Math.max(
+              magMax * (studio ? 0.14 : 0.08),
+              samples[Math.min(samples.length - 1, Math.floor(samples.length * pct))] || 0
+            );
+            const mask = new Uint8Array(aw * ah);
+            for (let i = 0; i < mag.length; i++) {
+              if (mag[i] >= thresh) mask[i] = 1;
+            }
+            const dilate = studio ? 1 : 3;
+            const grown = new Uint8Array(aw * ah);
+            for (let y = 0; y < ah; y++) {
+              for (let x = 0; x < aw; x++) {
+                if (!mask[y * aw + x]) continue;
+                for (let dy = -dilate; dy <= dilate; dy++) {
+                  for (let dx = -dilate; dx <= dilate; dx++) {
+                    const xx = x + dx;
+                    const yy = y + dy;
+                    if (xx < 0 || yy < 0 || xx >= aw || yy >= ah) continue;
+                    grown[yy * aw + xx] = 1;
+                  }
+                }
+              }
+            }
+            let top = ah;
+            let bottom = -1;
+            let left = aw;
+            let right = -1;
+            let hits = 0;
+            for (let y = 0; y < ah; y++) {
+              for (let x = 0; x < aw; x++) {
+                if (!grown[y * aw + x]) continue;
+                hits += 1;
+                if (x < left) left = x;
+                if (x > right) right = x;
+                if (y < top) top = y;
+                if (y > bottom) bottom = y;
+              }
+            }
+            if (hits >= 24 && bottom >= top && right >= left) {
+              const edgeMapped = mapAnalyzeBoxToFull(
+                { x: left, y: top, w: right - left + 1, h: bottom - top + 1 },
+                scale,
+                w,
+                h,
+                0.03
+              );
+              if (edgeMapped.areaFrac >= 0.05 && edgeMapped.areaFrac <= 0.93) {
+                edgeMapped.method = "edge";
+                if (!best || edgeMapped.areaFrac < best.areaFrac * 0.92) {
+                  // Prefer tighter box when it still covers most of the blob.
+                  if (!best) best = edgeMapped;
+                  else if (studio && edgeMapped.areaFrac < best.areaFrac) {
+                    // Intersect otsu blob with edges when both exist.
+                    const x1 = Math.max(best.x, edgeMapped.x);
+                    const y1 = Math.max(best.y, edgeMapped.y);
+                    const x2 = Math.min(best.x + best.w - 1, edgeMapped.x + edgeMapped.w - 1);
+                    const y2 = Math.min(best.y + best.h - 1, edgeMapped.y + edgeMapped.h - 1);
+                    if (x2 > x1 && y2 > y1) {
+                      const iw = x2 - x1 + 1;
+                      const ih = y2 - y1 + 1;
+                      const frac = (iw * ih) / Math.max(1, w * h);
+                      if (frac >= 0.08) {
+                        best = { x: x1, y: y1, w: iw, h: ih, areaFrac: frac, method: "otsu+edge" };
+                      }
+                    } else {
+                      best = best.areaFrac <= edgeMapped.areaFrac ? best : edgeMapped;
+                    }
+                  } else if (!studio) {
+                    best = edgeMapped;
+                  }
+                }
+              }
+            }
+          }
+
+          return best;
+        }
+
+        function syncZoomUi() {
+          const z = clamp(viewState.zoom, 0.5, 6);
+          viewState.zoom = z;
+          els.zoom.value = String(z);
+          els.zoomValue.textContent = z.toFixed(2) + "×";
+        }
+
+        /**
+         * Set zoom/pan so the detected subject fills the original frame.
+         * Returns true when a meaningful zoom was applied.
+         */
+        function applyAutoZoom() {
+          if (!sourceImage) return false;
+          const natW = sourceImage.naturalWidth || sourceImage.width;
+          const natH = sourceImage.naturalHeight || sourceImage.height;
+          const maxSide = chooseMaxSide(natW, natH);
+          // Match drawOriginal raster (including trim) so pan/zoom coordinates agree.
+          const trim = !!(els.trimDark && els.trimDark.checked);
+          const raster = rasterizeSource(sourceImage, maxSide, trim);
+          const pixels = new Uint8ClampedArray(raster.rgbaBuffer);
+          const studio = els.dropZone.classList.contains("studio-bg");
+          const box = estimateSubjectBox(pixels, raster.w, raster.h, studio);
+          if (!box) {
+            viewState.zoom = 1;
+            viewState.panX = 0;
+            viewState.panY = 0;
+            syncZoomUi();
+            dbg("auto-zoom: no subject box");
+            return false;
+          }
+
+          const margin = 1.06;
+          let zoom = Math.min(raster.w / (box.w * margin), raster.h / (box.h * margin));
+          zoom = clamp(zoom, 1, 6);
+          if (zoom < 1.04) {
+            viewState.zoom = 1;
+            viewState.panX = 0;
+            viewState.panY = 0;
+            syncZoomUi();
+            dbg("auto-zoom: subject already fills frame", box);
+            return false;
+          }
+
+          const cx = box.x + box.w / 2;
+          const cy = box.y + box.h / 2;
+          viewState.zoom = zoom;
+          viewState.panX = -zoom * (cx - raster.w / 2);
+          viewState.panY = -zoom * (cy - raster.h / 2);
+          syncZoomUi();
+          dbg("auto-zoom:", box.method, "box=", box.w + "x" + box.h, "zoom=", zoom.toFixed(2));
+          return true;
+        }
+
+        /** Bounding box of non-dark content; null if trim would be a no-op or unsafe. */
+        function findContentBounds(data, w, h, thresh) {
+          const rowHit = new Float32Array(h);
+          const colHit = new Float32Array(w);
+          let bright = 0;
+          for (let y = 0; y < h; y++) {
+            for (let x = 0; x < w; x++) {
+              const i = (y * w + x) * 4;
+              const yv = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+              if (yv > thresh) {
+                rowHit[y] += 1;
+                colHit[x] += 1;
+                bright += 1;
+              }
+            }
+          }
+          const darkFrac = 1 - bright / Math.max(1, w * h);
+          if (darkFrac < 0.08) return null; // covers / light mats
+
+          // Ignore sparse bright flecks on the black mat (require ≥1% of the row/col).
+          const minRow = Math.max(2, w * 0.01);
+          const minCol = Math.max(2, h * 0.01);
+          let top = 0;
+          while (top < h && rowHit[top] < minRow) top += 1;
+          let bottom = h - 1;
+          while (bottom > top && rowHit[bottom] < minRow) bottom -= 1;
+          let left = 0;
+          while (left < w && colHit[left] < minCol) left += 1;
+          let right = w - 1;
+          while (right > left && colHit[right] < minCol) right -= 1;
+
+          const pad = 4;
+          top = Math.max(0, top - pad);
+          left = Math.max(0, left - pad);
+          bottom = Math.min(h - 1, bottom + pad);
+          right = Math.min(w - 1, right + pad);
+          const cw = right - left + 1;
+          const ch = bottom - top + 1;
+          const areaFrac = (cw * ch) / Math.max(1, w * h);
+          if (areaFrac > 0.97 || areaFrac < 0.12) return null;
+          return { x: left, y: top, w: cw, h: ch, darkFrac: darkFrac, areaFrac: areaFrac };
+        }
+
+        function rasterizeSource(image, maxSide, trim) {
+          const natW = image.naturalWidth || image.width;
+          const natH = image.naturalHeight || image.height;
+          const scale = Math.min(1, maxSide / Math.max(natW, natH));
+          let w = Math.max(1, Math.round(natW * scale));
+          let h = Math.max(1, Math.round(natH * scale));
+          const work = els.workCanvas;
+          work.width = w;
+          work.height = h;
+          const ctx = work.getContext("2d", { willReadFrequently: true });
+          enableNearest(ctx);
+          ctx.clearRect(0, 0, w, h);
+          ctx.drawImage(image, 0, 0, w, h);
+          let imageData = ctx.getImageData(0, 0, w, h);
+          if (trim) {
+            const crop = findContentBounds(imageData.data, w, h, DARK_TRIM_THRESH);
+            if (crop) {
+              const cropped = ctx.getImageData(crop.x, crop.y, crop.w, crop.h);
+              w = crop.w;
+              h = crop.h;
+              work.width = w;
+              work.height = h;
+              ctx.putImageData(cropped, 0, 0);
+              imageData = ctx.getImageData(0, 0, w, h);
+            }
+          }
+          return {
+            w: w,
+            h: h,
+            rgbaBuffer: imageData.data.buffer.slice(imageData.data.byteOffset, imageData.data.byteOffset + imageData.data.byteLength),
+          };
+        }
+
+        /** Main-thread original preview (nearest-neighbor; matches worker INTER_NEAREST). */
+        function drawOriginal() {
+          if (!sourceImage) return;
+          const img = sourceImage;
+          const natW = img.naturalWidth || img.width;
+          const natH = img.naturalHeight || img.height;
+          const maxSide = chooseMaxSide(natW, natH);
+          const trim = !!(els.trimDark && els.trimDark.checked);
+          const raster = rasterizeSource(img, maxSide, trim);
+          const baseW = raster.w;
+          const baseH = raster.h;
+          const angle = viewState.rotation;
+          const bounds = rotatedBounds(baseW, baseH, angle);
+
+          const canvas = els.canvases.original;
+          canvas.width = bounds.w;
+          canvas.height = bounds.h;
+          const ctx = canvas.getContext("2d");
+          enableNearest(ctx);
+          const studio = els.dropZone.classList.contains("studio-bg");
+          ctx.fillStyle = studio ? "#121212" : "#cfc8bb";
+          ctx.fillRect(0, 0, bounds.w, bounds.h);
+          ctx.save();
+          ctx.translate(bounds.w / 2, bounds.h / 2);
+          ctx.rotate((angle * Math.PI) / 180);
+          ctx.translate(viewState.panX, viewState.panY);
+          ctx.scale(viewState.zoom, viewState.zoom);
+          // draw from work canvas which holds the (possibly trimmed) raster
+          ctx.drawImage(els.workCanvas, -baseW / 2, -baseH / 2, baseW, baseH);
+          ctx.restore();
+          showCanvas("original");
+        }
+
+        function putRgbaOnCanvas(canvas, width, height, buffer) {
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          const imageData = new ImageData(new Uint8ClampedArray(buffer), width, height);
+          ctx.putImageData(imageData, 0, 0);
+        }
+
+        function readParams(strategies) {
+          return {
+            strategies: strategies.slice(),
+            rotations: {
+              rg: els.rgRot ? clamp(els.rgRot.value, -180, 180) : 0,
+              lab: els.labRot ? clamp(els.labRot.value, -180, 180) : 0,
+              ridge: els.ridgeRot ? clamp(els.ridgeRot.value, -180, 180) : 0,
+            },
+            rgClahe: clamp(els.rgClahe.value, 0.5, 10),
+            rgInvertClahe: !!(els.rgInvertClahe && els.rgInvertClahe.checked),
+            rgThresh: clamp(els.rgThresh.value, 0, 255),
+            labMedian: oddAtLeast(clamp(els.labMedian.value, 1, 15), 1),
+            labBlock: oddAtLeast(clamp(els.labBlock.value, 3, 99), 3),
+            labC: clamp(els.labC.value, -10, 10),
+            labInvert: !!(els.labInvert && els.labInvert.checked),
+            ridgeThresh: clamp(els.ridgeThresh.value, 1, 255),
+            ridgeKernel: oddAtLeast(clamp(els.ridgeKernel.value, 1, 15), 1),
+            ridgeInvert: !!(els.ridgeInvert && els.ridgeInvert.checked),
+            borderDark: els.dropZone.classList.contains("studio-bg"),
+          };
+        }
+
+        function drawScaledRgba(image) {
+          const natW = image.naturalWidth || image.width;
+          const natH = image.naturalHeight || image.height;
+          const maxSide = chooseMaxSide(natW, natH);
+          const trim = !!(els.trimDark && els.trimDark.checked);
+          const raster = rasterizeSource(image, maxSide, trim);
+          const zoom = clamp(viewState.zoom, 0.5, 6);
+          const panX = Number(viewState.panX) || 0;
+          const panY = Number(viewState.panY) || 0;
+          // Identity view — send the full raster.
+          if (Math.abs(zoom - 1) < 0.001 && Math.abs(panX) < 0.5 && Math.abs(panY) < 0.5) {
+            return raster;
+          }
+          // Same zoom/pan as Original (without Original's rotation); per-filter rotation still applies in the worker.
+          const w = raster.w;
+          const h = raster.h;
+          const view = document.createElement("canvas");
+          view.width = w;
+          view.height = h;
+          const ctx = view.getContext("2d", { willReadFrequently: true });
+          enableNearest(ctx);
+          const studio = els.dropZone.classList.contains("studio-bg");
+          ctx.fillStyle = studio ? "#121212" : "#cfc8bb";
+          ctx.fillRect(0, 0, w, h);
+          ctx.save();
+          ctx.translate(w / 2, h / 2);
+          ctx.translate(panX, panY);
+          ctx.scale(zoom, zoom);
+          ctx.drawImage(els.workCanvas, -w / 2, -h / 2, w, h);
+          ctx.restore();
+          const imageData = ctx.getImageData(0, 0, w, h);
+          return {
+            w: w,
+            h: h,
+            rgbaBuffer: imageData.data.buffer.slice(
+              imageData.data.byteOffset,
+              imageData.data.byteOffset + imageData.data.byteLength
+            ),
+          };
+        }
+
+        function syncFiltersToView() {
+          if (!sourceImage || !opencvReady) return;
+          processStrategies(["rg", "lab", "ridge"]);
+        }
+
+        function ensureWorker() {
+          if (IS_FILE_ORIGIN) {
+            throw new Error(
+              "This page is opened as file://. OpenCV needs http(s). Run a local server and open http://localhost instead."
+            );
+          }
+          if (worker) return workerReady;
+
+          const source = `
+            const OPENCV_URL = "https://cdn.jsdelivr.net/npm/@techstark/opencv-js@4.12.0-release.1/dist/opencv.min.js";
+            const OPENCV_BASE = OPENCV_URL.replace(/[^/]+$/, "");
+            const INIT_TIMEOUT_MS = ${INIT_TIMEOUT_MS};
+            let cvReadyPromise = null;
+            let cvInstance = null;
+            let readySent = false;
+
+            function wlog(...args) {
+              try {
+                self.postMessage({ type: "debug", level: "log", args: args.map(String) });
+              } catch (_) {}
+              console.log("[InkCmp:worker]", ...args);
+            }
+            function werr(...args) {
+              try {
+                self.postMessage({ type: "debug", level: "error", args: args.map((a) => (a && a.stack) ? String(a.stack) : String(a)) });
+              } catch (_) {}
+              console.error("[InkCmp:worker]", ...args);
+            }
+
+            function clamp(n, lo, hi) {
+              return Math.min(hi, Math.max(lo, Number(n)));
+            }
+
+            function oddAtLeast(v, min) {
+              let n = Math.max(min, Math.round(Number(v) || min));
+              if (n % 2 === 0) n += 1;
+              return n;
+            }
+
+            function ensureCvReady() {
+              if (cvReadyPromise) return cvReadyPromise;
+              wlog("ensureCvReady: start", OPENCV_URL);
+              cvReadyPromise = new Promise((resolve, reject) => {
+                let done = false;
+                let poll = null;
+                const timer = setTimeout(() => {
+                  if (done) return;
+                  done = true;
+                  if (poll) clearInterval(poll);
+                  reject(new Error("Timed out while initializing OpenCV.js in worker."));
+                }, INIT_TIMEOUT_MS);
+                const finish = (err, value) => {
+                  if (done) return;
+                  done = true;
+                  clearTimeout(timer);
+                  if (poll) clearInterval(poll);
+                  if (err) {
+                    werr("ensureCvReady: failed", err);
+                    reject(err);
+                    return;
+                  }
+                  // Never resolve a Promise with raw cv; some builds are thenable and hang forever.
+                  cvInstance = value || self.cv || null;
+                  wlog("ensureCvReady: ok", !!cvInstance, !!(cvInstance && cvInstance.Mat));
+                  resolve(true);
+                };
+                self.Module = {
+                  locateFile(path) {
+                    const url = OPENCV_BASE + path;
+                    wlog("locateFile", path, "->", url);
+                    return url;
+                  },
+                  onRuntimeInitialized() {
+                    wlog("onRuntimeInitialized", !!(self.cv && self.cv.Mat));
+                    if (self.cv && self.cv.Mat) finish(null, self.cv);
+                  },
+                };
+                (async () => {
+                  try {
+                    wlog("fetch OpenCV.js…");
+                    const res = await fetch(OPENCV_URL, { cache: "force-cache", mode: "cors" });
+                    wlog("fetch status", res.status, "ok=", res.ok);
+                    if (!res.ok) throw new Error("OpenCV.js fetch failed: HTTP " + res.status);
+                    const scriptText = await res.text();
+                    wlog("OpenCV.js bytes", scriptText.length, "evaluating…");
+                    (0, eval)(scriptText);
+                    wlog("OpenCV.js evaluated; polling for cv.Mat");
+                    poll = setInterval(() => {
+                      if (done) return;
+                      if (self.cv && self.cv.Mat) finish(null, self.cv);
+                    }, 120);
+                  } catch (e) {
+                    finish(e instanceof Error ? e : new Error(String(e)));
+                  }
+                })();
+              });
+              return cvReadyPromise;
+            }
+
+            function notifyReady() {
+              if (readySent) return;
+              readySent = true;
+              wlog("notifyReady");
+              self.postMessage({ type: "ready" });
+            }
+
+            function matToRgbaBuffer(cv, mat, label) {
+              const rgba = new cv.Mat();
+              try {
+                if (mat.type() === cv.CV_8UC1) cv.cvtColor(mat, rgba, cv.COLOR_GRAY2RGBA);
+                else if (mat.type() === cv.CV_8UC3) cv.cvtColor(mat, rgba, cv.COLOR_RGB2RGBA);
+                else if (mat.type() === cv.CV_8UC4) mat.copyTo(rgba);
+                else throw new Error("Unsupported Mat type for display: " + mat.type());
+                const expected = rgba.cols * rgba.rows * 4;
+                const src = rgba.data;
+                const copy = new Uint8ClampedArray(expected);
+                if (src.length < expected) {
+                  throw new Error("matToRgbaBuffer(" + label + "): data length " + src.length + " < expected " + expected);
+                }
+                copy.set(src.subarray(0, expected));
+                return { width: rgba.cols, height: rgba.rows, buffer: copy.buffer };
+              } finally {
+                rgba.delete();
+              }
+            }
+
+            function cvException(cv, err) {
+              let ptr = null;
+              if (typeof err === "number") ptr = err;
+              else if (typeof err === "string" && /^\\d+$/.test(err.trim())) ptr = Number(err.trim());
+              else if (err instanceof Error && /^\\d+$/.test(err.message.trim())) ptr = Number(err.message.trim());
+              if (ptr != null && cv && typeof cv.exceptionFromPtr === "function") {
+                try {
+                  const ex = cv.exceptionFromPtr(ptr);
+                  const msg = (ex && (ex.msg || ex.message || ex.toString())) || (ex ? JSON.stringify(ex) : null);
+                  return new Error(msg && String(msg) !== String(ptr) ? String(msg) : "OpenCV exception ptr " + ptr);
+                } catch (_) {
+                  return new Error("OpenCV exception ptr " + ptr + " (decode failed)");
+                }
+              }
+              if (err instanceof Error) return err;
+              return new Error(String(err));
+            }
+
+            function rotatedBounds(w, h, angleDeg) {
+              const rad = (angleDeg * Math.PI) / 180;
+              const c = Math.abs(Math.cos(rad));
+              const s = Math.abs(Math.sin(rad));
+              return {
+                w: Math.max(1, Math.round(w * c + h * s)),
+                h: Math.max(1, Math.round(w * s + h * c)),
+              };
+            }
+
+            function rotateNearest(cv, src, angleDeg, borderDark) {
+              const angle = Number(angleDeg) || 0;
+              if (!angle) return { mat: src, owned: false };
+              const w = src.cols;
+              const h = src.rows;
+              const bounds = rotatedBounds(w, h, angle);
+              const center = new cv.Point(w / 2, h / 2);
+              const M = cv.getRotationMatrix2D(center, -angle, 1);
+              const m = M.data64F;
+              m[2] += (bounds.w - w) / 2;
+              m[5] += (bounds.h - h) / 2;
+              const dst = new cv.Mat();
+              const v = borderDark ? 18 : 255;
+              const border = src.type() === cv.CV_8UC4
+                ? new cv.Scalar(v, v, v, 255)
+                : new cv.Scalar(v, v, v);
+              cv.warpAffine(src, dst, M, new cv.Size(bounds.w, bounds.h), cv.INTER_NEAREST, cv.BORDER_CONSTANT, border);
+              M.delete();
+              return { mat: dst, owned: true };
+            }
+
+            function runStrategyRG(cv, rgb, params) {
+              const channels = new cv.MatVector();
+              const diff = new cv.Mat();
+              const claheIn = new cv.Mat();
+              const claheOut = new cv.Mat();
+              const binary = new cv.Mat();
+              let clahe = null;
+              try {
+                cv.split(rgb, channels);
+                cv.subtract(channels.get(0), channels.get(1), diff);
+                diff.convertTo(claheIn, cv.CV_8UC1);
+                clahe = new cv.CLAHE(params.rgClahe, new cv.Size(8, 8));
+                clahe.apply(claheIn, claheOut);
+                if (params.rgInvertClahe) cv.bitwise_not(claheOut, claheOut);
+                cv.threshold(claheOut, binary, params.rgThresh, 255, cv.THRESH_BINARY);
+                return matToRgbaBuffer(cv, binary, "rg");
+              } finally {
+                channels.delete();
+                diff.delete();
+                claheIn.delete();
+                claheOut.delete();
+                binary.delete();
+                if (clahe && typeof clahe.delete === "function") clahe.delete();
+              }
+            }
+
+            function runStrategyLab(cv, rgb, params) {
+              const lab = new cv.Mat();
+              const channels = new cv.MatVector();
+              let aChan = null;
+              const blurred = new cv.Mat();
+              const binary = new cv.Mat();
+              try {
+                cv.cvtColor(rgb, lab, cv.COLOR_RGB2Lab);
+                cv.split(lab, channels);
+                aChan = channels.get(1).clone();
+                const k = oddAtLeast(params.labMedian, 1);
+                if (k <= 1) aChan.copyTo(blurred);
+                else cv.medianBlur(aChan, blurred, k);
+                const block = oddAtLeast(params.labBlock, 3);
+                cv.adaptiveThreshold(
+                  blurred, binary, 255,
+                  cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY,
+                  block, params.labC
+                );
+                if (params.labInvert) cv.bitwise_not(binary, binary);
+                return matToRgbaBuffer(cv, binary, "lab");
+              } finally {
+                lab.delete();
+                channels.delete();
+                if (aChan) aChan.delete();
+                blurred.delete();
+                binary.delete();
+              }
+            }
+
+            function runStrategyRidge(cv, rgb, params) {
+              const lab = new cv.Mat();
+              const channels = new cv.MatVector();
+              const base = new cv.Mat();
+              const gradX = new cv.Mat();
+              const gradY = new cv.Mat();
+              const absX = new cv.Mat();
+              const absY = new cv.Mat();
+              const mag = new cv.Mat();
+              const binary = new cv.Mat();
+              const closed = new cv.Mat();
+              let kernel = null;
+              try {
+                try {
+                  cv.cvtColor(rgb, lab, cv.COLOR_RGB2Lab);
+                  cv.split(lab, channels);
+                  channels.get(1).copyTo(base);
+                } catch (_) {
+                  const ch = new cv.MatVector();
+                  try {
+                    cv.split(rgb, ch);
+                    cv.subtract(ch.get(0), ch.get(1), base);
+                  } finally {
+                    ch.delete();
+                  }
+                }
+                cv.Sobel(base, gradX, cv.CV_16S, 1, 0, 3);
+                cv.Sobel(base, gradY, cv.CV_16S, 0, 1, 3);
+                cv.convertScaleAbs(gradX, absX);
+                cv.convertScaleAbs(gradY, absY);
+                cv.addWeighted(absX, 0.5, absY, 0.5, 0, mag);
+                cv.threshold(mag, binary, params.ridgeThresh, 255, cv.THRESH_BINARY);
+                const kSize = oddAtLeast(params.ridgeKernel, 1);
+                if (kSize <= 1) {
+                  binary.copyTo(closed);
+                } else {
+                  kernel = cv.getStructuringElement(cv.MORPH_ELLIPSE, new cv.Size(kSize, kSize));
+                  cv.morphologyEx(binary, closed, cv.MORPH_CLOSE, kernel);
+                }
+                if (params.ridgeInvert) cv.bitwise_not(closed, closed);
+                return matToRgbaBuffer(cv, closed, "ridge");
+              } finally {
+                lab.delete();
+                channels.delete();
+                base.delete();
+                gradX.delete();
+                gradY.delete();
+                absX.delete();
+                absY.delete();
+                mag.delete();
+                binary.delete();
+                closed.delete();
+                if (kernel) kernel.delete();
+              }
+            }
+
+            function runFilter(cv, width, height, rgbaBuffer, params) {
+              const rgba = new Uint8ClampedArray(rgbaBuffer);
+              let src = null;
+              const images = {};
+              const borderDark = !!params.borderDark;
+              const rotations = params.rotations || {};
+              const runners = {
+                rg: runStrategyRG,
+                lab: runStrategyLab,
+                ridge: runStrategyRidge,
+              };
+              try {
+                src = cv.matFromArray(height, width, cv.CV_8UC4, rgba);
+                const strategies = Array.isArray(params.strategies) ? params.strategies : ["rg", "lab", "ridge"];
+                strategies.forEach(function (key) {
+                  const runner = runners[key];
+                  if (!runner) return;
+                  const angle = clamp(rotations[key] || 0, -180, 180);
+                  const rot = rotateNearest(cv, src, angle, borderDark);
+                  const rgb = new cv.Mat();
+                  try {
+                    if (rot.mat.type() === cv.CV_8UC4) cv.cvtColor(rot.mat, rgb, cv.COLOR_RGBA2RGB);
+                    else rot.mat.copyTo(rgb);
+                    images[key] = runner(cv, rgb, params);
+                  } finally {
+                    rgb.delete();
+                    if (rot.owned) rot.mat.delete();
+                  }
+                });
+                return { images: images };
+              } finally {
+                if (src) src.delete();
+              }
+            }
+
+            self.onmessage = async (ev) => {
+              const data = ev.data || {};
+              const id = data.id;
+              if (!id) {
+                wlog("onmessage ignored (no id)", Object.keys(data));
+                return;
+              }
+              wlog("onmessage", id, data.width + "x" + data.height, "strategies=", (data.params && data.params.strategies) || []);
+              try {
+                await ensureCvReady();
+                const cv = cvInstance || self.cv;
+                if (!cv || !cv.Mat) throw new Error("OpenCV runtime initialized without usable cv API.");
+                notifyReady();
+                const result = runFilter(cv, data.width, data.height, data.rgbaBuffer, data.params || {});
+                const transfer = Object.values(result.images).map((img) => img.buffer);
+                wlog("postMessage result", id, "images=", Object.keys(result.images).join(","));
+                self.postMessage({ id, ok: true, ...result }, transfer);
+              } catch (err) {
+                const nice = cvException(cvInstance || self.cv, err);
+                werr("filter failed", id, nice.message);
+                self.postMessage({ id, ok: false, error: nice.message, stack: nice.stack || null });
+              }
+            };
+
+            wlog("worker script booted");
+            ensureCvReady().then(
+              () => notifyReady(),
+              (err) => {
+                werr("init_error", err);
+                self.postMessage({
+                  type: "init_error",
+                  error: err instanceof Error ? err.message : String(err),
+                });
+              }
+            );
+          `;
+
+          dbg("creating worker blob…");
+          workerUrl = URL.createObjectURL(new Blob([source], { type: "text/javascript" }));
+          worker = new Worker(workerUrl);
+          dbg("worker created");
+
+          let readyResolve;
+          let readyReject;
+          let readyTimer;
+          workerReady = new Promise(function (resolve, reject) {
+            readyResolve = resolve;
+            readyReject = reject;
+            readyTimer = setTimeout(function () {
+              reject(new Error("Timed out while initializing OpenCV in worker."));
+            }, INIT_TIMEOUT_MS);
+          });
+
+          worker.onmessage = function (ev) {
+            const data = ev.data || {};
+            if (data.type === "debug") {
+              const fn = data.level === "error" ? console.error : console.log;
+              fn.apply(console, ["[InkCmp:worker]"].concat(Array.isArray(data.args) ? data.args : [data.args]));
+              return;
+            }
+            if (data.type === "ready") {
+              dbg("worker ready signal received");
+              if (readyTimer) {
+                clearTimeout(readyTimer);
+                readyTimer = null;
+              }
+              if (readyResolve) {
+                readyResolve();
+                readyResolve = null;
+                readyReject = null;
+              }
+              return;
+            }
+            if (data.type === "init_error") {
+              const msg = data.error || "Worker OpenCV init failed.";
+              dbgError("worker init_error:", msg);
+              if (readyTimer) {
+                clearTimeout(readyTimer);
+                readyTimer = null;
+              }
+              if (readyReject) {
+                readyReject(new Error(msg));
+                readyResolve = null;
+                readyReject = null;
+              }
+              setStatus(msg, "error");
+              return;
+            }
+
+            dbg("worker response", data.id, "ok=", data.ok);
+            const waiter = pending.get(data.id);
+            if (!waiter) return;
+            pending.delete(data.id);
+            if (data.ok) waiter.resolve(data);
+            else waiter.reject(new Error(data.error || "Filter failed."));
+          };
+
+          worker.onerror = function (ev) {
+            const msg = ev.message || "Worker error.";
+            dbgError("worker.onerror", msg, ev.filename, ev.lineno);
+            if (readyReject) {
+              readyReject(new Error(msg));
+              readyResolve = null;
+              readyReject = null;
+            }
+            setStatus(msg, "error");
+          };
+
+          return workerReady;
+        }
+
+        async function processStrategies(strategies) {
+          if (!sourceImage || !worker || !opencvReady) return;
+          if (applying) {
+            pendingStrategies = strategies;
+            return;
+          }
+          applying = true;
+          try {
+            await workerReady;
+            const drawn = drawScaledRgba(sourceImage);
+            const params = readParams(strategies);
+            const id = "req-" + ++reqSeq;
+            const result = await new Promise(function (resolve, reject) {
+              pending.set(id, { resolve, reject });
+              worker.postMessage(
+                {
+                  id,
+                  width: drawn.w,
+                  height: drawn.h,
+                  rgbaBuffer: drawn.rgbaBuffer,
+                  params,
+                },
+                [drawn.rgbaBuffer]
+              );
+            });
+
+            const images = result.images || {};
+            Object.keys(images).forEach(function (key) {
+              const img = images[key];
+              if (!img || !els.canvases[key]) return;
+              putRgbaOnCanvas(els.canvases[key], img.width, img.height, img.buffer);
+              showCanvas(key);
+            });
+          } catch (err) {
+            dbgError("processStrategies failed", err);
+            setStatus(err instanceof Error ? err.message : String(err), "error");
+          } finally {
+            applying = false;
+            if (pendingStrategies) {
+              const next = pendingStrategies;
+              pendingStrategies = null;
+              processStrategies(next);
+            }
+          }
+        }
+
+        const debouncedOriginal = debounce(drawOriginal, DEBOUNCE_MS);
+        const debouncedRG = debounce(function () {
+          processStrategies(["rg"]);
+        }, DEBOUNCE_MS);
+        const debouncedLab = debounce(function () {
+          processStrategies(["lab"]);
+        }, DEBOUNCE_MS);
+        const debouncedRidge = debounce(function () {
+          processStrategies(["ridge"]);
+        }, DEBOUNCE_MS);
+        const debouncedAll = debounce(function () {
+          drawOriginal();
+          processStrategies(["rg", "lab", "ridge"]);
+        }, DEBOUNCE_MS);
+
+        let sourceMeta = null;
+        let currentSettingsKey = null;
+
+        const SETTINGS_LS = "inkCmp.settings.v1";
+        const SETTINGS_MAX_ENTRIES = 50;
+
+        function imageSettingsKey(meta, img) {
+          const name = String((meta && meta.fileName) || "image").toLowerCase();
+          const bytes = meta && meta.fileBytes != null ? String(meta.fileBytes) : "";
+          const w = (img && (img.naturalWidth || img.width)) || (meta && meta.width) || 0;
+          const h = (img && (img.naturalHeight || img.height)) || (meta && meta.height) || 0;
+          return name + "|" + bytes + "|" + w + "x" + h;
+        }
+
+        function readSettingsMap() {
+          try {
+            const raw = localStorage.getItem(SETTINGS_LS);
+            if (!raw) return {};
+            const parsed = JSON.parse(raw);
+            return parsed && typeof parsed === "object" ? parsed : {};
+          } catch (_) {
+            return {};
+          }
+        }
+
+        function writeSettingsMap(map) {
+          try {
+            localStorage.setItem(SETTINGS_LS, JSON.stringify(map));
+          } catch (err) {
+            dbgError("settings cache write failed", err);
+          }
+        }
+
+        function loadCachedSettings(key) {
+          const entry = readSettingsMap()[key];
+          return entry && entry.settings ? entry.settings : null;
+        }
+
+        function collectImageSettings() {
+          return {
+            trimDark: !!(els.trimDark && els.trimDark.checked),
+            autoZoom: !!(els.autoZoom && els.autoZoom.checked),
+            zoom: viewState.zoom,
+            rotation: viewState.rotation,
+            panX: viewState.panX,
+            panY: viewState.panY,
+            rgClahe: Number(els.rgClahe.value),
+            rgInvertClahe: !!(els.rgInvertClahe && els.rgInvertClahe.checked),
+            rgThresh: Number(els.rgThresh.value),
+            rgRot: els.rgRot ? Number(els.rgRot.value) : 0,
+            labMedian: Number(els.labMedian.value),
+            labBlock: Number(els.labBlock.value),
+            labC: Number(els.labC.value),
+            labInvert: !!(els.labInvert && els.labInvert.checked),
+            labRot: els.labRot ? Number(els.labRot.value) : 0,
+            ridgeThresh: Number(els.ridgeThresh.value),
+            ridgeKernel: Number(els.ridgeKernel.value),
+            ridgeInvert: !!(els.ridgeInvert && els.ridgeInvert.checked),
+            ridgeRot: els.ridgeRot ? Number(els.ridgeRot.value) : 0,
+          };
+        }
+
+        // Averages from tuned settings across Stamp 30/37 and Cover Mar/Jul exports.
+        const DEFAULT_FILTER_SETTINGS = {
+          autoZoom: true,
+          rgClahe: 6.3,
+          rgInvertClahe: true,
+          rgThresh: 202,
+          labMedian: 11,
+          labBlock: 87,
+          labC: 0,
+          labInvert: true,
+          ridgeThresh: 9,
+          ridgeKernel: 7,
+          ridgeInvert: true,
+        };
+
+        function applyDefaultFilterSettings() {
+          const d = DEFAULT_FILTER_SETTINGS;
+          if (els.autoZoom) els.autoZoom.checked = !!d.autoZoom;
+          els.rgClahe.value = String(d.rgClahe);
+          els.rgClaheValue.textContent = Number(d.rgClahe).toFixed(1);
+          if (els.rgInvertClahe) els.rgInvertClahe.checked = !!d.rgInvertClahe;
+          els.rgThresh.value = String(d.rgThresh);
+          els.rgThreshValue.textContent = String(d.rgThresh);
+          els.labMedian.value = String(d.labMedian);
+          els.labMedianValue.textContent = String(d.labMedian);
+          els.labBlock.value = String(d.labBlock);
+          els.labBlockValue.textContent = String(d.labBlock);
+          els.labC.value = String(d.labC);
+          els.labCValue.textContent = String(d.labC);
+          if (els.labInvert) els.labInvert.checked = !!d.labInvert;
+          els.ridgeThresh.value = String(d.ridgeThresh);
+          els.ridgeThreshValue.textContent = String(d.ridgeThresh);
+          els.ridgeKernel.value = String(d.ridgeKernel);
+          els.ridgeKernelValue.textContent = String(d.ridgeKernel);
+          if (els.ridgeInvert) els.ridgeInvert.checked = !!d.ridgeInvert;
+        }
+
+        function applyCachedSettings(s) {
+          if (!s) return;
+          if (els.trimDark) {
+            els.trimDark.checked = !!s.trimDark;
+            els.trimDark.dataset.userSet = "1";
+          }
+          if (els.autoZoom) els.autoZoom.checked = s.autoZoom !== false;
+
+          viewState.zoom = clamp(s.zoom != null ? s.zoom : 1, 0.5, 6);
+          viewState.rotation = clamp(s.rotation != null ? s.rotation : 0, -180, 180);
+          viewState.panX = Number(s.panX) || 0;
+          viewState.panY = Number(s.panY) || 0;
+          els.zoom.value = String(viewState.zoom);
+          els.zoomValue.textContent = viewState.zoom.toFixed(2) + "×";
+          els.rotation.value = String(Math.round(viewState.rotation));
+          els.rotationValue.textContent = Math.round(viewState.rotation) + "°";
+
+          els.rgClahe.value = String(clamp(s.rgClahe != null ? s.rgClahe : DEFAULT_FILTER_SETTINGS.rgClahe, 0.5, 10));
+          els.rgClaheValue.textContent = Number(els.rgClahe.value).toFixed(1);
+          if (els.rgInvertClahe) {
+            els.rgInvertClahe.checked =
+              s.rgInvertClahe != null ? !!s.rgInvertClahe : !!DEFAULT_FILTER_SETTINGS.rgInvertClahe;
+          }
+          els.rgThresh.value = String(
+            clamp(s.rgThresh != null ? s.rgThresh : DEFAULT_FILTER_SETTINGS.rgThresh, 0, 255)
+          );
+          els.rgThreshValue.textContent = els.rgThresh.value;
+          if (els.rgRot) {
+            els.rgRot.value = String(clamp(s.rgRot != null ? s.rgRot : 0, -180, 180));
+            if (els.rgRotValue) els.rgRotValue.textContent = Math.round(Number(els.rgRot.value)) + "°";
+          }
+
+          const labMedian = oddAtLeast(
+            clamp(s.labMedian != null ? s.labMedian : DEFAULT_FILTER_SETTINGS.labMedian, 1, 15),
+            1
+          );
+          els.labMedian.value = String(labMedian);
+          els.labMedianValue.textContent = String(labMedian);
+          const labBlock = oddAtLeast(
+            clamp(s.labBlock != null ? s.labBlock : DEFAULT_FILTER_SETTINGS.labBlock, 3, 99),
+            3
+          );
+          els.labBlock.value = String(labBlock);
+          els.labBlockValue.textContent = String(labBlock);
+          els.labC.value = String(clamp(s.labC != null ? s.labC : DEFAULT_FILTER_SETTINGS.labC, -10, 10));
+          els.labCValue.textContent = els.labC.value;
+          if (els.labInvert) {
+            els.labInvert.checked = s.labInvert != null ? !!s.labInvert : !!DEFAULT_FILTER_SETTINGS.labInvert;
+          }
+          if (els.labRot) {
+            els.labRot.value = String(clamp(s.labRot != null ? s.labRot : 0, -180, 180));
+            if (els.labRotValue) els.labRotValue.textContent = Math.round(Number(els.labRot.value)) + "°";
+          }
+
+          els.ridgeThresh.value = String(
+            clamp(s.ridgeThresh != null ? s.ridgeThresh : DEFAULT_FILTER_SETTINGS.ridgeThresh, 1, 255)
+          );
+          els.ridgeThreshValue.textContent = els.ridgeThresh.value;
+          const ridgeKernel = oddAtLeast(
+            clamp(s.ridgeKernel != null ? s.ridgeKernel : DEFAULT_FILTER_SETTINGS.ridgeKernel, 1, 15),
+            1
+          );
+          els.ridgeKernel.value = String(ridgeKernel);
+          els.ridgeKernelValue.textContent = String(ridgeKernel);
+          if (els.ridgeInvert) {
+            els.ridgeInvert.checked =
+              s.ridgeInvert != null ? !!s.ridgeInvert : !!DEFAULT_FILTER_SETTINGS.ridgeInvert;
+          }
+          if (els.ridgeRot) {
+            els.ridgeRot.value = String(clamp(s.ridgeRot != null ? s.ridgeRot : 0, -180, 180));
+            if (els.ridgeRotValue) els.ridgeRotValue.textContent = Math.round(Number(els.ridgeRot.value)) + "°";
+          }
+        }
+
+        function persistImageSettingsNow() {
+          if (!currentSettingsKey || !sourceImage) return;
+          const map = readSettingsMap();
+          map[currentSettingsKey] = {
+            updatedAt: Date.now(),
+            settings: collectImageSettings(),
+          };
+          const keys = Object.keys(map);
+          if (keys.length > SETTINGS_MAX_ENTRIES) {
+            keys
+              .map(function (k) {
+                return { k: k, t: (map[k] && map[k].updatedAt) || 0 };
+              })
+              .sort(function (a, b) {
+                return a.t - b.t;
+              })
+              .slice(0, keys.length - SETTINGS_MAX_ENTRIES)
+              .forEach(function (item) {
+                delete map[item.k];
+              });
+          }
+          writeSettingsMap(map);
+        }
+
+        const persistImageSettings = debounce(persistImageSettingsNow, 200);
+
+        function exportAllSettingsToClipboard() {
+          const map = readSettingsMap();
+          const keys = Object.keys(map);
+          if (!keys.length) {
+            setStatus("No saved settings to export yet.", "error");
+            return;
+          }
+          const payload = {
+            format: SETTINGS_LS,
+            exportedAt: new Date().toISOString(),
+            count: keys.length,
+            images: map,
+          };
+          const text = JSON.stringify(payload, null, 2);
+          function onOk() {
+            setStatus("Copied settings for " + keys.length + " image" + (keys.length === 1 ? "" : "s") + " to clipboard.", "ok");
+          }
+          function onFail(err) {
+            dbgError("clipboard export failed", err);
+            setStatus("Could not copy settings to clipboard.", "error");
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(onOk).catch(onFail);
+            return;
+          }
+          try {
+            const ta = document.createElement("textarea");
+            ta.value = text;
+            ta.setAttribute("readonly", "");
+            ta.style.position = "fixed";
+            ta.style.left = "-9999px";
+            document.body.appendChild(ta);
+            ta.select();
+            const ok = document.execCommand("copy");
+            ta.remove();
+            if (ok) onOk();
+            else onFail(new Error("execCommand copy failed"));
+          } catch (err) {
+            onFail(err);
+          }
+        }
+
+        function formatBytes(n) {
+          if (n == null || !Number.isFinite(n)) return null;
+          if (n < 1024) return n + " B";
+          if (n < 1024 * 1024) return (n / 1024).toFixed(n < 10 * 1024 ? 1 : 0) + " KB";
+          return (n / (1024 * 1024)).toFixed(n < 10 * 1024 * 1024 ? 2 : 1) + " MB";
+        }
+
+        function readU16(view, offset, le) {
+          return le ? view.getUint16(offset, true) : view.getUint16(offset, false);
+        }
+        function readU32(view, offset, le) {
+          return le ? view.getUint32(offset, true) : view.getUint32(offset, false);
+        }
+
+        function parseJpegMetadata(bytes, out) {
+          const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+          let offset = 2;
+          while (offset + 4 < bytes.length) {
+            if (bytes[offset] !== 0xff) break;
+            const marker = bytes[offset + 1];
+            if (marker === 0xd9 || marker === 0xda) break; // EOI / SOS
+            const len = view.getUint16(offset + 2, false);
+            if (len < 2 || offset + 2 + len > bytes.length) break;
+            const segStart = offset + 4;
+            const segEnd = offset + 2 + len;
+
+            // JFIF APP0
+            if (marker === 0xe0 && segEnd - segStart >= 14) {
+              const isJfif =
+                bytes[segStart] === 0x4a &&
+                bytes[segStart + 1] === 0x46 &&
+                bytes[segStart + 2] === 0x49 &&
+                bytes[segStart + 3] === 0x46 &&
+                bytes[segStart + 4] === 0x00;
+              if (isJfif) {
+                const unit = bytes[segStart + 7];
+                const xd = view.getUint16(segStart + 8, false);
+                const yd = view.getUint16(segStart + 10, false);
+                if (unit === 1 && xd > 0 && yd > 0) {
+                  out.dpiX = xd;
+                  out.dpiY = yd;
+                  out.dpiSource = "JFIF";
+                } else if (unit === 2 && xd > 0 && yd > 0) {
+                  out.dpiX = Math.round(xd * 2.54);
+                  out.dpiY = Math.round(yd * 2.54);
+                  out.dpiSource = "JFIF";
+                } else if (unit === 0 && xd > 0 && yd > 0) {
+                  out.densityNote = "aspect only (no absolute DPI)";
+                }
+              }
+            }
+
+            // EXIF APP1 — Resolution tags when JFIF DPI missing
+            if (marker === 0xe1 && !out.dpiX && segEnd - segStart > 16) {
+              const isExif =
+                bytes[segStart] === 0x45 &&
+                bytes[segStart + 1] === 0x78 &&
+                bytes[segStart + 2] === 0x69 &&
+                bytes[segStart + 3] === 0x66 &&
+                bytes[segStart + 4] === 0x00;
+              if (isExif) {
+                try {
+                  parseExifDpi(bytes, segStart + 6, segEnd, out);
+                } catch (_) {
+                  /* ignore truncated EXIF */
+                }
+              }
+            }
+
+            // SOF0/SOF2 for bits and components
+            if ((marker >= 0xc0 && marker <= 0xc3) || (marker >= 0xc5 && marker <= 0xc7)) {
+              if (segEnd - segStart >= 6) {
+                out.bitDepth = bytes[segStart];
+                out.height = view.getUint16(segStart + 1, false);
+                out.width = view.getUint16(segStart + 3, false);
+                const comps = bytes[segStart + 5];
+                out.colorModel = comps === 1 ? "Grayscale" : comps === 3 ? "YCbCr/RGB" : comps === 4 ? "CMYK" : comps + " ch";
+              }
+            }
+
+            offset = segEnd;
+          }
+        }
+
+        function parseExifDpi(bytes, tiffStart, segEnd, out) {
+          if (tiffStart + 8 > segEnd) return;
+          const le = bytes[tiffStart] === 0x49 && bytes[tiffStart + 1] === 0x49;
+          if (!le && !(bytes[tiffStart] === 0x4d && bytes[tiffStart + 1] === 0x4d)) return;
+          const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+          const ifd0 = tiffStart + readU32(view, tiffStart + 4, le);
+          if (ifd0 + 2 > segEnd) return;
+          const entries = readU16(view, ifd0, le);
+          let xRes = null;
+          let yRes = null;
+          let unit = 2;
+          for (let i = 0; i < entries; i++) {
+            const e = ifd0 + 2 + i * 12;
+            if (e + 12 > segEnd) break;
+            const tag = readU16(view, e, le);
+            const type = readU16(view, e + 2, le);
+            const count = readU32(view, e + 4, le);
+            const valOff = e + 8;
+            if (tag === 0x0128 && type === 3) {
+              unit = readU16(view, valOff, le);
+            }
+            if ((tag === 0x011a || tag === 0x011b) && type === 5 && count >= 1) {
+              const ptr = tiffStart + readU32(view, valOff, le);
+              if (ptr + 8 <= segEnd) {
+                const num = readU32(view, ptr, le);
+                const den = readU32(view, ptr + 4, le) || 1;
+                const val = num / den;
+                if (tag === 0x011a) xRes = val;
+                else yRes = val;
+              }
+            }
+          }
+          if (xRes && yRes) {
+            if (unit === 3) {
+              out.dpiX = Math.round(xRes * 2.54);
+              out.dpiY = Math.round(yRes * 2.54);
+            } else {
+              out.dpiX = Math.round(xRes);
+              out.dpiY = Math.round(yRes);
+            }
+            out.dpiSource = "EXIF";
+          }
+        }
+
+        function parsePngMetadata(bytes, out) {
+          const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+          let offset = 8;
+          while (offset + 12 <= bytes.length) {
+            const len = view.getUint32(offset, false);
+            const type =
+              String.fromCharCode(bytes[offset + 4], bytes[offset + 5], bytes[offset + 6], bytes[offset + 7]);
+            const dataStart = offset + 8;
+            const dataEnd = dataStart + len;
+            if (dataEnd + 4 > bytes.length) break;
+            if (type === "IHDR" && len >= 13) {
+              out.width = view.getUint32(dataStart, false);
+              out.height = view.getUint32(dataStart + 4, false);
+              out.bitDepth = bytes[dataStart + 8];
+              const ct = bytes[dataStart + 9];
+              out.colorModel =
+                ct === 0
+                  ? "Grayscale"
+                  : ct === 2
+                    ? "RGB"
+                    : ct === 3
+                      ? "Indexed"
+                      : ct === 4
+                        ? "Gray+Alpha"
+                        : ct === 6
+                          ? "RGBA"
+                          : "type " + ct;
+            }
+            if (type === "pHYs" && len >= 9) {
+              const ppx = view.getUint32(dataStart, false);
+              const ppy = view.getUint32(dataStart + 4, false);
+              const unit = bytes[dataStart + 8];
+              if (unit === 1 && ppx > 0 && ppy > 0) {
+                out.dpiX = Math.round(ppx * 0.0254);
+                out.dpiY = Math.round(ppy * 0.0254);
+                out.dpiSource = "pHYs";
+              }
+            }
+            offset = dataEnd + 4;
+            if (type === "IEND") break;
+          }
+        }
+
+        function parseImageMetadata(arrayBuffer, fileInfo) {
+          const bytes = new Uint8Array(arrayBuffer);
+          const out = {
+            format: null,
+            width: null,
+            height: null,
+            dpiX: null,
+            dpiY: null,
+            dpiSource: null,
+            bitDepth: null,
+            colorModel: null,
+            fileBytes: fileInfo && fileInfo.size != null ? fileInfo.size : arrayBuffer.byteLength,
+            fileName: fileInfo && fileInfo.name ? fileInfo.name : null,
+            mime: fileInfo && fileInfo.type ? fileInfo.type : null,
+          };
+          if (bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8) {
+            out.format = "JPEG";
+            parseJpegMetadata(bytes, out);
+          } else if (
+            bytes.length >= 8 &&
+            bytes[0] === 0x89 &&
+            bytes[1] === 0x50 &&
+            bytes[2] === 0x4e &&
+            bytes[3] === 0x47
+          ) {
+            out.format = "PNG";
+            parsePngMetadata(bytes, out);
+          } else if (bytes.length >= 12 && bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46) {
+            out.format = "WebP";
+          } else if (out.mime) {
+            out.format = out.mime.replace(/^image\//, "").toUpperCase();
+          }
+          return out;
+        }
+
+        function placeFixedNear(el, anchorEl, clientX, clientY) {
+          const pad = 14;
+          const gap = 12;
+          el.style.left = "0px";
+          el.style.top = "0px";
+          const rect = el.getBoundingClientRect();
+          let x;
+          let y;
+          if (typeof clientX === "number" && typeof clientY === "number") {
+            x = clientX + gap;
+            y = clientY + gap;
+          } else if (anchorEl) {
+            const a = anchorEl.getBoundingClientRect();
+            x = a.left;
+            y = a.bottom + gap;
+          } else {
+            x = pad;
+            y = pad;
+          }
+          if (x + rect.width > window.innerWidth - pad) {
+            x = (typeof clientX === "number" ? clientX : x) - rect.width - gap;
+          }
+          if (y + rect.height > window.innerHeight - pad) {
+            y = (typeof clientY === "number" ? clientY : y) - rect.height - gap;
+          }
+          x = Math.max(pad, Math.min(x, window.innerWidth - rect.width - pad));
+          y = Math.max(pad, Math.min(y, window.innerHeight - rect.height - pad));
+          el.style.left = x + "px";
+          el.style.top = y + "px";
+        }
+
+        function renderImageMeta(meta, img) {
+          const el = els.imageMeta;
+          const trigger = els.imageDetailsTrigger;
+          if (!el) return;
+          if (!meta && !img) {
+            el.classList.remove("open");
+            el.setAttribute("aria-hidden", "true");
+            el.innerHTML = "";
+            if (trigger) trigger.classList.remove("visible");
+            return;
+          }
+          const w = (img && (img.naturalWidth || img.width)) || (meta && meta.width) || null;
+          const h = (img && (img.naturalHeight || img.height)) || (meta && meta.height) || null;
+          const rows = [];
+          if (w && h) {
+            rows.push(["Pixels", w.toLocaleString() + " × " + h.toLocaleString()]);
+            const mp = (w * h) / 1e6;
+            if (mp >= 0.1) rows.push(["Megapixels", mp.toFixed(mp >= 10 ? 1 : 2) + " MP"]);
+          }
+          if (meta && meta.format) rows.push(["Format", meta.format]);
+          if (meta && meta.colorModel) {
+            let color = meta.colorModel;
+            if (meta.bitDepth) color += " · " + meta.bitDepth + "-bit";
+            rows.push(["Color", color]);
+          }
+          if (meta && meta.dpiX && meta.dpiY) {
+            const dpiLabel =
+              meta.dpiX === meta.dpiY
+                ? meta.dpiX + " DPI"
+                : meta.dpiX + " × " + meta.dpiY + " DPI";
+            rows.push(["Resolution", dpiLabel + (meta.dpiSource ? " (" + meta.dpiSource + ")" : "")]);
+            if (w && h) {
+              const inchW = w / meta.dpiX;
+              const inchH = h / meta.dpiY;
+              const mmW = inchW * 25.4;
+              const mmH = inchH * 25.4;
+              rows.push([
+                "Print size",
+                inchW.toFixed(2) + " × " + inchH.toFixed(2) + " in · " + mmW.toFixed(1) + " × " + mmH.toFixed(1) + " mm",
+              ]);
+            }
+          } else if (meta && meta.densityNote) {
+            rows.push(["Density", meta.densityNote]);
+          } else {
+            rows.push(["Resolution", "DPI not stored in file"]);
+          }
+          if (meta && meta.fileBytes != null) rows.push(["File size", formatBytes(meta.fileBytes)]);
+          if (meta && meta.fileName) rows.push(["File", meta.fileName]);
+
+          el.innerHTML = rows
+            .map(function (r) {
+              return (
+                '<div class="meta-row"><span class="meta-k">' +
+                r[0] +
+                '</span><span class="meta-v">' +
+                r[1] +
+                "</span></div>"
+              );
+            })
+            .join("");
+          if (trigger) trigger.classList.add("visible");
+        }
+
+        function adoptImage(img, label, meta) {
+          sourceImage = img;
+          sourceMeta = meta || null;
+          currentSettingsKey = imageSettingsKey(meta, img);
+          const cached = loadCachedSettings(currentSettingsKey);
+
+          if (els.trimDark) delete els.trimDark.dataset.userSet;
+          const chrome = applyImageChrome(img);
+
+          if (cached) {
+            applyCachedSettings(cached);
+          } else {
+            viewState.zoom = 1;
+            viewState.rotation = 0;
+            viewState.panX = 0;
+            viewState.panY = 0;
+            els.zoom.value = "1";
+            els.zoomValue.textContent = "1.00×";
+            els.rotation.value = "0";
+            els.rotationValue.textContent = "0°";
+            resetStrategyRotations();
+            applyDefaultFilterSettings();
+          }
+
+          showStrategyPanels(true);
+          enableImageControls(true);
+          renderImageMeta(sourceMeta, img);
+
+          let didZoom = false;
+          if (!cached && els.autoZoom && els.autoZoom.checked) {
+            didZoom = !!applyAutoZoom();
+          }
+
+          const kind = chrome.studio ? "stamp" : "cover";
+          const dpiBit =
+            sourceMeta && sourceMeta.dpiX
+              ? " · " + (sourceMeta.dpiX === sourceMeta.dpiY ? sourceMeta.dpiX + " DPI" : sourceMeta.dpiX + "×" + sourceMeta.dpiY + " DPI")
+              : "";
+          setStatus(
+            "Loaded " +
+              label +
+              " · " +
+              chrome.w +
+              "×" +
+              chrome.h +
+              " · " +
+              kind +
+              dpiBit +
+              (cached ? " · restored settings" : "") +
+              (didZoom ? " · auto-zoom " + viewState.zoom.toFixed(2) + "×" : ""),
+            "ok"
+          );
+          drawOriginal();
+          processStrategies(["rg", "lab", "ridge"]);
+          persistImageSettingsNow();
+        }
+
+        function loadImageFile(file) {
+          if (!file) return;
+          const okType =
+            /^image\//i.test(file.type) || /\.(png|jpe?g|webp|gif|bmp|tif{1,2})$/i.test(file.name);
+          if (!okType) {
+            setStatus("Please choose an image file (PNG/JPG).", "error");
+            return;
+          }
+          const url = URL.createObjectURL(file);
+          Promise.all([
+            file.arrayBuffer(),
+            new Promise(function (resolve, reject) {
+              const img = new Image();
+              img.onload = function () {
+                resolve(img);
+              };
+              img.onerror = function () {
+                reject(new Error("decode"));
+              };
+              img.src = url;
+            }),
+          ])
+            .then(function (pair) {
+              URL.revokeObjectURL(url);
+              const buffer = pair[0];
+              const img = pair[1];
+              const meta = parseImageMetadata(buffer, {
+                name: file.name,
+                size: file.size,
+                type: file.type,
+              });
+              adoptImage(img, file.name, meta);
+            })
+            .catch(function () {
+              URL.revokeObjectURL(url);
+              setStatus("Failed to decode image.", "error");
+            });
+        }
+
+        (function setupPan() {
+          const canvas = els.canvases.original;
+          let dragging = false;
+          let lastX = 0;
+          let lastY = 0;
+
+          canvas.addEventListener("pointerdown", function (e) {
+            if (!sourceImage || viewState.zoom <= 1) return;
+            dragging = true;
+            lastX = e.clientX;
+            lastY = e.clientY;
+            canvas.classList.add("panning");
+            canvas.setPointerCapture(e.pointerId);
+          });
+
+          canvas.addEventListener("pointermove", function (e) {
+            if (!dragging) return;
+            viewState.panX += e.clientX - lastX;
+            viewState.panY += e.clientY - lastY;
+            lastX = e.clientX;
+            lastY = e.clientY;
+            debouncedOriginal();
+          });
+
+          function endPan(e) {
+            if (!dragging) return;
+            dragging = false;
+            canvas.classList.remove("panning");
+            try {
+              canvas.releasePointerCapture(e.pointerId);
+            } catch (_) {}
+            persistImageSettings();
+            syncFiltersToView();
+          }
+
+          canvas.addEventListener("pointerup", endPan);
+          canvas.addEventListener("pointercancel", endPan);
+        })();
+
+        els.fileInput.addEventListener("change", function () {
+          const file = els.fileInput.files && els.fileInput.files[0];
+          loadImageFile(file);
+        });
+
+        if (els.trimDark) {
+          els.trimDark.addEventListener("change", function () {
+            els.trimDark.dataset.userSet = "1";
+            if (!sourceImage) return;
+            if (els.autoZoom && els.autoZoom.checked) applyAutoZoom();
+            debouncedAll();
+            persistImageSettings();
+          });
+        }
+
+        if (els.autoZoomBtn) {
+          els.autoZoomBtn.addEventListener("click", function () {
+            if (!sourceImage) return;
+            if (els.autoZoom) els.autoZoom.checked = true;
+            applyAutoZoom();
+            drawOriginal();
+            syncFiltersToView();
+            setStatus("Auto-zoom " + viewState.zoom.toFixed(2) + "× from edge bounds.", "ok");
+            persistImageSettings();
+          });
+        }
+
+        if (els.autoZoom) {
+          els.autoZoom.addEventListener("change", function () {
+            if (!sourceImage) return;
+            if (els.autoZoom.checked) {
+              applyAutoZoom();
+              drawOriginal();
+              syncFiltersToView();
+            }
+            persistImageSettings();
+          });
+        }
+
+        (function setupHoverTips() {
+          const tip = document.getElementById("tip-float");
+          const titleEl = document.getElementById("tip-title");
+          const bodyEl = document.getElementById("tip-body");
+          if (!tip || !titleEl || !bodyEl) return;
+
+          function showTip(el, clientX, clientY) {
+            titleEl.textContent = el.getAttribute("data-tip-title") || "";
+            bodyEl.textContent = el.getAttribute("data-tip-body") || "";
+            tip.classList.add("open");
+            tip.setAttribute("aria-hidden", "false");
+            placeFixedNear(tip, el, clientX, clientY);
+          }
+
+          function hideTip() {
+            tip.classList.remove("open");
+            tip.setAttribute("aria-hidden", "true");
+          }
+
+          document.querySelectorAll(".has-tip[data-tip-body]").forEach(function (el) {
+            el.addEventListener("mouseenter", function (e) {
+              showTip(el, e.clientX, e.clientY);
+            });
+            el.addEventListener("mousemove", function (e) {
+              if (!tip.classList.contains("open")) return;
+              placeFixedNear(tip, el, e.clientX, e.clientY);
+            });
+            el.addEventListener("mouseleave", hideTip);
+            el.addEventListener("focus", function () {
+              const r = el.getBoundingClientRect();
+              showTip(el, r.left + r.width / 2, r.bottom);
+            });
+            el.addEventListener("blur", hideTip);
+            if (!el.hasAttribute("tabindex")) el.setAttribute("tabindex", "0");
+          });
+        })();
+
+        (function setupImageDetailsHover() {
+          const trigger = els.imageDetailsTrigger;
+          const meta = els.imageMeta;
+          if (!trigger || !meta) return;
+
+          function showMeta(clientX, clientY) {
+            if (!meta.innerHTML) return;
+            meta.classList.add("open");
+            meta.setAttribute("aria-hidden", "false");
+            placeFixedNear(meta, trigger, clientX, clientY);
+          }
+
+          function hideMeta() {
+            meta.classList.remove("open");
+            meta.setAttribute("aria-hidden", "true");
+          }
+
+          trigger.addEventListener("mouseenter", function (e) {
+            showMeta(e.clientX, e.clientY);
+          });
+          trigger.addEventListener("mousemove", function (e) {
+            if (!meta.classList.contains("open")) return;
+            placeFixedNear(meta, trigger, e.clientX, e.clientY);
+          });
+          trigger.addEventListener("mouseleave", hideMeta);
+          trigger.addEventListener("focus", function () {
+            const r = trigger.getBoundingClientRect();
+            showMeta(r.left + r.width / 2, r.bottom);
+          });
+          trigger.addEventListener("blur", hideMeta);
+          trigger.addEventListener("click", function (e) {
+            e.preventDefault();
+          });
+        })();
+
+        ["dragenter", "dragover"].forEach(function (evt) {
+          els.dropZone.addEventListener(evt, function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!opencvReady) return;
+            els.dropZone.classList.add("dragover");
+          });
+        });
+        ["dragleave", "drop"].forEach(function (evt) {
+          els.dropZone.addEventListener(evt, function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            els.dropZone.classList.remove("dragover");
+          });
+        });
+        els.dropZone.addEventListener("drop", function (e) {
+          if (!opencvReady) return;
+          const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+          if (file) loadImageFile(file);
+        });
+
+        els.zoom.addEventListener("input", function () {
+          viewState.zoom = Number(els.zoom.value);
+          els.zoomValue.textContent = viewState.zoom.toFixed(2) + "×";
+          debouncedOriginal();
+          persistImageSettings();
+        });
+        els.zoom.addEventListener("change", function () {
+          syncFiltersToView();
+        });
+        els.zoom.addEventListener("pointerup", function () {
+          syncFiltersToView();
+        });
+
+        els.rotation.addEventListener("input", function () {
+          viewState.rotation = Number(els.rotation.value);
+          els.rotationValue.textContent = viewState.rotation + "°";
+          debouncedOriginal();
+          persistImageSettings();
+        });
+
+        els.resetView.addEventListener("click", function () {
+          viewState.zoom = 1;
+          viewState.rotation = 0;
+          viewState.panX = 0;
+          viewState.panY = 0;
+          els.zoom.value = "1";
+          els.zoomValue.textContent = "1.00×";
+          els.rotation.value = "0";
+          els.rotationValue.textContent = "0°";
+          drawOriginal();
+          syncFiltersToView();
+          persistImageSettings();
+        });
+
+        strategyRotInputs.forEach(function (input) {
+          input.addEventListener("input", function () {
+            const strategy = input.id.replace(/-rot$/, "");
+            const valueEl = els[strategy + "RotValue"];
+            if (valueEl) valueEl.textContent = Number(input.value) + "°";
+            if (strategy === "rg") debouncedRG();
+            else if (strategy === "lab") debouncedLab();
+            else if (strategy === "ridge") debouncedRidge();
+            persistImageSettings();
+          });
+        });
+
+        els.rgClahe.addEventListener("input", function () {
+          els.rgClaheValue.textContent = Number(els.rgClahe.value).toFixed(1);
+          debouncedRG();
+          persistImageSettings();
+        });
+        if (els.rgInvertClahe) {
+          els.rgInvertClahe.addEventListener("change", function () {
+            debouncedRG();
+            persistImageSettings();
+          });
+        }
+        els.rgThresh.addEventListener("input", function () {
+          els.rgThreshValue.textContent = String(els.rgThresh.value);
+          debouncedRG();
+          persistImageSettings();
+        });
+
+        els.labMedian.addEventListener("input", function () {
+          const v = oddAtLeast(Number(els.labMedian.value), 1);
+          els.labMedian.value = String(Math.min(15, v));
+          els.labMedianValue.textContent = els.labMedian.value;
+          debouncedLab();
+          persistImageSettings();
+        });
+        els.labBlock.addEventListener("input", function () {
+          const v = oddAtLeast(Number(els.labBlock.value), 3);
+          els.labBlock.value = String(Math.min(99, v));
+          els.labBlockValue.textContent = els.labBlock.value;
+          debouncedLab();
+          persistImageSettings();
+        });
+        els.labC.addEventListener("input", function () {
+          els.labCValue.textContent = String(els.labC.value);
+          debouncedLab();
+          persistImageSettings();
+        });
+        if (els.labInvert) {
+          els.labInvert.addEventListener("change", function () {
+            debouncedLab();
+            persistImageSettings();
+          });
+        }
+
+        els.ridgeThresh.addEventListener("input", function () {
+          els.ridgeThreshValue.textContent = String(els.ridgeThresh.value);
+          debouncedRidge();
+          persistImageSettings();
+        });
+        els.ridgeKernel.addEventListener("input", function () {
+          const v = oddAtLeast(Number(els.ridgeKernel.value), 1);
+          els.ridgeKernel.value = String(Math.min(15, v));
+          els.ridgeKernelValue.textContent = els.ridgeKernel.value;
+          debouncedRidge();
+          persistImageSettings();
+        });
+        if (els.ridgeInvert) {
+          els.ridgeInvert.addEventListener("change", function () {
+            debouncedRidge();
+            persistImageSettings();
+          });
+        }
+
+        saveBtns.forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            saveStrategyResult(btn.getAttribute("data-save"));
+          });
+        });
+
+        const exportSettingsBtn = document.getElementById("export-settings-btn");
+        if (exportSettingsBtn) {
+          exportSettingsBtn.addEventListener("click", exportAllSettingsToClipboard);
+        }
+
+        setFileEnabled(false);
+        enableImageControls(false);
+        showStrategyPanels(false);
+
+        dbg("boot", {
+          protocol: window.location.protocol,
+          href: window.location.href,
+          isFileOrigin: IS_FILE_ORIGIN,
+        });
+
+        if (IS_FILE_ORIGIN) {
+          setStatus(
+            "Opened as file:// — serve over http(s) instead (e.g. python3 -m http.server).",
+            "error"
+          );
+        } else {
+          setStatus("Loading OpenCV.js in worker…");
+          ensureWorker()
+            .then(function () {
+              opencvReady = true;
+              setFileEnabled(true);
+              dbg("OpenCV worker ready");
+              setStatus("OpenCV ready — drop an image or browse to open one.", "ok");
+            })
+            .catch(function (err) {
+              dbgError("ensureWorker failed", err);
+              setStatus(err instanceof Error ? err.message : String(err), "error");
+            });
+        }
+      })();
+    </script>
+  </body>
+</html>

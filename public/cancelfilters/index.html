@@ -306,6 +306,13 @@
         font-size: 1rem !important;
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
       }
+      .frame-corner-btn.analyze-ink {
+        right: auto;
+        left: 0.5rem;
+        z-index: 7;
+      }
+      .drop-zone .analyze-ink { display: none; }
+      .drop-zone.has-image .analyze-ink { display: inline-flex; align-items: center; justify-content: center; }
       #replace-label {
         display: none;
         border-color: var(--accent);
@@ -461,6 +468,77 @@
         background: rgba(232, 197, 71, 0.4);
       }
 
+      .octagon-overlay {
+        display: none;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 0;
+        height: 0;
+        z-index: 6;
+        pointer-events: none;
+        overflow: visible;
+      }
+      .frame.octagon-on .octagon-overlay { display: block; }
+      .octagon-overlay svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+      }
+      .octagon-overlay .octagon-hit {
+        fill: rgba(200, 64, 48, 0.1);
+        stroke: rgba(220, 72, 56, 0.95);
+        stroke-width: 2;
+        vector-effect: non-scaling-stroke;
+        pointer-events: all;
+        cursor: grab;
+        touch-action: none;
+      }
+      .octagon-overlay .octagon-hit.selected {
+        fill: rgba(232, 197, 71, 0.18);
+        stroke: #e8c547;
+        stroke-width: 2.5;
+      }
+      .octagon-overlay.has-density .octagon-hit {
+        fill: rgba(255, 255, 255, 0.04);
+        stroke: rgba(255, 255, 255, 0.35);
+        stroke-width: 1;
+      }
+      .octagon-overlay.has-density .octagon-hit.selected {
+        fill: rgba(232, 197, 71, 0.1);
+        stroke: rgba(232, 197, 71, 0.55);
+      }
+      .octagon-overlay .octagon-density {
+        pointer-events: none;
+      }
+      .octagon-overlay .octagon-density line {
+        stroke-width: 5;
+        stroke-linecap: butt;
+        vector-effect: non-scaling-stroke;
+      }
+      .octagon-overlay .octagon-hit.dragging {
+        cursor: grabbing;
+      }
+      .octagon-overlay .octagon-center {
+        fill: rgba(220, 72, 56, 0.95);
+        pointer-events: none;
+      }
+      .octagon-overlay .octagon-hit.selected ~ .octagon-center,
+      .octagon-overlay.selected .octagon-center {
+        fill: #e8c547;
+      }
+      #octagon-overlay-btn.active {
+        border-color: var(--accent);
+        background: rgba(45, 74, 62, 0.12);
+      }
+      .view-rot.octagon-mode .view-rot-value {
+        color: #a67c00;
+      }
+      .view-rot.octagon-mode input[type="range"] {
+        accent-color: #c9a227;
+      }
+
       .drop-zone {
         border-width: 2px;
         border-style: dashed;
@@ -518,6 +596,23 @@
       }
       #work-canvas { display: none; }
 
+      .samples {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.4rem;
+      }
+      .samples .lbl {
+        font-size: var(--fs-label);
+        font-weight: 700;
+        color: var(--muted);
+        margin-right: 0.15rem;
+      }
+      .samples button {
+        font-size: var(--fs-label);
+        padding: 0.35rem 0.65rem;
+        min-height: 2.2rem;
+      }
       .check-row {
         display: flex;
         align-items: center;
@@ -662,6 +757,63 @@
         min-width: 4.5rem;
       }
 
+      #ink-analysis-dialog .modal-card {
+        max-width: min(36rem, calc(100vw - 2rem));
+        width: 100%;
+      }
+      #ink-analysis-dialog .ink-summary {
+        margin: 0 0 0.75rem;
+        font-size: var(--fs-body);
+        color: var(--muted);
+        line-height: 1.4;
+      }
+      #ink-analysis-dialog .ink-sectors {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: var(--fs-label);
+        font-family: ui-monospace, Menlo, Consolas, monospace;
+      }
+      #ink-analysis-dialog .ink-sectors th,
+      #ink-analysis-dialog .ink-sectors td {
+        padding: 0.28rem 0.45rem;
+        text-align: right;
+        border-bottom: 1px solid var(--border);
+      }
+      #ink-analysis-dialog .ink-sectors th:first-child,
+      #ink-analysis-dialog .ink-sectors td:first-child {
+        text-align: left;
+        font-weight: 700;
+      }
+      #ink-analysis-dialog .ink-sectors tr.strong td { color: var(--ok); font-weight: 700; }
+      #ink-analysis-dialog .ink-sectors tr.weak td { color: var(--danger); font-weight: 700; }
+      #ink-analysis-dialog .ink-bars {
+        display: grid;
+        gap: 0.35rem;
+        margin: 0.85rem 0 0;
+      }
+      #ink-analysis-dialog .ink-bar-row {
+        display: grid;
+        grid-template-columns: 2.25rem 1fr 3.25rem;
+        gap: 0.4rem;
+        align-items: center;
+        font-size: 0.9rem;
+        font-family: ui-monospace, Menlo, Consolas, monospace;
+      }
+      #ink-analysis-dialog .ink-bar-track {
+        height: 0.65rem;
+        background: rgba(28, 27, 24, 0.08);
+        border-radius: 3px;
+        overflow: hidden;
+      }
+      #ink-analysis-dialog .ink-bar-fill {
+        height: 100%;
+        background: var(--accent);
+        border-radius: 3px;
+        min-width: 0;
+      }
+      #ink-analysis-dialog .ink-bar-row.strong .ink-bar-fill { background: var(--ok); }
+      #ink-analysis-dialog .ink-bar-row.weak .ink-bar-fill { background: var(--danger); }
+
       @media (max-width: 1100px) {
         :root { --ctrl-w: 13.5rem; }
         html, body { font-size: 17px; }
@@ -723,6 +875,11 @@
               <div class="side-actions">
                 <button type="button" id="auto-zoom-btn">Auto-zoom</button>
                 <button type="button" id="reset-view-btn">Reset</button>
+                <button
+                  type="button"
+                  id="octagon-overlay-btn"
+                  title="Overlay a draggable Type A octagon on each stamp canvas. Select an octagon to rotate it with that canvas’s rotation slider."
+                >Type A octagon</button>
               </div>
             </div>
           </div>
@@ -734,6 +891,7 @@
                 <label for="image-file" id="browse-label" class="btn-label disabled">Browse…</label>
               </div>
               <canvas id="canvas-original" class="hidden"></canvas>
+              <button type="button" class="analyze-ink frame-corner-btn" data-analyze="original" disabled title="Analyze ink in the Type A octagon ring">Analyze ink</button>
               <label for="image-file" id="replace-label" class="btn-label frame-corner-btn disabled">Replace</label>
               <input id="image-file" type="file" accept="image/png,image/jpeg,image/webp,image/*" class="sr-only" disabled />
             </div>
@@ -748,6 +906,7 @@
           <div class="view-stage">
             <div class="frame">
               <canvas id="canvas-rg" class="hidden"></canvas>
+              <button type="button" class="analyze-ink frame-corner-btn" data-analyze="rg" disabled title="Analyze ink in the Type A octagon ring">Analyze ink</button>
               <button type="button" class="save-result primary frame-corner-btn" data-save="rg" disabled>Save</button>
             </div>
             <div class="view-rot">
@@ -828,6 +987,7 @@
           <div class="view-stage">
             <div class="frame">
               <canvas id="canvas-lab" class="hidden"></canvas>
+              <button type="button" class="analyze-ink frame-corner-btn" data-analyze="lab" disabled title="Analyze ink in the Type A octagon ring">Analyze ink</button>
               <button type="button" class="save-result primary frame-corner-btn" data-save="lab" disabled>Save</button>
             </div>
             <div class="view-rot">
@@ -841,6 +1001,7 @@
           <div class="view-stage">
             <div class="frame">
               <canvas id="canvas-ridge" class="hidden"></canvas>
+              <button type="button" class="analyze-ink frame-corner-btn" data-analyze="ridge" disabled title="Analyze ink in the Type A octagon ring">Analyze ink</button>
               <button type="button" class="save-result primary frame-corner-btn" data-save="ridge" disabled>Save</button>
             </div>
             <div class="view-rot">
@@ -888,7 +1049,7 @@
           class="footer-version"
           id="export-settings-btn"
           title="Copy all saved per-image settings to the clipboard"
-        >v1.1.0 · <time datetime="2026-08-05">2026-08-05</time></button>
+        >v1.2.0 · <time datetime="2026-08-11">2026-08-11</time></button>
       </footer>
     </main>
 
@@ -907,6 +1068,39 @@
         <div class="modal-actions">
           <button type="button" id="ruler-save-no" data-ruler-save="no">No</button>
           <button type="button" id="ruler-save-yes" class="primary" data-ruler-save="yes">Yes</button>
+        </div>
+      </div>
+    </div>
+    <div id="ink-save-dialog" class="modal-root" aria-hidden="true">
+      <div class="modal-backdrop" data-ink-save="no"></div>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="ink-save-title">
+        <h3 id="ink-save-title">Include ink analysis overlay?</h3>
+        <p>Ink distribution has been analyzed for this panel. Include the density-colored octagon overlay in the saved image?</p>
+        <div class="modal-actions">
+          <button type="button" id="ink-save-no" data-ink-save="no">No</button>
+          <button type="button" id="ink-save-yes" class="primary" data-ink-save="yes">Yes</button>
+        </div>
+      </div>
+    </div>
+    <div id="ink-analysis-dialog" class="modal-root" aria-hidden="true">
+      <div class="modal-backdrop" data-ink-close="1"></div>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="ink-analysis-title">
+        <h3 id="ink-analysis-title">Octagon ink distribution</h3>
+        <p id="ink-analysis-summary" class="ink-summary"></p>
+        <table class="ink-sectors" aria-label="Compass sector densities">
+          <thead>
+            <tr>
+              <th scope="col">Sector</th>
+              <th scope="col">Density</th>
+              <th scope="col">Ink</th>
+              <th scope="col">Valid</th>
+            </tr>
+          </thead>
+          <tbody id="ink-analysis-sectors"></tbody>
+        </table>
+        <div id="ink-analysis-bars" class="ink-bars" aria-hidden="true"></div>
+        <div class="modal-actions">
+          <button type="button" id="ink-analysis-close" class="primary" data-ink-close="1">Close</button>
         </div>
       </div>
     </div>
@@ -948,6 +1142,25 @@
           filterZoom: 1,
         };
 
+        /** Type A Supplementary Mail octagon overlay (mm geometry; position per canvas). */
+        const OCTAGON_MM = Object.freeze({ width: 23, height: 13.2, corner: 2.75 });
+        const OCTAGON_KEYS = ["original", "rg", "lab", "ridge"];
+        const octagonState = {
+          visible: false,
+          selectedKey: null,
+          /** Stamp rotation cached while a selected octagon owns that canvas’s slider. */
+          savedStampRot: null,
+          dragging: false,
+          byKey: {
+            original: { nx: 0.5, ny: 0.5, rotation: 0 },
+            rg: { nx: 0.5, ny: 0.5, rotation: 0 },
+            lab: { nx: 0.5, ny: 0.5, rotation: 0 },
+            ridge: { nx: 0.5, ny: 0.5, rotation: 0 },
+          },
+        };
+        /** @type {Record<string, object>} */
+        const inkAnalysisResults = {};
+
         const els = {
           status: document.getElementById("status"),
           dropZone: document.getElementById("drop-zone"),
@@ -956,6 +1169,7 @@
           replaceLabel: document.getElementById("replace-label"),
           viewControls: document.getElementById("view-controls"),
           comparisonGrid: document.getElementById("comparison-grid"),
+          samples: document.getElementById("samples"),
           trimDark: document.getElementById("trim-dark"),
           autoZoom: document.getElementById("auto-zoom"),
           autoZoomBtn: document.getElementById("auto-zoom-btn"),
@@ -966,6 +1180,7 @@
           rotation: document.getElementById("rotation-angle"),
           rotationValue: document.getElementById("rotation-value"),
           resetView: document.getElementById("reset-view-btn"),
+          octagonBtn: document.getElementById("octagon-overlay-btn"),
           workCanvas: document.getElementById("work-canvas"),
           canvases: {
             original: document.getElementById("canvas-original"),
@@ -1008,6 +1223,7 @@
         };
 
         const saveBtns = Array.from(document.querySelectorAll(".save-result"));
+        const analyzeBtns = Array.from(document.querySelectorAll(".analyze-ink"));
         const strategyRotInputs = Array.from(document.querySelectorAll(".strategy-rot"));
         const strategyKeys = ["rg", "lab", "ridge"];
         const strategyLabels = {
@@ -1095,7 +1311,10 @@
           if (!visible && els.imageDetailsTrigger) {
             els.imageDetailsTrigger.classList.remove("visible");
           }
-          if (!visible) scheduleRulerUpdate();
+          if (!visible) {
+            if (octagonState.visible) setOctagonOverlaysVisible(false);
+            scheduleRulerUpdate();
+          }
         }
 
         function enableImageControls(enabled) {
@@ -1112,6 +1331,7 @@
             els.ridgeInvert,
           ]
             .concat(saveBtns)
+            .concat(analyzeBtns)
             .concat(strategyRotInputs);
           list.forEach(function (el) {
             if (el) el.disabled = !enabled;
@@ -1141,24 +1361,410 @@
           const slug = strategyLabels[key] || key;
           const filename = safeBase + "-" + slug + ".png";
 
-          function finish(exportCanvas, withRulers) {
-            const a = document.createElement("a");
-            a.href = exportCanvas.toDataURL("image/png");
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            setStatus("Saved " + filename + (withRulers ? " (with rulers)" : ""), "ok");
+          function finish(exportCanvas, extras) {
+            const meta = buildExportMetadata(key, extras || []);
+            canvasToPngUint8(exportCanvas)
+              .then(function (pngBytes) {
+                const withMeta = pngInjectTextChunks(pngBytes, [
+                  { keyword: "Software", text: "PhilateLister cancel filters" },
+                  { keyword: "Title", text: filename },
+                  { keyword: "Author", text: "PhilateLister" },
+                  { keyword: "Description", text: formatExportDescription(meta) },
+                  { keyword: "Comment", text: JSON.stringify(meta) },
+                  { keyword: "InkCmp", text: JSON.stringify(meta) },
+                ]);
+                const blob = new Blob([withMeta], { type: "image/png" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                setTimeout(function () {
+                  URL.revokeObjectURL(url);
+                }, 1500);
+                const note =
+                  extras && extras.length ? " (with " + extras.join(" + ") + ")" : "";
+                setStatus("Saved " + filename + note + " · metadata embedded", "ok");
+              })
+              .catch(function (err) {
+                dbgError("PNG metadata export failed; saving without metadata", err);
+                const a = document.createElement("a");
+                a.href = exportCanvas.toDataURL("image/png");
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                const note =
+                  extras && extras.length ? " (with " + extras.join(" + ") + ")" : "";
+                setStatus("Saved " + filename + note + " (metadata skipped)", "ok");
+              });
           }
 
-          if (hasDpiMeta() && isRulerOriginMoved()) {
-            askIncludeRulers().then(function (include) {
-              if (include) finish(composeCanvasWithRulers(canvas, key), true);
-              else finish(canvas, false);
-            });
-            return;
+          function hasInkAnalysisOverlay() {
+            const result = inkAnalysisResults[key];
+            return !!(result && result.angularProfile && result.angularProfile.length);
           }
-          finish(canvas, false);
+
+          const chain = Promise.resolve({ canvas: canvas, extras: [] });
+
+          const afterRulers = chain.then(function (state) {
+            if (!(hasDpiMeta() && isRulerOriginMoved())) return state;
+            return askIncludeRulers().then(function (include) {
+              if (!include) return state;
+              return {
+                canvas: composeCanvasWithRulers(state.canvas, key),
+                extras: state.extras.concat(["rulers"]),
+              };
+            });
+          });
+
+          afterRulers
+            .then(function (state) {
+              if (!hasInkAnalysisOverlay()) return state;
+              return askIncludeInkAnalysis().then(function (include) {
+                if (!include) return state;
+                return {
+                  canvas: composeCanvasWithInkAnalysis(state.canvas, key),
+                  extras: state.extras.concat(["ink analysis"]),
+                };
+              });
+            })
+            .then(function (state) {
+              finish(state.canvas, state.extras);
+            })
+            .catch(function (err) {
+              dbgError("saveStrategyResult failed", err);
+              setStatus(err instanceof Error ? err.message : String(err), "error");
+            });
+        }
+
+        function buildExportMetadata(key, extras) {
+          const settings = collectImageSettings();
+          const labels = {
+            rg: "R-G + CLAHE",
+            lab: "Lab a* adaptive",
+            ridge: "Ridge / Sobel",
+          };
+          const meta = {
+            tool: "PhilateLister cancel filters",
+            version: 1,
+            createdAt: new Date().toISOString(),
+            source: {
+              fileName: (sourceMeta && sourceMeta.fileName) || null,
+              dpiX: sourceMeta && sourceMeta.dpiX ? sourceMeta.dpiX : null,
+              dpiY: sourceMeta && sourceMeta.dpiY ? sourceMeta.dpiY : null,
+              dpiSource: (sourceMeta && sourceMeta.dpiSource) || null,
+            },
+            filter: {
+              id: key,
+              slug: strategyLabels[key] || key,
+              label: labels[key] || key,
+            },
+            view: {
+              zoom: settings.zoom,
+              panX: settings.panX,
+              panY: settings.panY,
+              originalRotationDeg: settings.rotation,
+              trimDark: settings.trimDark,
+              autoZoom: settings.autoZoom,
+              studioBackground: !!(els.dropZone && els.dropZone.classList.contains("studio-bg")),
+            },
+            params: null,
+            overlays: extras.slice(),
+            inkAnalysis: null,
+          };
+
+          if (key === "rg") {
+            meta.params = {
+              claheClipLimit: settings.rgClahe,
+              invertClahe: settings.rgInvertClahe,
+              thresh: settings.rgThresh,
+              rotationDeg: settings.rgRot,
+            };
+          } else if (key === "lab") {
+            meta.params = {
+              median: settings.labMedian,
+              blockSize: settings.labBlock,
+              C: settings.labC,
+              invert: settings.labInvert,
+              rotationDeg: settings.labRot,
+            };
+          } else if (key === "ridge") {
+            meta.params = {
+              gradThresh: settings.ridgeThresh,
+              closeKernel: settings.ridgeKernel,
+              invert: settings.ridgeInvert,
+              rotationDeg: settings.ridgeRot,
+            };
+          }
+
+          const ink = inkAnalysisResults[key];
+          if (ink && ink.statistics) {
+            const stats = ink.statistics;
+            meta.inkAnalysis = {
+              meanDensity: stats.meanDensity,
+              minDensity: stats.minDensity,
+              maxDensity: stats.maxDensity,
+              imbalanceScore: stats.imbalanceScore,
+              coefficientOfVariation: stats.coefficientOfVariation,
+              standardDeviation: stats.standardDeviation,
+              strongestSector: stats.strongestSector,
+              weakestSector: stats.weakestSector,
+              weightedMeanAngle: ink.weightedMeanAngle,
+              directionalConcentration: ink.directionalConcentration,
+              sectors: (ink.sectors || []).map(function (s) {
+                return {
+                  name: s.name,
+                  density: s.density,
+                  inkPixels: s.inkPixels,
+                  validPixels: s.validPixels,
+                };
+              }),
+              octagon: octagonState.byKey[key]
+                ? {
+                    nx: octagonState.byKey[key].nx,
+                    ny: octagonState.byKey[key].ny,
+                    rotationDeg: octagonState.byKey[key].rotation,
+                    widthMm: OCTAGON_MM.width,
+                    heightMm: OCTAGON_MM.height,
+                    cornerMm: OCTAGON_MM.corner,
+                  }
+                : null,
+            };
+          }
+
+          return meta;
+        }
+
+        function formatExportDescription(meta) {
+          const lines = [];
+          lines.push("Tool: " + meta.tool);
+          if (meta.source && meta.source.fileName) lines.push("Source: " + meta.source.fileName);
+          lines.push("Filter: " + meta.filter.label + " (" + meta.filter.slug + ")");
+          const v = meta.view || {};
+          lines.push(
+            "View: zoom " +
+              Number(v.zoom).toFixed(2) +
+              "x; pan " +
+              Math.round(v.panX) +
+              "," +
+              Math.round(v.panY) +
+              "; originalRotation " +
+              v.originalRotationDeg +
+              " deg; trimDark " +
+              !!v.trimDark
+          );
+          const p = meta.params || {};
+          if (meta.filter.id === "rg") {
+            lines.push(
+              "Params: CLAHE " +
+                p.claheClipLimit +
+                "; invertClahe " +
+                !!p.invertClahe +
+                "; thresh " +
+                p.thresh +
+                "; rotation " +
+                p.rotationDeg +
+                " deg"
+            );
+          } else if (meta.filter.id === "lab") {
+            lines.push(
+              "Params: median " +
+                p.median +
+                "; block " +
+                p.blockSize +
+                "; C " +
+                p.C +
+                "; invert " +
+                !!p.invert +
+                "; rotation " +
+                p.rotationDeg +
+                " deg"
+            );
+          } else if (meta.filter.id === "ridge") {
+            lines.push(
+              "Params: grad " +
+                p.gradThresh +
+                "; close " +
+                p.closeKernel +
+                "; invert " +
+                !!p.invert +
+                "; rotation " +
+                p.rotationDeg +
+                " deg"
+            );
+          }
+          if (meta.overlays && meta.overlays.length) {
+            lines.push("Overlays: " + meta.overlays.join(", "));
+          }
+          if (meta.inkAnalysis) {
+            const ia = meta.inkAnalysis;
+            lines.push(
+              "InkAnalysis: strongest " +
+                ia.strongestSector +
+                "; weakest " +
+                ia.weakestSector +
+                "; imbalance " +
+                (ia.imbalanceScore != null ? Number(ia.imbalanceScore).toFixed(3) : "n/a") +
+                "; concentration " +
+                (ia.directionalConcentration != null
+                  ? (ia.directionalConcentration * 100).toFixed(1) + "%"
+                  : "n/a")
+            );
+          }
+          lines.push("Created: " + meta.createdAt);
+          return lines.join("\n");
+        }
+
+        function canvasToPngUint8(canvas) {
+          return new Promise(function (resolve, reject) {
+            if (canvas.toBlob) {
+              canvas.toBlob(function (blob) {
+                if (!blob) {
+                  reject(new Error("canvas.toBlob failed"));
+                  return;
+                }
+                blob.arrayBuffer().then(function (buf) {
+                  resolve(new Uint8Array(buf));
+                }, reject);
+              }, "image/png");
+              return;
+            }
+            try {
+              const dataUrl = canvas.toDataURL("image/png");
+              const b64 = dataUrl.split(",")[1];
+              const bin = atob(b64);
+              const out = new Uint8Array(bin.length);
+              for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+              resolve(out);
+            } catch (err) {
+              reject(err);
+            }
+          });
+        }
+
+        const PNG_CRC_TABLE = (function () {
+          const table = new Uint32Array(256);
+          for (let n = 0; n < 256; n++) {
+            let c = n;
+            for (let k = 0; k < 8; k++) {
+              c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+            }
+            table[n] = c >>> 0;
+          }
+          return table;
+        })();
+
+        function pngCrc32(bytes) {
+          let c = 0xffffffff;
+          for (let i = 0; i < bytes.length; i++) {
+            c = PNG_CRC_TABLE[(c ^ bytes[i]) & 0xff] ^ (c >>> 8);
+          }
+          return (c ^ 0xffffffff) >>> 0;
+        }
+
+        function encodeLatin1(str) {
+          const s = String(str == null ? "" : str);
+          const out = new Uint8Array(s.length);
+          for (let i = 0; i < s.length; i++) {
+            let code = s.charCodeAt(i);
+            if (code > 255) code = 63; // '?'
+            out[i] = code;
+          }
+          return out;
+        }
+
+        function pngMakeTextChunk(keyword, text) {
+          const key = encodeLatin1(String(keyword).slice(0, 79));
+          const val = encodeLatin1(text);
+          const data = new Uint8Array(key.length + 1 + val.length);
+          data.set(key, 0);
+          data[key.length] = 0;
+          data.set(val, key.length + 1);
+
+          const type = encodeLatin1("tEXt");
+          const len = data.length;
+          const chunk = new Uint8Array(8 + len + 4);
+          chunk[0] = (len >>> 24) & 0xff;
+          chunk[1] = (len >>> 16) & 0xff;
+          chunk[2] = (len >>> 8) & 0xff;
+          chunk[3] = len & 0xff;
+          chunk.set(type, 4);
+          chunk.set(data, 8);
+          const crcBuf = new Uint8Array(4 + len);
+          crcBuf.set(type, 0);
+          crcBuf.set(data, 4);
+          const crc = pngCrc32(crcBuf);
+          const o = 8 + len;
+          chunk[o] = (crc >>> 24) & 0xff;
+          chunk[o + 1] = (crc >>> 16) & 0xff;
+          chunk[o + 2] = (crc >>> 8) & 0xff;
+          chunk[o + 3] = crc & 0xff;
+          return chunk;
+        }
+
+        function pngInjectTextChunks(pngBytes, entries) {
+          if (!pngBytes || pngBytes.length < 8) throw new Error("invalid PNG");
+          // PNG signature
+          if (
+            pngBytes[0] !== 0x89 ||
+            pngBytes[1] !== 0x50 ||
+            pngBytes[2] !== 0x4e ||
+            pngBytes[3] !== 0x47
+          ) {
+            throw new Error("not a PNG");
+          }
+
+          let iendAt = -1;
+          let offset = 8;
+          while (offset + 8 <= pngBytes.length) {
+            const len =
+              ((pngBytes[offset] << 24) |
+                (pngBytes[offset + 1] << 16) |
+                (pngBytes[offset + 2] << 8) |
+                pngBytes[offset + 3]) >>>
+              0;
+            const type =
+              String.fromCharCode(
+                pngBytes[offset + 4],
+                pngBytes[offset + 5],
+                pngBytes[offset + 6],
+                pngBytes[offset + 7]
+              );
+            const chunkTotal = 12 + len;
+            if (offset + chunkTotal > pngBytes.length) break;
+            if (type === "IEND") {
+              iendAt = offset;
+              break;
+            }
+            offset += chunkTotal;
+          }
+          if (iendAt < 0) throw new Error("PNG IEND not found");
+
+          const textChunks = (entries || [])
+            .filter(function (e) {
+              return e && e.keyword && e.text != null && String(e.text).length;
+            })
+            .map(function (e) {
+              return pngMakeTextChunk(e.keyword, e.text);
+            });
+
+          let extraLen = 0;
+          textChunks.forEach(function (c) {
+            extraLen += c.length;
+          });
+
+          const out = new Uint8Array(pngBytes.length + extraLen);
+          out.set(pngBytes.subarray(0, iendAt), 0);
+          let w = iendAt;
+          textChunks.forEach(function (c) {
+            out.set(c, w);
+            w += c.length;
+          });
+          out.set(pngBytes.subarray(iendAt), w);
+          return out;
         }
 
         function showCanvas(key) {
@@ -1671,9 +2277,9 @@
           return {
             strategies: strategies.slice(),
             rotations: {
-              rg: els.rgRot ? clamp(els.rgRot.value, -180, 180) : 0,
-              lab: els.labRot ? clamp(els.labRot.value, -180, 180) : 0,
-              ridge: els.ridgeRot ? clamp(els.ridgeRot.value, -180, 180) : 0,
+              rg: getStampRotation("rg"),
+              lab: getStampRotation("lab"),
+              ridge: getStampRotation("ridge"),
             },
             rgClahe: clamp(els.rgClahe.value, 0.5, 10),
             rgInvertClahe: !!(els.rgInvertClahe && els.rgInvertClahe.checked),
@@ -2556,6 +3162,7 @@
           rulerRaf = requestAnimationFrame(function () {
             rulerRaf = 0;
             updateAllRulers();
+            updateAllOctagonOverlays();
           });
         }
 
@@ -2566,6 +3173,621 @@
 
         function isRulerOriginMoved() {
           return rulerState.originNx > 1e-4 || rulerState.originNy > 1e-4;
+        }
+
+        // --- Type A octagon overlay ---
+
+        function typeALocalVertices(widthPx, heightPx, cornerX, cornerY) {
+          const cx = cornerX;
+          const cy = cornerY != null ? cornerY : cornerX;
+          const w = widthPx;
+          const h = heightPx;
+          return [
+            [cx, 0],
+            [w - cx, 0],
+            [w, cy],
+            [w, h - cy],
+            [w - cx, h],
+            [cx, h],
+            [0, h - cy],
+            [0, cy],
+          ];
+        }
+
+        function getOctagonRotControl(key) {
+          if (key === "original") {
+            return { input: els.rotation, valueEl: els.rotationValue, stage: els.rotation && els.rotation.closest(".view-rot") };
+          }
+          return {
+            input: els[key + "Rot"],
+            valueEl: els[key + "RotValue"],
+            stage: els[key + "Rot"] && els[key + "Rot"].closest(".view-rot"),
+          };
+        }
+
+        function getStampRotation(key) {
+          if (octagonState.selectedKey === key && octagonState.savedStampRot != null) {
+            return snapDegrees(octagonState.savedStampRot);
+          }
+          if (key === "original") return snapDegrees(viewState.rotation);
+          const input = els[key + "Rot"];
+          return input ? snapDegrees(input.value) : 0;
+        }
+
+        function setRotControlDisplay(key, degrees, octagonMode) {
+          const ctrl = getOctagonRotControl(key);
+          if (!ctrl.input) return;
+          const snapped = snapDegrees(degrees);
+          ctrl.input.value = String(snapped);
+          if (ctrl.valueEl) ctrl.valueEl.textContent = formatDegrees(snapped);
+          if (ctrl.stage) ctrl.stage.classList.toggle("octagon-mode", !!octagonMode);
+          if (key === "original") {
+            ctrl.input.setAttribute(
+              "aria-label",
+              octagonMode ? "Rotate Type A octagon" : "Rotate original"
+            );
+          } else {
+            ctrl.input.setAttribute(
+              "aria-label",
+              octagonMode ? "Rotate Type A octagon" : ctrl.input.getAttribute("data-stamp-aria") || ctrl.input.getAttribute("aria-label")
+            );
+          }
+        }
+
+        function rememberStampAriaLabels() {
+          strategyRotInputs.forEach(function (input) {
+            if (!input.getAttribute("data-stamp-aria")) {
+              input.setAttribute("data-stamp-aria", input.getAttribute("aria-label") || "");
+            }
+          });
+        }
+
+        function ensureOctagonOverlay(frame, key) {
+          let overlay = frame.querySelector('.octagon-overlay[data-octagon="' + key + '"]');
+          if (overlay) return overlay;
+
+          overlay = document.createElement("div");
+          overlay.className = "octagon-overlay";
+          overlay.dataset.octagon = key;
+          overlay.setAttribute("aria-hidden", "true");
+          overlay.innerHTML =
+            '<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+            '<g class="octagon-density"></g>' +
+            '<polygon class="octagon-hit" tabindex="0" role="button" aria-label="Type A octagon"></polygon>' +
+            '<circle class="octagon-center" r="3"></circle>' +
+            "</svg>";
+          frame.appendChild(overlay);
+
+          const hit = overlay.querySelector(".octagon-hit");
+          let dragPointer = null;
+          let lastX = 0;
+          let lastY = 0;
+          let moved = false;
+
+          hit.addEventListener("pointerdown", function (e) {
+            if (!octagonState.visible) return;
+            e.preventDefault();
+            e.stopPropagation();
+            selectOctagon(key);
+            dragPointer = e.pointerId;
+            lastX = e.clientX;
+            lastY = e.clientY;
+            moved = false;
+            octagonState.dragging = true;
+            hit.classList.add("dragging");
+            hit.setPointerCapture(e.pointerId);
+          });
+
+          hit.addEventListener("pointermove", function (e) {
+            if (!octagonState.dragging || dragPointer !== e.pointerId) return;
+            e.preventDefault();
+            e.stopPropagation();
+            const canvas = els.canvases[key];
+            if (!canvas) return;
+            const rect = canvas.getBoundingClientRect();
+            if (rect.width < 1 || rect.height < 1) return;
+            const dx = e.clientX - lastX;
+            const dy = e.clientY - lastY;
+            if (Math.abs(dx) > 1 || Math.abs(dy) > 1) moved = true;
+            lastX = e.clientX;
+            lastY = e.clientY;
+            const g = octagonState.byKey[key];
+            g.nx = clamp(g.nx + dx / rect.width, 0, 1);
+            g.ny = clamp(g.ny + dy / rect.height, 0, 1);
+            updateOctagonOverlay(key);
+          });
+
+          function endDrag(e) {
+            if (!octagonState.dragging || (e && dragPointer != null && e.pointerId !== dragPointer)) return;
+            octagonState.dragging = false;
+            dragPointer = null;
+            hit.classList.remove("dragging");
+            try {
+              if (e) hit.releasePointerCapture(e.pointerId);
+            } catch (_) {}
+            if (!moved) selectOctagon(key);
+            persistImageSettings();
+          }
+
+          hit.addEventListener("pointerup", endDrag);
+          hit.addEventListener("pointercancel", endDrag);
+          hit.addEventListener("keydown", function (e) {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              selectOctagon(key);
+            } else if (e.key === "Escape") {
+              deselectOctagon();
+            }
+          });
+
+          return overlay;
+        }
+
+        function octagonSizeCss(canvas, canvasKey) {
+          const scale = getCssPxPerMm(canvas, canvasKey);
+          if (scale && scale.x > 0 && scale.y > 0) {
+            return {
+              width: OCTAGON_MM.width * scale.x,
+              height: OCTAGON_MM.height * scale.y,
+              cornerX: OCTAGON_MM.corner * scale.x,
+              cornerY: OCTAGON_MM.corner * scale.y,
+            };
+          }
+          // Fallback when DPI is unknown: ~35% of the shorter canvas side for width.
+          const shortSide = Math.min(canvas.clientWidth || 200, canvas.clientHeight || 200);
+          const width = Math.max(36, shortSide * 0.35);
+          const height = width * (OCTAGON_MM.height / OCTAGON_MM.width);
+          const corner = width * (OCTAGON_MM.corner / OCTAGON_MM.width);
+          return { width: width, height: height, cornerX: corner, cornerY: corner * (height / width) };
+        }
+
+        function updateOctagonOverlay(key) {
+          const canvas = els.canvases[key];
+          if (!canvas) return;
+          const frame = canvas.closest(".frame");
+          if (!frame) return;
+          const overlay = ensureOctagonOverlay(frame, key);
+          const enabled =
+            octagonState.visible &&
+            sourceImage &&
+            !canvas.classList.contains("hidden") &&
+            canvas.width > 0 &&
+            canvas.clientWidth > 0;
+
+          frame.classList.toggle("octagon-on", !!enabled);
+          overlay.classList.toggle("selected", octagonState.selectedKey === key);
+          if (!enabled) {
+            overlay.setAttribute("aria-hidden", "true");
+            return;
+          }
+          overlay.setAttribute("aria-hidden", "false");
+
+          const frameRect = frame.getBoundingClientRect();
+          const canvasRect = canvas.getBoundingClientRect();
+          const left = canvasRect.left - frameRect.left;
+          const top = canvasRect.top - frameRect.top;
+          const width = canvasRect.width;
+          const height = canvasRect.height;
+
+          overlay.style.left = left + "px";
+          overlay.style.top = top + "px";
+          overlay.style.width = width + "px";
+          overlay.style.height = height + "px";
+
+          const g = octagonState.byKey[key];
+          const size = octagonSizeCss(canvas, key);
+          const verts = typeALocalVertices(size.width, size.height, size.cornerX, size.cornerY);
+          const cx = g.nx * width;
+          const cy = g.ny * height;
+          const rad = (g.rotation * Math.PI) / 180;
+          const cos = Math.cos(rad);
+          const sin = Math.sin(rad);
+          const ox = size.width / 2;
+          const oy = size.height / 2;
+          const worldVerts = verts.map(function (p) {
+            const lx = p[0] - ox;
+            const ly = p[1] - oy;
+            // Match CSS rotate(): positive degrees are clockwise with Y-down.
+            const rx = lx * cos - ly * sin;
+            const ry = lx * sin + ly * cos;
+            return [cx + rx, cy + ry];
+          });
+          const points = worldVerts.map(function (p) {
+            return p[0] + "," + p[1];
+          }).join(" ");
+
+          const hit = overlay.querySelector(".octagon-hit");
+          const center = overlay.querySelector(".octagon-center");
+          hit.setAttribute("points", points);
+          hit.classList.toggle("selected", octagonState.selectedKey === key);
+          center.setAttribute("cx", String(cx));
+          center.setAttribute("cy", String(cy));
+
+          paintOctagonDensityRing(overlay, key, cx, cy, worldVerts);
+        }
+
+        /**
+         * Map density to rainbow hue: red (low) → yellow → green → cyan → blue (high).
+         * @param {number} density
+         * @param {number} minD
+         * @param {number} maxD
+         * @returns {string}
+         */
+        function densityToRainbowColor(density, minD, maxD) {
+          const span = maxD - minD;
+          const t = span > 1e-9 ? clamp((density - minD) / span, 0, 1) : 0.5;
+          const hue = t * 240; // 0° red … 240° blue
+          return "hsl(" + hue.toFixed(1) + " 92% 52%)";
+        }
+
+        function paintOctagonDensityRing(overlay, key, cx, cy, worldVerts) {
+          const group = overlay.querySelector(".octagon-density");
+          if (!group) return;
+          while (group.firstChild) group.removeChild(group.firstChild);
+
+          const result = inkAnalysisResults[key];
+          const profile = result && result.angularProfile;
+          if (!profile || !profile.length || !worldVerts || worldVerts.length < 3) {
+            overlay.classList.remove("has-density");
+            return;
+          }
+
+          let minD = Infinity;
+          let maxD = -Infinity;
+          for (let i = 0; i < profile.length; i++) {
+            const d = profile[i].density;
+            if (d < minD) minD = d;
+            if (d > maxD) maxD = d;
+          }
+          if (!Number.isFinite(minD) || !Number.isFinite(maxD)) {
+            overlay.classList.remove("has-density");
+            return;
+          }
+
+          const binCount = profile.length;
+          const degreesPerBin = 360 / binCount;
+
+          function densityAtAngle(angleDeg) {
+            let a = angleDeg % 360;
+            if (a < 0) a += 360;
+            let idx = Math.floor(a / degreesPerBin);
+            if (idx >= binCount) idx = binCount - 1;
+            if (idx < 0) idx = 0;
+            return profile[idx].density;
+          }
+
+          function angleOfPoint(x, y) {
+            let deg = (Math.atan2(x - cx, -(y - cy)) * 180) / Math.PI;
+            if (deg < 0) deg += 360;
+            return deg;
+          }
+
+          const ns = "http://www.w3.org/2000/svg";
+          const n = worldVerts.length;
+          for (let i = 0; i < n; i++) {
+            const a = worldVerts[i];
+            const b = worldVerts[(i + 1) % n];
+            const edgeLen = Math.hypot(b[0] - a[0], b[1] - a[1]);
+            const steps = Math.max(2, Math.ceil(edgeLen / 2.5));
+            for (let s = 0; s < steps; s++) {
+              const t0 = s / steps;
+              const t1 = (s + 1) / steps;
+              const x0 = a[0] + (b[0] - a[0]) * t0;
+              const y0 = a[1] + (b[1] - a[1]) * t0;
+              const x1 = a[0] + (b[0] - a[0]) * t1;
+              const y1 = a[1] + (b[1] - a[1]) * t1;
+              const mx = (x0 + x1) * 0.5;
+              const my = (y0 + y1) * 0.5;
+              const dens = densityAtAngle(angleOfPoint(mx, my));
+              const line = document.createElementNS(ns, "line");
+              line.setAttribute("x1", String(x0));
+              line.setAttribute("y1", String(y0));
+              line.setAttribute("x2", String(x1));
+              line.setAttribute("y2", String(y1));
+              line.setAttribute("stroke", densityToRainbowColor(dens, minD, maxD));
+              group.appendChild(line);
+            }
+          }
+          overlay.classList.add("has-density");
+        }
+
+        function updateAllOctagonOverlays() {
+          OCTAGON_KEYS.forEach(updateOctagonOverlay);
+        }
+
+        function selectOctagon(key) {
+          if (!octagonState.visible || !octagonState.byKey[key]) return;
+          if (octagonState.selectedKey === key) {
+            updateAllOctagonOverlays();
+            return;
+          }
+          if (octagonState.selectedKey) {
+            const prev = octagonState.selectedKey;
+            const saved = octagonState.savedStampRot;
+            octagonState.selectedKey = null;
+            octagonState.savedStampRot = null;
+            if (saved != null) setRotControlDisplay(prev, saved, false);
+          }
+          octagonState.savedStampRot = getStampRotation(key);
+          octagonState.selectedKey = key;
+          setRotControlDisplay(key, octagonState.byKey[key].rotation, true);
+          updateAllOctagonOverlays();
+          setStatus("Octagon selected on " + key + " — rotation slider turns the overlay.", "ok");
+        }
+
+        function deselectOctagon() {
+          if (!octagonState.selectedKey) return;
+          const key = octagonState.selectedKey;
+          const saved = octagonState.savedStampRot;
+          octagonState.selectedKey = null;
+          octagonState.savedStampRot = null;
+          if (saved != null) setRotControlDisplay(key, saved, false);
+          updateAllOctagonOverlays();
+        }
+
+        function setOctagonOverlaysVisible(visible) {
+          rememberStampAriaLabels();
+          if (!visible) deselectOctagon();
+          octagonState.visible = !!visible;
+          if (els.octagonBtn) els.octagonBtn.classList.toggle("active", octagonState.visible);
+          if (visible) {
+            OCTAGON_KEYS.forEach(function (key) {
+              if (!octagonState.byKey[key]) {
+                octagonState.byKey[key] = defaultOctagonPose();
+              }
+            });
+            setStatus("Type A octagon overlays on — drag to move; click to select for rotation.", "ok");
+          } else {
+            OCTAGON_KEYS.forEach(function (key) {
+              const canvas = els.canvases[key];
+              const frame = canvas && canvas.closest(".frame");
+              if (frame) frame.classList.remove("octagon-on");
+              delete inkAnalysisResults[key];
+            });
+            setStatus("Type A octagon overlays off.");
+          }
+          updateAllOctagonOverlays();
+          persistImageSettings();
+        }
+
+        function toggleOctagonOverlays() {
+          if (!sourceImage) {
+            setStatus("Load a stamp image before adding the octagon overlay.", "error");
+            return;
+          }
+          setOctagonOverlaysVisible(!octagonState.visible);
+        }
+
+        function applyOctagonRotationFromSlider(key, degrees) {
+          if (octagonState.selectedKey !== key) return false;
+          const g = octagonState.byKey[key];
+          if (!g) return false;
+          g.rotation = snapDegrees(degrees);
+          setRotControlDisplay(key, g.rotation, true);
+          updateOctagonOverlay(key);
+          persistImageSettings();
+          return true;
+        }
+
+        const INSET_MM = 1.5;
+        const STRATEGY_LABELS_UI = {
+          original: "Original",
+          rg: "R − G + CLAHE",
+          lab: "Lab a* adaptive",
+          ridge: "Ridge / Sobel",
+        };
+
+        function ensureOctagonInkModule() {
+          if (window.OctagonInkAnalysis && typeof window.OctagonInkAnalysis.analyzeOctagonInk === "function") {
+            return Promise.resolve(window.OctagonInkAnalysis);
+          }
+          return import("./octagonInkAnalysis.js").then(function (mod) {
+            window.OctagonInkAnalysis = mod;
+            return mod;
+          });
+        }
+
+        function geometryForInkAnalysis(key) {
+          const canvas = els.canvases[key];
+          const pose = octagonState.byKey[key];
+          if (!canvas || !pose || !canvas.width || !canvas.height) return null;
+
+          const cx = pose.nx * canvas.width;
+          const cy = pose.ny * canvas.height;
+          const bufPerMm = getBufPxPerMm(key);
+
+          let width;
+          let height;
+          let corner;
+          let innerInset;
+
+          if (bufPerMm && bufPerMm.x > 0 && bufPerMm.y > 0) {
+            width = OCTAGON_MM.width * bufPerMm.x;
+            height = OCTAGON_MM.height * bufPerMm.y;
+            corner = OCTAGON_MM.corner * ((bufPerMm.x + bufPerMm.y) / 2);
+            innerInset = INSET_MM * ((bufPerMm.x + bufPerMm.y) / 2);
+          } else {
+            const size = octagonSizeCss(canvas, key);
+            const sx = canvas.clientWidth > 0 ? canvas.width / canvas.clientWidth : 1;
+            const sy = canvas.clientHeight > 0 ? canvas.height / canvas.clientHeight : 1;
+            width = size.width * sx;
+            height = size.height * sy;
+            corner = (size.cornerX * sx + size.cornerY * sy) / 2;
+            const meanScale = (sx + sy) / 2;
+            // Fallback inset ~ proportion of model width (1.5/23 of width).
+            innerInset = width * (INSET_MM / OCTAGON_MM.width);
+            if (!(innerInset > 0)) innerInset = corner * 0.55 * meanScale;
+          }
+
+          // Keep a valid chamfered octagon after unit conversion.
+          const maxCorner = Math.min(width, height) / 2 - 1e-6;
+          if (corner > maxCorner) corner = Math.max(0, maxCorner);
+          if (innerInset >= Math.min(width, height) / 2) {
+            innerInset = Math.min(width, height) / 2 * 0.35;
+          }
+
+          return {
+            cx: cx,
+            cy: cy,
+            width: width,
+            height: height,
+            corner: corner,
+            // Overlay uses CSS clockwise degrees; octagonInkAnalysis uses the opposite sense.
+            rotation: -pose.rotation,
+            innerInset: innerInset,
+          };
+        }
+
+        function inkThresholdForCanvas(key) {
+          // Binary filter canvases are typically dark ink on light paper.
+          // Original may include red cancels that are only moderately dark in luminance.
+          return key === "original" ? 160 : 128;
+        }
+
+        function formatDensityPct(d) {
+          return ((Number(d) || 0) * 100).toFixed(1) + "%";
+        }
+
+        function showInkAnalysisDialog(key, result) {
+          const dialog = document.getElementById("ink-analysis-dialog");
+          const title = document.getElementById("ink-analysis-title");
+          const summary = document.getElementById("ink-analysis-summary");
+          const tbody = document.getElementById("ink-analysis-sectors");
+          const bars = document.getElementById("ink-analysis-bars");
+          if (!dialog || !title || !summary || !tbody || !bars) return;
+
+          const label = STRATEGY_LABELS_UI[key] || key;
+          title.textContent = "Ink distribution — " + label;
+
+          const stats = result.statistics || {};
+          const meanAngle =
+            result.weightedMeanAngle == null
+              ? "—"
+              : (Math.round(Number(result.weightedMeanAngle) * 5) / 5).toFixed(1).replace(/\.0$/, "") +
+                "°";
+          const conc = ((result.directionalConcentration || 0) * 100).toFixed(1) + "%";
+          summary.textContent =
+            "Mean " +
+            formatDensityPct(stats.meanDensity) +
+            " · imbalance " +
+            (stats.imbalanceScore != null ? stats.imbalanceScore.toFixed(2) : "—") +
+            " · concentration " +
+            conc +
+            " toward " +
+            meanAngle +
+            " · strongest " +
+            (stats.strongestSector || "—") +
+            " · weakest " +
+            (stats.weakestSector || "—");
+
+          tbody.innerHTML = "";
+          bars.innerHTML = "";
+          const maxD = Math.max(
+            0.001,
+            ...(result.sectors || []).map(function (s) {
+              return s.density || 0;
+            })
+          );
+
+          (result.sectors || []).forEach(function (s) {
+            const tr = document.createElement("tr");
+            if (stats.strongestSector === s.name) tr.className = "strong";
+            else if (stats.weakestSector === s.name) tr.className = "weak";
+            tr.innerHTML =
+              "<td>" +
+              s.name +
+              "</td><td>" +
+              formatDensityPct(s.density) +
+              "</td><td>" +
+              s.inkPixels +
+              "</td><td>" +
+              s.validPixels +
+              "</td>";
+            tbody.appendChild(tr);
+
+            const row = document.createElement("div");
+            row.className = "ink-bar-row";
+            if (stats.strongestSector === s.name) row.classList.add("strong");
+            else if (stats.weakestSector === s.name) row.classList.add("weak");
+            const fillPct = Math.round(((s.density || 0) / maxD) * 1000) / 10;
+            row.innerHTML =
+              '<span>' +
+              s.name +
+              '</span><div class="ink-bar-track"><div class="ink-bar-fill" style="width:' +
+              fillPct +
+              '%"></div></div><span>' +
+              formatDensityPct(s.density) +
+              "</span>";
+            bars.appendChild(row);
+          });
+
+          dialog.classList.add("open");
+          dialog.setAttribute("aria-hidden", "false");
+        }
+
+        function hideInkAnalysisDialog() {
+          const dialog = document.getElementById("ink-analysis-dialog");
+          if (!dialog) return;
+          dialog.classList.remove("open");
+          dialog.setAttribute("aria-hidden", "true");
+        }
+
+        function runInkAnalysis(key) {
+          const canvas = els.canvases[key];
+          if (!canvas || canvas.classList.contains("hidden") || !canvas.width) {
+            setStatus("Nothing to analyze yet for that panel.", "error");
+            return;
+          }
+          if (!octagonState.visible) {
+            setOctagonOverlaysVisible(true);
+            setStatus("Type A octagon shown — position it on the cancel, then Analyze ink again.", "ok");
+            return;
+          }
+
+          const geometry = geometryForInkAnalysis(key);
+          if (!geometry) {
+            setStatus("Could not resolve octagon geometry for analysis.", "error");
+            return;
+          }
+
+          setStatus("Analyzing ink distribution on " + (STRATEGY_LABELS_UI[key] || key) + "…");
+
+          ensureOctagonInkModule()
+            .then(function (api) {
+              const ctx = canvas.getContext("2d", { willReadFrequently: true });
+              const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+              const result = api.analyzeOctagonInk(imageData, geometry, {
+                grayscaleThreshold: inkThresholdForCanvas(key),
+                alphaThreshold: 1,
+              });
+              inkAnalysisResults[key] = result;
+              updateOctagonOverlay(key);
+              const stats = result.statistics || {};
+              setStatus(
+                (STRATEGY_LABELS_UI[key] || key) +
+                  ": strongest " +
+                  (stats.strongestSector || "—") +
+                  " (" +
+                  formatDensityPct(stats.maxDensity) +
+                  "), weakest " +
+                  (stats.weakestSector || "—") +
+                  " (" +
+                  formatDensityPct(stats.minDensity) +
+                  "), imbalance " +
+                  (stats.imbalanceScore != null ? stats.imbalanceScore.toFixed(2) : "—"),
+                "ok"
+              );
+              showInkAnalysisDialog(key, result);
+            })
+            .catch(function (err) {
+              dbgError("ink analysis failed", err);
+              setStatus(
+                err instanceof Error
+                  ? err.message
+                  : "Ink analysis failed — serve the page over http(s) so the analysis module can load.",
+                "error"
+              );
+            });
         }
 
         function getBufPxPerMm(canvasKey) {
@@ -2656,9 +3878,198 @@
           return out;
         }
 
-        function askIncludeRulers() {
-          const dialog = document.getElementById("ruler-save-dialog");
-          const yesBtn = document.getElementById("ruler-save-yes");
+        /**
+         * Bake the Type A octagon + rainbow density stroke into an export canvas (buffer pixels).
+         */
+        function composeCanvasWithInkAnalysis(sourceCanvas, canvasKey) {
+          const w = sourceCanvas.width;
+          const h = sourceCanvas.height;
+          const out = document.createElement("canvas");
+          out.width = w;
+          out.height = h;
+          const ctx = out.getContext("2d");
+          ctx.drawImage(sourceCanvas, 0, 0);
+
+          const pose = octagonState.byKey[canvasKey];
+          const result = inkAnalysisResults[canvasKey];
+          const profile = result && result.angularProfile;
+          if (!pose || !profile || !profile.length) return out;
+
+          const bufPerMm = getBufPxPerMm(canvasKey);
+          let octW;
+          let octH;
+          let cornerX;
+          let cornerY;
+          if (bufPerMm && bufPerMm.x > 0 && bufPerMm.y > 0) {
+            octW = OCTAGON_MM.width * bufPerMm.x;
+            octH = OCTAGON_MM.height * bufPerMm.y;
+            cornerX = OCTAGON_MM.corner * bufPerMm.x;
+            cornerY = OCTAGON_MM.corner * bufPerMm.y;
+          } else {
+            const size = octagonSizeCss(sourceCanvas, canvasKey);
+            const sx = sourceCanvas.clientWidth > 0 ? w / sourceCanvas.clientWidth : 1;
+            const sy = sourceCanvas.clientHeight > 0 ? h / sourceCanvas.clientHeight : 1;
+            octW = size.width * sx;
+            octH = size.height * sy;
+            cornerX = size.cornerX * sx;
+            cornerY = size.cornerY * sy;
+          }
+
+          const cx = pose.nx * w;
+          const cy = pose.ny * h;
+          const rad = (pose.rotation * Math.PI) / 180;
+          const cos = Math.cos(rad);
+          const sin = Math.sin(rad);
+          const ox = octW / 2;
+          const oy = octH / 2;
+          const local = typeALocalVertices(octW, octH, cornerX, cornerY);
+          const worldVerts = local.map(function (p) {
+            const lx = p[0] - ox;
+            const ly = p[1] - oy;
+            const rx = lx * cos - ly * sin;
+            const ry = lx * sin + ly * cos;
+            return [cx + rx, cy + ry];
+          });
+
+          let minD = Infinity;
+          let maxD = -Infinity;
+          for (let i = 0; i < profile.length; i++) {
+            const d = profile[i].density;
+            if (d < minD) minD = d;
+            if (d > maxD) maxD = d;
+          }
+          if (!Number.isFinite(minD) || !Number.isFinite(maxD)) return out;
+
+          const binCount = profile.length;
+          const degreesPerBin = 360 / binCount;
+          function densityAtAngle(angleDeg) {
+            let a = angleDeg % 360;
+            if (a < 0) a += 360;
+            let idx = Math.floor(a / degreesPerBin);
+            if (idx >= binCount) idx = binCount - 1;
+            if (idx < 0) idx = 0;
+            return profile[idx].density;
+          }
+          function angleOfPoint(x, y) {
+            let deg = (Math.atan2(x - cx, -(y - cy)) * 180) / Math.PI;
+            if (deg < 0) deg += 360;
+            return deg;
+          }
+
+          function hslToRgb(h, s, l) {
+            const sat = s / 100;
+            const lit = l / 100;
+            const c = (1 - Math.abs(2 * lit - 1)) * sat;
+            const hp = h / 60;
+            const x = c * (1 - Math.abs((hp % 2) - 1));
+            let r = 0;
+            let g = 0;
+            let b = 0;
+            if (hp >= 0 && hp < 1) {
+              r = c;
+              g = x;
+            } else if (hp < 2) {
+              r = x;
+              g = c;
+            } else if (hp < 3) {
+              g = c;
+              b = x;
+            } else if (hp < 4) {
+              g = x;
+              b = c;
+            } else if (hp < 5) {
+              r = x;
+              b = c;
+            } else {
+              r = c;
+              b = x;
+            }
+            const m = lit - c / 2;
+            return [
+              Math.round((r + m) * 255),
+              Math.round((g + m) * 255),
+              Math.round((b + m) * 255),
+            ];
+          }
+
+          function densityStrokeStyle(density) {
+            const span = maxD - minD;
+            const t = span > 1e-9 ? clamp((density - minD) / span, 0, 1) : 0.5;
+            const hue = t * 240;
+            const rgb = hslToRgb(hue, 92, 52);
+            return "rgb(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + ")";
+          }
+
+          const strokeW = Math.max(3, Math.round(Math.min(w, h) / 220));
+          ctx.lineCap = "butt";
+          ctx.lineJoin = "round";
+          ctx.lineWidth = strokeW;
+
+          const n = worldVerts.length;
+          for (let i = 0; i < n; i++) {
+            const a = worldVerts[i];
+            const b = worldVerts[(i + 1) % n];
+            const edgeLen = Math.hypot(b[0] - a[0], b[1] - a[1]);
+            const steps = Math.max(2, Math.ceil(edgeLen / Math.max(2, strokeW * 0.75)));
+            for (let s = 0; s < steps; s++) {
+              const t0 = s / steps;
+              const t1 = (s + 1) / steps;
+              const x0 = a[0] + (b[0] - a[0]) * t0;
+              const y0 = a[1] + (b[1] - a[1]) * t0;
+              const x1 = a[0] + (b[0] - a[0]) * t1;
+              const y1 = a[1] + (b[1] - a[1]) * t1;
+              const mx = (x0 + x1) * 0.5;
+              const my = (y0 + y1) * 0.5;
+              ctx.strokeStyle = densityStrokeStyle(densityAtAngle(angleOfPoint(mx, my)));
+              ctx.beginPath();
+              ctx.moveTo(x0, y0);
+              ctx.lineTo(x1, y1);
+              ctx.stroke();
+            }
+          }
+
+          // Center marker
+          const cr = Math.max(3, strokeW * 1.1);
+          ctx.beginPath();
+          ctx.fillStyle = "rgba(232, 197, 71, 0.95)";
+          ctx.arc(cx, cy, cr, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = "rgba(28, 27, 24, 0.85)";
+          ctx.lineWidth = Math.max(1, strokeW * 0.35);
+          ctx.stroke();
+
+          // Compact legend
+          const cssScale = sourceCanvas.clientWidth > 0 ? w / sourceCanvas.clientWidth : Math.max(1, w / 400);
+          const pad = Math.max(6, Math.round(8 * cssScale));
+          const legendW = Math.max(90, Math.round(110 * cssScale));
+          const legendH = Math.max(28, Math.round(34 * cssScale));
+          const boxX = pad;
+          const boxY = h - pad - legendH;
+          ctx.fillStyle = "rgba(28, 27, 24, 0.72)";
+          ctx.fillRect(boxX, boxY, legendW, legendH);
+          const grad = ctx.createLinearGradient(boxX + pad * 0.6, 0, boxX + legendW - pad * 0.6, 0);
+          grad.addColorStop(0, densityStrokeStyle(minD));
+          grad.addColorStop(0.5, densityStrokeStyle((minD + maxD) * 0.5));
+          grad.addColorStop(1, densityStrokeStyle(maxD));
+          const barY = boxY + legendH * 0.28;
+          const barH = Math.max(4, legendH * 0.22);
+          ctx.fillStyle = grad;
+          ctx.fillRect(boxX + pad * 0.6, barY, legendW - pad * 1.2, barH);
+          ctx.fillStyle = "rgba(232, 229, 220, 0.95)";
+          const fontPx = Math.max(10, Math.round(11 * cssScale));
+          ctx.font = "700 " + fontPx + "px ui-monospace, Menlo, Consolas, monospace";
+          ctx.textBaseline = "top";
+          ctx.textAlign = "left";
+          ctx.fillText("low", boxX + pad * 0.6, boxY + legendH * 0.58);
+          ctx.textAlign = "right";
+          ctx.fillText("high", boxX + legendW - pad * 0.6, boxY + legendH * 0.58);
+
+          return out;
+        }
+
+        function askYesNoDialog(dialogId, yesBtnId, attrName) {
+          const dialog = document.getElementById(dialogId);
+          const yesBtn = document.getElementById(yesBtnId);
           if (!dialog || !yesBtn) return Promise.resolve(true);
 
           return new Promise(function (resolve) {
@@ -2679,7 +4090,7 @@
               }
             }
             function onClick(e) {
-              const action = e.target && e.target.getAttribute && e.target.getAttribute("data-ruler-save");
+              const action = e.target && e.target.getAttribute && e.target.getAttribute(attrName);
               if (action === "yes") close(true);
               else if (action === "no") close(false);
             }
@@ -2689,6 +4100,14 @@
             dialog.setAttribute("aria-hidden", "false");
             yesBtn.focus();
           });
+        }
+
+        function askIncludeRulers() {
+          return askYesNoDialog("ruler-save-dialog", "ruler-save-yes", "data-ruler-save");
+        }
+
+        function askIncludeInkAnalysis() {
+          return askYesNoDialog("ink-save-dialog", "ink-save-yes", "data-ink-save");
         }
 
         const SETTINGS_LS = "inkCmp.settings.v1";
@@ -2726,6 +4145,75 @@
           return entry && entry.settings ? entry.settings : null;
         }
 
+        function defaultOctagonPose() {
+          return { nx: 0.5, ny: 0.5, rotation: 0 };
+        }
+
+        function resetOctagonPoses() {
+          OCTAGON_KEYS.forEach(function (key) {
+            octagonState.byKey[key] = defaultOctagonPose();
+            delete inkAnalysisResults[key];
+          });
+        }
+
+        function collectOctagonSettings() {
+          const byKey = {};
+          OCTAGON_KEYS.forEach(function (key) {
+            const g = octagonState.byKey[key] || defaultOctagonPose();
+            byKey[key] = {
+              nx: clamp(g.nx, 0, 1),
+              ny: clamp(g.ny, 0, 1),
+              rotation: snapDegrees(g.rotation),
+            };
+          });
+          return {
+            visible: !!octagonState.visible,
+            byKey: byKey,
+          };
+        }
+
+        function applyOctagonSettings(octagon) {
+          deselectOctagon();
+          if (!octagon || typeof octagon !== "object") {
+            resetOctagonPoses();
+            if (octagonState.visible) {
+              octagonState.visible = false;
+              if (els.octagonBtn) els.octagonBtn.classList.remove("active");
+              OCTAGON_KEYS.forEach(function (key) {
+                const canvas = els.canvases[key];
+                const frame = canvas && canvas.closest(".frame");
+                if (frame) frame.classList.remove("octagon-on");
+              });
+            }
+            updateAllOctagonOverlays();
+            return;
+          }
+          const src = octagon.byKey && typeof octagon.byKey === "object" ? octagon.byKey : octagon;
+          OCTAGON_KEYS.forEach(function (key) {
+            const g = src[key];
+            if (g && typeof g === "object") {
+              octagonState.byKey[key] = {
+                nx: clamp(g.nx != null ? Number(g.nx) : 0.5, 0, 1),
+                ny: clamp(g.ny != null ? Number(g.ny) : 0.5, 0, 1),
+                rotation: snapDegrees(g.rotation != null ? g.rotation : 0),
+              };
+            } else {
+              octagonState.byKey[key] = defaultOctagonPose();
+            }
+          });
+          const wantVisible = !!octagon.visible;
+          octagonState.visible = wantVisible;
+          if (els.octagonBtn) els.octagonBtn.classList.toggle("active", wantVisible);
+          if (!wantVisible) {
+            OCTAGON_KEYS.forEach(function (key) {
+              const canvas = els.canvases[key];
+              const frame = canvas && canvas.closest(".frame");
+              if (frame) frame.classList.remove("octagon-on");
+            });
+          }
+          updateAllOctagonOverlays();
+        }
+
         function collectImageSettings() {
           return {
             trimDark: !!(els.trimDark && els.trimDark.checked),
@@ -2734,19 +4222,20 @@
             rotation: viewState.rotation,
             panX: viewState.panX,
             panY: viewState.panY,
+            octagon: collectOctagonSettings(),
             rgClahe: Number(els.rgClahe.value),
             rgInvertClahe: !!(els.rgInvertClahe && els.rgInvertClahe.checked),
             rgThresh: Number(els.rgThresh.value),
-            rgRot: els.rgRot ? Number(els.rgRot.value) : 0,
+            rgRot: getStampRotation("rg"),
             labMedian: Number(els.labMedian.value),
             labBlock: Number(els.labBlock.value),
             labC: Number(els.labC.value),
             labInvert: !!(els.labInvert && els.labInvert.checked),
-            labRot: els.labRot ? Number(els.labRot.value) : 0,
+            labRot: getStampRotation("lab"),
             ridgeThresh: Number(els.ridgeThresh.value),
             ridgeKernel: Number(els.ridgeKernel.value),
             ridgeInvert: !!(els.ridgeInvert && els.ridgeInvert.checked),
-            ridgeRot: els.ridgeRot ? Number(els.ridgeRot.value) : 0,
+            ridgeRot: getStampRotation("ridge"),
           };
         }
 
@@ -2859,6 +4348,8 @@
             els.ridgeRot.value = String(snapDegrees(s.ridgeRot != null ? s.ridgeRot : 0));
             if (els.ridgeRotValue) els.ridgeRotValue.textContent = formatDegrees(els.ridgeRot.value);
           }
+
+          applyOctagonSettings(s.octagon);
         }
 
         function persistImageSettingsNow() {
@@ -3256,6 +4747,11 @@
           showStrategyPanels(true);
           enableImageControls(true);
           resetRulerOrigin();
+          if (!cached) {
+            resetOctagonPoses();
+            deselectOctagon();
+            if (octagonState.visible) setOctagonOverlaysVisible(false);
+          }
           renderImageMeta(sourceMeta, img);
 
           let didZoom = false;
@@ -3323,6 +4819,46 @@
             .catch(function () {
               URL.revokeObjectURL(url);
               setStatus("Failed to decode image.", "error");
+            });
+        }
+
+        function loadImageUrl(url, label) {
+          setStatus("Loading " + label + "…");
+          fetch(url)
+            .then(function (res) {
+              if (!res.ok) throw new Error("HTTP " + res.status);
+              return res.arrayBuffer().then(function (buffer) {
+                const mime = res.headers.get("content-type") || "";
+                const name = decodeURIComponent((url.split("/").pop() || label).split("?")[0]);
+                return { buffer: buffer, mime: mime, name: name, size: buffer.byteLength };
+              });
+            })
+            .then(function (payload) {
+              const blob = new Blob([payload.buffer], { type: payload.mime || "image/jpeg" });
+              const objUrl = URL.createObjectURL(blob);
+              return new Promise(function (resolve, reject) {
+                const img = new Image();
+                img.onload = function () {
+                  URL.revokeObjectURL(objUrl);
+                  resolve({ img: img, payload: payload });
+                };
+                img.onerror = function () {
+                  URL.revokeObjectURL(objUrl);
+                  reject(new Error("decode"));
+                };
+                img.src = objUrl;
+              });
+            })
+            .then(function (pack) {
+              const meta = parseImageMetadata(pack.payload.buffer, {
+                name: pack.payload.name,
+                size: pack.payload.size,
+                type: pack.payload.mime,
+              });
+              adoptImage(pack.img, label, meta);
+            })
+            .catch(function () {
+              setStatus("Failed to load " + label + ". Serve the repo over http(s).", "error");
             });
         }
 
@@ -3401,6 +4937,15 @@
               syncFiltersToView();
             }
             persistImageSettings();
+          });
+        }
+
+        if (els.samples) {
+          els.samples.querySelectorAll("button[data-src]").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+              if (!opencvReady) return;
+              loadImageUrl(btn.getAttribute("data-src"), btn.textContent.trim());
+            });
           });
         }
 
@@ -3511,6 +5056,7 @@
         });
 
         els.rotation.addEventListener("input", function () {
+          if (applyOctagonRotationFromSlider("original", els.rotation.value)) return;
           viewState.rotation = snapDegrees(els.rotation.value);
           els.rotation.value = String(viewState.rotation);
           els.rotationValue.textContent = formatDegrees(viewState.rotation);
@@ -3519,6 +5065,7 @@
         });
 
         els.resetView.addEventListener("click", function () {
+          deselectOctagon();
           viewState.zoom = 1;
           viewState.rotation = 0;
           viewState.panX = 0;
@@ -3533,9 +5080,24 @@
           persistImageSettings();
         });
 
+        if (els.octagonBtn) {
+          els.octagonBtn.addEventListener("click", toggleOctagonOverlays);
+        }
+
+        document.addEventListener("pointerdown", function (e) {
+          if (!octagonState.visible || !octagonState.selectedKey) return;
+          const t = e.target;
+          if (t && t.closest && t.closest(".octagon-hit")) return;
+          if (t && t.closest && t.closest(".view-rot")) return;
+          if (t && t.closest && t.closest(".analyze-ink")) return;
+          if (t && t.closest && t.closest("#ink-analysis-dialog")) return;
+          deselectOctagon();
+        });
+
         strategyRotInputs.forEach(function (input) {
           input.addEventListener("input", function () {
             const strategy = input.id.replace(/-rot$/, "");
+            if (applyOctagonRotationFromSlider(strategy, input.value)) return;
             const valueEl = els[strategy + "RotValue"];
             const snapped = snapDegrees(input.value);
             input.value = String(snapped);
@@ -3615,6 +5177,28 @@
           });
         });
 
+        analyzeBtns.forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            runInkAnalysis(btn.getAttribute("data-analyze"));
+          });
+        });
+
+        (function setupInkAnalysisDialog() {
+          const dialog = document.getElementById("ink-analysis-dialog");
+          if (!dialog) return;
+          dialog.addEventListener("click", function (e) {
+            const t = e.target;
+            if (t && t.getAttribute && t.getAttribute("data-ink-close")) {
+              hideInkAnalysisDialog();
+            }
+          });
+          document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape" && dialog.classList.contains("open")) {
+              hideInkAnalysisDialog();
+            }
+          });
+        })();
+
         const exportSettingsBtn = document.getElementById("export-settings-btn");
         if (exportSettingsBtn) {
           exportSettingsBtn.addEventListener("click", exportAllSettingsToClipboard);
@@ -3649,10 +5233,14 @@
           );
         } else {
           setStatus("Loading OpenCV.js in worker…");
+          ensureOctagonInkModule().catch(function (err) {
+            dbgError("octagon ink module preload failed", err);
+          });
           ensureWorker()
             .then(function () {
               opencvReady = true;
               setFileEnabled(true);
+              if (els.samples) els.samples.hidden = false;
               dbg("OpenCV worker ready");
               setStatus("OpenCV ready — drop an image or pick a sample.", "ok");
             })

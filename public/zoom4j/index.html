@@ -6187,6 +6187,31 @@ window.__XFRAME__.runtime.register("hud", (runtime) => {
       copyFrame.style.transform = "none";
     }
 
+    // A foreignObject clone cannot reliably resolve blob/object URLs (and some
+    // same-origin image URLs). Bake every drawable live image into its matching
+    // clone so full replacement images survive alongside already-baked crops.
+    const liveImages = [...root.querySelectorAll("img")];
+    const copiedImages = [...copy.querySelectorAll("img")];
+    liveImages.forEach((live, imageIndex) => {
+      const cloned = copiedImages[imageIndex];
+      if (!(live instanceof HTMLImageElement) || !(cloned instanceof HTMLImageElement)) return;
+      const src = live.currentSrc || live.getAttribute("src") || "";
+      if (!src || src.startsWith("data:") || !(live.naturalWidth > 0 && live.naturalHeight > 0)) return;
+      const bitmap = document.createElement("canvas");
+      bitmap.width = live.naturalWidth;
+      bitmap.height = live.naturalHeight;
+      try {
+        const bitmapContext = bitmap.getContext("2d");
+        if (!bitmapContext) return;
+        bitmapContext.drawImage(live, 0, 0);
+        cloned.removeAttribute("srcset");
+        cloned.removeAttribute("data-src");
+        cloned.src = bitmap.toDataURL("image/png");
+      } catch {
+        // Cross-origin servers may forbid canvas reads; retain the original URL.
+      }
+    });
+
     const wrapper = document.createElement("div");
     wrapper.setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
     wrapper.style.width = `${w}px`;
@@ -8299,6 +8324,31 @@ window.__XFRAME__.runtime.register("hud", (runtime) => {
       copyFrame.style.height = `${h}px`;
       copyFrame.style.transform = "none";
     }
+
+    // A foreignObject clone cannot reliably resolve blob/object URLs (and some
+    // same-origin image URLs). Bake every drawable live image into its matching
+    // clone so full replacement images survive alongside already-baked crops.
+    const liveImages = [...root.querySelectorAll("img")];
+    const copiedImages = [...copy.querySelectorAll("img")];
+    liveImages.forEach((live, imageIndex) => {
+      const cloned = copiedImages[imageIndex];
+      if (!(live instanceof HTMLImageElement) || !(cloned instanceof HTMLImageElement)) return;
+      const src = live.currentSrc || live.getAttribute("src") || "";
+      if (!src || src.startsWith("data:") || !(live.naturalWidth > 0 && live.naturalHeight > 0)) return;
+      const bitmap = document.createElement("canvas");
+      bitmap.width = live.naturalWidth;
+      bitmap.height = live.naturalHeight;
+      try {
+        const bitmapContext = bitmap.getContext("2d");
+        if (!bitmapContext) return;
+        bitmapContext.drawImage(live, 0, 0);
+        cloned.removeAttribute("srcset");
+        cloned.removeAttribute("data-src");
+        cloned.src = bitmap.toDataURL("image/png");
+      } catch {
+        // Cross-origin servers may forbid canvas reads; retain the original URL.
+      }
+    });
 
     const wrapper = document.createElement("div");
     wrapper.setAttribute("xmlns", "http://www.w3.org/1999/xhtml");

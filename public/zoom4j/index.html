@@ -5,10 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="author" content="xFrame.present">
 <title>Scott 573 — Head of Freedom</title>
-
+<link rel="icon" href="favicon.ico">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&amp;family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&amp;display=swap">
 </head>
 <body data-xframe-formats="desktop,mobile">
-<div id="xframe-host"></div>
+<template id="xframe-host"></template>
 <template data-xframe-format="desktop">
 <style data-xframe-format-css>
 :root {
@@ -503,9 +504,8 @@ img[data-click-to-zoom="true"] { cursor: zoom-in; }
  * Stamp exhibit — gallery case for senior philatelists.
  * Large type, high contrast, plain labels; crop/mm tools come from @image.
  */
-@import url("https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap");
-
-#xframe:has(.segment[data-layout="stamp-exhibit"]) {
+#xframe:has(.segment[data-layout="stamp-exhibit"]),
+#xframe:has(.segment[data-layout="stamp-exhibit-mobile"]) {
   --stamp-ink: #13233a;
   --stamp-accent: #8f2430;
   --stamp-paper: #eef1f4;
@@ -1783,9 +1783,8 @@ img[data-click-to-zoom="true"] { cursor: zoom-in; }
  * Stamp exhibit — gallery case for senior philatelists.
  * Large type, high contrast, plain labels; crop/mm tools come from @image.
  */
-@import url("https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap");
-
-#xframe:has(.segment[data-layout="stamp-exhibit"]) {
+#xframe:has(.segment[data-layout="stamp-exhibit"]),
+#xframe:has(.segment[data-layout="stamp-exhibit-mobile"]) {
   --stamp-ink: #13233a;
   --stamp-accent: #8f2430;
   --stamp-paper: #eef1f4;
@@ -2832,7 +2831,7 @@ window.__XFRAME__.runtime.register("format-select", () => {
     return formats[0];
   };
 
-  const host = document.getElementById("xframe-host") || document.body;
+  const host = document.getElementById("xframe-host");
   let active = "";
 
   const activate = (format) => {
@@ -2849,7 +2848,8 @@ window.__XFRAME__.runtime.register("format-select", () => {
     const main = shell?.querySelector("main#xframe") ?? (shell instanceof HTMLElement && shell.id === "xframe" ? shell : null);
     if (shell) {
       shell.setAttribute("data-xframe-live-format", format);
-      host.replaceChildren(shell);
+      if (host) host.replaceWith(shell);
+      else document.body.prepend(shell);
       activateMedia(main instanceof HTMLElement ? main : shell);
     }
     active = format;

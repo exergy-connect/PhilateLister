@@ -3249,11 +3249,11 @@ window.__XFRAME__.runtime.register("format-select", () => {
   var __getOwnPropNames = Object.getOwnPropertyNames;
   var __getProtoOf = Object.getPrototypeOf;
   var __hasOwnProp = Object.prototype.hasOwnProperty;
-  var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
+  var __require = /* @__PURE__ */ ((x2) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x2, {
     get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
-  }) : x)(function(x) {
+  }) : x2)(function(x2) {
     if (typeof require !== "undefined") return require.apply(this, arguments);
-    throw Error('Dynamic require of "' + x + '" is not supported');
+    throw Error('Dynamic require of "' + x2 + '" is not supported');
   });
   var __commonJS = (cb, mod) => function __require2() {
     try {
@@ -3286,9 +3286,9 @@ window.__XFRAME__.runtime.register("format-select", () => {
         this.mode = QRMode.MODE_8BIT_BYTE;
         this.data = data;
         this.parsedData = [];
-        for (var i2 = 0, l = this.data.length; i2 < l; i2++) {
+        for (var i3 = 0, l = this.data.length; i3 < l; i3++) {
           var byteArray = [];
-          var code = this.data.charCodeAt(i2);
+          var code = this.data.charCodeAt(i3);
           if (code > 65536) {
             byteArray[0] = 240 | (code & 1835008) >>> 18;
             byteArray[1] = 128 | (code & 258048) >>> 12;
@@ -3318,8 +3318,8 @@ window.__XFRAME__.runtime.register("format-select", () => {
           return this.parsedData.length;
         },
         write: function(buffer) {
-          for (var i2 = 0, l = this.parsedData.length; i2 < l; i2++) {
-            buffer.put(this.parsedData[i2], 8);
+          for (var i3 = 0, l = this.parsedData.length; i3 < l; i3++) {
+            buffer.put(this.parsedData[i3], 8);
           }
         }
       };
@@ -3381,12 +3381,12 @@ window.__XFRAME__.runtime.register("format-select", () => {
       }, getBestMaskPattern: function() {
         var minLostPoint = 0;
         var pattern = 0;
-        for (var i2 = 0; i2 < 8; i2++) {
-          this.makeImpl(true, i2);
+        for (var i3 = 0; i3 < 8; i3++) {
+          this.makeImpl(true, i3);
           var lostPoint = QRUtil.getLostPoint(this);
-          if (i2 == 0 || minLostPoint > lostPoint) {
+          if (i3 == 0 || minLostPoint > lostPoint) {
             minLostPoint = lostPoint;
-            pattern = i2;
+            pattern = i3;
           }
         }
         return pattern;
@@ -3397,14 +3397,14 @@ window.__XFRAME__.runtime.register("format-select", () => {
         for (var row = 0; row < this.modules.length; row++) {
           var y = row * cs;
           for (var col = 0; col < this.modules[row].length; col++) {
-            var x = col * cs;
+            var x2 = col * cs;
             var dark = this.modules[row][col];
             if (dark) {
               qr_mc.beginFill(0, 100);
-              qr_mc.moveTo(x, y);
-              qr_mc.lineTo(x + cs, y);
-              qr_mc.lineTo(x + cs, y + cs);
-              qr_mc.lineTo(x, y + cs);
+              qr_mc.moveTo(x2, y);
+              qr_mc.lineTo(x2 + cs, y);
+              qr_mc.lineTo(x2 + cs, y + cs);
+              qr_mc.lineTo(x2, y + cs);
               qr_mc.endFill();
             }
           }
@@ -3425,9 +3425,9 @@ window.__XFRAME__.runtime.register("format-select", () => {
         }
       }, setupPositionAdjustPattern: function() {
         var pos = QRUtil.getPatternPosition(this.typeNumber);
-        for (var i2 = 0; i2 < pos.length; i2++) {
+        for (var i3 = 0; i3 < pos.length; i3++) {
           for (var j = 0; j < pos.length; j++) {
-            var row = pos[i2];
+            var row = pos[i3];
             var col = pos[j];
             if (this.modules[row][col] != null) {
               continue;
@@ -3444,36 +3444,36 @@ window.__XFRAME__.runtime.register("format-select", () => {
           }
         }
       }, setupTypeNumber: function(test) {
-        var bits = QRUtil.getBCHTypeNumber(this.typeNumber);
-        for (var i2 = 0; i2 < 18; i2++) {
-          var mod = !test && (bits >> i2 & 1) == 1;
-          this.modules[Math.floor(i2 / 3)][i2 % 3 + this.moduleCount - 8 - 3] = mod;
+        var bits2 = QRUtil.getBCHTypeNumber(this.typeNumber);
+        for (var i3 = 0; i3 < 18; i3++) {
+          var mod = !test && (bits2 >> i3 & 1) == 1;
+          this.modules[Math.floor(i3 / 3)][i3 % 3 + this.moduleCount - 8 - 3] = mod;
         }
-        for (var i2 = 0; i2 < 18; i2++) {
-          var mod = !test && (bits >> i2 & 1) == 1;
-          this.modules[i2 % 3 + this.moduleCount - 8 - 3][Math.floor(i2 / 3)] = mod;
+        for (var i3 = 0; i3 < 18; i3++) {
+          var mod = !test && (bits2 >> i3 & 1) == 1;
+          this.modules[i3 % 3 + this.moduleCount - 8 - 3][Math.floor(i3 / 3)] = mod;
         }
       }, setupTypeInfo: function(test, maskPattern) {
         var data = this.errorCorrectLevel << 3 | maskPattern;
-        var bits = QRUtil.getBCHTypeInfo(data);
-        for (var i2 = 0; i2 < 15; i2++) {
-          var mod = !test && (bits >> i2 & 1) == 1;
-          if (i2 < 6) {
-            this.modules[i2][8] = mod;
-          } else if (i2 < 8) {
-            this.modules[i2 + 1][8] = mod;
+        var bits2 = QRUtil.getBCHTypeInfo(data);
+        for (var i3 = 0; i3 < 15; i3++) {
+          var mod = !test && (bits2 >> i3 & 1) == 1;
+          if (i3 < 6) {
+            this.modules[i3][8] = mod;
+          } else if (i3 < 8) {
+            this.modules[i3 + 1][8] = mod;
           } else {
-            this.modules[this.moduleCount - 15 + i2][8] = mod;
+            this.modules[this.moduleCount - 15 + i3][8] = mod;
           }
         }
-        for (var i2 = 0; i2 < 15; i2++) {
-          var mod = !test && (bits >> i2 & 1) == 1;
-          if (i2 < 8) {
-            this.modules[8][this.moduleCount - i2 - 1] = mod;
-          } else if (i2 < 9) {
-            this.modules[8][15 - i2 - 1 + 1] = mod;
+        for (var i3 = 0; i3 < 15; i3++) {
+          var mod = !test && (bits2 >> i3 & 1) == 1;
+          if (i3 < 8) {
+            this.modules[8][this.moduleCount - i3 - 1] = mod;
+          } else if (i3 < 9) {
+            this.modules[8][15 - i3 - 1 + 1] = mod;
           } else {
-            this.modules[8][15 - i2 - 1] = mod;
+            this.modules[8][15 - i3 - 1] = mod;
           }
         }
         this.modules[this.moduleCount - 8][8] = !test;
@@ -3517,15 +3517,15 @@ window.__XFRAME__.runtime.register("format-select", () => {
       QRCodeModel.createData = function(typeNumber, errorCorrectLevel, dataList) {
         var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, errorCorrectLevel);
         var buffer = new QRBitBuffer();
-        for (var i2 = 0; i2 < dataList.length; i2++) {
-          var data = dataList[i2];
+        for (var i3 = 0; i3 < dataList.length; i3++) {
+          var data = dataList[i3];
           buffer.put(data.mode, 4);
           buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber));
           data.write(buffer);
         }
         var totalDataCount = 0;
-        for (var i2 = 0; i2 < rsBlocks.length; i2++) {
-          totalDataCount += rsBlocks[i2].dataCount;
+        for (var i3 = 0; i3 < rsBlocks.length; i3++) {
+          totalDataCount += rsBlocks[i3].dataCount;
         }
         if (buffer.getLengthInBits() > totalDataCount * 8) {
           throw new Error("code length overflow. (" + buffer.getLengthInBits() + ">" + totalDataCount * 8 + ")");
@@ -3560,36 +3560,36 @@ window.__XFRAME__.runtime.register("format-select", () => {
           maxDcCount = Math.max(maxDcCount, dcCount);
           maxEcCount = Math.max(maxEcCount, ecCount);
           dcdata[r] = new Array(dcCount);
-          for (var i2 = 0; i2 < dcdata[r].length; i2++) {
-            dcdata[r][i2] = 255 & buffer.buffer[i2 + offset];
+          for (var i3 = 0; i3 < dcdata[r].length; i3++) {
+            dcdata[r][i3] = 255 & buffer.buffer[i3 + offset];
           }
           offset += dcCount;
           var rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
           var rawPoly = new QRPolynomial(dcdata[r], rsPoly.getLength() - 1);
           var modPoly = rawPoly.mod(rsPoly);
           ecdata[r] = new Array(rsPoly.getLength() - 1);
-          for (var i2 = 0; i2 < ecdata[r].length; i2++) {
-            var modIndex = i2 + modPoly.getLength() - ecdata[r].length;
-            ecdata[r][i2] = modIndex >= 0 ? modPoly.get(modIndex) : 0;
+          for (var i3 = 0; i3 < ecdata[r].length; i3++) {
+            var modIndex = i3 + modPoly.getLength() - ecdata[r].length;
+            ecdata[r][i3] = modIndex >= 0 ? modPoly.get(modIndex) : 0;
           }
         }
         var totalCodeCount = 0;
-        for (var i2 = 0; i2 < rsBlocks.length; i2++) {
-          totalCodeCount += rsBlocks[i2].totalCount;
+        for (var i3 = 0; i3 < rsBlocks.length; i3++) {
+          totalCodeCount += rsBlocks[i3].totalCount;
         }
         var data = new Array(totalCodeCount);
         var index = 0;
-        for (var i2 = 0; i2 < maxDcCount; i2++) {
+        for (var i3 = 0; i3 < maxDcCount; i3++) {
           for (var r = 0; r < rsBlocks.length; r++) {
-            if (i2 < dcdata[r].length) {
-              data[index++] = dcdata[r][i2];
+            if (i3 < dcdata[r].length) {
+              data[index++] = dcdata[r][i3];
             }
           }
         }
-        for (var i2 = 0; i2 < maxEcCount; i2++) {
+        for (var i3 = 0; i3 < maxEcCount; i3++) {
           for (var r = 0; r < rsBlocks.length; r++) {
-            if (i2 < ecdata[r].length) {
-              data[index++] = ecdata[r][i2];
+            if (i3 < ecdata[r].length) {
+              data[index++] = ecdata[r][i3];
             }
           }
         }
@@ -3619,31 +3619,31 @@ window.__XFRAME__.runtime.register("format-select", () => {
         return digit;
       }, getPatternPosition: function(typeNumber) {
         return QRUtil.PATTERN_POSITION_TABLE[typeNumber - 1];
-      }, getMask: function(maskPattern, i2, j) {
+      }, getMask: function(maskPattern, i3, j) {
         switch (maskPattern) {
           case QRMaskPattern.PATTERN000:
-            return (i2 + j) % 2 == 0;
+            return (i3 + j) % 2 == 0;
           case QRMaskPattern.PATTERN001:
-            return i2 % 2 == 0;
+            return i3 % 2 == 0;
           case QRMaskPattern.PATTERN010:
             return j % 3 == 0;
           case QRMaskPattern.PATTERN011:
-            return (i2 + j) % 3 == 0;
+            return (i3 + j) % 3 == 0;
           case QRMaskPattern.PATTERN100:
-            return (Math.floor(i2 / 2) + Math.floor(j / 3)) % 2 == 0;
+            return (Math.floor(i3 / 2) + Math.floor(j / 3)) % 2 == 0;
           case QRMaskPattern.PATTERN101:
-            return i2 * j % 2 + i2 * j % 3 == 0;
+            return i3 * j % 2 + i3 * j % 3 == 0;
           case QRMaskPattern.PATTERN110:
-            return (i2 * j % 2 + i2 * j % 3) % 2 == 0;
+            return (i3 * j % 2 + i3 * j % 3) % 2 == 0;
           case QRMaskPattern.PATTERN111:
-            return (i2 * j % 3 + (i2 + j) % 2) % 2 == 0;
+            return (i3 * j % 3 + (i3 + j) % 2) % 2 == 0;
           default:
             throw new Error("bad maskPattern:" + maskPattern);
         }
       }, getErrorCorrectPolynomial: function(errorCorrectLength) {
         var a = new QRPolynomial([1], 0);
-        for (var i2 = 0; i2 < errorCorrectLength; i2++) {
-          a = a.multiply(new QRPolynomial([1, QRMath.gexp(i2)], 0));
+        for (var i3 = 0; i3 < errorCorrectLength; i3++) {
+          a = a.multiply(new QRPolynomial([1, QRMath.gexp(i3)], 0));
         }
         return a;
       }, getLengthInBits: function(mode, type) {
@@ -3769,18 +3769,18 @@ window.__XFRAME__.runtime.register("format-select", () => {
         }
         return QRMath.EXP_TABLE[n];
       }, EXP_TABLE: new Array(256), LOG_TABLE: new Array(256) };
-      for (i = 0; i < 8; i++) {
-        QRMath.EXP_TABLE[i] = 1 << i;
+      for (i2 = 0; i2 < 8; i2++) {
+        QRMath.EXP_TABLE[i2] = 1 << i2;
       }
-      var i;
-      for (i = 8; i < 256; i++) {
-        QRMath.EXP_TABLE[i] = QRMath.EXP_TABLE[i - 4] ^ QRMath.EXP_TABLE[i - 5] ^ QRMath.EXP_TABLE[i - 6] ^ QRMath.EXP_TABLE[i - 8];
+      var i2;
+      for (i2 = 8; i2 < 256; i2++) {
+        QRMath.EXP_TABLE[i2] = QRMath.EXP_TABLE[i2 - 4] ^ QRMath.EXP_TABLE[i2 - 5] ^ QRMath.EXP_TABLE[i2 - 6] ^ QRMath.EXP_TABLE[i2 - 8];
       }
-      var i;
-      for (i = 0; i < 255; i++) {
-        QRMath.LOG_TABLE[QRMath.EXP_TABLE[i]] = i;
+      var i2;
+      for (i2 = 0; i2 < 255; i2++) {
+        QRMath.LOG_TABLE[QRMath.EXP_TABLE[i2]] = i2;
       }
-      var i;
+      var i2;
       function QRPolynomial(num, shift) {
         if (num.length == void 0) {
           throw new Error(num.length + "/" + shift);
@@ -3790,8 +3790,8 @@ window.__XFRAME__.runtime.register("format-select", () => {
           offset++;
         }
         this.num = new Array(num.length - offset + shift);
-        for (var i2 = 0; i2 < num.length - offset; i2++) {
-          this.num[i2] = num[i2 + offset];
+        for (var i3 = 0; i3 < num.length - offset; i3++) {
+          this.num[i3] = num[i3 + offset];
         }
       }
       QRPolynomial.prototype = { get: function(index) {
@@ -3800,9 +3800,9 @@ window.__XFRAME__.runtime.register("format-select", () => {
         return this.num.length;
       }, multiply: function(e) {
         var num = new Array(this.getLength() + e.getLength() - 1);
-        for (var i2 = 0; i2 < this.getLength(); i2++) {
+        for (var i3 = 0; i3 < this.getLength(); i3++) {
           for (var j = 0; j < e.getLength(); j++) {
-            num[i2 + j] ^= QRMath.gexp(QRMath.glog(this.get(i2)) + QRMath.glog(e.get(j)));
+            num[i3 + j] ^= QRMath.gexp(QRMath.glog(this.get(i3)) + QRMath.glog(e.get(j)));
           }
         }
         return new QRPolynomial(num, 0);
@@ -3812,11 +3812,11 @@ window.__XFRAME__.runtime.register("format-select", () => {
         }
         var ratio = QRMath.glog(this.get(0)) - QRMath.glog(e.get(0));
         var num = new Array(this.getLength());
-        for (var i2 = 0; i2 < this.getLength(); i2++) {
-          num[i2] = this.get(i2);
+        for (var i3 = 0; i3 < this.getLength(); i3++) {
+          num[i3] = this.get(i3);
         }
-        for (var i2 = 0; i2 < e.getLength(); i2++) {
-          num[i2] ^= QRMath.gexp(QRMath.glog(e.get(i2)) + ratio);
+        for (var i3 = 0; i3 < e.getLength(); i3++) {
+          num[i3] ^= QRMath.gexp(QRMath.glog(e.get(i3)) + ratio);
         }
         return new QRPolynomial(num, 0).mod(e);
       } };
@@ -3832,10 +3832,10 @@ window.__XFRAME__.runtime.register("format-select", () => {
         }
         var length = rsBlock.length / 3;
         var list = [];
-        for (var i2 = 0; i2 < length; i2++) {
-          var count = rsBlock[i2 * 3 + 0];
-          var totalCount = rsBlock[i2 * 3 + 1];
-          var dataCount = rsBlock[i2 * 3 + 2];
+        for (var i3 = 0; i3 < length; i3++) {
+          var count = rsBlock[i3 * 3 + 0];
+          var totalCount = rsBlock[i3 * 3 + 1];
+          var dataCount = rsBlock[i3 * 3 + 2];
           for (var j = 0; j < count; j++) {
             list.push(new QRRSBlock(totalCount, dataCount));
           }
@@ -3864,8 +3864,8 @@ window.__XFRAME__.runtime.register("format-select", () => {
         var bufIndex = Math.floor(index / 8);
         return (this.buffer[bufIndex] >>> 7 - index % 8 & 1) == 1;
       }, put: function(num, length) {
-        for (var i2 = 0; i2 < length; i2++) {
-          this.putBit((num >>> length - i2 - 1 & 1) == 1);
+        for (var i3 = 0; i3 < length; i3++) {
+          this.putBit((num >>> length - i3 - 1 & 1) == 1);
         }
       }, getLengthInBits: function() {
         return this.length;
@@ -3897,8 +3897,8 @@ window.__XFRAME__.runtime.register("format-select", () => {
           };
         }
         if (options) {
-          for (var i2 in options) {
-            this.options[i2] = options[i2];
+          for (var i3 in options) {
+            this.options[i3] = options[i3];
           }
         }
         if (typeof this.options.content !== "string") {
@@ -3931,8 +3931,8 @@ window.__XFRAME__.runtime.register("format-select", () => {
           var length = _getUTF8Length(content2);
           var type2 = 1;
           var limit = 0;
-          for (var i3 = 0, len = QRCodeLimitLength.length; i3 <= len; i3++) {
-            var table = QRCodeLimitLength[i3];
+          for (var i4 = 0, len = QRCodeLimitLength.length; i4 <= len; i4++) {
+            var table = QRCodeLimitLength[i4];
             if (!table) {
               throw new Error("Content too long: expected " + limit + " but got " + length);
             }
@@ -3996,10 +3996,10 @@ window.__XFRAME__.runtime.register("format-select", () => {
         var modrect = "";
         var pathdata = "";
         for (var y = 0; y < length; y++) {
-          for (var x = 0; x < length; x++) {
-            var module2 = modules[x][y];
+          for (var x2 = 0; x2 < length; x2++) {
+            var module2 = modules[x2][y];
             if (module2) {
-              var px = x * xsize + options.padding * xsize;
+              var px = x2 * xsize + options.padding * xsize;
               var py = y * ysize + options.padding * ysize;
               if (swap) {
                 var t = px;
@@ -4079,7 +4079,843 @@ window.__XFRAME__.runtime.register("format-select", () => {
 
   // src/runtime/qrcode-browser.ts
   var import_qrcode_svg = __toESM(require_qrcode(), 1);
+
+  // node_modules/fflate/esm/browser.js
+  var u8 = Uint8Array;
+  var u16 = Uint16Array;
+  var i32 = Int32Array;
+  var fleb = new u8([
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    3,
+    3,
+    3,
+    3,
+    4,
+    4,
+    4,
+    4,
+    5,
+    5,
+    5,
+    5,
+    0,
+    /* unused */
+    0,
+    0,
+    /* impossible */
+    0
+  ]);
+  var fdeb = new u8([
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    2,
+    2,
+    3,
+    3,
+    4,
+    4,
+    5,
+    5,
+    6,
+    6,
+    7,
+    7,
+    8,
+    8,
+    9,
+    9,
+    10,
+    10,
+    11,
+    11,
+    12,
+    12,
+    13,
+    13,
+    /* unused */
+    0,
+    0
+  ]);
+  var clim = new u8([16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15]);
+  var freb = function(eb, start) {
+    var b = new u16(31);
+    for (var i2 = 0; i2 < 31; ++i2) {
+      b[i2] = start += 1 << eb[i2 - 1];
+    }
+    var r = new i32(b[30]);
+    for (var i2 = 1; i2 < 30; ++i2) {
+      for (var j = b[i2]; j < b[i2 + 1]; ++j) {
+        r[j] = j - b[i2] << 5 | i2;
+      }
+    }
+    return { b, r };
+  };
+  var _a = freb(fleb, 2);
+  var fl = _a.b;
+  var revfl = _a.r;
+  fl[28] = 258, revfl[258] = 28;
+  var _b = freb(fdeb, 0);
+  var fd = _b.b;
+  var revfd = _b.r;
+  var rev = new u16(32768);
+  for (i = 0; i < 32768; ++i) {
+    x = (i & 43690) >> 1 | (i & 21845) << 1;
+    x = (x & 52428) >> 2 | (x & 13107) << 2;
+    x = (x & 61680) >> 4 | (x & 3855) << 4;
+    rev[i] = ((x & 65280) >> 8 | (x & 255) << 8) >> 1;
+  }
+  var x;
+  var i;
+  var hMap = (function(cd, mb, r) {
+    var s = cd.length;
+    var i2 = 0;
+    var l = new u16(mb);
+    for (; i2 < s; ++i2) {
+      if (cd[i2])
+        ++l[cd[i2] - 1];
+    }
+    var le = new u16(mb);
+    for (i2 = 1; i2 < mb; ++i2) {
+      le[i2] = le[i2 - 1] + l[i2 - 1] << 1;
+    }
+    var co;
+    if (r) {
+      co = new u16(1 << mb);
+      var rvb = 15 - mb;
+      for (i2 = 0; i2 < s; ++i2) {
+        if (cd[i2]) {
+          var sv = i2 << 4 | cd[i2];
+          var r_1 = mb - cd[i2];
+          var v = le[cd[i2] - 1]++ << r_1;
+          for (var m = v | (1 << r_1) - 1; v <= m; ++v) {
+            co[rev[v] >> rvb] = sv;
+          }
+        }
+      }
+    } else {
+      co = new u16(s);
+      for (i2 = 0; i2 < s; ++i2) {
+        if (cd[i2]) {
+          co[i2] = rev[le[cd[i2] - 1]++] >> 15 - cd[i2];
+        }
+      }
+    }
+    return co;
+  });
+  var flt = new u8(288);
+  for (i = 0; i < 144; ++i)
+    flt[i] = 8;
+  var i;
+  for (i = 144; i < 256; ++i)
+    flt[i] = 9;
+  var i;
+  for (i = 256; i < 280; ++i)
+    flt[i] = 7;
+  var i;
+  for (i = 280; i < 288; ++i)
+    flt[i] = 8;
+  var i;
+  var fdt = new u8(32);
+  for (i = 0; i < 32; ++i)
+    fdt[i] = 5;
+  var i;
+  var flm = /* @__PURE__ */ hMap(flt, 9, 0);
+  var flrm = /* @__PURE__ */ hMap(flt, 9, 1);
+  var fdm = /* @__PURE__ */ hMap(fdt, 5, 0);
+  var fdrm = /* @__PURE__ */ hMap(fdt, 5, 1);
+  var max = function(a) {
+    var m = a[0];
+    for (var i2 = 1; i2 < a.length; ++i2) {
+      if (a[i2] > m)
+        m = a[i2];
+    }
+    return m;
+  };
+  var bits = function(d, p, m) {
+    var o = p / 8 | 0;
+    return (d[o] | d[o + 1] << 8) >> (p & 7) & m;
+  };
+  var bits16 = function(d, p) {
+    var o = p / 8 | 0;
+    return (d[o] | d[o + 1] << 8 | d[o + 2] << 16) >> (p & 7);
+  };
+  var shft = function(p) {
+    return (p + 7) / 8 | 0;
+  };
+  var slc = function(v, s, e) {
+    if (s == null || s < 0)
+      s = 0;
+    if (e == null || e > v.length)
+      e = v.length;
+    return new u8(v.subarray(s, e));
+  };
+  var ec = [
+    "unexpected EOF",
+    "invalid block type",
+    "invalid length/literal",
+    "invalid distance",
+    "stream finished",
+    "no stream handler",
+    ,
+    // determined by compression function
+    "no callback",
+    "invalid UTF-8 data",
+    "extra field too long",
+    "date not in range 1980-2099",
+    "filename too long",
+    "stream finishing",
+    "invalid zip data"
+    // determined by unknown compression method
+  ];
+  var err = function(ind, msg, nt) {
+    var e = new Error(msg || ec[ind]);
+    e.code = ind;
+    if (Error.captureStackTrace)
+      Error.captureStackTrace(e, err);
+    if (!nt)
+      throw e;
+    return e;
+  };
+  var inflt = function(dat, st, buf, dict) {
+    var sl = dat.length, dl = dict ? dict.length : 0;
+    if (!sl || st.f && !st.l)
+      return buf || new u8(0);
+    var noBuf = !buf;
+    var resize = noBuf || st.i != 2;
+    var noSt = st.i;
+    if (noBuf)
+      buf = new u8(sl * 3);
+    var cbuf = function(l2) {
+      var bl = buf.length;
+      if (l2 > bl) {
+        var nbuf = new u8(Math.max(bl * 2, l2));
+        nbuf.set(buf);
+        buf = nbuf;
+      }
+    };
+    var final = st.f || 0, pos = st.p || 0, bt = st.b || 0, lm = st.l, dm = st.d, lbt = st.m, dbt = st.n;
+    var tbts = sl * 8;
+    do {
+      if (!lm) {
+        final = bits(dat, pos, 1);
+        var type = bits(dat, pos + 1, 3);
+        pos += 3;
+        if (!type) {
+          var s = shft(pos) + 4, l = dat[s - 4] | dat[s - 3] << 8, t = s + l;
+          if (t > sl) {
+            if (noSt)
+              err(0);
+            break;
+          }
+          if (resize)
+            cbuf(bt + l);
+          buf.set(dat.subarray(s, t), bt);
+          st.b = bt += l, st.p = pos = t * 8, st.f = final;
+          continue;
+        } else if (type == 1)
+          lm = flrm, dm = fdrm, lbt = 9, dbt = 5;
+        else if (type == 2) {
+          var hLit = bits(dat, pos, 31) + 257, hcLen = bits(dat, pos + 10, 15) + 4;
+          var tl = hLit + bits(dat, pos + 5, 31) + 1;
+          pos += 14;
+          var ldt = new u8(tl);
+          var clt = new u8(19);
+          for (var i2 = 0; i2 < hcLen; ++i2) {
+            clt[clim[i2]] = bits(dat, pos + i2 * 3, 7);
+          }
+          pos += hcLen * 3;
+          var clb = max(clt), clbmsk = (1 << clb) - 1;
+          var clm = hMap(clt, clb, 1);
+          for (var i2 = 0; i2 < tl; ) {
+            var r = clm[bits(dat, pos, clbmsk)];
+            pos += r & 15;
+            var s = r >> 4;
+            if (s < 16) {
+              ldt[i2++] = s;
+            } else {
+              var c = 0, n = 0;
+              if (s == 16)
+                n = 3 + bits(dat, pos, 3), pos += 2, c = ldt[i2 - 1];
+              else if (s == 17)
+                n = 3 + bits(dat, pos, 7), pos += 3;
+              else if (s == 18)
+                n = 11 + bits(dat, pos, 127), pos += 7;
+              while (n--)
+                ldt[i2++] = c;
+            }
+          }
+          var lt = ldt.subarray(0, hLit), dt = ldt.subarray(hLit);
+          lbt = max(lt);
+          dbt = max(dt);
+          lm = hMap(lt, lbt, 1);
+          dm = hMap(dt, dbt, 1);
+        } else
+          err(1);
+        if (pos > tbts) {
+          if (noSt)
+            err(0);
+          break;
+        }
+      }
+      if (resize)
+        cbuf(bt + 131072);
+      var lms = (1 << lbt) - 1, dms = (1 << dbt) - 1;
+      var lpos = pos;
+      for (; ; lpos = pos) {
+        var c = lm[bits16(dat, pos) & lms], sym = c >> 4;
+        pos += c & 15;
+        if (pos > tbts) {
+          if (noSt)
+            err(0);
+          break;
+        }
+        if (!c)
+          err(2);
+        if (sym < 256)
+          buf[bt++] = sym;
+        else if (sym == 256) {
+          lpos = pos, lm = null;
+          break;
+        } else {
+          var add = sym - 254;
+          if (sym > 264) {
+            var i2 = sym - 257, b = fleb[i2];
+            add = bits(dat, pos, (1 << b) - 1) + fl[i2];
+            pos += b;
+          }
+          var d = dm[bits16(dat, pos) & dms], dsym = d >> 4;
+          if (!d)
+            err(3);
+          pos += d & 15;
+          var dt = fd[dsym];
+          if (dsym > 3) {
+            var b = fdeb[dsym];
+            dt += bits16(dat, pos) & (1 << b) - 1, pos += b;
+          }
+          if (pos > tbts) {
+            if (noSt)
+              err(0);
+            break;
+          }
+          if (resize)
+            cbuf(bt + 131072);
+          var end = bt + add;
+          if (bt < dt) {
+            var shift = dl - dt, dend = Math.min(dt, end);
+            if (shift + bt < 0)
+              err(3);
+            for (; bt < dend; ++bt)
+              buf[bt] = dict[shift + bt];
+          }
+          for (; bt < end; ++bt)
+            buf[bt] = buf[bt - dt];
+        }
+      }
+      st.l = lm, st.p = lpos, st.b = bt, st.f = final;
+      if (lm)
+        final = 1, st.m = lbt, st.d = dm, st.n = dbt;
+    } while (!final);
+    return bt != buf.length && noBuf ? slc(buf, 0, bt) : buf.subarray(0, bt);
+  };
+  var wbits = function(d, p, v) {
+    v <<= p & 7;
+    var o = p / 8 | 0;
+    d[o] |= v;
+    d[o + 1] |= v >> 8;
+  };
+  var wbits16 = function(d, p, v) {
+    v <<= p & 7;
+    var o = p / 8 | 0;
+    d[o] |= v;
+    d[o + 1] |= v >> 8;
+    d[o + 2] |= v >> 16;
+  };
+  var hTree = function(d, mb) {
+    var t = [];
+    for (var i2 = 0; i2 < d.length; ++i2) {
+      if (d[i2])
+        t.push({ s: i2, f: d[i2] });
+    }
+    var s = t.length;
+    var t2 = t.slice();
+    if (!s)
+      return { t: et, l: 0 };
+    if (s == 1) {
+      var v = new u8(t[0].s + 1);
+      v[t[0].s] = 1;
+      return { t: v, l: 1 };
+    }
+    t.sort(function(a, b) {
+      return a.f - b.f;
+    });
+    t.push({ s: -1, f: 25001 });
+    var l = t[0], r = t[1], i0 = 0, i1 = 1, i22 = 2;
+    t[0] = { s: -1, f: l.f + r.f, l, r };
+    while (i1 != s - 1) {
+      l = t[t[i0].f < t[i22].f ? i0++ : i22++];
+      r = t[i0 != i1 && t[i0].f < t[i22].f ? i0++ : i22++];
+      t[i1++] = { s: -1, f: l.f + r.f, l, r };
+    }
+    var maxSym = t2[0].s;
+    for (var i2 = 1; i2 < s; ++i2) {
+      if (t2[i2].s > maxSym)
+        maxSym = t2[i2].s;
+    }
+    var tr = new u16(maxSym + 1);
+    var mbt = ln(t[i1 - 1], tr, 0);
+    if (mbt > mb) {
+      var i2 = 0, dt = 0;
+      var lft = mbt - mb, cst = 1 << lft;
+      t2.sort(function(a, b) {
+        return tr[b.s] - tr[a.s] || a.f - b.f;
+      });
+      for (; i2 < s; ++i2) {
+        var i2_1 = t2[i2].s;
+        if (tr[i2_1] > mb) {
+          dt += cst - (1 << mbt - tr[i2_1]);
+          tr[i2_1] = mb;
+        } else
+          break;
+      }
+      dt >>= lft;
+      while (dt > 0) {
+        var i2_2 = t2[i2].s;
+        if (tr[i2_2] < mb)
+          dt -= 1 << mb - tr[i2_2]++ - 1;
+        else
+          ++i2;
+      }
+      for (; i2 >= 0 && dt; --i2) {
+        var i2_3 = t2[i2].s;
+        if (tr[i2_3] == mb) {
+          --tr[i2_3];
+          ++dt;
+        }
+      }
+      mbt = mb;
+    }
+    return { t: new u8(tr), l: mbt };
+  };
+  var ln = function(n, l, d) {
+    return n.s == -1 ? Math.max(ln(n.l, l, d + 1), ln(n.r, l, d + 1)) : l[n.s] = d;
+  };
+  var lc = function(c) {
+    var s = c.length;
+    while (s && !c[--s])
+      ;
+    var cl = new u16(++s);
+    var cli = 0, cln = c[0], cls = 1;
+    var w = function(v) {
+      cl[cli++] = v;
+    };
+    for (var i2 = 1; i2 <= s; ++i2) {
+      if (c[i2] == cln && i2 != s)
+        ++cls;
+      else {
+        if (!cln && cls > 2) {
+          for (; cls > 138; cls -= 138)
+            w(32754);
+          if (cls > 2) {
+            w(cls > 10 ? cls - 11 << 5 | 28690 : cls - 3 << 5 | 12305);
+            cls = 0;
+          }
+        } else if (cls > 3) {
+          w(cln), --cls;
+          for (; cls > 6; cls -= 6)
+            w(8304);
+          if (cls > 2)
+            w(cls - 3 << 5 | 8208), cls = 0;
+        }
+        while (cls--)
+          w(cln);
+        cls = 1;
+        cln = c[i2];
+      }
+    }
+    return { c: cl.subarray(0, cli), n: s };
+  };
+  var clen = function(cf, cl) {
+    var l = 0;
+    for (var i2 = 0; i2 < cl.length; ++i2)
+      l += cf[i2] * cl[i2];
+    return l;
+  };
+  var wfblk = function(out, pos, dat) {
+    var s = dat.length;
+    var o = shft(pos + 2);
+    out[o] = s & 255;
+    out[o + 1] = s >> 8;
+    out[o + 2] = out[o] ^ 255;
+    out[o + 3] = out[o + 1] ^ 255;
+    for (var i2 = 0; i2 < s; ++i2)
+      out[o + i2 + 4] = dat[i2];
+    return (o + 4 + s) * 8;
+  };
+  var wblk = function(dat, out, final, syms, lf, df, eb, li, bs, bl, p) {
+    wbits(out, p++, final);
+    ++lf[256];
+    var _a2 = hTree(lf, 15), dlt = _a2.t, mlb = _a2.l;
+    var _b2 = hTree(df, 15), ddt = _b2.t, mdb = _b2.l;
+    var _c = lc(dlt), lclt = _c.c, nlc = _c.n;
+    var _d = lc(ddt), lcdt = _d.c, ndc = _d.n;
+    var lcfreq = new u16(19);
+    for (var i2 = 0; i2 < lclt.length; ++i2)
+      ++lcfreq[lclt[i2] & 31];
+    for (var i2 = 0; i2 < lcdt.length; ++i2)
+      ++lcfreq[lcdt[i2] & 31];
+    var _e = hTree(lcfreq, 7), lct = _e.t, mlcb = _e.l;
+    var nlcc = 19;
+    for (; nlcc > 4 && !lct[clim[nlcc - 1]]; --nlcc)
+      ;
+    var flen = bl + 5 << 3;
+    var ftlen = clen(lf, flt) + clen(df, fdt) + eb;
+    var dtlen = clen(lf, dlt) + clen(df, ddt) + eb + 14 + 3 * nlcc + clen(lcfreq, lct) + 2 * lcfreq[16] + 3 * lcfreq[17] + 7 * lcfreq[18];
+    if (bs >= 0 && flen <= ftlen && flen <= dtlen)
+      return wfblk(out, p, dat.subarray(bs, bs + bl));
+    var lm, ll, dm, dl;
+    wbits(out, p, 1 + (dtlen < ftlen)), p += 2;
+    if (dtlen < ftlen) {
+      lm = hMap(dlt, mlb, 0), ll = dlt, dm = hMap(ddt, mdb, 0), dl = ddt;
+      var llm = hMap(lct, mlcb, 0);
+      wbits(out, p, nlc - 257);
+      wbits(out, p + 5, ndc - 1);
+      wbits(out, p + 10, nlcc - 4);
+      p += 14;
+      for (var i2 = 0; i2 < nlcc; ++i2)
+        wbits(out, p + 3 * i2, lct[clim[i2]]);
+      p += 3 * nlcc;
+      var lcts = [lclt, lcdt];
+      for (var it = 0; it < 2; ++it) {
+        var clct = lcts[it];
+        for (var i2 = 0; i2 < clct.length; ++i2) {
+          var len = clct[i2] & 31;
+          wbits(out, p, llm[len]), p += lct[len];
+          if (len > 15)
+            wbits(out, p, clct[i2] >> 5 & 127), p += clct[i2] >> 12;
+        }
+      }
+    } else {
+      lm = flm, ll = flt, dm = fdm, dl = fdt;
+    }
+    for (var i2 = 0; i2 < li; ++i2) {
+      var sym = syms[i2];
+      if (sym > 255) {
+        var len = sym >> 18 & 31;
+        wbits16(out, p, lm[len + 257]), p += ll[len + 257];
+        if (len > 7)
+          wbits(out, p, sym >> 23 & 31), p += fleb[len];
+        var dst = sym & 31;
+        wbits16(out, p, dm[dst]), p += dl[dst];
+        if (dst > 3)
+          wbits16(out, p, sym >> 5 & 8191), p += fdeb[dst];
+      } else {
+        wbits16(out, p, lm[sym]), p += ll[sym];
+      }
+    }
+    wbits16(out, p, lm[256]);
+    return p + ll[256];
+  };
+  var deo = /* @__PURE__ */ new i32([65540, 131080, 131088, 131104, 262176, 1048704, 1048832, 2114560, 2117632]);
+  var et = /* @__PURE__ */ new u8(0);
+  var dflt = function(dat, lvl, plvl, pre, post, st) {
+    var s = st.z || dat.length;
+    var o = new u8(pre + s + 5 * (1 + Math.ceil(s / 7e3)) + post);
+    var w = o.subarray(pre, o.length - post);
+    var lst = st.l;
+    var pos = (st.r || 0) & 7;
+    if (lvl) {
+      if (pos)
+        w[0] = st.r >> 3;
+      var opt = deo[lvl - 1];
+      var n = opt >> 13, c = opt & 8191;
+      var msk_1 = (1 << plvl) - 1;
+      var prev = st.p || new u16(32768), head = st.h || new u16(msk_1 + 1);
+      var bs1_1 = Math.ceil(plvl / 3), bs2_1 = 2 * bs1_1;
+      var hsh = function(i3) {
+        return (dat[i3] ^ dat[i3 + 1] << bs1_1 ^ dat[i3 + 2] << bs2_1) & msk_1;
+      };
+      var syms = new i32(25e3);
+      var lf = new u16(288), df = new u16(32);
+      var lc_1 = 0, eb = 0, i2 = st.i || 0, li = 0, wi = st.w || 0, bs = 0;
+      for (; i2 + 2 < s; ++i2) {
+        var hv = hsh(i2);
+        var imod = i2 & 32767, pimod = head[hv];
+        prev[imod] = pimod;
+        head[hv] = imod;
+        if (wi <= i2) {
+          var rem = s - i2;
+          if ((lc_1 > 7e3 || li > 24576) && (rem > 423 || !lst)) {
+            pos = wblk(dat, w, 0, syms, lf, df, eb, li, bs, i2 - bs, pos);
+            li = lc_1 = eb = 0, bs = i2;
+            for (var j = 0; j < 286; ++j)
+              lf[j] = 0;
+            for (var j = 0; j < 30; ++j)
+              df[j] = 0;
+          }
+          var l = 2, d = 0, ch_1 = c, dif = imod - pimod & 32767;
+          if (rem > 2 && hv == hsh(i2 - dif)) {
+            var maxn = Math.min(n, rem) - 1;
+            var maxd = Math.min(32767, i2);
+            var ml = Math.min(258, rem);
+            while (dif <= maxd && --ch_1 && imod != pimod) {
+              if (dat[i2 + l] == dat[i2 + l - dif]) {
+                var nl = 0;
+                for (; nl < ml && dat[i2 + nl] == dat[i2 + nl - dif]; ++nl)
+                  ;
+                if (nl > l) {
+                  l = nl, d = dif;
+                  if (nl > maxn)
+                    break;
+                  var mmd = Math.min(dif, nl - 2);
+                  var md = 0;
+                  for (var j = 0; j < mmd; ++j) {
+                    var ti = i2 - dif + j & 32767;
+                    var pti = prev[ti];
+                    var cd = ti - pti & 32767;
+                    if (cd > md)
+                      md = cd, pimod = ti;
+                  }
+                }
+              }
+              imod = pimod, pimod = prev[imod];
+              dif += imod - pimod & 32767;
+            }
+          }
+          if (d) {
+            syms[li++] = 268435456 | revfl[l] << 18 | revfd[d];
+            var lin = revfl[l] & 31, din = revfd[d] & 31;
+            eb += fleb[lin] + fdeb[din];
+            ++lf[257 + lin];
+            ++df[din];
+            wi = i2 + l;
+            ++lc_1;
+          } else {
+            syms[li++] = dat[i2];
+            ++lf[dat[i2]];
+          }
+        }
+      }
+      for (i2 = Math.max(i2, wi); i2 < s; ++i2) {
+        syms[li++] = dat[i2];
+        ++lf[dat[i2]];
+      }
+      pos = wblk(dat, w, lst, syms, lf, df, eb, li, bs, i2 - bs, pos);
+      if (!lst) {
+        st.r = pos & 7 | w[pos / 8 | 0] << 3;
+        pos -= 7;
+        st.h = head, st.p = prev, st.i = i2, st.w = wi;
+      }
+    } else {
+      for (var i2 = st.w || 0; i2 < s + lst; i2 += 65535) {
+        var e = i2 + 65535;
+        if (e >= s) {
+          w[pos / 8 | 0] = lst;
+          e = s;
+        }
+        pos = wfblk(w, pos + 1, dat.subarray(i2, e));
+      }
+      st.i = s;
+    }
+    return slc(o, 0, pre + shft(pos) + post);
+  };
+  var adler = function() {
+    var a = 1, b = 0;
+    return {
+      p: function(d) {
+        var n = a, m = b;
+        var l = d.length | 0;
+        for (var i2 = 0; i2 != l; ) {
+          var e = Math.min(i2 + 2655, l);
+          for (; i2 < e; ++i2)
+            m += n += d[i2];
+          n = (n & 65535) + 15 * (n >> 16), m = (m & 65535) + 15 * (m >> 16);
+        }
+        a = n, b = m;
+      },
+      d: function() {
+        a %= 65521, b %= 65521;
+        return (a & 255) << 24 | (a & 65280) << 8 | (b & 255) << 8 | b >> 8;
+      }
+    };
+  };
+  var dopt = function(dat, opt, pre, post, st) {
+    if (!st) {
+      st = { l: 1 };
+      if (opt.dictionary) {
+        var dict = opt.dictionary.subarray(-32768);
+        var newDat = new u8(dict.length + dat.length);
+        newDat.set(dict);
+        newDat.set(dat, dict.length);
+        dat = newDat;
+        st.w = dict.length;
+      }
+    }
+    return dflt(dat, opt.level == null ? 6 : opt.level, opt.mem == null ? st.l ? Math.ceil(Math.max(8, Math.min(13, Math.log(dat.length))) * 1.5) : 20 : 12 + opt.mem, pre, post, st);
+  };
+  var wbytes = function(d, b, v) {
+    for (; v; ++b)
+      d[b] = v, v >>>= 8;
+  };
+  var zlh = function(c, o) {
+    var lv = o.level, fl2 = lv == 0 ? 0 : lv < 6 ? 1 : lv == 9 ? 3 : 2;
+    c[0] = 120, c[1] = fl2 << 6 | (o.dictionary && 32);
+    c[1] |= 31 - (c[0] << 8 | c[1]) % 31;
+    if (o.dictionary) {
+      var h = adler();
+      h.p(o.dictionary);
+      wbytes(c, 2, h.d());
+    }
+  };
+  var zls = function(d, dict) {
+    if ((d[0] & 15) != 8 || d[0] >> 4 > 7 || (d[0] << 8 | d[1]) % 31)
+      err(6, "invalid zlib data");
+    if ((d[1] >> 5 & 1) == +!dict)
+      err(6, "invalid zlib data: " + (d[1] & 32 ? "need" : "unexpected") + " dictionary");
+    return (d[1] >> 3 & 4) + 2;
+  };
+  function zlibSync(data, opts) {
+    if (!opts)
+      opts = {};
+    var a = adler();
+    a.p(data);
+    var d = dopt(data, opts, opts.dictionary ? 6 : 2, 4);
+    return zlh(d, opts), wbytes(d, d.length - 4, a.d()), d;
+  }
+  function unzlibSync(data, opts) {
+    return inflt(data.subarray(zls(data, opts && opts.dictionary), -4), { i: 2 }, opts && opts.out, opts && opts.dictionary);
+  }
+  var te = typeof TextEncoder != "undefined" && /* @__PURE__ */ new TextEncoder();
+  var td = typeof TextDecoder != "undefined" && /* @__PURE__ */ new TextDecoder();
+  var tds = 0;
+  try {
+    td.decode(et, { stream: true });
+    tds = 1;
+  } catch (e) {
+  }
+  var dutf8 = function(d) {
+    for (var r = "", i2 = 0; ; ) {
+      var c = d[i2++];
+      var eb = (c > 127) + (c > 223) + (c > 239);
+      if (i2 + eb > d.length)
+        return { s: r, r: slc(d, i2 - 1) };
+      if (!eb)
+        r += String.fromCharCode(c);
+      else if (eb == 3) {
+        c = ((c & 15) << 18 | (d[i2++] & 63) << 12 | (d[i2++] & 63) << 6 | d[i2++] & 63) - 65536, r += String.fromCharCode(55296 | c >> 10, 56320 | c & 1023);
+      } else if (eb & 1)
+        r += String.fromCharCode((c & 31) << 6 | d[i2++] & 63);
+      else
+        r += String.fromCharCode((c & 15) << 12 | (d[i2++] & 63) << 6 | d[i2++] & 63);
+    }
+  };
+  function strToU8(str, latin1) {
+    if (latin1) {
+      var ar_1 = new u8(str.length);
+      for (var i2 = 0; i2 < str.length; ++i2)
+        ar_1[i2] = str.charCodeAt(i2);
+      return ar_1;
+    }
+    if (te)
+      return te.encode(str);
+    var l = str.length;
+    var ar = new u8(str.length + (str.length >> 1));
+    var ai = 0;
+    var w = function(v) {
+      ar[ai++] = v;
+    };
+    for (var i2 = 0; i2 < l; ++i2) {
+      if (ai + 5 > ar.length) {
+        var n = new u8(ai + 8 + (l - i2 << 1));
+        n.set(ar);
+        ar = n;
+      }
+      var c = str.charCodeAt(i2);
+      if (c < 128 || latin1)
+        w(c);
+      else if (c < 2048)
+        w(192 | c >> 6), w(128 | c & 63);
+      else if (c > 55295 && c < 57344)
+        c = 65536 + (c & 1023 << 10) | str.charCodeAt(++i2) & 1023, w(240 | c >> 18), w(128 | c >> 12 & 63), w(128 | c >> 6 & 63), w(128 | c & 63);
+      else
+        w(224 | c >> 12), w(128 | c >> 6 & 63), w(128 | c & 63);
+    }
+    return slc(ar, 0, ai);
+  }
+  function strFromU8(dat, latin1) {
+    if (latin1) {
+      var r = "";
+      for (var i2 = 0; i2 < dat.length; i2 += 16384)
+        r += String.fromCharCode.apply(null, dat.subarray(i2, i2 + 16384));
+      return r;
+    } else if (td) {
+      return td.decode(dat);
+    } else {
+      var _a2 = dutf8(dat), s = _a2.s, r = _a2.r;
+      if (r.length)
+        err(8);
+      return s;
+    }
+  }
+
+  // src/runtime/qrcode-browser.ts
   var QR_SIZE = 256;
+  var COMPACT_PARAM = "xframe";
+  var MAX_COMPACT_BYTES = 16 * 1024;
+  var MAX_DECOMPRESSED_BYTES = 64 * 1024;
+  function base64Url(bytes) {
+    let binary = "";
+    for (let offset = 0; offset < bytes.length; offset += 32768) {
+      binary += String.fromCharCode(...bytes.subarray(offset, offset + 32768));
+    }
+    return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+  }
+  function fromBase64Url(value) {
+    const normalized = value.replace(/-/g, "+").replace(/_/g, "/");
+    const binary = atob(normalized + "=".repeat((4 - normalized.length % 4) % 4));
+    if (binary.length > MAX_COMPACT_BYTES) throw new Error("xFrame parameter payload is too large");
+    return Uint8Array.from(binary, (char) => char.charCodeAt(0));
+  }
+  function encodeParams(entries) {
+    return base64Url(zlibSync(strToU8(JSON.stringify(entries)), { level: 9 }));
+  }
+  function decodeParams(payload) {
+    const inflated = unzlibSync(fromBase64Url(payload), {
+      out: new Uint8Array(MAX_DECOMPRESSED_BYTES)
+    });
+    const end = inflated.indexOf(0);
+    const parsed = JSON.parse(strFromU8(end < 0 ? inflated : inflated.subarray(0, end)));
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter((entry) => Array.isArray(entry) && entry.length === 3 && entry.every((part) => typeof part === "string"));
+  }
+  function compactUrl(href, entries) {
+    const url = new URL(href);
+    for (const key of [...url.searchParams.keys()]) {
+      const dot = key.indexOf(".");
+      if (dot > 0 && dot < key.length - 1) url.searchParams.delete(key);
+    }
+    if (entries.length) url.searchParams.set(COMPACT_PARAM, encodeParams(entries));
+    else url.searchParams.delete(COMPACT_PARAM);
+    return url.href;
+  }
   function escapeXml(value) {
     return value.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
@@ -4089,13 +4925,13 @@ window.__XFRAME__.runtime.register("format-select", () => {
     const size = QR_SIZE * fraction;
     const pad = size * 0.22;
     const outer = size + pad * 2;
-    const x = (QR_SIZE - outer) / 2;
+    const x2 = (QR_SIZE - outer) / 2;
     const y = (QR_SIZE - outer) / 2;
     const rx = outer * 0.22;
     const overlay = [
       `<g class="xframe-qr-logo">`,
-      `<rect x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${outer.toFixed(2)}" height="${outer.toFixed(2)}" rx="${rx.toFixed(2)}" fill="#ffffff"/>`,
-      `<image href="${escapeXml(logo)}" x="${(x + pad).toFixed(2)}" y="${(y + pad).toFixed(2)}" width="${size.toFixed(2)}" height="${size.toFixed(2)}" preserveAspectRatio="xMidYMid meet"/>`,
+      `<rect x="${x2.toFixed(2)}" y="${y.toFixed(2)}" width="${outer.toFixed(2)}" height="${outer.toFixed(2)}" rx="${rx.toFixed(2)}" fill="#ffffff"/>`,
+      `<image href="${escapeXml(logo)}" x="${(x2 + pad).toFixed(2)}" y="${(y + pad).toFixed(2)}" width="${size.toFixed(2)}" height="${size.toFixed(2)}" preserveAspectRatio="xMidYMid meet"/>`,
       `</g>`
     ].join("");
     return svg2.replace(/<\/svg>\s*$/i, `${overlay}</svg>`);
@@ -4118,7 +4954,7 @@ window.__XFRAME__.runtime.register("format-select", () => {
     return options.logo ? embedCenterLogo(encoded, options.logo, options.logoScale) : encoded;
   }
   var root = typeof globalThis !== "undefined" ? globalThis : void 0;
-  if (root) root.__XFRAME_QR__ = { svg };
+  if (root) root.__XFRAME_QR__ = { svg, compactUrl, decodeParams };
 })();
 </script>
 <script>
@@ -4589,32 +5425,8 @@ window.__XFRAME__.runtime.register("url_params", () => {
     }
   };
 
-  const syncHistory = () => {
-    const url = readLocation();
-    if (!url) return;
-    for (const key of [...url.searchParams.keys()]) {
-      if (parseKey(key)) url.searchParams.delete(key);
-    }
-    for (const [id, props] of values) {
-      for (const [property, value] of props) {
-        const raw = String(value || "").trim();
-        if (!raw) continue;
-        const scheme = raw.slice(0, 16).toLowerCase();
-        if (scheme.startsWith("data:") || scheme.startsWith("blob:") || scheme.startsWith("javascript:")) continue;
-        const http = /^https?:\/\//i.test(raw);
-        if (raw.length > (http ? 2048 : 256)) continue;
-        url.searchParams.set(`${id}.${property}`, value);
-      }
-    }
-    const next = `${url.pathname}${url.search}${url.hash}`;
-    const cur = `${window.location.pathname}${window.location.search}${window.location.hash}`;
-    if (next !== cur) {
-      try {
-        history.replaceState(history.state, "", next);
-      } catch {
-        /* file:// or sandboxed */
-      }
-    }
+  /** Notify `$location` consumers without rewriting the visible address bar. */
+  const notifyChanged = () => {
     document.dispatchEvent(new CustomEvent("xframe:params-changed", {
       detail: { href: window.location.href },
     }));
@@ -4655,12 +5467,26 @@ window.__XFRAME__.runtime.register("url_params", () => {
       bucket(elId).set(prop, raw);
       applyToElement(elId, prop, raw, options.source || "set");
     }
-    if (options.history !== false) syncHistory();
+    // Keep the legacy `history: false` option as notification suppression.
+    if (options.history !== false) notifyChanged();
   };
 
   const applyFromLocation = () => {
     const url = readLocation();
     if (!url) return;
+    const payload = url.searchParams.get("xframe");
+    if (payload) {
+      try {
+        const decoded = window.__XFRAME_QR__?.decodeParams?.(payload) || [];
+        for (const [id, property, value] of decoded) {
+          if (!id || !property) continue;
+          bucket(id).set(property, value);
+          applyToElement(id, property, value, "url");
+        }
+      } catch (error) {
+        console.warn("[xFrame] Ignoring invalid compact URL parameters", error);
+      }
+    }
     for (const [key, value] of url.searchParams.entries()) {
       const parsed = parseKey(key);
       if (!parsed) continue;
@@ -4718,7 +5544,7 @@ window.__XFRAME__.runtime.register("url_params", () => {
     }));
   });
 
-  return { get, set, read, all, applyFromLocation, syncHistory };
+  return { get, set, read, all, applyFromLocation, notifyChanged };
 });
 </script>
 
@@ -5941,13 +6767,17 @@ window.__XFRAME__.runtime.register("image_replace", { import: ["crop.rescaleSour
 </script>
 
 <script>
-window.__XFRAME__.runtime.register("qr_code", { import: ["url_params.all"] }, () => {
+window.__XFRAME__.runtime.register("qr_code", { import: ["url_params.all"] }, (runtime) => {
   const redraw = (anchor) => {
     if (!(anchor instanceof HTMLAnchorElement)) return;
     if (anchor.getAttribute("data-xframe-qr-location") !== "true") return;
     const encode = window.__XFRAME_QR__?.svg;
     if (typeof encode !== "function") return;
-    const href = window.location.href;
+    const entries = runtime.url_params.all()
+      .filter(({ property }) => property !== "caption")
+      .map(({ id, property, value }) => [id, property, value]);
+    const href = window.__XFRAME_QR__?.compactUrl?.(window.location.href, entries)
+      || window.location.href;
     const color = anchor.getAttribute("data-xframe-qr-color") || "#000000";
     const background = anchor.getAttribute("data-xframe-qr-background") || "#ffffff";
     const eclRaw = (anchor.getAttribute("data-xframe-qr-ecl") || "").toUpperCase();
@@ -6708,32 +7538,8 @@ window.__XFRAME__.runtime.register("url_params", () => {
     }
   };
 
-  const syncHistory = () => {
-    const url = readLocation();
-    if (!url) return;
-    for (const key of [...url.searchParams.keys()]) {
-      if (parseKey(key)) url.searchParams.delete(key);
-    }
-    for (const [id, props] of values) {
-      for (const [property, value] of props) {
-        const raw = String(value || "").trim();
-        if (!raw) continue;
-        const scheme = raw.slice(0, 16).toLowerCase();
-        if (scheme.startsWith("data:") || scheme.startsWith("blob:") || scheme.startsWith("javascript:")) continue;
-        const http = /^https?:\/\//i.test(raw);
-        if (raw.length > (http ? 2048 : 256)) continue;
-        url.searchParams.set(`${id}.${property}`, value);
-      }
-    }
-    const next = `${url.pathname}${url.search}${url.hash}`;
-    const cur = `${window.location.pathname}${window.location.search}${window.location.hash}`;
-    if (next !== cur) {
-      try {
-        history.replaceState(history.state, "", next);
-      } catch {
-        /* file:// or sandboxed */
-      }
-    }
+  /** Notify `$location` consumers without rewriting the visible address bar. */
+  const notifyChanged = () => {
     document.dispatchEvent(new CustomEvent("xframe:params-changed", {
       detail: { href: window.location.href },
     }));
@@ -6774,12 +7580,26 @@ window.__XFRAME__.runtime.register("url_params", () => {
       bucket(elId).set(prop, raw);
       applyToElement(elId, prop, raw, options.source || "set");
     }
-    if (options.history !== false) syncHistory();
+    // Keep the legacy `history: false` option as notification suppression.
+    if (options.history !== false) notifyChanged();
   };
 
   const applyFromLocation = () => {
     const url = readLocation();
     if (!url) return;
+    const payload = url.searchParams.get("xframe");
+    if (payload) {
+      try {
+        const decoded = window.__XFRAME_QR__?.decodeParams?.(payload) || [];
+        for (const [id, property, value] of decoded) {
+          if (!id || !property) continue;
+          bucket(id).set(property, value);
+          applyToElement(id, property, value, "url");
+        }
+      } catch (error) {
+        console.warn("[xFrame] Ignoring invalid compact URL parameters", error);
+      }
+    }
     for (const [key, value] of url.searchParams.entries()) {
       const parsed = parseKey(key);
       if (!parsed) continue;
@@ -6837,7 +7657,7 @@ window.__XFRAME__.runtime.register("url_params", () => {
     }));
   });
 
-  return { get, set, read, all, applyFromLocation, syncHistory };
+  return { get, set, read, all, applyFromLocation, notifyChanged };
 });
 </script>
 

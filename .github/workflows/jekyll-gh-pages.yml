@@ -18,6 +18,7 @@ on:
       - "presentation/**"
       - "samples/**"
       - "uploads/**"
+      - "public/listings/**"
 
   # Pushes from CI bots use GITHUB_TOKEN and do not fire `push` workflows; redeploy when they finish.
   workflow_run:

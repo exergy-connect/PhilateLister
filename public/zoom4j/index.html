@@ -4508,8 +4508,13 @@ window.__XFRAME__.runtime.register("crop_drag", { import: ["url_params.get", "ur
     return null;
   };
 
+  /** Crop from the inbound query map — not DOM/localStorage. */
+  const cropFromUrl = (detailId) => runtime.url_params?.get?.(detailId, "crop") || "";
+
   /** Prefer live element / URL store — not the event property name. */
   const cropValueForDetail = (detailId) => {
+    const fromUrl = cropFromUrl(detailId);
+    if (fromUrl) return fromUrl;
     if (typeof runtime.url_params?.read === "function") {
       return runtime.url_params.read(detailId, "crop");
     }
@@ -4552,7 +4557,7 @@ window.__XFRAME__.runtime.register("crop_drag", { import: ["url_params.get", "ur
       if (!(callout instanceof HTMLElement)) return;
       const detailId = callout.getAttribute("data-xframe-crop-detail")?.trim();
       if (!detailId) return;
-      if (cropValueForDetail(detailId)) return;
+      if (cropFromUrl(detailId)) return;
       const detail = document.getElementById(detailId);
       const refsSource = detail instanceof HTMLImageElement
         && (detail.id === sourceId || detail.getAttribute("data-xframe-media-ref") === sourceId);
@@ -4958,7 +4963,9 @@ window.__XFRAME__.runtime.register("hud", (runtime) => {
     if (nextButton) nextButton.disabled = index >= slides.length - 1;
     const hash = "#" + (index + 1);
     if (hash !== location.hash) {
-      try { history.replaceState(null, "", hash); } catch {}
+      try {
+        history.replaceState(null, "", `${location.pathname}${location.search}${hash}`);
+      } catch {}
     }
     root.dispatchEvent(new CustomEvent("xframe:slidechange", { detail: { index, source } }));
     if (isFullscreen()) syncFullscreenBackdrop();
@@ -6385,8 +6392,13 @@ window.__XFRAME__.runtime.register("crop_drag", { import: ["url_params.get", "ur
     return null;
   };
 
+  /** Crop from the inbound query map — not DOM/localStorage. */
+  const cropFromUrl = (detailId) => runtime.url_params?.get?.(detailId, "crop") || "";
+
   /** Prefer live element / URL store — not the event property name. */
   const cropValueForDetail = (detailId) => {
+    const fromUrl = cropFromUrl(detailId);
+    if (fromUrl) return fromUrl;
     if (typeof runtime.url_params?.read === "function") {
       return runtime.url_params.read(detailId, "crop");
     }
@@ -6429,7 +6441,7 @@ window.__XFRAME__.runtime.register("crop_drag", { import: ["url_params.get", "ur
       if (!(callout instanceof HTMLElement)) return;
       const detailId = callout.getAttribute("data-xframe-crop-detail")?.trim();
       if (!detailId) return;
-      if (cropValueForDetail(detailId)) return;
+      if (cropFromUrl(detailId)) return;
       const detail = document.getElementById(detailId);
       const refsSource = detail instanceof HTMLImageElement
         && (detail.id === sourceId || detail.getAttribute("data-xframe-media-ref") === sourceId);
@@ -6835,7 +6847,9 @@ window.__XFRAME__.runtime.register("hud", (runtime) => {
     if (nextButton) nextButton.disabled = index >= slides.length - 1;
     const hash = "#" + (index + 1);
     if (hash !== location.hash) {
-      try { history.replaceState(null, "", hash); } catch {}
+      try {
+        history.replaceState(null, "", `${location.pathname}${location.search}${hash}`);
+      } catch {}
     }
     root.dispatchEvent(new CustomEvent("xframe:slidechange", { detail: { index, source } }));
     if (isFullscreen()) syncFullscreenBackdrop();

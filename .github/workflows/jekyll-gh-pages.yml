@@ -2,19 +2,22 @@
 name: Deploy Jekyll with GitHub Pages dependencies preinstalled
 
 on:
-  # Rebuild Pages only when the dashboard HTML changes (manual runs still deploy full site).
+  # Skip Pages on source/CI/data pushes; public/ (and other site files) still deploy.
+  # Manual runs and workflow_run still deploy the full site.
   push:
     branches: ["main"]
-    paths:
-      - "public/index.html"
-      - "public/consolidated_data.js"
-      - "public/test/**"
-      - "public/listings/**"
-      - "public/aps/index.html"
-      - "public/psag/*"
-      - "public/setfinder/**"
-      - "public/albumview/**"
-      - "public/cancelfilters/**"
+    paths-ignore:
+      - "examples/**"
+      - "xframe/**"
+      - "scripts/**"
+      - ".github/**"
+      - "HipStamp/**"
+      - "eBay/**"
+      - "browser_plugin/**"
+      - "flyers/**"
+      - "presentation/**"
+      - "samples/**"
+      - "uploads/**"
 
   # Pushes from CI bots use GITHUB_TOKEN and do not fire `push` workflows; redeploy when they finish.
   workflow_run:

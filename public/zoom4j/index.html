@@ -110,12 +110,22 @@ img[data-click-to-zoom="true"] { cursor: zoom-in; }
   max-height: calc(92vh - 2.2rem);
   object-fit: contain;
 }
-/* @image mm_ruler: enlarge ruler + crop viewport (ticks included), keep crop aspect ratio. */
+/*
+ * Crop zoom: set both axes from the crop ratio so a square crop stays square
+ * inside the overlay (the stage must not stretch the viewport).
+ */
 .xframe-zoom-stage.xframe-zoom-stage-ruler {
-  display: grid;
-  place-items: center;
+  --xframe-zoom-box: min(
+    calc(96vw - 2 * min(2rem, 4vw) - 2.2rem),
+    calc(92vh - 2.2rem),
+    calc(1200px - 2.2rem)
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: fit-content;
-  max-width: min(96vw, 1200px);
+  height: fit-content;
+  max-width: 96vw;
   max-height: 92vh;
   overflow: hidden;
 }
@@ -123,28 +133,28 @@ img[data-click-to-zoom="true"] { cursor: zoom-in; }
   max-width: 100%;
 }
 .xframe-zoom-stage .xframe-zoom-ruler.xframe-mm-ruler[data-xframe-crop] {
-  /* Width is the limiting axis; height follows crop W/H (square crops stay square). */
   width: min(
-    100%,
-    calc(96vw - 2.2rem - 2 * min(2rem, 4vw)),
-    calc(1200px - 2.2rem),
-    calc((92vh - 2.2rem) * (var(--xframe-crop-w) / var(--xframe-crop-h)))
+    var(--xframe-zoom-box),
+    calc(var(--xframe-zoom-box) * var(--xframe-crop-w) / var(--xframe-crop-h))
   );
-  height: auto;
-  max-width: 100%;
-  aspect-ratio: var(--xframe-crop-w) / var(--xframe-crop-h);
+  height: min(
+    var(--xframe-zoom-box),
+    calc(var(--xframe-zoom-box) * var(--xframe-crop-h) / var(--xframe-crop-w))
+  );
+  max-width: none;
+  aspect-ratio: auto;
 }
 .xframe-zoom-stage .xframe-zoom-ruler.xframe-mm-ruler[data-xframe-crop] .xframe-mm-ruler-view {
   width: 100%;
-  height: auto;
-  aspect-ratio: var(--xframe-crop-w) / var(--xframe-crop-h);
+  height: 100%;
+  aspect-ratio: auto;
 }
 .xframe-zoom-stage .xframe-zoom-ruler.xframe-mm-ruler[data-xframe-crop] .xframe-mm-ruler-view > img {
   max-width: none;
   max-height: none;
 }
 .xframe-zoom-stage .xframe-zoom-ruler.xframe-mm-ruler:not([data-xframe-crop]) {
-  width: min(100%, calc(96vw - 2.2rem - 2 * min(2rem, 4vw)), calc(1200px - 2.2rem));
+  width: var(--xframe-zoom-box);
 }
 .xframe-zoom-stage .xframe-zoom-ruler.xframe-mm-ruler:not([data-xframe-crop]) .xframe-mm-ruler-view > img {
   width: auto;
@@ -230,12 +240,18 @@ img[data-click-to-zoom="true"] { cursor: zoom-in; }
   position: absolute;
   display: block;
   width: calc(var(--xframe-src-w) / var(--xframe-crop-w) * 100%);
-  height: calc(var(--xframe-src-h) / var(--xframe-crop-h) * 100%);
+  height: auto;
+  aspect-ratio: var(--xframe-src-w) / var(--xframe-src-h);
   max-width: none;
   max-height: none;
-  left: calc(var(--xframe-crop-x) / var(--xframe-crop-w) * -100%);
-  top: calc(var(--xframe-crop-y) / var(--xframe-crop-h) * -100%);
-  object-fit: fill;
+  left: 0;
+  top: 0;
+  /* Translate % is of the image box (source AR), not the viewport. */
+  transform: translate(
+    calc(var(--xframe-crop-x) / var(--xframe-src-w) * -100%),
+    calc(var(--xframe-crop-y) / var(--xframe-src-h) * -100%)
+  );
+  object-fit: contain;
 }
 
 /*
@@ -1430,12 +1446,22 @@ img[data-click-to-zoom="true"] { cursor: zoom-in; }
   max-height: calc(92vh - 2.2rem);
   object-fit: contain;
 }
-/* @image mm_ruler: enlarge ruler + crop viewport (ticks included), keep crop aspect ratio. */
+/*
+ * Crop zoom: set both axes from the crop ratio so a square crop stays square
+ * inside the overlay (the stage must not stretch the viewport).
+ */
 .xframe-zoom-stage.xframe-zoom-stage-ruler {
-  display: grid;
-  place-items: center;
+  --xframe-zoom-box: min(
+    calc(96vw - 2 * min(2rem, 4vw) - 2.2rem),
+    calc(92vh - 2.2rem),
+    calc(1200px - 2.2rem)
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: fit-content;
-  max-width: min(96vw, 1200px);
+  height: fit-content;
+  max-width: 96vw;
   max-height: 92vh;
   overflow: hidden;
 }
@@ -1443,28 +1469,28 @@ img[data-click-to-zoom="true"] { cursor: zoom-in; }
   max-width: 100%;
 }
 .xframe-zoom-stage .xframe-zoom-ruler.xframe-mm-ruler[data-xframe-crop] {
-  /* Width is the limiting axis; height follows crop W/H (square crops stay square). */
   width: min(
-    100%,
-    calc(96vw - 2.2rem - 2 * min(2rem, 4vw)),
-    calc(1200px - 2.2rem),
-    calc((92vh - 2.2rem) * (var(--xframe-crop-w) / var(--xframe-crop-h)))
+    var(--xframe-zoom-box),
+    calc(var(--xframe-zoom-box) * var(--xframe-crop-w) / var(--xframe-crop-h))
   );
-  height: auto;
-  max-width: 100%;
-  aspect-ratio: var(--xframe-crop-w) / var(--xframe-crop-h);
+  height: min(
+    var(--xframe-zoom-box),
+    calc(var(--xframe-zoom-box) * var(--xframe-crop-h) / var(--xframe-crop-w))
+  );
+  max-width: none;
+  aspect-ratio: auto;
 }
 .xframe-zoom-stage .xframe-zoom-ruler.xframe-mm-ruler[data-xframe-crop] .xframe-mm-ruler-view {
   width: 100%;
-  height: auto;
-  aspect-ratio: var(--xframe-crop-w) / var(--xframe-crop-h);
+  height: 100%;
+  aspect-ratio: auto;
 }
 .xframe-zoom-stage .xframe-zoom-ruler.xframe-mm-ruler[data-xframe-crop] .xframe-mm-ruler-view > img {
   max-width: none;
   max-height: none;
 }
 .xframe-zoom-stage .xframe-zoom-ruler.xframe-mm-ruler:not([data-xframe-crop]) {
-  width: min(100%, calc(96vw - 2.2rem - 2 * min(2rem, 4vw)), calc(1200px - 2.2rem));
+  width: var(--xframe-zoom-box);
 }
 .xframe-zoom-stage .xframe-zoom-ruler.xframe-mm-ruler:not([data-xframe-crop]) .xframe-mm-ruler-view > img {
   width: auto;
@@ -1550,12 +1576,18 @@ img[data-click-to-zoom="true"] { cursor: zoom-in; }
   position: absolute;
   display: block;
   width: calc(var(--xframe-src-w) / var(--xframe-crop-w) * 100%);
-  height: calc(var(--xframe-src-h) / var(--xframe-crop-h) * 100%);
+  height: auto;
+  aspect-ratio: var(--xframe-src-w) / var(--xframe-src-h);
   max-width: none;
   max-height: none;
-  left: calc(var(--xframe-crop-x) / var(--xframe-crop-w) * -100%);
-  top: calc(var(--xframe-crop-y) / var(--xframe-crop-h) * -100%);
-  object-fit: fill;
+  left: 0;
+  top: 0;
+  /* Translate % is of the image box (source AR), not the viewport. */
+  transform: translate(
+    calc(var(--xframe-crop-x) / var(--xframe-src-w) * -100%),
+    calc(var(--xframe-crop-y) / var(--xframe-src-h) * -100%)
+  );
+  object-fit: contain;
 }
 
 /*

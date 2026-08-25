@@ -149,9 +149,18 @@ img[data-click-to-zoom="true"] { cursor: zoom-in; }
   height: 100%;
   aspect-ratio: auto;
 }
-.xframe-zoom-stage .xframe-zoom-ruler.xframe-mm-ruler[data-xframe-crop] .xframe-mm-ruler-view > img {
+.xframe-zoom-stage .xframe-zoom-ruler.xframe-mm-ruler[data-xframe-crop] .xframe-mm-ruler-view > img.xframe-crop-bitmap,
+.xframe-zoom-stage .xframe-zoom-ruler.xframe-mm-ruler[data-xframe-crop] .xframe-mm-ruler-view > img.xframe-zoom-crop-bitmap {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   max-width: none;
   max-height: none;
+  left: 0;
+  top: 0;
+  transform: none;
+  object-fit: contain;
 }
 .xframe-zoom-stage .xframe-zoom-ruler.xframe-mm-ruler:not([data-xframe-crop]) {
   width: var(--xframe-zoom-box);
@@ -251,6 +260,18 @@ img[data-click-to-zoom="true"] { cursor: zoom-in; }
     calc(var(--xframe-crop-x) / var(--xframe-src-w) * -100%),
     calc(var(--xframe-crop-y) / var(--xframe-src-h) * -100%)
   );
+  object-fit: contain;
+}
+
+/* Crop PNG is the <img> file — Save as downloads the box, not the scan. */
+.xframe-mm-ruler[data-xframe-crop] .xframe-mm-ruler-view > img.xframe-crop-bitmap {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  left: 0;
+  top: 0;
+  transform: none;
   object-fit: contain;
 }
 
@@ -1485,9 +1506,18 @@ img[data-click-to-zoom="true"] { cursor: zoom-in; }
   height: 100%;
   aspect-ratio: auto;
 }
-.xframe-zoom-stage .xframe-zoom-ruler.xframe-mm-ruler[data-xframe-crop] .xframe-mm-ruler-view > img {
+.xframe-zoom-stage .xframe-zoom-ruler.xframe-mm-ruler[data-xframe-crop] .xframe-mm-ruler-view > img.xframe-crop-bitmap,
+.xframe-zoom-stage .xframe-zoom-ruler.xframe-mm-ruler[data-xframe-crop] .xframe-mm-ruler-view > img.xframe-zoom-crop-bitmap {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   max-width: none;
   max-height: none;
+  left: 0;
+  top: 0;
+  transform: none;
+  object-fit: contain;
 }
 .xframe-zoom-stage .xframe-zoom-ruler.xframe-mm-ruler:not([data-xframe-crop]) {
   width: var(--xframe-zoom-box);
@@ -1587,6 +1617,18 @@ img[data-click-to-zoom="true"] { cursor: zoom-in; }
     calc(var(--xframe-crop-x) / var(--xframe-src-w) * -100%),
     calc(var(--xframe-crop-y) / var(--xframe-src-h) * -100%)
   );
+  object-fit: contain;
+}
+
+/* Crop PNG is the <img> file — Save as downloads the box, not the scan. */
+.xframe-mm-ruler[data-xframe-crop] .xframe-mm-ruler-view > img.xframe-crop-bitmap {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  left: 0;
+  top: 0;
+  transform: none;
   object-fit: contain;
 }
 
@@ -3924,12 +3966,132 @@ window.__XFRAME__.runtime.register("crop", () => {
     const rulers = [];
     document.querySelectorAll(".xframe-mm-ruler").forEach((ruler) => {
       if (!(ruler instanceof HTMLElement)) return;
-      const img = ruler.querySelector("img");
+      const img = ruler.querySelector(".xframe-mm-ruler-view > img");
       const linked = (img instanceof HTMLImageElement && img.id === detailId)
         || ruler.getAttribute("data-xframe-crop-detail") === detailId;
       if (linked) rulers.push(ruler);
     });
     return rulers;
+  };
+
+  const cropRecordForDetail = (detailId) => {
+    if (!detailId) return null;
+    const el = document.querySelector(`.xframe-crop[data-xframe-crop-detail="${CSS.escape(detailId)}"]`);
+    return el instanceof HTMLElement ? el : null;
+  };
+
+  const stateFromRuler = (ruler) => {
+    if (!(ruler instanceof HTMLElement)) return null;
+    const fromChild = read(ruler.querySelector(".xframe-crop"));
+    if (fromChild) return fromChild;
+    const detailId = ruler.getAttribute("data-xframe-crop-detail")?.trim() || "";
+    const fromRecord = read(cropRecordForDetail(detailId));
+    if (fromRecord) return fromRecord;
+    const css = (name) => Number(ruler.style.getPropertyValue(name));
+    const srcW = css("--xframe-src-w");
+    const srcH = css("--xframe-src-h");
+    const cropX = css("--xframe-crop-x");
+    const cropY = css("--xframe-crop-y");
+    const cropW = css("--xframe-crop-w");
+    const cropH = css("--xframe-crop-h");
+    if (!(srcW > 0 && srcH > 0 && cropW > 0 && cropH > 0)) return null;
+    return { sourceId: "", detailId, srcW, srcH, cropX, cropY, cropW, cropH, dpi: css("--xframe-dpi") };
+  };
+
+  const resolveBitmap = (state, fallback) => {
+    if (state?.sourceId) {
+      const source = document.getElementById(state.sourceId);
+      if (source instanceof HTMLImageElement && source.naturalWidth > 0
+        && !source.classList.contains("xframe-crop-bitmap")) {
+        return source;
+      }
+    }
+    if (fallback instanceof HTMLImageElement && fallback.naturalWidth > 0
+      && !fallback.classList.contains("xframe-crop-bitmap")) {
+      return fallback;
+    }
+    return null;
+  };
+
+  /**
+   * Draw the crop box into a PNG data URL so "Save image as" downloads the
+   * visible box, not the full scan the CSS is clipping.
+   */
+  const snapshotDataUrl = (bitmap, state) => {
+    if (!(bitmap instanceof HTMLImageElement) || !state) return "";
+    const nw = bitmap.naturalWidth;
+    const nh = bitmap.naturalHeight;
+    if (!(nw > 0 && nh > 0 && state.srcW > 0 && state.srcH > 0 && state.cropW > 0 && state.cropH > 0)) {
+      return "";
+    }
+    const sx = Math.max(0, Math.round(state.cropX * (nw / state.srcW)));
+    const sy = Math.max(0, Math.round(state.cropY * (nh / state.srcH)));
+    const sw = Math.min(nw - sx, Math.round(state.cropW * (nw / state.srcW)));
+    const sh = Math.min(nh - sy, Math.round(state.cropH * (nh / state.srcH)));
+    if (!(sw > 0 && sh > 0)) return "";
+    const canvas = document.createElement("canvas");
+    canvas.width = sw;
+    canvas.height = sh;
+    try {
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return "";
+      ctx.drawImage(bitmap, sx, sy, sw, sh, 0, 0, sw, sh);
+      return canvas.toDataURL("image/png");
+    } catch {
+      return "";
+    }
+  };
+
+  const viewImage = (ruler) => {
+    const img = ruler.querySelector(".xframe-mm-ruler-view > img");
+    return img instanceof HTMLImageElement ? img : null;
+  };
+
+  /** Put the crop PNG on the ruler <img> so Save as matches the box. */
+  const bakeRuler = (ruler, fallbackImg) => {
+    if (!(ruler instanceof HTMLElement) || !ruler.hasAttribute("data-xframe-crop")) return false;
+    const img = viewImage(ruler);
+    if (!img) return false;
+    const state = stateFromRuler(ruler);
+    const bitmap = resolveBitmap(state, fallbackImg || img);
+    const url = snapshotDataUrl(bitmap, state);
+    if (!url) return false;
+    if (!img.classList.contains("xframe-crop-bitmap")) {
+      const full = img.getAttribute("src") || img.currentSrc || "";
+      if (full && !full.startsWith("data:image/png")) {
+        img.setAttribute("data-xframe-full-src", full);
+      }
+    }
+    img.classList.add("xframe-crop-bitmap");
+    img.removeAttribute("srcset");
+    img.removeAttribute("data-src");
+    img.src = url;
+    return true;
+  };
+
+  const bakeDetail = (detailId) => {
+    if (!detailId) return;
+    const fallback = document.getElementById(detailId);
+    for (const ruler of rulersForDetail(detailId)) bakeRuler(ruler, fallback);
+  };
+
+  /** Restore the full scan so CSS crop can pan during drag. */
+  const livePreview = (detailId) => {
+    if (!detailId) return;
+    for (const ruler of rulersForDetail(detailId)) {
+      const img = viewImage(ruler);
+      if (!img) continue;
+      const full = img.getAttribute("data-xframe-full-src") || "";
+      const state = stateFromRuler(ruler);
+      const source = state?.sourceId ? document.getElementById(state.sourceId) : null;
+      const src = (source instanceof HTMLImageElement
+        && !source.classList.contains("xframe-crop-bitmap")
+        && (source.currentSrc || source.getAttribute("src")))
+        || full;
+      if (!src) continue;
+      img.classList.remove("xframe-crop-bitmap");
+      img.src = src;
+    }
   };
 
   const sync = (el) => {
@@ -3980,6 +4142,7 @@ window.__XFRAME__.runtime.register("crop", () => {
       });
       write(el, next);
       sync(el);
+      bakeDetail(next.detailId);
       document.dispatchEvent(new CustomEvent("xframe:crop", {
         detail: { ...next, reason: "rescale" },
       }));
@@ -3988,7 +4151,16 @@ window.__XFRAME__.runtime.register("crop", () => {
 
   const boot = () => {
     document.querySelectorAll(".xframe-crop").forEach((el) => {
-      if (el instanceof HTMLElement) sync(el);
+      if (!(el instanceof HTMLElement)) return;
+      const state = sync(el);
+      if (!state) return;
+      const bitmap = resolveBitmap(state, document.getElementById(state.detailId));
+      const run = () => bakeDetail(state.detailId);
+      if (bitmap && !(bitmap.complete && bitmap.naturalWidth > 0)) {
+        bitmap.addEventListener("load", run, { once: true });
+      } else {
+        run();
+      }
     });
   };
   if (document.readyState === "loading") {
@@ -3997,7 +4169,16 @@ window.__XFRAME__.runtime.register("crop", () => {
     boot();
   }
 
-  return { read, write, sync, rescaleSource, cropsForSource };
+  document.addEventListener("contextmenu", (event) => {
+    const img = event.target instanceof Element
+      ? event.target.closest(".xframe-mm-ruler[data-xframe-crop] .xframe-mm-ruler-view > img")
+      : null;
+    if (!(img instanceof HTMLImageElement)) return;
+    const ruler = img.closest(".xframe-mm-ruler");
+    if (ruler instanceof HTMLElement) bakeRuler(ruler, img);
+  }, true);
+
+  return { read, write, sync, rescaleSource, cropsForSource, bakeRuler, bakeDetail, livePreview };
 });
 </script>
 
@@ -4203,7 +4384,7 @@ window.__XFRAME__.runtime.register("url_params", () => {
 </script>
 
 <script>
-window.__XFRAME__.runtime.register("crop_drag", { import: ["url_params.get", "url_params.set", "url_params.read", "crop.sync", "crop.read", "crop.write"] }, (runtime) => {
+window.__XFRAME__.runtime.register("crop_drag", { import: ["url_params.get", "url_params.set", "url_params.read", "crop.sync", "crop.read", "crop.write", "crop.bakeDetail", "crop.livePreview"] }, (runtime) => {
   /** @type {{
    *   callout: HTMLElement,
    *   frame: HTMLElement,
@@ -4398,6 +4579,7 @@ window.__XFRAME__.runtime.register("crop_drag", { import: ["url_params.get", "ur
       /* already released */
     }
     drag.callout.classList.remove("is-dragging");
+    runtime.crop.bakeDetail?.(drag.detailId);
     if (drag.moved) {
       const leftPct = Number.parseFloat(drag.callout.style.left) || 0;
       const topPct = Number.parseFloat(drag.callout.style.top) || 0;
@@ -4432,6 +4614,7 @@ window.__XFRAME__.runtime.register("crop_drag", { import: ["url_params.get", "ur
     const imageKey = imageKeyForSource(source);
     event.preventDefault();
     event.stopPropagation();
+    runtime.crop.livePreview?.(detailId);
     const leftPct = Number.parseFloat(callout.style.left) || 0;
     const topPct = Number.parseFloat(callout.style.top) || 0;
     drag = {
@@ -4477,7 +4660,10 @@ window.__XFRAME__.runtime.register("crop_drag", { import: ["url_params.get", "ur
     if (!detail || typeof detail !== "object") return;
     if (detail.source === "crop_drag") return;
     const detailId = typeof detail.id === "string" ? detail.id : "";
-    if (detailId) syncDetailFromElement(detailId);
+    if (detailId) {
+      syncDetailFromElement(detailId);
+      runtime.crop.bakeDetail?.(detailId);
+    }
   });
 
   document.addEventListener("xframe:crop", (event) => {
@@ -4528,6 +4714,10 @@ window.__XFRAME__.runtime.register("crop_drag", { import: ["url_params.get", "ur
       const x0 = Math.round((leftPct / 100) * srcW);
       const y0 = Math.round((topPct / 100) * srcH);
       publishCropParam(detailId, x0, y0, cropW, cropH);
+    });
+    document.querySelectorAll(".xframe-crop[data-xframe-crop-detail]").forEach((el) => {
+      const id = el.getAttribute("data-xframe-crop-detail")?.trim();
+      if (id) runtime.crop.bakeDetail?.(id);
     });
   };
   if (document.readyState === "loading") {
@@ -5439,7 +5629,7 @@ window.__XFRAME__.runtime.register("walkthrough", { import: ["hud.goTo"] }, (run
 </script>
 
 <script>
-window.__XFRAME__.runtime.register("zoom", (runtime) => {
+window.__XFRAME__.runtime.register("zoom", { import: ["crop.bakeRuler"] }, (runtime) => {
   const overlay = document.createElement("div");
   overlay.className = "xframe-zoom-overlay";
   overlay.hidden = true;
@@ -5448,7 +5638,6 @@ window.__XFRAME__.runtime.register("zoom", (runtime) => {
   document.body.appendChild(overlay);
   /** @type {{ marker: Comment, frame: HTMLIFrameElement } | { marker: Comment, host: Element } | null} */
   let parked = null;
-
   const restoreParked = () => {
     if (!parked) return;
     if ("frame" in parked && parked.marker.parentNode) {
@@ -5485,6 +5674,7 @@ window.__XFRAME__.runtime.register("zoom", (runtime) => {
     });
     stage.classList.remove("xframe-zoom-stage-html");
     stage.classList.add("xframe-zoom-stage-ruler");
+    runtime.crop?.bakeRuler?.(clone, image);
     stage.replaceChildren(clone);
     return true;
   };
@@ -5638,12 +5828,132 @@ window.__XFRAME__.runtime.register("crop", () => {
     const rulers = [];
     document.querySelectorAll(".xframe-mm-ruler").forEach((ruler) => {
       if (!(ruler instanceof HTMLElement)) return;
-      const img = ruler.querySelector("img");
+      const img = ruler.querySelector(".xframe-mm-ruler-view > img");
       const linked = (img instanceof HTMLImageElement && img.id === detailId)
         || ruler.getAttribute("data-xframe-crop-detail") === detailId;
       if (linked) rulers.push(ruler);
     });
     return rulers;
+  };
+
+  const cropRecordForDetail = (detailId) => {
+    if (!detailId) return null;
+    const el = document.querySelector(`.xframe-crop[data-xframe-crop-detail="${CSS.escape(detailId)}"]`);
+    return el instanceof HTMLElement ? el : null;
+  };
+
+  const stateFromRuler = (ruler) => {
+    if (!(ruler instanceof HTMLElement)) return null;
+    const fromChild = read(ruler.querySelector(".xframe-crop"));
+    if (fromChild) return fromChild;
+    const detailId = ruler.getAttribute("data-xframe-crop-detail")?.trim() || "";
+    const fromRecord = read(cropRecordForDetail(detailId));
+    if (fromRecord) return fromRecord;
+    const css = (name) => Number(ruler.style.getPropertyValue(name));
+    const srcW = css("--xframe-src-w");
+    const srcH = css("--xframe-src-h");
+    const cropX = css("--xframe-crop-x");
+    const cropY = css("--xframe-crop-y");
+    const cropW = css("--xframe-crop-w");
+    const cropH = css("--xframe-crop-h");
+    if (!(srcW > 0 && srcH > 0 && cropW > 0 && cropH > 0)) return null;
+    return { sourceId: "", detailId, srcW, srcH, cropX, cropY, cropW, cropH, dpi: css("--xframe-dpi") };
+  };
+
+  const resolveBitmap = (state, fallback) => {
+    if (state?.sourceId) {
+      const source = document.getElementById(state.sourceId);
+      if (source instanceof HTMLImageElement && source.naturalWidth > 0
+        && !source.classList.contains("xframe-crop-bitmap")) {
+        return source;
+      }
+    }
+    if (fallback instanceof HTMLImageElement && fallback.naturalWidth > 0
+      && !fallback.classList.contains("xframe-crop-bitmap")) {
+      return fallback;
+    }
+    return null;
+  };
+
+  /**
+   * Draw the crop box into a PNG data URL so "Save image as" downloads the
+   * visible box, not the full scan the CSS is clipping.
+   */
+  const snapshotDataUrl = (bitmap, state) => {
+    if (!(bitmap instanceof HTMLImageElement) || !state) return "";
+    const nw = bitmap.naturalWidth;
+    const nh = bitmap.naturalHeight;
+    if (!(nw > 0 && nh > 0 && state.srcW > 0 && state.srcH > 0 && state.cropW > 0 && state.cropH > 0)) {
+      return "";
+    }
+    const sx = Math.max(0, Math.round(state.cropX * (nw / state.srcW)));
+    const sy = Math.max(0, Math.round(state.cropY * (nh / state.srcH)));
+    const sw = Math.min(nw - sx, Math.round(state.cropW * (nw / state.srcW)));
+    const sh = Math.min(nh - sy, Math.round(state.cropH * (nh / state.srcH)));
+    if (!(sw > 0 && sh > 0)) return "";
+    const canvas = document.createElement("canvas");
+    canvas.width = sw;
+    canvas.height = sh;
+    try {
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return "";
+      ctx.drawImage(bitmap, sx, sy, sw, sh, 0, 0, sw, sh);
+      return canvas.toDataURL("image/png");
+    } catch {
+      return "";
+    }
+  };
+
+  const viewImage = (ruler) => {
+    const img = ruler.querySelector(".xframe-mm-ruler-view > img");
+    return img instanceof HTMLImageElement ? img : null;
+  };
+
+  /** Put the crop PNG on the ruler <img> so Save as matches the box. */
+  const bakeRuler = (ruler, fallbackImg) => {
+    if (!(ruler instanceof HTMLElement) || !ruler.hasAttribute("data-xframe-crop")) return false;
+    const img = viewImage(ruler);
+    if (!img) return false;
+    const state = stateFromRuler(ruler);
+    const bitmap = resolveBitmap(state, fallbackImg || img);
+    const url = snapshotDataUrl(bitmap, state);
+    if (!url) return false;
+    if (!img.classList.contains("xframe-crop-bitmap")) {
+      const full = img.getAttribute("src") || img.currentSrc || "";
+      if (full && !full.startsWith("data:image/png")) {
+        img.setAttribute("data-xframe-full-src", full);
+      }
+    }
+    img.classList.add("xframe-crop-bitmap");
+    img.removeAttribute("srcset");
+    img.removeAttribute("data-src");
+    img.src = url;
+    return true;
+  };
+
+  const bakeDetail = (detailId) => {
+    if (!detailId) return;
+    const fallback = document.getElementById(detailId);
+    for (const ruler of rulersForDetail(detailId)) bakeRuler(ruler, fallback);
+  };
+
+  /** Restore the full scan so CSS crop can pan during drag. */
+  const livePreview = (detailId) => {
+    if (!detailId) return;
+    for (const ruler of rulersForDetail(detailId)) {
+      const img = viewImage(ruler);
+      if (!img) continue;
+      const full = img.getAttribute("data-xframe-full-src") || "";
+      const state = stateFromRuler(ruler);
+      const source = state?.sourceId ? document.getElementById(state.sourceId) : null;
+      const src = (source instanceof HTMLImageElement
+        && !source.classList.contains("xframe-crop-bitmap")
+        && (source.currentSrc || source.getAttribute("src")))
+        || full;
+      if (!src) continue;
+      img.classList.remove("xframe-crop-bitmap");
+      img.src = src;
+    }
   };
 
   const sync = (el) => {
@@ -5694,6 +6004,7 @@ window.__XFRAME__.runtime.register("crop", () => {
       });
       write(el, next);
       sync(el);
+      bakeDetail(next.detailId);
       document.dispatchEvent(new CustomEvent("xframe:crop", {
         detail: { ...next, reason: "rescale" },
       }));
@@ -5702,7 +6013,16 @@ window.__XFRAME__.runtime.register("crop", () => {
 
   const boot = () => {
     document.querySelectorAll(".xframe-crop").forEach((el) => {
-      if (el instanceof HTMLElement) sync(el);
+      if (!(el instanceof HTMLElement)) return;
+      const state = sync(el);
+      if (!state) return;
+      const bitmap = resolveBitmap(state, document.getElementById(state.detailId));
+      const run = () => bakeDetail(state.detailId);
+      if (bitmap && !(bitmap.complete && bitmap.naturalWidth > 0)) {
+        bitmap.addEventListener("load", run, { once: true });
+      } else {
+        run();
+      }
     });
   };
   if (document.readyState === "loading") {
@@ -5711,7 +6031,16 @@ window.__XFRAME__.runtime.register("crop", () => {
     boot();
   }
 
-  return { read, write, sync, rescaleSource, cropsForSource };
+  document.addEventListener("contextmenu", (event) => {
+    const img = event.target instanceof Element
+      ? event.target.closest(".xframe-mm-ruler[data-xframe-crop] .xframe-mm-ruler-view > img")
+      : null;
+    if (!(img instanceof HTMLImageElement)) return;
+    const ruler = img.closest(".xframe-mm-ruler");
+    if (ruler instanceof HTMLElement) bakeRuler(ruler, img);
+  }, true);
+
+  return { read, write, sync, rescaleSource, cropsForSource, bakeRuler, bakeDetail, livePreview };
 });
 </script>
 
@@ -5917,7 +6246,7 @@ window.__XFRAME__.runtime.register("url_params", () => {
 </script>
 
 <script>
-window.__XFRAME__.runtime.register("crop_drag", { import: ["url_params.get", "url_params.set", "url_params.read", "crop.sync", "crop.read", "crop.write"] }, (runtime) => {
+window.__XFRAME__.runtime.register("crop_drag", { import: ["url_params.get", "url_params.set", "url_params.read", "crop.sync", "crop.read", "crop.write", "crop.bakeDetail", "crop.livePreview"] }, (runtime) => {
   /** @type {{
    *   callout: HTMLElement,
    *   frame: HTMLElement,
@@ -6112,6 +6441,7 @@ window.__XFRAME__.runtime.register("crop_drag", { import: ["url_params.get", "ur
       /* already released */
     }
     drag.callout.classList.remove("is-dragging");
+    runtime.crop.bakeDetail?.(drag.detailId);
     if (drag.moved) {
       const leftPct = Number.parseFloat(drag.callout.style.left) || 0;
       const topPct = Number.parseFloat(drag.callout.style.top) || 0;
@@ -6146,6 +6476,7 @@ window.__XFRAME__.runtime.register("crop_drag", { import: ["url_params.get", "ur
     const imageKey = imageKeyForSource(source);
     event.preventDefault();
     event.stopPropagation();
+    runtime.crop.livePreview?.(detailId);
     const leftPct = Number.parseFloat(callout.style.left) || 0;
     const topPct = Number.parseFloat(callout.style.top) || 0;
     drag = {
@@ -6191,7 +6522,10 @@ window.__XFRAME__.runtime.register("crop_drag", { import: ["url_params.get", "ur
     if (!detail || typeof detail !== "object") return;
     if (detail.source === "crop_drag") return;
     const detailId = typeof detail.id === "string" ? detail.id : "";
-    if (detailId) syncDetailFromElement(detailId);
+    if (detailId) {
+      syncDetailFromElement(detailId);
+      runtime.crop.bakeDetail?.(detailId);
+    }
   });
 
   document.addEventListener("xframe:crop", (event) => {
@@ -6242,6 +6576,10 @@ window.__XFRAME__.runtime.register("crop_drag", { import: ["url_params.get", "ur
       const x0 = Math.round((leftPct / 100) * srcW);
       const y0 = Math.round((topPct / 100) * srcH);
       publishCropParam(detailId, x0, y0, cropW, cropH);
+    });
+    document.querySelectorAll(".xframe-crop[data-xframe-crop-detail]").forEach((el) => {
+      const id = el.getAttribute("data-xframe-crop-detail")?.trim();
+      if (id) runtime.crop.bakeDetail?.(id);
     });
   };
   if (document.readyState === "loading") {
@@ -7119,7 +7457,7 @@ window.__XFRAME__.runtime.register("walkthrough", { import: ["hud.goTo"] }, (run
 </script>
 
 <script>
-window.__XFRAME__.runtime.register("zoom", (runtime) => {
+window.__XFRAME__.runtime.register("zoom", { import: ["crop.bakeRuler"] }, (runtime) => {
   const overlay = document.createElement("div");
   overlay.className = "xframe-zoom-overlay";
   overlay.hidden = true;
@@ -7128,7 +7466,6 @@ window.__XFRAME__.runtime.register("zoom", (runtime) => {
   document.body.appendChild(overlay);
   /** @type {{ marker: Comment, frame: HTMLIFrameElement } | { marker: Comment, host: Element } | null} */
   let parked = null;
-
   const restoreParked = () => {
     if (!parked) return;
     if ("frame" in parked && parked.marker.parentNode) {
@@ -7165,6 +7502,7 @@ window.__XFRAME__.runtime.register("zoom", (runtime) => {
     });
     stage.classList.remove("xframe-zoom-stage-html");
     stage.classList.add("xframe-zoom-stage-ruler");
+    runtime.crop?.bakeRuler?.(clone, image);
     stage.replaceChildren(clone);
     return true;
   };

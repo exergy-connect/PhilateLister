@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>GHSS Auction Rules — 19–20 September 2026</title>
+  <style>
+    @page {
+      size: letter;
+      margin: 0;
+    }
+
+    :root {
+      --navy: #002d62;
+      --sky: #d1dce5;
+      --maroon: #8b1a1a;
+      --white: #ffffff;
+      --panel: #e8eef3;
+      --ink: #002d62;
+      --muted: #3d5a7a;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 8.5in;
+      height: 11in;
+      overflow: hidden;
+      color: var(--ink);
+      background: var(--white);
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .page {
+      display: flex;
+      flex-direction: column;
+      width: 8.5in;
+      height: 11in;
+      padding: 0.28in;
+      background: var(--navy);
+    }
+
+    .sheet {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      background: var(--white);
+      box-shadow: inset 0 0 0 1.5pt var(--white);
+      overflow: hidden;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.22in 0.2in;
+      align-items: center;
+      padding: 0.26in 0.32in 0.22in;
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    .mark {
+      width: 0.62in;
+      height: 0.62in;
+      flex-shrink: 0;
+    }
+
+    .mark svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .brand {
+      min-width: 0;
+    }
+
+    .kicker {
+      margin: 0 0 0.04in;
+      font-size: 9.5pt;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--sky);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 26pt;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      line-height: 1.05;
+    }
+
+    .dates {
+      margin: 0.08in 0 0;
+      font-size: 13pt;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      color: var(--white);
+    }
+
+    .schedule {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: color-mix(in srgb, var(--navy) 18%, var(--sky));
+      border-top: 1px solid color-mix(in srgb, var(--navy) 35%, var(--sky));
+      border-bottom: 3px solid var(--maroon);
+    }
+
+    .schedule article {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.02in;
+      padding: 0.14in 0.28in;
+      background: var(--panel);
+    }
+
+    .schedule h2 {
+      margin: 0;
+      font-size: 8pt;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--maroon);
+    }
+
+    .schedule p {
+      margin: 0;
+      font-size: 12.5pt;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.25;
+    }
+
+    .rules {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 0.14in;
+      min-height: 0;
+      padding: 0.18in 0.2in 0.12in;
+    }
+
+    section {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      padding: 0.16in 0.18in 0.12in;
+      background: var(--panel);
+      border: 1.5pt solid var(--sky);
+      border-top: 5pt solid var(--navy);
+    }
+
+    section h2 {
+      margin: 0 0 0.08in;
+      padding-bottom: 0.06in;
+      border-bottom: 1px solid color-mix(in srgb, var(--navy) 22%, var(--sky));
+      font-size: 12pt;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    ol {
+      margin: 0;
+      padding: 0 0 0 0.28in;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+    }
+
+    li {
+      margin: 0;
+      padding: 0.03in 0;
+      font-size: 10.4pt;
+      line-height: 1.32;
+      color: var(--ink);
+    }
+
+    li::marker {
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    strong {
+      color: var(--maroon);
+      font-weight: 700;
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.1in 0.28in 0.12in;
+      border-top: 2pt solid var(--navy);
+      font-size: 8.5pt;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="sheet">
+      <header>
+        <div class="mark" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+            <rect width="64" height="64" fill="#002d62"/>
+            <rect x="10" y="10" width="44" height="44" fill="#ffffff"/>
+            <g fill="#002d62">
+              <circle cx="17.333" cy="10" r="2.5"/>
+              <circle cx="24.667" cy="10" r="2.5"/>
+              <circle cx="32" cy="10" r="2.5"/>
+              <circle cx="39.333" cy="10" r="2.5"/>
+              <circle cx="46.667" cy="10" r="2.5"/>
+              <circle cx="17.333" cy="54" r="2.5"/>
+              <circle cx="24.667" cy="54" r="2.5"/>
+              <circle cx="32" cy="54" r="2.5"/>
+              <circle cx="39.333" cy="54" r="2.5"/>
+              <circle cx="46.667" cy="54" r="2.5"/>
+              <circle cx="10" cy="17.333" r="2.5"/>
+              <circle cx="10" cy="24.667" r="2.5"/>
+              <circle cx="10" cy="32" r="2.5"/>
+              <circle cx="10" cy="39.333" r="2.5"/>
+              <circle cx="10" cy="46.667" r="2.5"/>
+              <circle cx="54" cy="17.333" r="2.5"/>
+              <circle cx="54" cy="24.667" r="2.5"/>
+              <circle cx="54" cy="32" r="2.5"/>
+              <circle cx="54" cy="39.333" r="2.5"/>
+              <circle cx="54" cy="46.667" r="2.5"/>
+            </g>
+            <path fill="none" stroke="#002d62" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"
+                  d="M 43.500,32.000 L 43.426,32.747 L 43.211,33.463 L 42.865,34.120 L 42.411,34.695 L 41.870,35.173 L 41.267,35.546 L 40.627,35.815 L 39.967,35.984 L 39.307,36.059 L 38.657,36.052 L 38.026,35.973 L 37.421,35.833 L 36.844,35.642 L 36.296,35.409 L 35.778,35.141 L 35.286,34.846 L 34.819,34.528 L 34.374,34.194 L 33.949,33.846 L 33.540,33.487 L 33.144,33.122 L 32.757,32.750 L 32.377,32.376 L 32.000,32.000 L 31.623,31.624 L 31.243,31.250 L 30.856,30.878 L 30.460,30.513 L 30.051,30.154 L 29.626,29.806 L 29.181,29.472 L 28.714,29.154 L 28.222,28.859 L 27.704,28.591 L 27.156,28.358 L 26.579,28.167 L 25.974,28.027 L 25.343,27.948 L 24.693,27.941 L 24.033,28.016 L 23.373,28.185 L 22.733,28.454 L 22.130,28.827 L 21.589,29.305 L 21.135,29.880 L 20.789,30.537 L 20.574,31.253 L 20.500,32.000 L 20.574,32.747 L 20.789,33.463 L 21.135,34.120 L 21.589,34.695 L 22.130,35.173 L 22.733,35.546 L 23.373,35.815 L 24.033,35.984 L 24.693,36.059 L 25.343,36.052 L 25.974,35.973 L 26.579,35.833 L 27.156,35.642 L 27.704,35.409 L 28.222,35.141 L 28.714,34.846 L 29.181,34.528 L 29.626,34.194 L 30.051,33.846 L 30.460,33.487 L 30.856,33.122 L 31.243,32.750 L 31.623,32.376 L 32.000,32.000 L 32.377,31.624 L 32.757,31.250 L 33.144,30.878 L 33.540,30.513 L 33.949,30.154 L 34.374,29.806 L 34.819,29.472 L 35.286,29.154 L 35.778,28.859 L 36.296,28.591 L 36.844,28.358 L 37.421,28.167 L 38.026,28.027 L 38.657,27.948 L 39.307,27.941 L 39.967,28.016 L 40.627,28.185 L 41.267,28.454 L 41.870,28.827 L 42.411,29.305 L 42.865,29.880 L 43.211,30.537 L 43.426,31.253 L 43.500,32.000"/>
+          </svg>
+        </div>
+        <div class="brand">
+          <p class="kicker">Greater Houston Stamp Show</p>
+          <h1>Auction Rules</h1>
+          <p class="dates">Saturday 19 and Sunday 20 September 2026</p>
+        </div>
+      </header>
+
+      <div class="schedule">
+        <article>
+          <h2>Auction open</h2>
+          <p>Saturday 19 &amp; Sunday 20 September</p>
+        </article>
+        <article>
+          <h2>Bidding closes</h2>
+          <p>Sunday 20 September at 2:00 PM</p>
+        </article>
+      </div>
+
+      <div class="rules">
+        <section>
+          <h2>Registration</h2>
+          <ol>
+            <li>Participants must sign the registration sheet to receive a unique bid number.</li>
+            <li>By signing, participants acknowledge that they have read and will follow these rules.</li>
+            <li>Participants may optionally provide a phone number so they can be notified if they win an item.</li>
+          </ol>
+        </section>
+
+        <section>
+          <h2>Bidding</h2>
+          <ol start="4">
+            <li>Bids are written on the bid sheet for each item.</li>
+            <li>Only one person may access the auction binder at a time.</li>
+            <li>Each item has a minimum bid, as marked on its bid sheet.</li>
+            <li>All bids must be in <strong>$5 increments</strong>.</li>
+            <li>Once submitted, bids <strong>cannot be withdrawn</strong>.</li>
+            <li>The auction committee determines the winning bids, interpreting handwriting as accurately as possible.</li>
+          </ol>
+        </section>
+
+        <section>
+          <h2>Closing &amp; Payment</h2>
+          <ol start="10">
+            <li>The auction closes <strong>Sunday, 20 September 2026 at 2:00 PM</strong>.</li>
+            <li>At closing, the highest bid on each item is the winning bid.</li>
+            <li>Winning bids preferably paid <strong>in cash</strong>, or a check made out to GHSS Foundation.</li>
+            <li>A winning bidder may pay and retrieve their item after the auction closes.</li>
+          </ol>
+        </section>
+
+        <section>
+          <h2>Unclaimed Items</h2>
+          <ol start="14">
+            <li>By <strong>3:00 PM Sunday, 20 September</strong>, if an item has not been retrieved, the next-highest bid from a different bidder is selected, and that bidder will be notified.</li>
+            <li>If either of the two highest bidders comes to claim the item after 3:00 PM, they may pay their bid price and retrieve the item. Any items still unclaimed when the show closes at <strong>4:00 PM Sunday remain the property of GHSS</strong>.</li>
+          </ol>
+        </section>
+      </div>
+
+      <footer>
+        <span>Greater Houston Stamp Show</span>
+        <span>Saturday 19 &amp; Sunday 20 September 2026</span>
+      </footer>
+    </div>
+  </div>
+</body>
+</html>

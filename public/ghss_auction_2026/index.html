@@ -375,6 +375,13 @@ img[data-click-to-zoom="true"] { cursor: zoom-in; }
   max-height: none;
   left: 0;
   top: 0;
+  /* Rotate around the visible crop (viewport) so tilt matches the baked bitmap. */
+  transform-origin: calc(
+      (var(--xframe-crop-x) + var(--xframe-crop-w) / 2) / var(--xframe-src-w) * 100%
+    )
+    calc(
+      (var(--xframe-crop-y) + var(--xframe-crop-h) / 2) / var(--xframe-src-h) * 100%
+    );
   /* Translate % is of the image box (source AR), not the viewport. */
   transform: translate(
     calc(var(--xframe-crop-x) / var(--xframe-src-w) * -100%),
@@ -392,6 +399,7 @@ img[data-click-to-zoom="true"] { cursor: zoom-in; }
   left: 0;
   top: 0;
   transform: rotate(var(--xframe-tilt, 0deg));
+  transform-origin: center center;
   object-fit: contain;
 }
 
@@ -2303,6 +2311,13 @@ img[data-click-to-zoom="true"] { cursor: zoom-in; }
   max-height: none;
   left: 0;
   top: 0;
+  /* Rotate around the visible crop (viewport) so tilt matches the baked bitmap. */
+  transform-origin: calc(
+      (var(--xframe-crop-x) + var(--xframe-crop-w) / 2) / var(--xframe-src-w) * 100%
+    )
+    calc(
+      (var(--xframe-crop-y) + var(--xframe-crop-h) / 2) / var(--xframe-src-h) * 100%
+    );
   /* Translate % is of the image box (source AR), not the viewport. */
   transform: translate(
     calc(var(--xframe-crop-x) / var(--xframe-src-w) * -100%),
@@ -2320,6 +2335,7 @@ img[data-click-to-zoom="true"] { cursor: zoom-in; }
   left: 0;
   top: 0;
   transform: rotate(var(--xframe-tilt, 0deg));
+  transform-origin: center center;
   object-fit: contain;
 }
 
@@ -6246,8 +6262,26 @@ window.__XFRAME__.runtime.register("crop", () => {
     return true;
   };
 
+  const tiltDegreesFromRuler = (ruler) => {
+    const img = viewImage(ruler);
+    if (!img) return 0;
+    const raw = (
+      img.style.getPropertyValue("--xframe-tilt")
+      || (typeof getComputedStyle === "function" ? getComputedStyle(img).getPropertyValue("--xframe-tilt") : "")
+      || ""
+    ).trim();
+    const n = Number.parseFloat(raw);
+    return Number.isFinite(n) ? n : 0;
+  };
+
+  const detailHasTilt = (detailId) =>
+    rulersForDetail(detailId).some((ruler) => Math.abs(tiltDegreesFromRuler(ruler)) > 1e-9);
+
   const bakeDetail = (detailId) => {
     if (!detailId) return;
+    // A tilted stamp is CSS-transformed; baking an axis-aligned crop PNG
+    // then rotating it snaps the image onto the millimetre grid on pointer-up.
+    if (detailHasTilt(detailId)) return;
     const run = () => {
       const fallback = document.getElementById(detailId);
       for (const ruler of rulersForDetail(detailId)) bakeRuler(ruler, fallback);
@@ -8358,7 +8392,6 @@ window.__XFRAME__.runtime.register("tilt_control", () => {
   const applyTilt = (target, degrees) => {
     if (!(target instanceof HTMLElement)) return;
     target.style.setProperty("--xframe-tilt", `${degrees}deg`);
-    target.style.setProperty("transform-origin", "center center");
   };
 
   const clearControl = (overlay) => {
@@ -9021,8 +9054,26 @@ window.__XFRAME__.runtime.register("crop", () => {
     return true;
   };
 
+  const tiltDegreesFromRuler = (ruler) => {
+    const img = viewImage(ruler);
+    if (!img) return 0;
+    const raw = (
+      img.style.getPropertyValue("--xframe-tilt")
+      || (typeof getComputedStyle === "function" ? getComputedStyle(img).getPropertyValue("--xframe-tilt") : "")
+      || ""
+    ).trim();
+    const n = Number.parseFloat(raw);
+    return Number.isFinite(n) ? n : 0;
+  };
+
+  const detailHasTilt = (detailId) =>
+    rulersForDetail(detailId).some((ruler) => Math.abs(tiltDegreesFromRuler(ruler)) > 1e-9);
+
   const bakeDetail = (detailId) => {
     if (!detailId) return;
+    // A tilted stamp is CSS-transformed; baking an axis-aligned crop PNG
+    // then rotating it snaps the image onto the millimetre grid on pointer-up.
+    if (detailHasTilt(detailId)) return;
     const run = () => {
       const fallback = document.getElementById(detailId);
       for (const ruler of rulersForDetail(detailId)) bakeRuler(ruler, fallback);
@@ -11095,7 +11146,6 @@ window.__XFRAME__.runtime.register("tilt_control", () => {
   const applyTilt = (target, degrees) => {
     if (!(target instanceof HTMLElement)) return;
     target.style.setProperty("--xframe-tilt", `${degrees}deg`);
-    target.style.setProperty("transform-origin", "center center");
   };
 
   const clearControl = (overlay) => {

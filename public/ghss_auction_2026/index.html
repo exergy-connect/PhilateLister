@@ -768,7 +768,7 @@ img[data-click-to-zoom="true"] { cursor: zoom-in; }
 
 /*
  * Zoom-only grill size: W along the X ticks, H along the Y ticks.
- * ±1 mm with 100 steps each way (0.01 mm).
+ * ±1 mm with 100 steps each way (0.01 mm). Left and bottom edges stay fixed.
  */
 .xframe-grill-axis-control {
   display: none;
@@ -1950,7 +1950,7 @@ Line-engraved by the National Bank Note Company. Perforated twelve. No watermark
 [pause]
 Now the faults, plainly. Heavy diagonal crease in the lower-left corner on the reverse — that is lower-right on the face — with lighter creasing across the body. A small tear or split along the top margin near the upper-right corner as you view the front. Irregular perforations on the left edge and top margin, with several short or blunted teeth. Heavy brownish toning and gum residue along the top margin on the back. Scuffs and light abrasions over Washington&#39;s face — likely from an attempted cancellation removal or cleaning. And thinning on the reverse near the top edge, where hinge and gum residue remain.</span><span data-narrative-language="en-US" data-narrative-part="2" data-selected="true">On cover, this denomination paid the twelve-cent half-ounce rate to Great Britain. Off cover, it is still the grill that separates a common twelve-cent from a serious classic. Scott United States Specialized, twenty twenty-three: used, four hundred dollars — with condition reflected in what you bid.
 [pause]
-Inspect the face. Inspect the reverse on the millimetre grid. Compare the lattice. Know the faults. Then bid — this is Scott ninety.</span></div><audio controls preload="none" data-narrative-audio data-narrative-language="en-US" data-narrative-part="0" data-src="output/grill-view/audio/gemini/exhibit-en-US.wav"></audio><audio controls preload="none" data-narrative-audio data-narrative-language="en-US" data-narrative-part="1" hidden data-src="output/grill-view/audio/gemini/exhibit-en-US-1.wav"></audio><audio controls preload="none" data-narrative-audio data-narrative-language="en-US" data-narrative-part="2" hidden data-src="output/grill-view/audio/gemini/exhibit-en-US-2.wav"></audio></div></div></div></div></div>
+Inspect the face. Inspect the reverse on the millimetre grid. Compare the lattice. Know the faults. Then bid — this is Scott ninety.</span></div></div></div></div></div></div>
   </div>
 </footer>
 </main>
@@ -2696,7 +2696,7 @@ img[data-click-to-zoom="true"] { cursor: zoom-in; }
 
 /*
  * Zoom-only grill size: W along the X ticks, H along the Y ticks.
- * ±1 mm with 100 steps each way (0.01 mm).
+ * ±1 mm with 100 steps each way (0.01 mm). Left and bottom edges stay fixed.
  */
 .xframe-grill-axis-control {
   display: none;
@@ -3952,7 +3952,7 @@ Line-engraved by the National Bank Note Company. Perforated twelve. No watermark
 [pause]
 Now the faults, plainly. Heavy diagonal crease in the lower-left corner on the reverse — that is lower-right on the face — with lighter creasing across the body. A small tear or split along the top margin near the upper-right corner as you view the front. Irregular perforations on the left edge and top margin, with several short or blunted teeth. Heavy brownish toning and gum residue along the top margin on the back. Scuffs and light abrasions over Washington&#39;s face — likely from an attempted cancellation removal or cleaning. And thinning on the reverse near the top edge, where hinge and gum residue remain.</span><span data-narrative-language="en-US" data-narrative-part="2" data-selected="true">On cover, this denomination paid the twelve-cent half-ounce rate to Great Britain. Off cover, it is still the grill that separates a common twelve-cent from a serious classic. Scott United States Specialized, twenty twenty-three: used, four hundred dollars — with condition reflected in what you bid.
 [pause]
-Inspect the face. Inspect the reverse on the millimetre grid. Compare the lattice. Know the faults. Then bid — this is Scott ninety.</span></div><audio controls preload="none" data-narrative-audio data-narrative-language="en-US" data-narrative-part="0" data-src="output/grill-view/audio/gemini/exhibit-en-US.wav"></audio><audio controls preload="none" data-narrative-audio data-narrative-language="en-US" data-narrative-part="1" hidden data-src="output/grill-view/audio/gemini/exhibit-en-US-1.wav"></audio><audio controls preload="none" data-narrative-audio data-narrative-language="en-US" data-narrative-part="2" hidden data-src="output/grill-view/audio/gemini/exhibit-en-US-2.wav"></audio></div></div></div></div></div>
+Inspect the face. Inspect the reverse on the millimetre grid. Compare the lattice. Know the faults. Then bid — this is Scott ninety.</span></div></div></div></div></div></div>
   </div>
 </footer>
 </main>
@@ -7018,7 +7018,32 @@ window.__XFRAME__.runtime.register("grill_overlay", () => {
     return `${letter}${Number(match[2])}x${Number(match[3])}`;
   };
 
-  const cssNum = (ruler, name) => Number(ruler.style.getPropertyValue(name));
+  const cssNum = (ruler, name) => {
+    const raw = (ruler.style.getPropertyValue(name) || "").trim()
+      || (typeof getComputedStyle === "function" ? getComputedStyle(ruler).getPropertyValue(name).trim() : "");
+    if (!raw) return NaN;
+    const n = Number(raw);
+    return Number.isFinite(n) ? n : NaN;
+  };
+
+  const parseMmAttr = (el, name) => {
+    const raw = el.getAttribute(name);
+    if (raw == null || raw.trim() === "") return NaN;
+    const n = Number(raw);
+    return Number.isFinite(n) ? n : NaN;
+  };
+
+  const readAnchors = (ruler) => {
+    const left = parseMmAttr(ruler, "data-xframe-grill-left-mm");
+    const bottom = parseMmAttr(ruler, "data-xframe-grill-bottom-mm");
+    if (Number.isFinite(left) && Number.isFinite(bottom)) return { left, bottom };
+    return null;
+  };
+
+  const writeAnchors = (ruler, left, bottom) => {
+    ruler.setAttribute("data-xframe-grill-left-mm", String(left));
+    ruler.setAttribute("data-xframe-grill-bottom-mm", String(bottom));
+  };
 
   const TICKS = 100;
   const SIZE_PAD_MM = 1;
@@ -7124,20 +7149,29 @@ window.__XFRAME__.runtime.register("grill_overlay", () => {
     const pointsTable = pointsFor(ruler);
     const points = pointsTable[id] || fallbackPoints[letter];
     if (!points) return;
-    if (ruler.getAttribute("data-xframe-grill-size-letter") !== letter) {
+    const prevLetter = ruler.getAttribute("data-xframe-grill-size-letter") || "";
+    const letterChanged = prevLetter !== "" && prevLetter !== letter;
+    if (letterChanged) {
       ruler.setAttribute("data-xframe-grill-dw", "0");
       ruler.setAttribute("data-xframe-grill-dh", "0");
-      ruler.setAttribute("data-xframe-grill-size-letter", letter);
+      ruler.removeAttribute("data-xframe-grill-left-mm");
+      ruler.removeAttribute("data-xframe-grill-bottom-mm");
     }
+    ruler.setAttribute("data-xframe-grill-size-letter", letter);
     const size = sizeFromDeltas(catalog, ruler);
 
     const dpi = cssNum(ruler, "--xframe-dpi");
     const spanX = cssNum(ruler, "--xframe-span-x");
     const spanY = cssNum(ruler, "--xframe-span-y");
     const authored = ruler.getAttribute("data-xframe-grill-offset")?.trim();
+    // First placement is centered (or authored). Stretching then pins left/bottom.
+    const anchors = letterChanged ? null : readAnchors(ruler);
     let xMm;
     let yMm;
-    if (authored && authored !== "auto") {
+    if (anchors) {
+      xMm = anchors.left;
+      yMm = anchors.bottom - size.h;
+    } else if (authored && authored !== "auto") {
       const parts = authored.split(/[,\s]+/).map(Number);
       xMm = Number.isFinite(parts[0]) ? parts[0] : 0;
       yMm = Number.isFinite(parts[1]) ? parts[1] : 0;
@@ -7150,6 +7184,7 @@ window.__XFRAME__.runtime.register("grill_overlay", () => {
       xMm = 0;
       yMm = 0;
     }
+    writeAnchors(ruler, xMm, yMm + size.h);
 
     ruler.setAttribute("data-xframe-grill", id);
     ruler.style.setProperty("--xframe-grill-w-mm", String(size.w));
@@ -7248,6 +7283,10 @@ window.__XFRAME__.runtime.register("grill_overlay", () => {
     source.setAttribute("data-xframe-grill-dw", ruler.getAttribute("data-xframe-grill-dw") || "0");
     source.setAttribute("data-xframe-grill-dh", ruler.getAttribute("data-xframe-grill-dh") || "0");
     source.setAttribute("data-xframe-grill-size-letter", ruler.getAttribute("data-xframe-grill-size-letter") || "");
+    const left = ruler.getAttribute("data-xframe-grill-left-mm");
+    const bottom = ruler.getAttribute("data-xframe-grill-bottom-mm");
+    if (left) source.setAttribute("data-xframe-grill-left-mm", left);
+    if (bottom) source.setAttribute("data-xframe-grill-bottom-mm", bottom);
   };
 
   const mountAxisSlider = (axis, aria) => {
@@ -7286,6 +7325,10 @@ window.__XFRAME__.runtime.register("grill_overlay", () => {
       ruler.setAttribute("data-xframe-grill-dw", source.getAttribute("data-xframe-grill-dw") || "0");
       ruler.setAttribute("data-xframe-grill-dh", source.getAttribute("data-xframe-grill-dh") || "0");
       ruler.setAttribute("data-xframe-grill-size-letter", letter);
+      const left = source.getAttribute("data-xframe-grill-left-mm");
+      const bottom = source.getAttribute("data-xframe-grill-bottom-mm");
+      if (left) ruler.setAttribute("data-xframe-grill-left-mm", left);
+      if (bottom) ruler.setAttribute("data-xframe-grill-bottom-mm", bottom);
     }
     const width = mountAxisSlider("width", "Grill width");
     const height = mountAxisSlider("height", "Grill height");
@@ -9750,7 +9793,32 @@ window.__XFRAME__.runtime.register("grill_overlay", () => {
     return `${letter}${Number(match[2])}x${Number(match[3])}`;
   };
 
-  const cssNum = (ruler, name) => Number(ruler.style.getPropertyValue(name));
+  const cssNum = (ruler, name) => {
+    const raw = (ruler.style.getPropertyValue(name) || "").trim()
+      || (typeof getComputedStyle === "function" ? getComputedStyle(ruler).getPropertyValue(name).trim() : "");
+    if (!raw) return NaN;
+    const n = Number(raw);
+    return Number.isFinite(n) ? n : NaN;
+  };
+
+  const parseMmAttr = (el, name) => {
+    const raw = el.getAttribute(name);
+    if (raw == null || raw.trim() === "") return NaN;
+    const n = Number(raw);
+    return Number.isFinite(n) ? n : NaN;
+  };
+
+  const readAnchors = (ruler) => {
+    const left = parseMmAttr(ruler, "data-xframe-grill-left-mm");
+    const bottom = parseMmAttr(ruler, "data-xframe-grill-bottom-mm");
+    if (Number.isFinite(left) && Number.isFinite(bottom)) return { left, bottom };
+    return null;
+  };
+
+  const writeAnchors = (ruler, left, bottom) => {
+    ruler.setAttribute("data-xframe-grill-left-mm", String(left));
+    ruler.setAttribute("data-xframe-grill-bottom-mm", String(bottom));
+  };
 
   const TICKS = 100;
   const SIZE_PAD_MM = 1;
@@ -9856,20 +9924,29 @@ window.__XFRAME__.runtime.register("grill_overlay", () => {
     const pointsTable = pointsFor(ruler);
     const points = pointsTable[id] || fallbackPoints[letter];
     if (!points) return;
-    if (ruler.getAttribute("data-xframe-grill-size-letter") !== letter) {
+    const prevLetter = ruler.getAttribute("data-xframe-grill-size-letter") || "";
+    const letterChanged = prevLetter !== "" && prevLetter !== letter;
+    if (letterChanged) {
       ruler.setAttribute("data-xframe-grill-dw", "0");
       ruler.setAttribute("data-xframe-grill-dh", "0");
-      ruler.setAttribute("data-xframe-grill-size-letter", letter);
+      ruler.removeAttribute("data-xframe-grill-left-mm");
+      ruler.removeAttribute("data-xframe-grill-bottom-mm");
     }
+    ruler.setAttribute("data-xframe-grill-size-letter", letter);
     const size = sizeFromDeltas(catalog, ruler);
 
     const dpi = cssNum(ruler, "--xframe-dpi");
     const spanX = cssNum(ruler, "--xframe-span-x");
     const spanY = cssNum(ruler, "--xframe-span-y");
     const authored = ruler.getAttribute("data-xframe-grill-offset")?.trim();
+    // First placement is centered (or authored). Stretching then pins left/bottom.
+    const anchors = letterChanged ? null : readAnchors(ruler);
     let xMm;
     let yMm;
-    if (authored && authored !== "auto") {
+    if (anchors) {
+      xMm = anchors.left;
+      yMm = anchors.bottom - size.h;
+    } else if (authored && authored !== "auto") {
       const parts = authored.split(/[,\s]+/).map(Number);
       xMm = Number.isFinite(parts[0]) ? parts[0] : 0;
       yMm = Number.isFinite(parts[1]) ? parts[1] : 0;
@@ -9882,6 +9959,7 @@ window.__XFRAME__.runtime.register("grill_overlay", () => {
       xMm = 0;
       yMm = 0;
     }
+    writeAnchors(ruler, xMm, yMm + size.h);
 
     ruler.setAttribute("data-xframe-grill", id);
     ruler.style.setProperty("--xframe-grill-w-mm", String(size.w));
@@ -9980,6 +10058,10 @@ window.__XFRAME__.runtime.register("grill_overlay", () => {
     source.setAttribute("data-xframe-grill-dw", ruler.getAttribute("data-xframe-grill-dw") || "0");
     source.setAttribute("data-xframe-grill-dh", ruler.getAttribute("data-xframe-grill-dh") || "0");
     source.setAttribute("data-xframe-grill-size-letter", ruler.getAttribute("data-xframe-grill-size-letter") || "");
+    const left = ruler.getAttribute("data-xframe-grill-left-mm");
+    const bottom = ruler.getAttribute("data-xframe-grill-bottom-mm");
+    if (left) source.setAttribute("data-xframe-grill-left-mm", left);
+    if (bottom) source.setAttribute("data-xframe-grill-bottom-mm", bottom);
   };
 
   const mountAxisSlider = (axis, aria) => {
@@ -10018,6 +10100,10 @@ window.__XFRAME__.runtime.register("grill_overlay", () => {
       ruler.setAttribute("data-xframe-grill-dw", source.getAttribute("data-xframe-grill-dw") || "0");
       ruler.setAttribute("data-xframe-grill-dh", source.getAttribute("data-xframe-grill-dh") || "0");
       ruler.setAttribute("data-xframe-grill-size-letter", letter);
+      const left = source.getAttribute("data-xframe-grill-left-mm");
+      const bottom = source.getAttribute("data-xframe-grill-bottom-mm");
+      if (left) ruler.setAttribute("data-xframe-grill-left-mm", left);
+      if (bottom) ruler.setAttribute("data-xframe-grill-bottom-mm", bottom);
     }
     const width = mountAxisSlider("width", "Grill width");
     const height = mountAxisSlider("height", "Grill height");

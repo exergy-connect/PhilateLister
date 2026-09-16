@@ -1,0 +1,25 @@
+---
+styles: [stamp-exhibit, stamp-exhibit-mobile]
+defaults:
+  region: stamp
+format: mobile
+---
+@stack
+  direction: vertical
+  gap: 0
+  content:
+    @region lot-number
+      weight: 0
+      height: 32
+    @region stamp
+      default: true
+      weight: 1
+    @region detail
+      weight: 0
+      height: 0
+    @region detail-zoom
+      weight: 0
+      height: 0
+    @region footer
+      weight: 0
+      height: 48

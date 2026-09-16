@@ -1,0 +1,270 @@
+---
+css_imports:
+  - "https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+---
+```css
+/* Geometry belongs to the layout templates; these rules style region content. */
+#xframe {
+  --stamp-gold: #bca16b;
+  --stamp-serif: "Libre Baskerville", Georgia, serif;
+  --stamp-sans: "Source Sans 3", "Segoe UI", sans-serif;
+}
+
+#xframe .segment[data-layout^="stamp-exhibit"] {
+  --stamp-ink: var(--fg);
+  --stamp-accent: var(--accent);
+  --stamp-paper: color-mix(in srgb, var(--surface-bg) 96%, var(--accent));
+  --stamp-line: var(--border);
+  --stamp-muted: var(--muted);
+  padding: 0 !important;
+  overflow: hidden;
+  color: var(--stamp-ink);
+  font-family: var(--stamp-sans);
+  background: radial-gradient(ellipse at 90% 0%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 55%), var(--surface-bg);
+}
+
+#xframe .segment[data-layout="stamp-exhibit"] > .layout-container {
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+#xframe .segment[data-layout^="stamp-exhibit"] .region {
+  box-sizing: border-box;
+}
+
+#xframe .segment[data-layout^="stamp-exhibit"] [data-region="header"] p {
+  padding: 12px 16px;
+  color: var(--fg);
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+#xframe .segment[data-layout^="stamp-exhibit"] [data-region="lot-number"] p {
+  padding: 10px 12px;
+  color: var(--accent);
+  font-family: var(--stamp-serif);
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: 700;
+  text-align: right;
+}
+
+#xframe .segment[data-layout^="stamp-exhibit"] [data-region="page-qr"] .xframe-qr-code,
+#xframe .segment[data-layout^="stamp-exhibit"] [data-region="page-qr"] svg {
+  display: block;
+  width: 100%;
+  max-height: 100%;
+}
+
+#xframe .segment[data-layout^="stamp-exhibit"] [data-region="title"] h1 {
+  color: var(--stamp-ink);
+  font-family: var(--stamp-serif);
+  font-size: 30px;
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+}
+
+#xframe .segment[data-layout^="stamp-exhibit"] [data-region="title"] p {
+  margin-top: 6px;
+  font-size: 20px;
+  line-height: 1.35;
+}
+
+#xframe .segment[data-layout^="stamp-exhibit"] [data-region$="-label"] {
+  border-top: 2px solid var(--stamp-gold);
+  border-radius: 8px 8px 0 0;
+  color: var(--fg);
+  background: linear-gradient(110deg, var(--surface-bg), color-mix(in srgb, var(--surface-bg) 88%, var(--accent)));
+}
+
+#xframe .segment[data-layout^="stamp-exhibit"] [data-region$="-label"] p {
+  padding: 12px;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+#xframe .segment[data-layout^="stamp-exhibit"] :is([data-region="stamp"], [data-region="detail"], [data-region="detail-zoom"]) {
+  background: var(--stamp-paper);
+  border: 1px solid var(--border);
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--fg) 4%, transparent);
+}
+
+#xframe .segment[data-layout^="stamp-exhibit"] figure {
+  margin: 0;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+#xframe .segment[data-layout^="stamp-exhibit"] [data-region="stamp"] img {
+  max-width: 100%;
+  max-height: 280px;
+  object-fit: contain;
+}
+
+#xframe .segment[data-layout^="stamp-exhibit"] figcaption {
+  flex: 0 0 auto;
+  color: var(--stamp-muted);
+  font-size: 14px;
+  line-height: 1.3;
+  text-align: center;
+  padding: 6px 8px;
+}
+
+/* Detail columns: grill chrome + a tall reverse crop must shrink to the
+   panel, so the stamp footer and caption are not clipped. */
+#xframe .segment[data-layout^="stamp-exhibit"] :is([data-region="detail"], [data-region="detail-zoom"]) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 0;
+  overflow: hidden;
+  padding: 8px 8px 4px;
+}
+
+#xframe .segment[data-layout^="stamp-exhibit"] :is([data-region="detail"], [data-region="detail-zoom"]) .xframe-mm-ruler-figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 0;
+  height: 100%;
+  max-height: 100%;
+  width: 100%;
+  max-width: 100%;
+}
+
+#xframe .segment[data-layout^="stamp-exhibit"] :is([data-region="detail"], [data-region="detail-zoom"]) .xframe-mm-ruler {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1 1 auto;
+  flex-shrink: 1;
+  min-height: 0;
+  width: min(100%, 17.5rem);
+  max-width: 100%;
+}
+
+#xframe .segment[data-layout^="stamp-exhibit"] :is([data-region="detail"], [data-region="detail-zoom"]) .xframe-grill-picker {
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 0.35rem 0.5rem;
+  margin: 0 0 0.2rem;
+}
+
+#xframe .segment[data-layout^="stamp-exhibit"] :is([data-region="detail"], [data-region="detail-zoom"]) .xframe-grill-picker-field {
+  flex: 1 0 100%;
+  width: 100%;
+}
+
+#xframe .segment[data-layout^="stamp-exhibit"] :is([data-region="detail"], [data-region="detail-zoom"]) .xframe-mm-ruler-frame {
+  flex: 0 1 auto;
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: 100%;
+}
+
+#xframe .segment[data-layout^="stamp-exhibit"] :is([data-region="detail"], [data-region="detail-zoom"]) .xframe-mm-ruler[data-xframe-crop] {
+  width: min(100%, 17.5rem);
+  max-width: 100%;
+}
+
+#xframe .segment[data-layout^="stamp-exhibit"] :is([data-region="detail"], [data-region="detail-zoom"]) .xframe-mm-ruler[data-xframe-crop] .xframe-mm-ruler-view {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: var(--xframe-crop-w) / var(--xframe-crop-h);
+}
+
+#xframe .segment[data-layout^="stamp-exhibit"] :is([data-region="detail"], [data-region="detail-zoom"]) .xframe-mm-ruler:not([data-xframe-crop]) .xframe-mm-ruler-view,
+#xframe .segment[data-layout^="stamp-exhibit"] :is([data-region="detail"], [data-region="detail-zoom"]) .xframe-mm-ruler:not([data-xframe-crop]) .xframe-mm-ruler-view > img:not(.xframe-grill-overlay) {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+#xframe .segment[data-layout^="stamp-exhibit"] [data-region="footer"] {
+  left: 0 !important;
+  width: 100% !important;
+  bottom: 0 !important;
+  z-index: 6;
+  border-top: 1px solid var(--stamp-line);
+  color: var(--stamp-muted);
+  text-align: center;
+}
+
+#xframe .segment[data-layout^="stamp-exhibit"] [data-region="footer"] p {
+  margin: 0;
+  padding: 3px 4px;
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+/* Controls render outside the slide canvas; keep their band compact. */
+#xframe > #xframe-chrome {
+  --xframe-chrome-pad-block: 0.25rem;
+}
+
+/* Let the controls determine the band height so buttons cannot be clipped. */
+:root:not([data-xframe-fullscreen]) #xframe[data-xframe-canvas] > #xframe-chrome .xframe-chrome-controls {
+  position: relative !important;
+}
+
+#xframe-chrome .hud {
+  padding-block: 0.15rem;
+}
+
+#xframe-chrome .hud button {
+  padding-block: 0.2rem;
+}
+
+#xframe #xframe-frame.xframe-frame {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--box-shadow);
+}
+
+#xframe .segment[data-layout^="stamp-exhibit"] :is([data-region="header"], [data-region="lot-number"]) {
+  background: color-mix(in srgb, var(--surface-bg) 92%, var(--accent));
+  border-bottom: 1px solid var(--stamp-gold);
+}
+
+#xframe .segment[data-layout^="stamp-exhibit"] [data-region="title"] a {
+  color: var(--accent);
+  text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  text-underline-offset: 3px;
+}
+
+#xframe .segment[data-layout^="stamp-exhibit"] [data-region="page-qr"] {
+  border: 5px solid #fff;
+  border-radius: 6px;
+  background: #fff;
+}
+
+#xframe .segment[data-layout="stamp-exhibit-mobile"] [data-region="lot-number"] p {
+  padding: 4px 12px;
+}
+
+#xframe .segment[data-layout="stamp-exhibit-print"] {
+  background: #fff;
+}
+
+@media print {
+  html:has(#xframe), body:has(#xframe) { background: #fff; }
+}
+```

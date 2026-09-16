@@ -1,0 +1,1294 @@
+---
+presentation: slidedeck
+formats: [desktop, mobile, print]
+layout:
+  framed-deck:
+    format_switcher: true
+positioning: static
+title: GHSS auction 2026 — fourteen lots
+subtitle: Classics, Columbians, and Trans-Mississippi
+author: xFrame.present
+narrative:
+  voice: male
+  provider: gemini
+  direction:
+    profile: |
+      Name: Ron Strawser
+      Identity: Native Houston philatelist and auctioneer — lifelong student of classic U.S. stamps, especially grilled issues. Speaks from the floor with quiet Texas authority, never theatrical.
+    scene: A Houston saleroom. One important lot under glass. Collectors listening.
+    style: Measured, persuasive, and precise. Warm Gulf Coast gravitas without carnival cadence.
+    accent: Native Houston American English — light Texas color, never a caricature.
+    pacing: Deliberate. Pause after naming the Scott number. Tell the rate and the route before the catalog number feels like a price. One honest sentence on condition, then return to why the stamp is interesting.
+    notes: |
+      Voice directives:
+      - You are Ron Strawser: native Houston philatelist presenting a serious classic from the podium.
+      - Lead with history, design, rates, and routes. Faults get one short clause, never a catalogue of defects.
+      - Honor [pause] as about one second of real silence. Do not read the brackets.
+      - Do not invent grades or certificates. Catalog values are as marked on the lot cards from Scott U.S. Specialized 2023.
+      - On the twelve-cent pictorial, treat the red strike as a Paid cancel unless the evidence clearly says otherwise.
+
+---
+@id lot-24
+@layout stamp-exhibit
+
+@region page-qr
+@qr_code
+  url: https://exergy-connect.github.io/PhilateLister/ghss_auction_2026/#{{ segment.slide }}
+  logo: assets/stamp-mark.svg
+  logo_scale: 0.22
+  color: "#0b1d36"
+  background: "#ffffff"
+  ecl: H
+  click_to_zoom: true
+
+@region lot-number
+Lot 1
+
+@region header
+GHSS auction 19-20 September 2026 · Scott 24 · Type V · mint hinged
+
+@region title
+# Scott 24 — 1857 1¢ blue Franklin, Type V
+
+Toppan, Carpenter, Casilear & Co. · first U.S. perforated issue (perf. 15½) · Franklin after Caffieri’s bust. Type V exists because the British-style perforator forced the rows closer together: top and bottom frame lines break, side ornaments are cut away. Issued 17 November 1857 from plates 5–10. The workhorse 1¢ of the decade — drop letters, unsealed circulars, newspapers. Lot card: mint hinged, $140. Notes after [The Swedish Tiger](https://www.theswedishtiger.com/24-scotts.html).
+
+@narrative
+  - en-US: |
+      Scott twenty-four.
+      [pause]
+      One-cent blue Franklin, Type Five. Toppan, Carpenter — Philadelphia. The first United States stamp that could be torn from the sheet along perforations.
+      [pause]
+      November, eighteen fifty-seven. The perforator came from Britain as a roulette and was converted. The feed was too narrow, so they squeezed the rows. That squeeze is Type Five: broken frame lines at top and bottom, ornaments cut away at the sides. Look at the detailed view — that incomplete top is the type, not damage.
+  - en-US: |
+      Franklin after Caffieri’s sculpture. This was the workhorse of the eighteen fifties.
+      [pause]
+      One cent paid a drop letter — mailed and collected at the same office, before free city delivery. One cent paid an unsealed circular. One cent paid a newspaper. In cities with carriers, a second cent bought the walk to the door.
+  - en-US: |
+      Mint, hinged, with some thinning on the reverse — as the card says. Catalog one hundred forty dollars.
+      [pause]
+      Confirm Type Five at the top ornaments. Then bid — this is Scott twenty-four.
+
+@region stamp-label
+1 · Front & reverse
+
+@region stamp
+@image specimen24
+  url: assets/GHSS_US24_mh.png
+  alt: United States Scott 24, 1857 one-cent blue Franklin Type V, mint hinged — auction card with face and reverse
+  caption: Scott 24 Type V — first U.S. perforated issue; drop letters and circulars; catalog $140
+  dpi_fallback: 1200
+  click_to_zoom: true
+  tilt_control: 1
+
+@region detail-label
+2 · Reverse
+
+@region detail
+@image
+  url: #specimen24
+  alt: Reverse of the mint hinged Scott 24 with millimetre grid
+  caption: Reverse (~24 × 29 mm) — no grill on the 1857 issue; paper as presented
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  tilt_control: 1
+  draggable: true
+  crop: 2489,1252
+  width: 1122
+  height: 1349
+
+@region detail-zoom-label
+3 · Type V ornaments
+
+@region detail-zoom
+@image
+  url: #specimen24
+  alt: Top of Scott 24 showing Type V incomplete frame line and cut-away side ornaments
+  caption: Type V — broken top frame and trimmed side ornaments from the 1857 perforator
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  tilt_control: 1
+  draggable: true
+  crop: 956,1336
+  width: 769
+  height: 346
+
+@region footer
+Catalog notes: 1857 1¢ Franklin Type V · drop / circular / newspaper · catalog $140 · theswedishtiger.com/24-scotts.html · Copyright © Exergy ∞ LLC
+
+---
+@id lot-90
+@layout stamp-exhibit
+
+@region page-qr
+@qr_code
+  url: https://exergy-connect.github.io/PhilateLister/ghss_auction_2026/#{{ segment.slide }}
+  logo: assets/stamp-mark.svg
+  logo_scale: 0.22
+  color: "#0b1d36"
+  background: "#ffffff"
+  ecl: H
+  click_to_zoom: true
+
+@region lot-number
+Lot 2
+
+@region header
+GHSS auction 19-20 September 2026 · Scott 90 · E grill
+
+@region title
+# Scott 90 — 1868 12¢ black Washington, E grill
+
+National Bank Note Company · line-engraved intaglio · perf. 12 · issued third week of February 1868 (~1,000,000). Charles Steel’s E grill — 11 × 13 mm, points down — broke the fibers so cancel ink could not be washed. From 1 January 1868 this denomination paid the new 12¢ half-ounce treaty rate to Great Britain (down from 24¢; it would fall to 6¢ in 1870). Packets out of New York for Liverpool. Scott U.S. Specialized 2023 used $400; condition as you see. Notes after [The Swedish Tiger](https://www.theswedishtiger.com/90-scotts.html).
+
+@narrative
+  - en-US: |
+      Ladies and gentlemen — Scott ninety.
+      [pause]
+      The eighteen sixty-eight twelve-cent black Washington. National Bank Note Company. Line-engraved. Perforated twelve.
+      [pause]
+      Issued the third week of February, eighteen sixty-eight — about a million printed. Three years after Appomattox, the Post Office was still fighting a very practical fraud: washed stamps used a second time. Charles Steel’s grill is the answer — eleven by thirteen millimetres, points down, an E grill. The paper is bruised so the cancel soaks in.
+  - en-US: |
+      Look at Washington in the oval. That is National Bank Note lathework — a portrait built for a treaty.
+      [pause]
+      On the first of January, eighteen sixty-eight, the letter rate to Great Britain was cut from twenty-four cents to twelve cents the half-ounce. This stamp is that rate. New York to Liverpool — Cunard, Inman, the American packets. With a three-cent companion it also made France. Off cover it is still a make-up for heavy domestic mail.
+  - en-US: |
+      Scott United States Specialized, twenty twenty-three: used, four hundred dollars. This example has the usual classic wear — creases, a small top-margin split, short perfs — inspect it on the millimetre grid and then decide.
+      [pause]
+      Measure the E lattice against B through J and Z. Then bid — this is Scott ninety.
+
+@region stamp-label
+1 · Front & reverse
+
+@region stamp
+@image specimen90
+  url: assets/GHSS_US90_used.png
+  alt: United States Scott 90, 1868 twelve-cent black Washington with E grill — auction card with face and reverse
+  caption: Scott 90 — face and reverse (E grill); 12¢ treaty rate to Great Britain; Scott U.S. 2023 used $400
+  dpi_fallback: 1200
+  click_to_zoom: true
+  tilt_control: 1
+
+@region detail-label
+2 · Reverse · E grill area
+
+@region detail
+@image
+  url: #specimen90
+  alt: Reverse crop with millimetre grid and selectable grill silhouette, default E 14×17
+  caption: Reverse (~25 × 29 mm) — E grill 11 × 13 mm (default E14×17). Compare B–J and Z outlines on the millimetre grid
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  grill_overlay: E14x17, B, C, D, E, F, G, H, I, J, Z
+  tilt_control: 1
+  draggable: true
+  crop: 2366,1082
+  width: 1186
+  height: 1361
+
+@region detail-zoom-label
+3 · Washington in the oval
+
+@region detail-zoom
+@image
+  url: #specimen90
+  alt: Engraved Washington portrait in National Bank Note lathework at higher magnification
+  caption: Washington’s oval — the portrait that paid the 1868 twelve-cent rate to Britain
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  tilt_control: 1
+  draggable: true
+  crop: 1285,1408
+  width: 529
+  height: 533
+
+@region footer
+Catalog notes: issued third week of Feb 1868 · 12¢ ½ oz to Great Britain · Scott U.S. Specialized 2023 used $400 · theswedishtiger.com/90-scotts.html · Copyright © Exergy ∞ LLC
+
+---
+@id lot-91
+@layout stamp-exhibit
+
+@region page-qr
+@qr_code
+  url: https://exergy-connect.github.io/PhilateLister/ghss_auction_2026/#{{ segment.slide }}
+  logo: assets/stamp-mark.svg
+  logo_scale: 0.22
+  color: "#0b1d36"
+  background: "#ffffff"
+  ecl: H
+  click_to_zoom: true
+
+@region lot-number
+Lot 3
+
+@region header
+GHSS auction 19-20 September 2026 · Scott 91 · E grill
+
+@region title
+# Scott 91 — 1868 15¢ black Lincoln, E grill
+
+National Bank Note Company · plate 41 · ~500,000 · same E grill as Scott 90. The vignette is H. B. Hall’s Sons’ memorial bust — America’s first mourning stamp, issued after Lincoln’s assassination and then grilled for 1868. Fifteen cents paid the 1857 treaty rate to France (per ¼ oz, American or British packet) and the registered-mail fee; also seen to Belgium, Germany, and Switzerland. Scott U.S. Specialized 2023 used $575. Notes after [The Swedish Tiger](https://www.theswedishtiger.com/91-scotts.html).
+
+@narrative
+  - en-US: |
+      Scott ninety-one.
+      [pause]
+      Fifteen-cent black Lincoln. National Bank Note. Plate forty-one. About half a million with the E grill.
+      [pause]
+      The face is older than the grill. Eighteen sixty-six — the first United States mourning stamp. H. B. Hall’s Sons engraved the bust after the assassination. Grilling it in eighteen sixty-eight put that memorial portrait onto registered letters and onto the Atlantic.
+  - en-US: |
+      Fifteen cents was a European rate. Under the eighteen fifty-seven treaty with France, a quarter-ounce letter was fifteen cents — American packet direct, or via England. The same stamp paid Belgium and the German states, and it paid the registered-mail fee once that fee came down to fifteen cents.
+      [pause]
+      Look at the eyes in the detailed view. That is the portrait that went to Paris, to Aachen, to London with a New York Paid All marking.
+  - en-US: |
+      Same E grill as the twelve-cent — eleven by thirteen millimetres. Compare the lattice. Perfs a little irregular, as grilled classics often are.
+      [pause]
+      Scott United States Specialized, twenty twenty-three: used, five hundred seventy-five dollars. Then bid — this is Scott ninety-one.
+
+@region stamp-label
+1 · Front & reverse
+
+@region stamp
+@image specimen91
+  url: assets/GHSS_US91_used.png
+  alt: United States Scott 91, 1868 fifteen-cent black Lincoln with E grill — auction card with face and reverse
+  caption: Scott 91 — face and reverse (E grill); 15¢ to France and the registry fee; Scott U.S. 2023 used $575
+  dpi_fallback: 1200
+  click_to_zoom: true
+  tilt_control: 1
+
+@region detail-label
+2 · Reverse · E grill area
+
+@region detail
+@image
+  url: #specimen91
+  alt: Reverse crop with millimetre grid and selectable grill silhouette, default E 14×17
+  caption: Reverse (~25 × 29 mm) — E grill 11 × 13 mm (default E14×17). Compare B–J and Z outlines on the millimetre grid
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  grill_overlay: E14x17, B, C, D, E, F, G, H, I, J, Z
+  tilt_control: 1
+  draggable: true
+  crop: 2246,1325
+  width: 1199
+  height: 1379
+
+@region detail-zoom-label
+3 · Lincoln’s memorial bust
+
+@region detail-zoom
+@image
+  url: #specimen91
+  alt: Engraved Lincoln portrait from the 1866 mourning design at higher magnification
+  caption: Hall’s Lincoln — the first U.S. mourning stamp, grilled for European and registered mail
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  tilt_control: 1
+  draggable: true
+  crop: 1106,1553
+  width: 545
+  height: 585
+
+@region footer
+Catalog notes: 1868 15¢ Lincoln E grill · France 15¢ treaty / registry · Scott U.S. Specialized 2023 used $575 · theswedishtiger.com/91-scotts.html · Copyright © Exergy ∞ LLC
+
+---
+@id lot-98
+@layout stamp-exhibit
+
+@region page-qr
+@qr_code
+  url: https://exergy-connect.github.io/PhilateLister/ghss_auction_2026/#{{ segment.slide }}
+  logo: assets/stamp-mark.svg
+  logo_scale: 0.22
+  color: "#0b1d36"
+  background: "#ffffff"
+  ecl: H
+  click_to_zoom: true
+
+@region lot-number
+Lot 4
+
+@region header
+GHSS auction 19-20 September 2026 · Scott 98 · F grill
+
+@region title
+# Scott 98 — 1868 15¢ black Lincoln, F grill
+
+Same National Bank Note Lincoln as Scott 91; the catalog change is the grill. F is the production grill that followed E: about 9 × 13 mm, 11–12 × 15–17 points, points down — narrower, easier to separate than the experimental letters. Same 15¢ work: France, the North German Union, registered mail with a 3¢ companion for domestic postage. Scott U.S. Specialized 2023 used $275. Notes after [The Swedish Tiger](https://www.theswedishtiger.com/98-scotts.html).
+
+@narrative
+  - en-US: |
+      Scott ninety-eight.
+      [pause]
+      Still the fifteen-cent Lincoln — now with the F grill.
+      [pause]
+      Same die, same mourning portrait. The Post Office had learned that A, B, C, and D were too large to tear cleanly. E worked. F is smaller still — about nine by thirteen millimetres — the grill you meet most often on this design.
+  - en-US: |
+      The rates do not change with the letter. Fifteen cents to France by packet. Fifteen cents as a registry fee, usually with a three-cent stamp paying the domestic letter. Covers to the German states via Aachen Franco.
+      [pause]
+      If you are choosing between ninety-one and ninety-eight, you are choosing a lattice, not a president. Measure F against E on the overlay.
+  - en-US: |
+      A strong impression on this example, and a grill you can read. Scott United States Specialized, twenty twenty-three: used, two hundred seventy-five dollars.
+      [pause]
+      Then bid — this is Scott ninety-eight.
+
+@region stamp-label
+1 · Front & reverse
+
+@region stamp
+@image specimen98
+  url: assets/GHSS_US98_used.png
+  alt: United States Scott 98, 1868 fifteen-cent black Lincoln with F grill — auction card with face and reverse
+  caption: Scott 98 — face and reverse (F grill); same 15¢ European and registry work as 91; Scott U.S. 2023 used $275
+  dpi_fallback: 1200
+  click_to_zoom: true
+  tilt_control: 1
+
+@region detail-label
+2 · Reverse · F grill area
+
+@region detail
+@image
+  url: #specimen98
+  alt: Reverse crop with millimetre grid and selectable grill silhouette, default F
+  caption: Reverse (~25 × 30 mm) — F grill 9 × 13 mm (default F). Compare B–J and Z outlines on the millimetre grid
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  grill_overlay: F, B, C, D, E, G, H, I, J, Z
+  tilt_control: 1
+  draggable: true
+  crop: 2564,1214
+  width: 1159
+  height: 1432
+
+@region detail-zoom-label
+3 · The same Lincoln die
+
+@region detail-zoom
+@image
+  url: #specimen98
+  alt: Engraved Lincoln portrait on the F-grill printing at higher magnification
+  caption: Same Hall vignette as Scott 91 — F grill is the catalog difference
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  tilt_control: 1
+  draggable: true
+  crop: 1218,1511
+  width: 513
+  height: 590
+
+@region footer
+Catalog notes: 1868 15¢ Lincoln F grill · France / NGU / registry · Scott U.S. Specialized 2023 used $275 · theswedishtiger.com/98-scotts.html · Copyright © Exergy ∞ LLC
+
+---
+@id lot-113
+@layout stamp-exhibit
+
+@region page-qr
+@qr_code
+  url: https://exergy-connect.github.io/PhilateLister/ghss_auction_2026/#{{ segment.slide }}
+  logo: assets/stamp-mark.svg
+  logo_scale: 0.22
+  color: "#0b1d36"
+  background: "#ffffff"
+  ecl: H
+  click_to_zoom: true
+
+@region lot-number
+Lot 5
+
+@region header
+GHSS auction 19-20 September 2026 · Scott 113 · G grill
+
+@region title
+# Scott 113 — 1869 2¢ brown Post Horse and Rider, G grill
+
+National Bank Note pictorial · first U.S. stamps to show a scene, not only a statesman · G grill 9½ × 13 mm. The rider is the Pony Express in mid-leap — critics said the horse’s pose was impossible; the public kept the romance. Two cents paid a drop letter with carrier service and an unsealed circular, and made up higher rates in combination. Scott U.S. Specialized 2023 used $80. Notes after [The Swedish Tiger](https://www.theswedishtiger.com/113-scotts.html).
+
+@narrative
+  - en-US: |
+      Scott one thirteen.
+      [pause]
+      Eighteen sixty-nine. Two-cent brown — Post Horse and Rider. The first United States pictorials. National Bank Note put a scene on a postage stamp, and the country argued about it.
+      [pause]
+      Look at the horse. He is not galloping. He is flying — all four off the ground. Contemporary critics called the pose impossible. Collectors kept the Pony Express anyway. That leap is the story of this stamp.
+  - en-US: |
+      Two cents was local mail. A drop letter with carrier service. An unsealed circular. And a make-up stamp on heavier or foreign letters.
+      [pause]
+      The G grill on the reverse is the eighteen sixty-nine grill — nine and a half by thirteen millimetres. Faint G grills are common; this one is there to measure.
+  - en-US: |
+      A heavy cancel across the rider, as used two-cents often are. Scott United States Specialized, twenty twenty-three: used, eighty dollars.
+      [pause]
+      Then bid — this is Scott one thirteen.
+
+@region stamp-label
+1 · Front & reverse
+
+@region stamp
+@image specimen113
+  url: assets/GHSS_US113_used.png
+  alt: United States Scott 113, 1869 two-cent brown Post Horse and Rider with G grill — auction card with face and reverse
+  caption: Scott 113 — Pony Express pictorial, G grill; drop and circular rate; Scott U.S. 2023 used $80
+  dpi_fallback: 1200
+  click_to_zoom: true
+  tilt_control: 1
+
+@region detail-label
+2 · Reverse · G grill area
+
+@region detail
+@image
+  url: #specimen113
+  alt: Reverse crop with millimetre grid and selectable grill silhouette, default G
+  caption: Reverse (~26 × 24 mm) — G grill 9½ × 13 mm (default G). Compare B–J and Z outlines on the millimetre grid
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  grill_overlay: G, B, C, D, E, F, H, I, J, Z
+  tilt_control: 1
+  draggable: true
+  crop: 2506,1319
+  width: 1209
+  height: 1153
+
+@region detail-zoom-label
+3 · The flying leap
+
+@region detail-zoom
+@image
+  url: #specimen113
+  alt: Pony Express horse and rider in mid-leap from the 1869 two-cent pictorial
+  caption: Horse and rider — the Pony Express pose contemporaries called impossible
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  tilt_control: 1
+  draggable: true
+  crop: 1181,1664
+  width: 757
+  height: 443
+
+@region footer
+Catalog notes: 1869 2¢ Post Horse and Rider G grill · drop / circular · Scott U.S. Specialized 2023 used $80 · theswedishtiger.com/113-scotts.html · Copyright © Exergy ∞ LLC
+
+---
+@id lot-117
+@layout stamp-exhibit
+
+@region page-qr
+@qr_code
+  url: https://exergy-connect.github.io/PhilateLister/ghss_auction_2026/#{{ segment.slide }}
+  logo: assets/stamp-mark.svg
+  logo_scale: 0.22
+  color: "#0b1d36"
+  background: "#ffffff"
+  ecl: H
+  click_to_zoom: true
+
+@region lot-number
+Lot 6
+
+@region header
+GHSS auction 19-20 September 2026 · Scott 117 · G grill · red Paid
+
+@region title
+# Scott 117 — 1869 12¢ green S.S. Adriatic, G grill
+
+National Bank Note pictorial of the Collins Line steamship *Adriatic* — built to take the New York–Liverpool mail contract from Cunard, fast and ruinously expensive to run. Solo use was the 12¢ half-ounce rate to England (January 1868 to January 1870). The red strike on this example is a Paid cancel, the exchange-office mark that the letter went fully prepaid. Scott U.S. Specialized 2023 used $130. Notes after [The Swedish Tiger](https://www.theswedishtiger.com/117-scotts.html).
+
+@narrative
+  - en-US: |
+      Scott one seventeen.
+      [pause]
+      Twelve-cent green. The steamship Adriatic. Eighteen sixty-nine pictorials again — and this time the vignette is a ship built to carry the mail.
+      [pause]
+      The Collins Line wanted Cunard’s New York to Liverpool contract. They built the fastest wooden steamers on the Atlantic — running water, a hairdressing salon, eighty-seven tons of coal a day. Congress subsidized them. Two ships were lost. The Adriatic was the replacement. That is the vessel on this stamp.
+  - en-US: |
+      Twelve cents, January eighteen sixty-eight to January eighteen seventy, was the half-ounce letter to England. Same treaty rate as Scott ninety, now on a picture of the ship that raced for that route.
+      [pause]
+      The red on the face is a Paid cancel — the exchange office marking that postage was fully prepaid, not a town datestamp. Red Paid All is how New York sent a letter into the British system. That is the interesting strike here.
+  - en-US: |
+      G grill on the reverse. Some foxing on the back, as the card hints. Scott United States Specialized, twenty twenty-three: used, one hundred thirty dollars.
+      [pause]
+      Then bid — this is Scott one seventeen.
+
+@region stamp-label
+1 · Front & reverse
+
+@region stamp
+@image specimen117
+  url: assets/GHSS_US117_used.png
+  alt: United States Scott 117, 1869 twelve-cent green S.S. Adriatic with G grill and red Paid cancel — auction card with face and reverse
+  caption: Scott 117 — S.S. Adriatic, G grill; 12¢ to England; red Paid cancel; Scott U.S. 2023 used $130
+  dpi_fallback: 1200
+  click_to_zoom: true
+  tilt_control: 1
+
+@region detail-label
+2 · Reverse · G grill area
+
+@region detail
+@image
+  url: #specimen117
+  alt: Reverse crop with millimetre grid and G grill overlay
+  caption: Reverse (~25 × 25 mm) — G grill 9½ × 13 mm (default G)
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  grill_overlay: G, B, C, D, E, F, H, I, J, Z
+  tilt_control: 1
+  draggable: true
+  crop: 2410,1200
+  width: 1182
+  height: 1187
+
+@region detail-zoom-label
+3 · Red Paid cancel
+
+@region detail-zoom
+@image
+  url: #specimen117
+  alt: Red Paid cancel on the S.S. Adriatic vignette of Scott 117
+  caption: Red Paid — exchange-office prepaid mark on the Collins Line Adriatic
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  tilt_control: 1
+  draggable: true
+  crop: 1383,1427
+  width: 519
+  height: 454
+
+@region footer
+Catalog notes: 1869 12¢ S.S. Adriatic G grill · 12¢ to England · red Paid cancel · Scott U.S. Specialized 2023 used $130 · theswedishtiger.com/117-scotts.html · Copyright © Exergy ∞ LLC
+
+---
+@id lot-119
+@layout stamp-exhibit
+
+@region page-qr
+@qr_code
+  url: https://exergy-connect.github.io/PhilateLister/ghss_auction_2026/#{{ segment.slide }}
+  logo: assets/stamp-mark.svg
+  logo_scale: 0.22
+  color: "#0b1d36"
+  background: "#ffffff"
+  ecl: H
+  click_to_zoom: true
+
+@region lot-number
+Lot 7
+
+@region header
+GHSS auction 19-20 September 2026 · Scott 119 · G grill · shifted frame
+
+@region title
+# Scott 119 — 1869 15¢ brown & blue Landing of Columbus, Type II
+
+National Bank Note · first U.S. bicolor postage: blue vignette and brown frame printed in two passes. This example shows a strongly shifted frame — the landing scene sits off-register in the oval, the usual consequence of that two-color process. Type II has a complete picture frame around the vignette (Type I, Scott 118, breaks at top). Fifteen cents paid the French treaty rate and the domestic registry fee. Scott U.S. Specialized 2023 used $190. Notes after [The Swedish Tiger](https://www.theswedishtiger.com/119-scotts.html).
+
+@narrative
+  - en-US: |
+      Scott one nineteen.
+      [pause]
+      Fifteen-cent brown and blue. Landing of Columbus. Type Two.
+      [pause]
+      Eighteen sixty-nine again — and here National Bank Note tried two colors on one stamp. Blue for the landing party, brown for the frame, two trips through the press. When the sheet did not land on the same pins, the picture shifted inside the oval. That is not damage. That is the bicolor process, and this example shows it strongly.
+  - en-US: |
+      Look at the detailed view. The vignette is off to one side of the brown frame. Type Two is the complete frameline around that picture — Type One, Scott one eighteen, breaks at the top and is much scarcer.
+      [pause]
+      Fifteen cents paid the eighteen fifty-seven treaty rate to France — a quarter-ounce by American packet or via England. It also paid the domestic registry fee, and it made up fifteen-cent rates across Europe.
+  - en-US: |
+      G grill on the reverse. Scott United States Specialized, twenty twenty-three: used, one hundred ninety dollars.
+      [pause]
+      Confirm Type Two. Enjoy the shifted frame. Then bid — this is Scott one nineteen.
+
+@region stamp-label
+1 · Front & reverse
+
+@region stamp
+@image specimen119
+  url: assets/GHSS_US119_used.png
+  alt: United States Scott 119, 1869 fifteen-cent brown and blue Landing of Columbus Type II with G grill and strongly shifted bicolor frame
+  caption: Scott 119 Type II — shifted brown frame over the blue landing scene; 15¢ to France / registry; Scott U.S. 2023 used $190
+  dpi_fallback: 1200
+  click_to_zoom: true
+  tilt_control: 1
+
+@region detail-label
+2 · Reverse · G grill area
+
+@region detail
+@image
+  url: #specimen119
+  alt: Reverse crop with millimetre grid and selectable grill silhouette, default G
+  caption: Reverse (~27 × 26 mm) — G grill 9½ × 13 mm (default G). Compare B–J and Z outlines on the millimetre grid
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  grill_overlay: G, B, C, D, E, F, H, I, J, Z
+  tilt_control: 1
+  draggable: true
+  crop: 2854,1311
+  width: 1264
+  height: 1232
+
+@region detail-zoom-label
+3 · Shifted bicolor frame
+
+@region detail-zoom
+@image
+  url: #specimen119
+  alt: Landing of Columbus vignette sitting off-register inside the brown Type II frame from two-color printing
+  caption: Shifted frame — blue vignette off-register in the brown oval, two press passes
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  tilt_control: 1
+  draggable: true
+  crop: 1362,1609
+  width: 950
+  height: 573
+
+@region footer
+Catalog notes: 1869 15¢ Landing of Columbus Type II · shifted bicolor frame · France 15¢ / registry · Scott U.S. Specialized 2023 used $190 · theswedishtiger.com/119-scotts.html · Copyright © Exergy ∞ LLC
+
+---
+@id lot-190
+@layout stamp-exhibit
+
+@region page-qr
+@qr_code
+  url: https://exergy-connect.github.io/PhilateLister/ghss_auction_2026/#{{ segment.slide }}
+  logo: assets/stamp-mark.svg
+  logo_scale: 0.22
+  color: "#0b1d36"
+  background: "#ffffff"
+  ecl: H
+  click_to_zoom: true
+
+@region lot-number
+Lot 8
+
+@region header
+GHSS auction 19-20 September 2026 · Scott 190 · used
+
+@region title
+# Scott 190 — 1879 30¢ full black Hamilton
+
+American Bank Note Company · the 1870 Hamilton die on the soft, porous paper of 1879 (Scott 165 is the earlier hard-paper printing). Thirty cents was a Bank Note high value: registered and heavy letters, and foreign postage when the 5¢ UPU rate was not enough. Alexander Hamilton — first Secretary of the Treasury — in profile. Lot card: used, $90. Notes after [The Swedish Tiger](https://www.theswedishtiger.com/190-scotts.html).
+
+@narrative
+  - en-US: |
+      Scott one ninety.
+      [pause]
+      Thirty-cent full black. Hamilton. American Bank Note, eighteen seventy-nine.
+      [pause]
+      Same portrait as the eighteen-seventy National printing, now on the softer paper of the American Bank Note years. This is not a commemorative. It is a working high value — the stamp you reached for when five cents to the Universal Postal Union would not carry the letter.
+  - en-US: |
+      Look at Hamilton in the oval. That is the first Secretary of the Treasury, engraved for postage, not for a medal.
+      [pause]
+      Thirty cents paid registered foreign mail, triple-weight letters, and the leftover cents on a heavy cover to Europe or the Pacific. Off cover it still reads as the Bank Note era’s high-value workhorse.
+  - en-US: |
+      Used, as the card says. Scott catalog on the lot, ninety dollars.
+      [pause]
+      Then bid — this is Scott one ninety.
+
+@region stamp-label
+1 · Front
+
+@region stamp
+@image specimen190
+  url: assets/GHSS_US190_used.png
+  alt: United States Scott 190, 1879 thirty-cent full black Hamilton, used — auction card, face only
+  caption: Scott 190 — 30¢ Hamilton on 1879 soft paper; registered and heavy mail; lot card used $90
+  dpi_fallback: 1200
+  click_to_zoom: true
+  tilt_control: 1
+
+@region detail-label
+2 · Design
+
+@region detail
+@image
+  url: #specimen190
+  alt: Face of Scott 190 with millimetre grid
+  caption: Face (~25 × 30 mm) — American Bank Note Hamilton, soft porous paper of 1879
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  tilt_control: 1
+  draggable: true
+  crop: 2149,1334
+  width: 1189
+  height: 1430
+
+@region detail-zoom-label
+3 · Hamilton’s profile
+
+@region detail-zoom
+@image
+  url: #specimen190
+  alt: Engraved Hamilton portrait from Scott 190 at higher magnification
+  caption: Hamilton in the oval — the Bank Note high value for registered and heavy letters
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  tilt_control: 1
+  draggable: true
+  crop: 2498,1623
+  width: 516
+  height: 553
+
+@region footer
+Catalog notes: 1879 30¢ Hamilton ABN soft paper · high-value / registered mail · lot card used $90 · theswedishtiger.com/190-scotts.html · Copyright © Exergy ∞ LLC
+
+---
+@id lot-211
+@layout stamp-exhibit
+
+@region page-qr
+@qr_code
+  url: https://exergy-connect.github.io/PhilateLister/ghss_auction_2026/#{{ segment.slide }}
+  logo: assets/stamp-mark.svg
+  logo_scale: 0.22
+  color: "#0b1d36"
+  background: "#ffffff"
+  ecl: H
+  click_to_zoom: true
+
+@region lot-number
+Lot 9
+
+@region header
+GHSS auction 19-20 September 2026 · Scott 211 · mint hinged
+
+@region title
+# Scott 211 — 1883 4¢ blue green Jackson
+
+American Bank Note Company · issued 1 October 1883, the day the domestic letter rate fell from 3¢ to 2¢. Four cents paid a double-weight letter — two ounces inland — and made up registered and foreign combinations. Andrew Jackson in the oval, a small color change from the earlier 4¢ green. Lot card: mint hinged, thin, $225. Notes after [The Swedish Tiger](https://www.theswedishtiger.com/211-scotts.html).
+
+@narrative
+  - en-US: |
+      Scott two eleven.
+      [pause]
+      Four-cent blue green. Jackson. American Bank Note. First of October, eighteen eighty-three.
+      [pause]
+      That is the day the domestic letter rate fell from three cents to two. Suddenly four cents was a double letter — two ounces across the country. This stamp is that new arithmetic.
+  - en-US: |
+      Jackson in the oval, the old warrior recut for a cheaper postage age. Blue green rather than the earlier green — a color the Post Office hoped clerks would not confuse with the two-cent brown.
+      [pause]
+      Four cents also made up registered mail and foreign combinations when two and five would not add cleanly.
+  - en-US: |
+      Mint, hinged, with thinning as the card notes. Catalog two hundred twenty-five dollars.
+      [pause]
+      Then bid — this is Scott two eleven.
+
+@region stamp-label
+1 · Front
+
+@region stamp
+@image specimen211
+  url: assets/GHSS_US211_mh.png
+  alt: United States Scott 211, 1883 four-cent blue green Jackson, mint hinged — auction card, face only
+  caption: Scott 211 — 4¢ Jackson; double domestic letter after the 1883 2¢ rate; lot card MH $225
+  dpi_fallback: 1200
+  click_to_zoom: true
+  tilt_control: 1
+
+@region detail-label
+2 · Design
+
+@region detail
+@image
+  url: #specimen211
+  alt: Face of Scott 211 with millimetre grid
+  caption: Face (~26 × 30 mm) — Jackson, issued the day the 2¢ letter rate began
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  tilt_control: 1
+  draggable: true
+  crop: 1822,1241
+  width: 1226
+  height: 1425
+
+@region detail-zoom-label
+3 · Jackson’s bust
+
+@region detail-zoom
+@image
+  url: #specimen211
+  alt: Engraved Jackson portrait from Scott 211 at higher magnification
+  caption: Jackson — the 4¢ that paid two ounces after the 1883 rate cut
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  tilt_control: 1
+  draggable: true
+  crop: 2114,1523
+  width: 641
+  height: 699
+
+@region footer
+Catalog notes: 1883 4¢ Jackson · double 2¢ letter · lot card MH thin $225 · theswedishtiger.com/211-scotts.html · Copyright © Exergy ∞ LLC
+
+---
+@id lot-237
+@layout stamp-exhibit
+
+@region page-qr
+@qr_code
+  url: https://exergy-connect.github.io/PhilateLister/ghss_auction_2026/#{{ segment.slide }}
+  logo: assets/stamp-mark.svg
+  logo_scale: 0.22
+  color: "#0b1d36"
+  background: "#ffffff"
+  ecl: H
+  click_to_zoom: true
+
+@region lot-number
+Lot 10
+
+@region header
+GHSS auction 19-20 September 2026 · Scott 237 · mint hinged
+
+@region title
+# Scott 237 — 1893 10¢ Columbian, Columbus presenting natives
+
+American Bank Note · World’s Columbian Exposition, Chicago. The vignette is Columbus before Ferdinand and Isabella with the people of the New World — the court scene that sold the fair. Ten cents paid a double UPU letter (the UPU rate was 5¢) and the usual registered combination: 8¢ registry fee plus 2¢ domestic postage. Lot card: mint hinged, $95. Notes after [The Swedish Tiger](https://www.theswedishtiger.com/237-scotts.html).
+
+@narrative
+  - en-US: |
+      Scott two thirty-seven.
+      [pause]
+      Ten-cent Columbian. Columbus presenting natives. Chicago, eighteen ninety-three.
+      [pause]
+      The World’s Columbian Exposition. Sixteen denominations, from one cent to five dollars — the first United States commemorative set. This ten-cent is the court at Barcelona: Columbus, the sovereigns, and the people he brought back.
+  - en-US: |
+      Ten cents had real postal work. The Universal Postal Union letter was five cents, so this stamp paid a double foreign letter. Registry was eight cents; add two cents postage and you have ten. That is why tens turn up on registered covers from the fair year.
+      [pause]
+      Look at the detailed view — the audience chamber, not a landing beach. Same Columbus story as Scott one nineteen, recast for a world’s fair.
+  - en-US: |
+      Mint, hinged. Catalog ninety-five dollars.
+      [pause]
+      Then bid — this is Scott two thirty-seven.
+
+@region stamp-label
+1 · Front
+
+@region stamp
+@image specimen237
+  url: assets/GHSS_US237_mh.png
+  alt: United States Scott 237, 1893 ten-cent Columbian Columbus presenting natives, mint hinged — auction card, face only
+  caption: Scott 237 — 10¢ Columbian; double UPU / 8¢ registry + 2¢ postage; lot card MH $95
+  dpi_fallback: 1200
+  click_to_zoom: true
+  tilt_control: 1
+
+@region detail-label
+2 · Design
+
+@region detail
+@image
+  url: #specimen237
+  alt: Face of Scott 237 with millimetre grid
+  caption: Face — Columbian Exposition 10¢, Columbus at the Spanish court
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  tilt_control: 1
+  draggable: true
+  crop: 1643,1675
+  width: 1889
+  height: 1281
+
+@region detail-zoom-label
+3 · The Spanish court
+
+@region detail-zoom
+@image
+  url: #specimen237
+  alt: Columbus presenting natives before Ferdinand and Isabella on Scott 237
+  caption: Court scene — Columbus before the Catholic Monarchs, the vignette that sold the fair
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  tilt_control: 1
+  draggable: true
+  crop: 2080,1931
+  width: 1013
+  height: 624
+
+@region footer
+Catalog notes: 1893 10¢ Columbian · double UPU / registered combination · lot card MH $95 · theswedishtiger.com/237-scotts.html · Copyright © Exergy ∞ LLC
+
+---
+@id lot-239
+@layout stamp-exhibit
+
+@region page-qr
+@qr_code
+  url: https://exergy-connect.github.io/PhilateLister/ghss_auction_2026/#{{ segment.slide }}
+  logo: assets/stamp-mark.svg
+  logo_scale: 0.22
+  color: "#0b1d36"
+  background: "#ffffff"
+  ecl: H
+  click_to_zoom: true
+
+@region lot-number
+Lot 11
+
+@region header
+GHSS auction 19-20 September 2026 · Scott 239 · mint hinged
+
+@region title
+# Scott 239 — 1893 30¢ Columbian, Columbus at La Rábida
+
+American Bank Note · the monastery of La Rábida, where Columbus waited on the Franciscans before Isabella backed the voyage. Thirty cents was a high value of the Columbian set — parcels, heavy foreign letters, and registered combinations well above the 5¢ UPU rate. Lot card: mint hinged, thin, $225. Notes after [The Swedish Tiger](https://www.theswedishtiger.com/239-scotts.html).
+
+@narrative
+  - en-US: |
+      Scott two thirty-nine.
+      [pause]
+      Thirty-cent Columbian. Columbus at La Rábida.
+      [pause]
+      The Franciscan monastery near Palos. Columbus waited there while the court decided whether to fund the voyage. The Columbian set put that cloister on a postage stamp for the Chicago fair.
+  - en-US: |
+      Thirty cents was not a letter rate. It was a high value — a heavy foreign letter, a parcel, a stack of registered combinations. The five-cent UPU stamp did the ordinary Atlantic work; this one did the expensive remainder.
+      [pause]
+      Look at the courtyard in the detailed view. That is the story of the wait before eighteen ninety-two’s four-hundredth anniversary.
+  - en-US: |
+      Mint, hinged, with thinning as the card notes. Catalog two hundred twenty-five dollars.
+      [pause]
+      Then bid — this is Scott two thirty-nine.
+
+@region stamp-label
+1 · Front
+
+@region stamp
+@image specimen239
+  url: assets/GHSS_US239_mh.png
+  alt: United States Scott 239, 1893 thirty-cent Columbian Columbus at La Rabida, mint hinged — auction card, face only
+  caption: Scott 239 — 30¢ Columbian, La Rábida; high-value fair issue; lot card MH $225
+  dpi_fallback: 1200
+  click_to_zoom: true
+  tilt_control: 4
+
+@region detail-label
+2 · Design
+
+@region detail
+@image
+  url: #specimen239
+  alt: Face of Scott 239 with millimetre grid
+  caption: Face — Columbus at the monastery of La Rábida
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  tilt_control: 4
+  draggable: true
+  crop: 1479,1546
+  width: 1895
+  height: 1340
+
+@region detail-zoom-label
+3 · La Rábida
+
+@region detail-zoom
+@image
+  url: #specimen239
+  alt: Monastery courtyard vignette from Scott 239 Columbus at La Rabida
+  caption: La Rábida — the cloister where Columbus waited for Isabella’s backing
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  tilt_control: 4
+  draggable: true
+  crop: 1918,1812
+  width: 1016
+  height: 655
+
+@region footer
+Catalog notes: 1893 30¢ Columbian La Rábida · high-value commemorative · lot card MH thin $225 · theswedishtiger.com/239-scotts.html · Copyright © Exergy ∞ LLC
+
+---
+@id lot-240
+@layout stamp-exhibit
+
+@region page-qr
+@qr_code
+  url: https://exergy-connect.github.io/PhilateLister/ghss_auction_2026/#{{ segment.slide }}
+  logo: assets/stamp-mark.svg
+  logo_scale: 0.22
+  color: "#0b1d36"
+  background: "#ffffff"
+  ecl: H
+  click_to_zoom: true
+
+@region lot-number
+Lot 12
+
+@region header
+GHSS auction 19-20 September 2026 · Scott 240 · mint hinged
+
+@region title
+# Scott 240 — 1893 50¢ Columbian, Recall of Columbus
+
+American Bank Note · Isabella’s messenger overtaking Columbus on the road from Granada, recalling him to receive the commission for the first voyage. Fifty cents is the top working high value most collectors meet in the Columbian set before the dollar denominations. Lot card: mint hinged, thin, $450. Notes after [The Swedish Tiger](https://www.theswedishtiger.com/240-scotts.html).
+
+@narrative
+  - en-US: |
+      Scott two forty.
+      [pause]
+      Fifty-cent Columbian. Recall of Columbus.
+      [pause]
+      The story is the road from Granada. Columbus had left the court. Isabella sent a courier. He turned back, and the voyage was on. The Bureau — American Bank Note — put that recall on the fifty-cent stamp of the Chicago fair.
+  - en-US: |
+      Fifty cents was packet and parcel money. Not the five-cent UPU letter. Not even the thirty-cent remainder. This is the stamp that closed a heavy registered foreign letter, or sat in a stock book as the last Columbian before the dollars.
+      [pause]
+      Look at the riders in the detailed view. That is the moment the expedition was saved.
+  - en-US: |
+      Mint, hinged, thinning as marked. Catalog four hundred fifty dollars.
+      [pause]
+      Then bid — this is Scott two forty.
+
+@region stamp-label
+1 · Front
+
+@region stamp
+@image specimen240
+  url: assets/GHSS_US240_mh.png
+  alt: United States Scott 240, 1893 fifty-cent Columbian Recall of Columbus, mint hinged — auction card, face only
+  caption: Scott 240 — 50¢ Recall of Columbus; Columbian high value; lot card MH $450
+  dpi_fallback: 1200
+  click_to_zoom: true
+  tilt_control: 1
+
+@region detail-label
+2 · Design
+
+@region detail
+@image
+  url: #specimen240
+  alt: Face of Scott 240 with millimetre grid
+  caption: Face — Isabella’s courier recalling Columbus on the road from Granada
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  tilt_control: 1
+  draggable: true
+  crop: 1800,1217
+  width: 1844
+  height: 1284
+
+@region detail-zoom-label
+3 · The recall
+
+@region detail-zoom
+@image
+  url: #specimen240
+  alt: Riders in the Recall of Columbus vignette on Scott 240
+  caption: The courier — Isabella recalling Columbus, the vignette of the 50¢ Columbian
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  tilt_control: 1
+  draggable: true
+  crop: 2228,1473
+  width: 987
+  height: 626
+
+@region footer
+Catalog notes: 1893 50¢ Columbian Recall of Columbus · high-value commemorative · lot card MH thin $450 · theswedishtiger.com/240-scotts.html · Copyright © Exergy ∞ LLC
+
+---
+@id lot-289
+@layout stamp-exhibit
+
+@region page-qr
+@qr_code
+  url: https://exergy-connect.github.io/PhilateLister/ghss_auction_2026/#{{ segment.slide }}
+  logo: assets/stamp-mark.svg
+  logo_scale: 0.22
+  color: "#0b1d36"
+  background: "#ffffff"
+  ecl: H
+  click_to_zoom: true
+
+@region lot-number
+Lot 13
+
+@region header
+GHSS auction 19-20 September 2026 · Scott 289 · mint
+
+@region title
+# Scott 289 — 1898 8¢ Trans-Mississippi, Troops guarding train
+
+Bureau of Engraving and Printing · Trans-Mississippi Exposition, Omaha. The vignette is a cavalry escort with a wagon train on the plains — the Army’s job on the overland routes. Eight cents, from 1893, was the registry fee; this stamp paid that fee in one label. Lot card: mint, disturbed gum, $140. Notes after [The Swedish Tiger](https://www.theswedishtiger.com/289-scotts.html).
+
+@narrative
+  - en-US: |
+      Scott two eighty-nine.
+      [pause]
+      Eight-cent Trans-Mississippi. Troops guarding train. Omaha, eighteen ninety-eight.
+      [pause]
+      The Trans-Mississippi Exposition. Nine stamps, the West as the Post Office wanted it seen: farming, mining, the river, the railroad, the Army. This eight-cent is cavalry and a wagon train.
+  - en-US: |
+      Eight cents had a precise job. From eighteen ninety-three the registry fee was eight cents. This stamp paid that fee in a single adhesive — no two-plus-six, no leftover. Registered letters from the fair year often wear this design.
+      [pause]
+      Look at the detailed view. Soldiers, horses, wagons on the plains. That is the overland route under guard.
+  - en-US: |
+      Mint, gum disturbed as the card says. Catalog one hundred forty dollars.
+      [pause]
+      Then bid — this is Scott two eighty-nine.
+
+@region stamp-label
+1 · Front
+
+@region stamp
+@image specimen289
+  url: assets/GHSS_US289_m.png
+  alt: United States Scott 289, 1898 eight-cent Trans-Mississippi Troops guarding train, mint — auction card, face only
+  caption: Scott 289 — 8¢ Troops Guarding Train; the 1893–1909 registry fee; lot card mint $140
+  dpi_fallback: 1200
+  click_to_zoom: true
+  tilt_control: 1
+
+@region detail-label
+2 · Design
+
+@region detail
+@image
+  url: #specimen289
+  alt: Face of Scott 289 with millimetre grid
+  caption: Face — Trans-Mississippi 8¢, cavalry escort on the plains
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  tilt_control: 1
+  draggable: true
+  crop: 1591,963
+  width: 1874
+  height: 1347
+
+@region detail-zoom-label
+3 · The escort
+
+@region detail-zoom
+@image
+  url: #specimen289
+  alt: Cavalry and wagon train from the Scott 289 Troops guarding train vignette
+  caption: Troops and wagons — the Army on the overland route, the 8¢ registry stamp of 1898
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  tilt_control: 1
+  draggable: true
+  crop: 2025,1231
+  width: 1004
+  height: 658
+
+@region footer
+Catalog notes: 1898 8¢ Trans-Mississippi Troops Guarding Train · 8¢ registry fee · lot card mint disturbed gum $140 · theswedishtiger.com/289-scotts.html · Copyright © Exergy ∞ LLC
+
+---
+@id lot-290
+@layout stamp-exhibit
+
+@region page-qr
+@qr_code
+  url: https://exergy-connect.github.io/PhilateLister/ghss_auction_2026/#{{ segment.slide }}
+  logo: assets/stamp-mark.svg
+  logo_scale: 0.22
+  color: "#0b1d36"
+  background: "#ffffff"
+  ecl: H
+  click_to_zoom: true
+
+@region lot-number
+Lot 14
+
+@region header
+GHSS auction 19-20 September 2026 · Scott 290 · mint
+
+@region title
+# Scott 290 — 1898 10¢ Trans-Mississippi, Hardships of emigration
+
+Bureau of Engraving and Printing · Omaha 1898. A family and a covered wagon on the plains — the emigrant story the Exposition wanted next to the Army escort on the 8¢. Ten cents paid a double UPU letter and made up registered combinations above the 8¢ fee. Lot card: mint, disturbed gum, $140. Notes after [The Swedish Tiger](https://www.theswedishtiger.com/290-scotts.html).
+
+@narrative
+  - en-US: |
+      Scott two ninety.
+      [pause]
+      Ten-cent Trans-Mississippi. Hardships of emigration. Omaha, eighteen ninety-eight.
+      [pause]
+      Same set as the eight-cent troops. Here the vignette is a family and a covered wagon — the civilian half of the overland story. The Bureau engraved the West for a fair in Nebraska.
+  - en-US: |
+      Ten cents, again, is double the five-cent UPU letter, and a convenient make-up once eight cents had paid the registry fee. The two Trans-Mississippi neighbors — eight and ten — are the registered-mail pair of this issue.
+      [pause]
+      Look at the wagon in the detailed view. That is the hardship the title names: the plains, the animals, the walk beside the wheels.
+  - en-US: |
+      Mint, gum disturbed as marked. Catalog one hundred forty dollars.
+      [pause]
+      Then bid — this is Scott two ninety.
+
+@region stamp-label
+1 · Front
+
+@region stamp
+@image specimen290
+  url: assets/GHSS_US290_m.png
+  alt: United States Scott 290, 1898 ten-cent Trans-Mississippi Hardships of emigration, mint — auction card, face only
+  caption: Scott 290 — 10¢ Hardships of Emigration; double UPU / registered make-up; lot card mint $140
+  dpi_fallback: 1200
+  click_to_zoom: true
+  tilt_control: 1
+
+@region detail-label
+2 · Design
+
+@region detail
+@image
+  url: #specimen290
+  alt: Face of Scott 290 with millimetre grid
+  caption: Face — Trans-Mississippi 10¢, covered wagon on the plains
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  tilt_control: 1
+  draggable: true
+  crop: 1696,925
+  width: 1926
+  height: 1452
+
+@region detail-zoom-label
+3 · The wagon
+
+@region detail-zoom
+@image
+  url: #specimen290
+  alt: Covered wagon and emigrant family from Scott 290 Hardships of emigration
+  caption: Hardships of emigration — the wagon vignette of the 10¢ Trans-Mississippi
+  click_to_zoom: true
+  mm_ruler: true
+  mm_grid: true
+  tilt_control: 1
+  draggable: true
+  crop: 2142,1211
+  width: 1033
+  height: 713
+
+@region footer
+Catalog notes: 1898 10¢ Trans-Mississippi Hardships of Emigration · double UPU / registered make-up · lot card mint disturbed gum $140 · theswedishtiger.com/290-scotts.html · Copyright © Exergy ∞ LLC

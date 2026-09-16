@@ -1,0 +1,75 @@
+---
+styles: [stamp-exhibit]
+defaults:
+  region: stamp
+---
+@stack
+  direction: vertical
+  gap: 8
+  content:
+    @stack
+      direction: horizontal
+      weight: 0
+      height: 48
+      gap: 12
+      content:
+        @region header
+          weight: 1
+        @region lot-number
+          weight: 0
+          width: 100
+    @stack
+      direction: horizontal
+      weight: 0
+      height: 188
+      gap: 16
+      content:
+        @region page-qr
+          weight: 0
+          width: 128
+        @region title
+          weight: 1
+    @stack
+      direction: horizontal
+      weight: 1
+      gap: 14
+      align: stretch
+      content:
+        @stack
+          weight: 1.2
+          direction: vertical
+          gap: 6
+          content:
+            @region stamp-label
+              weight: 0
+              height: 46
+            @region stamp
+              default: true
+              weight: 1
+        @stack
+          weight: 1.1
+          direction: vertical
+          gap: 6
+          content:
+            @region detail-label
+              weight: 0
+              height: 46
+            @region detail
+              horizontal-align: center
+              vertical-align: center
+              weight: 1
+        @stack
+          weight: 0.9
+          direction: vertical
+          gap: 6
+          content:
+            @region detail-zoom-label
+              weight: 0
+              height: 46
+            @region detail-zoom
+              horizontal-align: center
+              vertical-align: center
+              weight: 1
+    @region footer
+      weight: 0
+      height: 22

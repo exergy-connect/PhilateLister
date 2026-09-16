@@ -1,0 +1,10 @@
+---
+canvas: true
+format: print
+layout: framed-deck
+styles: [slidedeck, slidedeck-print]
+constraints: { width: 850, height: 1100 }
+themes: [light]
+image:
+  click_to_zoom: false
+---

@@ -1,0 +1,86 @@
+---
+styles: [stamp-exhibit, stamp-exhibit-print]
+defaults:
+  region: stamp
+format: print
+---
+@stack
+  direction: vertical
+  gap: 6
+  content:
+    @stack
+      direction: horizontal
+      weight: 0
+      height: 88
+      gap: 8
+      content:
+        @region page-qr
+          weight: 0
+          width: 88
+        @region header
+          weight: 1
+        @region lot-number
+          weight: 0
+          width: 80
+    @stack
+      direction: horizontal
+      weight: 1
+      gap: 9
+      align: stretch
+      content:
+        @stack
+          weight: 1.25
+          direction: vertical
+          gap: 5
+          content:
+            @region title
+              weight: 0
+              height: 52
+            @region script
+              weight: 1
+              content:
+                {{ narrative.text }}
+        @stack
+          weight: 0.85
+          direction: vertical
+          gap: 5
+          content:
+            @region stamp-label
+              weight: 0
+              height: 26
+            @region stamp
+              default: true
+              weight: 1.2
+            @stack
+              direction: horizontal
+              weight: 0.9
+              gap: 5
+              align: stretch
+              content:
+                @stack
+                  weight: 1.1
+                  direction: vertical
+                  gap: 3
+                  content:
+                    @region detail-label
+                      weight: 0
+                      height: 26
+                    @region detail
+                      horizontal-align: center
+                      vertical-align: center
+                      weight: 1
+                @stack
+                  weight: 0.9
+                  direction: vertical
+                  gap: 3
+                  content:
+                    @region detail-zoom-label
+                      weight: 0
+                      height: 26
+                    @region detail-zoom
+                      horizontal-align: center
+                      vertical-align: center
+                      weight: 1
+    @region footer
+      weight: 0
+      height: 26

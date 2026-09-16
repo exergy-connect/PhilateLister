@@ -1,0 +1,17 @@
+---
+constraints: { width: 1280, height: 720 }
+---
+@stack shell
+  direction: vertical
+  content:
+    @stack deck
+      direction: vertical
+      weight: 1
+      content:
+        @layout slide-frame apply=segments
+    @region hud
+      weight: 0
+      height: 0
+      content:
+        @controls type="hud"
+          format_switcher: false

@@ -1,0 +1,106 @@
+---
+extends: slidedeck
+---
+```css
+/* US Letter print canvas — 8.5 × 11 in at the poster/cover-letter 850×1100 grid. */
+
+@page {
+  size: letter portrait;
+  margin: 0;
+}
+
+#xframe[data-xframe-format="print"] .xframe-image-replace-controls,
+#xframe[data-xframe-format="print"] .xframe-grill-picker,
+#xframe[data-xframe-format="print"] .xframe-narrative-dock,
+#xframe[data-xframe-format="print"] audio,
+#xframe[data-xframe-format="print"] .xframe-narrative-speak,
+#xframe[data-xframe-format="print"] .xframe-chrome-wing-right {
+  display: none !important;
+}
+
+/* Keep the HUD on screen so format can be switched; hide it when printing. */
+@media screen {
+  #xframe[data-xframe-format="print"] > #xframe-chrome {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: auto;
+    z-index: 50;
+    height: auto;
+    background: var(--surface-bg, #fff);
+    border-top: 1px solid var(--border, #ccc);
+  }
+
+  #xframe[data-xframe-format="print"] > #xframe-chrome .xframe-chrome-controls {
+    position: relative;
+    left: auto;
+    width: 100%;
+  }
+}
+
+@media print {
+  html, body {
+    width: 8.5in;
+    height: auto;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    overflow: visible !important;
+  }
+
+  #xframe-deck,
+  #xframe[data-xframe-canvas],
+  #xframe .xframe-frame-host,
+  #xframe-frame.xframe-frame {
+    width: 8.5in !important;
+    max-width: 8.5in !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+    overflow: visible !important;
+  }
+
+  #xframe-chrome,
+  #xframe-hud,
+  .layout-controls,
+  .xframe-narrative-dock,
+  .xframe-ai-index-control,
+  .hud {
+    display: none !important;
+  }
+
+  #xframe-frame.xframe-frame > .layout-segments {
+    position: relative !important;
+    inset: auto !important;
+    width: 8.5in !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  #xframe .segment {
+    position: relative !important;
+    inset: auto !important;
+    display: flex !important;
+    width: 8.5in !important;
+    height: 11in !important;
+    min-height: 11in !important;
+    max-height: 11in !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    page-break-after: always;
+    break-after: page;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  #xframe .segment:last-of-type {
+    page-break-after: auto;
+    break-after: auto;
+  }
+}
+```

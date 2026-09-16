@@ -1,0 +1,10 @@
+```css
+#xframe .segment[data-layout="stamp-exhibit-mobile"] [data-region="stamp"] img {
+  max-height: 100%;
+}
+
+#xframe .segment[data-layout="stamp-exhibit-mobile"] figcaption,
+#xframe .segment[data-layout="stamp-exhibit-mobile"] .xframe-image-replace-controls {
+  display: none;
+}
+```

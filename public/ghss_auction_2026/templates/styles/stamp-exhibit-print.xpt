@@ -1,0 +1,48 @@
+```css
+#xframe .segment[data-layout="stamp-exhibit-print"] .xframe-mm-ruler-figure {
+  width: 100%;
+}
+
+#xframe .segment[data-layout="stamp-exhibit-print"] [data-region="header"] p {
+  font-size: 16px;
+}
+
+#xframe .segment[data-layout="stamp-exhibit-print"] [data-region="title"] h1 {
+  font-size: 18px;
+}
+
+#xframe .segment[data-layout="stamp-exhibit-print"] [data-region="title"] p,
+#xframe .segment[data-layout="stamp-exhibit-print"] figcaption,
+#xframe .segment[data-layout="stamp-exhibit-print"] .xframe-image-replace-controls {
+  display: none;
+}
+
+#xframe .segment[data-layout="stamp-exhibit-print"] [data-region="script"] {
+  padding: 8px;
+  background: #fff;
+  border-top: 3px solid var(--stamp-accent);
+  font-family: var(--stamp-serif);
+}
+
+#xframe .segment[data-layout="stamp-exhibit-print"] [data-region="script"] p {
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.42;
+}
+
+#xframe .segment[data-layout="stamp-exhibit-print"] [data-region$="-label"] p {
+  padding: 3px;
+  font-size: 11px;
+}
+
+#xframe .segment[data-layout="stamp-exhibit-print"] [data-region="footer"] {
+  left: 0 !important;
+  width: 100% !important;
+  height: 26px !important;
+  bottom: 0 !important;
+}
+
+#xframe .segment[data-layout="stamp-exhibit-print"] [data-region="footer"] p {
+  font-size: 9px;
+}
+```

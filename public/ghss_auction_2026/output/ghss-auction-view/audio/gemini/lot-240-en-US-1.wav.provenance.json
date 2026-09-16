@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "provider": "gemini",
+  "model": "gemini-2.5-flash-preview-tts",
+  "generated_at": "2026-09-16T04:30:53.558Z",
+  "content_hash": "f080fe8d3df7923f66b67eaa67ddb8f1e9a9dd4f7fbe95402f3af1b5b4e4f91c",
+  "duration_seconds": 27.250958333333333
+}

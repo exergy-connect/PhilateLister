@@ -1619,6 +1619,60 @@ body {
   }
 }
 
+/* Mobile chrome: keep slide navigation touch-sized and prevent narration
+   controls from pushing the HUD beyond the viewport. */
+#xframe[data-xframe-format="mobile"] > #xframe-chrome {
+  --xframe-chrome-pad-block: 0.5rem;
+  --xframe-chrome-pad-inline: 0.5rem;
+
+  & .xframe-chrome-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    align-items: stretch;
+  }
+
+  & .hud {
+    width: 100%;
+    max-width: 100%;
+    column-gap: 0.25rem;
+    padding: 0.25rem 0.4rem;
+  }
+
+  & .hud-wing {
+    min-width: 0;
+    gap: 0.2rem;
+  }
+
+  & .hud button {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0.4rem;
+  }
+
+  & .hud [data-deck-counter] {
+    min-width: 4rem;
+    font-size: 1rem;
+  }
+
+  & [data-deck-screenshot],
+  & [data-deck-theme],
+  & [data-deck-format],
+  & [data-deck-fullscreen] {
+    display: none;
+  }
+
+  & .xframe-chrome-wing-right,
+  & .xframe-audio-dock {
+    width: 100%;
+    min-width: 0;
+  }
+
+  & .xframe-narrative audio {
+    width: min(100%, 20rem);
+  }
+}
+
 @media print {
   html, body {
     height: auto;
@@ -4263,6 +4317,60 @@ body {
   }
 }
 
+/* Mobile chrome: keep slide navigation touch-sized and prevent narration
+   controls from pushing the HUD beyond the viewport. */
+#xframe[data-xframe-format="mobile"] > #xframe-chrome {
+  --xframe-chrome-pad-block: 0.5rem;
+  --xframe-chrome-pad-inline: 0.5rem;
+
+  & .xframe-chrome-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    align-items: stretch;
+  }
+
+  & .hud {
+    width: 100%;
+    max-width: 100%;
+    column-gap: 0.25rem;
+    padding: 0.25rem 0.4rem;
+  }
+
+  & .hud-wing {
+    min-width: 0;
+    gap: 0.2rem;
+  }
+
+  & .hud button {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0.4rem;
+  }
+
+  & .hud [data-deck-counter] {
+    min-width: 4rem;
+    font-size: 1rem;
+  }
+
+  & [data-deck-screenshot],
+  & [data-deck-theme],
+  & [data-deck-format],
+  & [data-deck-fullscreen] {
+    display: none;
+  }
+
+  & .xframe-chrome-wing-right,
+  & .xframe-audio-dock {
+    width: 100%;
+    min-width: 0;
+  }
+
+  & .xframe-narrative audio {
+    width: min(100%, 20rem);
+  }
+}
+
 @media print {
   html, body {
     height: auto;
@@ -6501,6 +6609,60 @@ body {
     top: 0;
     bottom: 0;
     z-index: 1;
+  }
+}
+
+/* Mobile chrome: keep slide navigation touch-sized and prevent narration
+   controls from pushing the HUD beyond the viewport. */
+#xframe[data-xframe-format="mobile"] > #xframe-chrome {
+  --xframe-chrome-pad-block: 0.5rem;
+  --xframe-chrome-pad-inline: 0.5rem;
+
+  & .xframe-chrome-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    align-items: stretch;
+  }
+
+  & .hud {
+    width: 100%;
+    max-width: 100%;
+    column-gap: 0.25rem;
+    padding: 0.25rem 0.4rem;
+  }
+
+  & .hud-wing {
+    min-width: 0;
+    gap: 0.2rem;
+  }
+
+  & .hud button {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0.4rem;
+  }
+
+  & .hud [data-deck-counter] {
+    min-width: 4rem;
+    font-size: 1rem;
+  }
+
+  & [data-deck-screenshot],
+  & [data-deck-theme],
+  & [data-deck-format],
+  & [data-deck-fullscreen] {
+    display: none;
+  }
+
+  & .xframe-chrome-wing-right,
+  & .xframe-audio-dock {
+    width: 100%;
+    min-width: 0;
+  }
+
+  & .xframe-narrative audio {
+    width: min(100%, 20rem);
   }
 }
 

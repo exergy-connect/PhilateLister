@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>GHSS Auction bid sheet — Lot 1, Scott 24</title>
+  <style>
+    @page {
+      size: letter;
+      margin: 0;
+    }
+
+    :root {
+      --navy: #002d62;
+      --sky: #d1dce5;
+      --maroon: #8b1a1a;
+      --white: #ffffff;
+      --panel: #e8eef3;
+      --ink: #002d62;
+      --muted: #3d5a7a;
+      --line: color-mix(in srgb, var(--navy) 18%, var(--sky));
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      color: var(--ink);
+      background: #c5cfd8;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0.35in 0;
+    }
+
+    .page {
+      display: flex;
+      flex-direction: column;
+      width: 8.5in;
+      height: 11in;
+      padding: 0.2in;
+      background: var(--navy);
+    }
+
+    .sheet {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      background: var(--white);
+      overflow: hidden;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 0.16in;
+      align-items: center;
+      padding: 0.14in 0.2in 0.12in;
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    .mark {
+      width: 0.48in;
+      height: 0.48in;
+      flex-shrink: 0;
+    }
+
+    .mark svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .kicker {
+      margin: 0 0 0.02in;
+      font-size: 8pt;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--sky);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 16pt;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      line-height: 1.05;
+    }
+
+    .dates {
+      margin: 0.04in 0 0;
+      font-size: 10pt;
+      font-weight: 600;
+    }
+
+    .lot-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: center;
+      min-width: 1.15in;
+      padding: 0.06in 0.12in;
+      border: 1.5pt solid color-mix(in srgb, var(--sky) 70%, var(--white));
+      background: color-mix(in srgb, var(--navy) 82%, var(--white));
+      text-align: right;
+    }
+
+    .lot-badge .label {
+      font-size: 7pt;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--sky);
+    }
+
+    .lot-badge .num {
+      margin-top: 0.02in;
+      font-size: 18pt;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      line-height: 1;
+    }
+
+    .body {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1.12fr 0.88fr;
+      min-height: 0;
+    }
+
+    .lot {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      min-height: 0;
+      border-right: 1.5pt solid var(--navy);
+    }
+
+    .facts {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px;
+      background: color-mix(in srgb, var(--navy) 18%, var(--sky));
+      border-bottom: 3px solid var(--maroon);
+    }
+
+    .facts article {
+      padding: 0.1in 0.12in 0.09in;
+      background: var(--panel);
+    }
+
+    .facts h2 {
+      margin: 0 0 0.02in;
+      font-size: 7pt;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--maroon);
+    }
+
+    .facts p {
+      margin: 0;
+      font-size: 12pt;
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    .facts .min p { color: var(--maroon); font-size: 16pt; }
+
+    .photo {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 0;
+      overflow: hidden;
+      padding: 0.14in;
+      background: #2c2c2c;
+    }
+
+    .photo img {
+      display: block;
+      width: 100%;
+      height: auto;
+      flex-shrink: 0;
+    }
+
+    .desc {
+      padding: 0.1in 0.16in 0.12in;
+      background: var(--white);
+    }
+
+    .desc h2 {
+      margin: 0 0 0.04in;
+      font-size: 12.5pt;
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    .desc p {
+      margin: 0;
+      font-size: 8.5pt;
+      line-height: 1.32;
+      color: var(--muted);
+    }
+
+    .bidding {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      min-height: 0;
+    }
+
+    .notice {
+      padding: 0.1in 0.14in 0.09in;
+      background: var(--panel);
+      border-bottom: 3px solid var(--maroon);
+    }
+
+    .notice h2 {
+      margin: 0 0 0.03in;
+      font-size: 7.5pt;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--maroon);
+    }
+
+    .notice p {
+      margin: 0;
+      font-size: 8pt;
+      line-height: 1.28;
+    }
+
+    .notice strong { color: var(--maroon); }
+
+    table {
+      flex: 1;
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    thead th {
+      padding: 0.06in 0.08in;
+      background: var(--navy);
+      color: var(--white);
+      font-size: 7.5pt;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-align: left;
+    }
+
+    thead th.seq,
+    tbody td.seq {
+      width: 0.38in;
+      text-align: center;
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    thead th.amt,
+    tbody td.amt { width: 1.15in; }
+
+    tbody td {
+      height: 0.3in;
+      padding: 0 0.08in;
+      border-bottom: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      vertical-align: middle;
+    }
+
+    tbody td.amt { border-right: none; }
+
+    tbody tr:nth-child(even) td { background: var(--panel); }
+
+    tbody td.seq {
+      font-size: 8pt;
+      font-weight: 700;
+      color: var(--muted);
+      background: color-mix(in srgb, var(--sky) 55%, var(--white));
+      border-right: 1.5pt solid var(--navy);
+    }
+
+    tbody tr:nth-child(even) td.seq {
+      background: color-mix(in srgb, var(--sky) 78%, var(--white));
+    }
+
+    tbody td.amt::before {
+      content: "$";
+      margin-right: 0.12in;
+      font-size: 11pt;
+      font-weight: 700;
+      color: color-mix(in srgb, var(--navy) 35%, var(--sky));
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.06in 0.2in 0.08in;
+      border-top: 2pt solid var(--navy);
+      font-size: 7.5pt;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    @media print {
+      html, body { background: var(--white); }
+      body { padding: 0; }
+    }
+
+    @media screen {
+      .page { box-shadow: 0 10px 28px rgb(0 45 98 / 22%); }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="sheet">
+      <header>
+        <div class="mark" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+            <rect width="64" height="64" fill="#002d62"/>
+            <rect x="10" y="10" width="44" height="44" fill="#ffffff"/>
+            <g fill="#002d62">
+              <circle cx="17.333" cy="10" r="2.5"/>
+              <circle cx="24.667" cy="10" r="2.5"/>
+              <circle cx="32" cy="10" r="2.5"/>
+              <circle cx="39.333" cy="10" r="2.5"/>
+              <circle cx="46.667" cy="10" r="2.5"/>
+              <circle cx="17.333" cy="54" r="2.5"/>
+              <circle cx="24.667" cy="54" r="2.5"/>
+              <circle cx="32" cy="54" r="2.5"/>
+              <circle cx="39.333" cy="54" r="2.5"/>
+              <circle cx="46.667" cy="54" r="2.5"/>
+              <circle cx="10" cy="17.333" r="2.5"/>
+              <circle cx="10" cy="24.667" r="2.5"/>
+              <circle cx="10" cy="32" r="2.5"/>
+              <circle cx="10" cy="39.333" r="2.5"/>
+              <circle cx="10" cy="46.667" r="2.5"/>
+              <circle cx="54" cy="17.333" r="2.5"/>
+              <circle cx="54" cy="24.667" r="2.5"/>
+              <circle cx="54" cy="32" r="2.5"/>
+              <circle cx="54" cy="39.333" r="2.5"/>
+              <circle cx="54" cy="46.667" r="2.5"/>
+            </g>
+            <path fill="none" stroke="#002d62" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"
+                  d="M 43.500,32.000 L 43.426,32.747 L 43.211,33.463 L 42.865,34.120 L 42.411,34.695 L 41.870,35.173 L 41.267,35.546 L 40.627,35.815 L 39.967,35.984 L 39.307,36.059 L 38.657,36.052 L 38.026,35.973 L 37.421,35.833 L 36.844,35.642 L 36.296,35.409 L 35.778,35.141 L 35.286,34.846 L 34.819,34.528 L 34.374,34.194 L 33.949,33.846 L 33.540,33.487 L 33.144,33.122 L 32.757,32.750 L 32.377,32.376 L 32.000,32.000 L 31.623,31.624 L 31.243,31.250 L 30.856,30.878 L 30.460,30.513 L 30.051,30.154 L 29.626,29.806 L 29.181,29.472 L 28.714,29.154 L 28.222,28.859 L 27.704,28.591 L 27.156,28.358 L 26.579,28.167 L 25.974,28.027 L 25.343,27.948 L 24.693,27.941 L 24.033,28.016 L 23.373,28.185 L 22.733,28.454 L 22.130,28.827 L 21.589,29.305 L 21.135,29.880 L 20.789,30.537 L 20.574,31.253 L 20.500,32.000 L 20.574,32.747 L 20.789,33.463 L 21.135,34.120 L 21.589,34.695 L 22.130,35.173 L 22.733,35.546 L 23.373,35.815 L 24.033,35.984 L 24.693,36.059 L 25.343,36.052 L 25.974,35.973 L 26.579,35.833 L 27.156,35.642 L 27.704,35.409 L 28.222,35.141 L 28.714,34.846 L 29.181,34.528 L 29.626,34.194 L 30.051,33.846 L 30.460,33.487 L 30.856,33.122 L 31.243,32.750 L 31.623,32.376 L 32.000,32.000 L 32.377,31.624 L 32.757,31.250 L 33.144,30.878 L 33.540,30.513 L 33.949,30.154 L 34.374,29.806 L 34.819,29.472 L 35.286,29.154 L 35.778,28.859 L 36.296,28.591 L 36.844,28.358 L 37.421,28.167 L 38.026,28.027 L 38.657,27.948 L 39.307,27.941 L 39.967,28.016 L 40.627,28.185 L 41.267,28.454 L 41.870,28.827 L 42.411,29.305 L 42.865,29.880 L 43.211,30.537 L 43.426,31.253 L 43.500,32.000"/>
+          </svg>
+        </div>
+        <div>
+          <p class="kicker">Greater Houston Stamp Show</p>
+          <h1>GHSS Auction bid sheet</h1>
+          <p class="dates">Saturday 19 and Sunday 20 September 2026</p>
+        </div>
+        <div class="lot-badge">
+          <span class="label">Lot</span>
+          <span class="num">1</span>
+        </div>
+      </header>
+
+      <div class="body">
+        <section class="lot">
+          <div class="facts">
+            <article>
+              <h2>Catalog</h2>
+              <p>$140</p>
+            </article>
+            <article>
+              <h2>Condition</h2>
+              <p>MH, thin</p>
+            </article>
+            <article class="min">
+              <h2>Minimum bid</h2>
+              <p>$15</p>
+            </article>
+          </div>
+          <div class="photo">
+            <img src="assets/print/GHSS_US24_mh.jpg" alt="United States Scott 24, 1857 1¢ blue Franklin Type V, mint hinged, face and reverse">
+          </div>
+          <div class="desc">
+            <h2>Scott 24 — 1857 1¢ blue Franklin, Type V</h2>
+            <p>Toppan, Carpenter, Casilear &amp; Co. · first U.S. perforated issue · mint hinged. Minimum bid is 10% of catalog ($14), rounded up to the next $5 increment.</p>
+          </div>
+        </section>
+
+        <section class="bidding">
+          <div class="notice">
+            <h2>How to bid</h2>
+            <p>Enter your bidder number and amount. First bid must be at least <strong>$15</strong>. Raises in <strong>$5 increments</strong> only. Bids cannot be withdrawn. Closes Sunday 20 September at <strong>2:00 PM</strong>.</p>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th class="seq">#</th>
+                <th>Bidder no.</th>
+                <th class="amt">Bid</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td class="seq">1</td><td></td><td class="amt"></td></tr>
+              <tr><td class="seq">2</td><td></td><td class="amt"></td></tr>
+              <tr><td class="seq">3</td><td></td><td class="amt"></td></tr>
+              <tr><td class="seq">4</td><td></td><td class="amt"></td></tr>
+              <tr><td class="seq">5</td><td></td><td class="amt"></td></tr>
+              <tr><td class="seq">6</td><td></td><td class="amt"></td></tr>
+              <tr><td class="seq">7</td><td></td><td class="amt"></td></tr>
+              <tr><td class="seq">8</td><td></td><td class="amt"></td></tr>
+              <tr><td class="seq">9</td><td></td><td class="amt"></td></tr>
+              <tr><td class="seq">10</td><td></td><td class="amt"></td></tr>
+              <tr><td class="seq">11</td><td></td><td class="amt"></td></tr>
+              <tr><td class="seq">12</td><td></td><td class="amt"></td></tr>
+              <tr><td class="seq">13</td><td></td><td class="amt"></td></tr>
+              <tr><td class="seq">14</td><td></td><td class="amt"></td></tr>
+              <tr><td class="seq">15</td><td></td><td class="amt"></td></tr>
+              <tr><td class="seq">16</td><td></td><td class="amt"></td></tr>
+              <tr><td class="seq">17</td><td></td><td class="amt"></td></tr>
+              <tr><td class="seq">18</td><td></td><td class="amt"></td></tr>
+              <tr><td class="seq">19</td><td></td><td class="amt"></td></tr>
+              <tr><td class="seq">20</td><td></td><td class="amt"></td></tr>
+              <tr><td class="seq">21</td><td></td><td class="amt"></td></tr>
+              <tr><td class="seq">22</td><td></td><td class="amt"></td></tr>
+              <tr><td class="seq">23</td><td></td><td class="amt"></td></tr>
+              <tr><td class="seq">24</td><td></td><td class="amt"></td></tr>
+              <tr><td class="seq">25</td><td></td><td class="amt"></td></tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+
+      <footer>
+        <span>Greater Houston Stamp Show</span>
+        <span>One bidder at the binder at a time</span>
+        <span>Lot 1 · Scott 24 · Min $15</span>
+      </footer>
+    </div>
+  </div>
+</body>
+</html>

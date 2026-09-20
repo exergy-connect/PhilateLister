@@ -204,7 +204,7 @@ function lowestDenomStamp(stamps) {
  */
 function stampImageUrl(collection, stamp, set = null) {
   if (!stamp?.image) return null;
-  const base = String(collection?.base ?? "").replace(/\/$/, "");
+  const base = String(set?.base ?? collection?.base ?? "").replace(/\/$/, "");
   const media = String(set?.media ?? collection?.media ?? "");
   const img = String(stamp.image);
   if (img.startsWith("http") || img.startsWith("/")) {
@@ -268,11 +268,14 @@ export function to_finder_sets(input) {
         : [];
     const ref = String(set.ref ?? set.id ?? "");
     // StampWorld reuses g0001-style refs per category — namespace when needed.
-    const id = category && set.ref ? `${set.ref}::${category}` : ref;
+    const localId = category && set.ref ? `${set.ref}::${category}` : ref;
+    const id = set.country ? `${set.country}::${set.id ?? localId}` : localId;
     const perforation = String(set.perforation ?? "").trim();
     return {
       id,
       name: String(set.title ?? set.name ?? set.ref ?? set.id ?? ""),
+      ...(set.country ? { country: set.country, country_name: set.country_name } : {}),
+      ...(set.catalogs ? { catalogs: set.catalogs } : {}),
       name_zh: String(set.name_zh ?? ""),
       year: Number(set.year),
       denominations: Array.isArray(set.stamps)
@@ -287,7 +290,7 @@ export function to_finder_sets(input) {
       image_full: full && full !== thumb ? full : null,
       ...(perforation ? { perforation } : {}),
       stamps,
-      note: setNote(set) || String(set.note ?? ""),
+      note: [set.country_name || set.country, setNote(set) || String(set.note ?? "")].filter(Boolean).join(" · "),
     };
   });
 }

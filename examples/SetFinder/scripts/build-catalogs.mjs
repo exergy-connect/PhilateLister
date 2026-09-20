@@ -19,6 +19,8 @@ const COLLECTOR_OUT = path.join(ROOT, "../stamp_collector/output");
 
 /** Prefer short ISO-style ids for known countries; otherwise use folder name. */
 const COUNTRY_META = {
+  gambia: { id: "gm", name: "Gambia" },
+  grenada: { id: "gd", name: "Grenada" },
   china: { id: "cn", name: "China" },
   iceland: { id: "is", name: "Iceland" },
   denmark: { id: "dk", name: "Denmark" },
@@ -59,6 +61,18 @@ function discoverCollections() {
 fs.mkdirSync(CATALOGS, { recursive: true });
 
 const sources = discoverCollections();
+const thematicRoot = path.join(COLLECTOR_OUT, "thematic");
+if (fs.existsSync(thematicRoot)) {
+  for (const folder of fs.readdirSync(thematicRoot)) {
+    const source = path.join(thematicRoot, folder, "collection.xp");
+    if (!fs.existsSync(source)) continue;
+    const collection = load_collection(source);
+    const id = `thematic-${folder}`;
+    sources.push({ id, name: collection.title || folder, kind: "thematic", source,
+      out: path.join(CATALOGS, `${id}.json`) });
+  }
+}
+sources.sort((a, b) => a.name.localeCompare(b.name));
 const countries = [];
 
 for (const entry of sources) {
@@ -70,7 +84,9 @@ for (const entry of sources) {
   const doc = {
     id: entry.id,
     name: entry.name,
-    country: collection.country ?? entry.name,
+    ...(entry.kind === "thematic"
+      ? { kind: "thematic", countries: collection.countries }
+      : { country: collection.country ?? entry.name }),
     categories,
     denominations: collection.summary?.denominations ?? {},
     sets,
@@ -83,6 +99,7 @@ for (const entry of sources) {
     id: entry.id,
     name: entry.name,
     catalog: `${entry.id}.json`,
+    ...(entry.kind ? { kind: entry.kind } : {}),
   });
 }
 

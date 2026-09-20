@@ -12,6 +12,16 @@
       "catalog": "dk.json"
     },
     {
+      "id": "gm",
+      "name": "Gambia",
+      "catalog": "gm.json"
+    },
+    {
+      "id": "gd",
+      "name": "Grenada",
+      "catalog": "gd.json"
+    },
+    {
       "id": "is",
       "name": "Iceland",
       "catalog": "is.json"
@@ -20,6 +30,18 @@
       "id": "nl",
       "name": "Netherlands",
       "catalog": "nl.json"
+    },
+    {
+      "id": "thematic-pokemon",
+      "name": "Pokémon",
+      "catalog": "thematic-pokemon.json",
+      "kind": "thematic"
+    },
+    {
+      "id": "thematic-ships",
+      "name": "Ships and boats",
+      "catalog": "thematic-ships.json",
+      "kind": "thematic"
     },
     {
       "id": "se",

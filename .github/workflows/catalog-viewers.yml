@@ -77,6 +77,9 @@ jobs:
           pattern: "*-html"
           path: compiled
 
+      - name: Build shared catalogs
+        run: node examples/SetFinder/scripts/build-catalogs.mjs
+
       - name: Publish viewers and shared catalogs
         run: |
           set -euo pipefail

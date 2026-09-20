@@ -1,0 +1,37 @@
+{
+  "catalog": "scott",
+  "country": "gambia",
+  "version": 2,
+  "key_format": "<StampWorld category>::<StampWorld set ref>::<StampWorld stamp number>",
+  "mappings": {
+    "Postage stamps::g4233::4233": {
+      "number": "2394",
+      "relation": "exact",
+      "status": "verified",
+      "sources": [
+        "https://www.stampworld.com/stamps/Gambia/Postage-stamps/g4233//",
+        "https://www.igpc.com/thumbs.cfm?keywordsearch1=pok%C3%A9mon"
+      ]
+    }
+  },
+  "set_mappings": {
+    "Postage stamps::g4227": {
+      "number": "2393",
+      "relation": "sheet",
+      "status": "verified",
+      "sources": [
+        "https://www.stampworld.com/stamps/Gambia/Postage-stamps/g4227//",
+        "https://www.igpc.com/thumbs.cfm?keywordsearch1=pok%C3%A9mon"
+      ]
+    },
+    "Postage stamps::g4233": {
+      "number": "2394",
+      "relation": "souvenir-sheet",
+      "status": "verified",
+      "sources": [
+        "https://www.stampworld.com/stamps/Gambia/Postage-stamps/g4233//",
+        "https://www.igpc.com/thumbs.cfm?keywordsearch1=pok%C3%A9mon"
+      ]
+    }
+  }
+}

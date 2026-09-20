@@ -62,6 +62,7 @@ function tagSets(doc, category) {
   const media = String(doc.media ?? "");
   return (doc.sets ?? []).map((set) => ({
     ...set,
+    ...(doc.base ? { base: set.base || doc.base } : {}),
     ...(cat ? { category: set.category || cat } : {}),
     ...(media ? { media: set.media || media } : {}),
     stamps: (set.stamps ?? []).map((stamp) => ({

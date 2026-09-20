@@ -1,0 +1,64 @@
+{
+  "catalog": "scott",
+  "country": "grenada",
+  "version": 2,
+  "key_format": "<StampWorld category>::<StampWorld set ref>::<StampWorld stamp number>",
+  "mappings": {
+    "Postage stamps::g4662::4662": {
+      "number": "3089",
+      "relation": "exact",
+      "status": "verified",
+      "sources": [
+        "https://www.stampworld.com/stamps/Grenada/Postage-stamps/g4662//",
+        "https://www.igpc.com/thumbs.cfm?keywordsearch1=pok%C3%A9mon"
+      ]
+    },
+    "Postage stamps::g5024::5024": {
+      "number": "3270",
+      "relation": "exact",
+      "status": "verified",
+      "sources": [
+        "https://www.stampworld.com/stamps/Grenada/Postage-stamps/g5024//",
+        "https://www.igpc.com/thumbs.cfm?keywordsearch1=pok%C3%A9mon"
+      ]
+    }
+  },
+  "set_mappings": {
+    "Postage stamps::g4656": {
+      "number": "3088",
+      "relation": "sheet",
+      "status": "verified",
+      "sources": [
+        "https://www.stampworld.com/stamps/Grenada/Postage-stamps/g4656//",
+        "https://www.igpc.com/thumbs.cfm?keywordsearch1=pok%C3%A9mon"
+      ]
+    },
+    "Postage stamps::g4662": {
+      "number": "3089",
+      "relation": "souvenir-sheet",
+      "status": "verified",
+      "sources": [
+        "https://www.stampworld.com/stamps/Grenada/Postage-stamps/g4662//",
+        "https://www.igpc.com/thumbs.cfm?keywordsearch1=pok%C3%A9mon"
+      ]
+    },
+    "Postage stamps::g5018": {
+      "number": "3269",
+      "relation": "sheet",
+      "status": "verified",
+      "sources": [
+        "https://www.stampworld.com/stamps/Grenada/Postage-stamps/g5018//",
+        "https://www.igpc.com/thumbs.cfm?keywordsearch1=pok%C3%A9mon"
+      ]
+    },
+    "Postage stamps::g5024": {
+      "number": "3270",
+      "relation": "souvenir-sheet",
+      "status": "verified",
+      "sources": [
+        "https://www.stampworld.com/stamps/Grenada/Postage-stamps/g5024//",
+        "https://www.igpc.com/thumbs.cfm?keywordsearch1=pok%C3%A9mon"
+      ]
+    }
+  }
+}

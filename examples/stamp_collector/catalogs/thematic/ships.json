@@ -1,0 +1,10 @@
+{
+  "id": "ships",
+  "kind": "thematic",
+  "title": "Ships and boats",
+  "description": "A small curated example spanning Denmark and Iceland, including Christmas seals.",
+  "entries": [
+    { "country": "denmark", "category": "Christmas stamps", "set_ref": "g0019", "no": "0019" },
+    { "country": "iceland", "category": "Postage stamps", "set_ref": "g0754", "no": "0754" }
+  ]
+}

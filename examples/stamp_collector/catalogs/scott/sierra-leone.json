@@ -1,0 +1,37 @@
+{
+  "catalog": "scott",
+  "country": "sierra-leone",
+  "version": 2,
+  "key_format": "<StampWorld category>::<StampWorld set ref>::<StampWorld stamp number>",
+  "mappings": {
+    "Postage stamps::g4336::4336": {
+      "number": "2558",
+      "relation": "exact",
+      "status": "verified",
+      "sources": [
+        "https://www.stampworld.com/stamps/Sierra-Leone/Postage-stamps/g4336//",
+        "https://www.igpc.com/thumbs.cfm?keywordsearch1=pok%C3%A9mon"
+      ]
+    }
+  },
+  "set_mappings": {
+    "Postage stamps::g4330": {
+      "number": "2557",
+      "relation": "sheet",
+      "status": "verified",
+      "sources": [
+        "https://www.stampworld.com/stamps/Sierra-Leone/Postage-stamps/g4330//",
+        "https://www.igpc.com/thumbs.cfm?keywordsearch1=pok%C3%A9mon"
+      ]
+    },
+    "Postage stamps::g4336": {
+      "number": "2558",
+      "relation": "souvenir-sheet",
+      "status": "verified",
+      "sources": [
+        "https://www.stampworld.com/stamps/Sierra-Leone/Postage-stamps/g4336//",
+        "https://www.igpc.com/thumbs.cfm?keywordsearch1=pok%C3%A9mon"
+      ]
+    }
+  }
+}

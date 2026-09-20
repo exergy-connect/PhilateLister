@@ -33,6 +33,9 @@ export {
 } from "./filters/catalog_crosswalks.js";
 export { write_period_json, write_collection_xp } from "./filters/write_output.js";
 
+export { load_thematic_catalog, consolidate_thematic_catalog } from "./filters/thematic.js";
+import thematic from "./filters/thematic.js";
+
 import thumbnails from "./filters/thumbnails.js";
 import scrape from "./filters/scrape.js";
 import collect from "./filters/collect.js";
@@ -44,6 +47,7 @@ import catalogCrosswalks from "./filters/catalog_crosswalks.js";
 import writeOutput from "./filters/write_output.js";
 
 export default {
+  ...thematic,
   ...thumbnails,
   ...scrape,
   ...collect,

@@ -49,3 +49,14 @@ test("set-specific mappings disambiguate reused StampWorld ids", () => {
     [["1"], ["O1"]],
   );
 });
+
+test("sheet catalog numbers stay on sets without inventing component numbers", () => {
+  const periods = { p: { sets: [{ category: "Postage stamps", ref: "g4227", stamps: [{ no: "4227" }, { no: "4228" }] }] } };
+  apply_catalog_crosswalk(periods, "scott", {
+    set_mappings: { "Postage stamps::g4227": { number: "2393", relation: "sheet", sources: ["https://example.com/2393"] } },
+  });
+  const set = periods.p.sets[0];
+  assert.deepEqual(set.catalogs.scott, ["2393"]);
+  assert.equal(set.catalog_details.scott.relation, "sheet");
+  assert.ok(set.stamps.every((stamp) => stamp.catalogs === undefined));
+});

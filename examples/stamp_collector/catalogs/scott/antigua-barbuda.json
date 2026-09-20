@@ -1,0 +1,64 @@
+{
+  "catalog": "scott",
+  "country": "antigua-barbuda",
+  "version": 2,
+  "key_format": "<StampWorld category>::<StampWorld set ref>::<StampWorld stamp number>",
+  "mappings": {
+    "Postage stamps::g2754::2754": {
+      "number": "2426",
+      "relation": "exact",
+      "status": "verified",
+      "sources": [
+        "https://www.stampworld.com/stamps/Antigua-And-Barbuda/Postage-stamps/g2754//",
+        "https://www.igpc.com/thumbs.cfm?keywordsearch1=pok%C3%A9mon"
+      ]
+    },
+    "Postage stamps::g3125::3125": {
+      "number": "2587",
+      "relation": "exact",
+      "status": "verified",
+      "sources": [
+        "https://www.stampworld.com/stamps/Antigua-And-Barbuda/Postage-stamps/g3125//",
+        "https://www.igpc.com/thumbs.cfm?keywordsearch1=pok%C3%A9mon"
+      ]
+    }
+  },
+  "set_mappings": {
+    "Postage stamps::g2748": {
+      "number": "2425",
+      "relation": "sheet",
+      "status": "verified",
+      "sources": [
+        "https://www.stampworld.com/stamps/Antigua-And-Barbuda/Postage-stamps/g2748//",
+        "https://www.igpc.com/thumbs.cfm?keywordsearch1=pok%C3%A9mon"
+      ]
+    },
+    "Postage stamps::g2754": {
+      "number": "2426",
+      "relation": "souvenir-sheet",
+      "status": "verified",
+      "sources": [
+        "https://www.stampworld.com/stamps/Antigua-And-Barbuda/Postage-stamps/g2754//",
+        "https://www.igpc.com/thumbs.cfm?keywordsearch1=pok%C3%A9mon"
+      ]
+    },
+    "Postage stamps::g3119": {
+      "number": "2586",
+      "relation": "sheet",
+      "status": "verified",
+      "sources": [
+        "https://www.stampworld.com/stamps/Antigua-And-Barbuda/Postage-stamps/g3119//",
+        "https://www.igpc.com/thumbs.cfm?keywordsearch1=pok%C3%A9mon"
+      ]
+    },
+    "Postage stamps::g3125": {
+      "number": "2587",
+      "relation": "souvenir-sheet",
+      "status": "verified",
+      "sources": [
+        "https://www.stampworld.com/stamps/Antigua-And-Barbuda/Postage-stamps/g3125//",
+        "https://www.igpc.com/thumbs.cfm?keywordsearch1=pok%C3%A9mon"
+      ]
+    }
+  }
+}

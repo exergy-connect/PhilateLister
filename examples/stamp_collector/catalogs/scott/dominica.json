@@ -1,0 +1,37 @@
+{
+  "catalog": "scott",
+  "country": "dominica",
+  "version": 2,
+  "key_format": "<StampWorld category>::<StampWorld set ref>::<StampWorld stamp number>",
+  "mappings": {
+    "Postage stamps::g3080::3080": {
+      "number": "2267",
+      "relation": "exact",
+      "status": "verified",
+      "sources": [
+        "https://www.stampworld.com/stamps/Dominica/Postage-stamps/g3080//",
+        "https://www.igpc.com/thumbs.cfm?keywordsearch1=pok%C3%A9mon"
+      ]
+    }
+  },
+  "set_mappings": {
+    "Postage stamps::g3074": {
+      "number": "2266",
+      "relation": "sheet",
+      "status": "verified",
+      "sources": [
+        "https://www.stampworld.com/stamps/Dominica/Postage-stamps/g3074//",
+        "https://www.igpc.com/thumbs.cfm?keywordsearch1=pok%C3%A9mon"
+      ]
+    },
+    "Postage stamps::g3080": {
+      "number": "2267",
+      "relation": "souvenir-sheet",
+      "status": "verified",
+      "sources": [
+        "https://www.stampworld.com/stamps/Dominica/Postage-stamps/g3080//",
+        "https://www.igpc.com/thumbs.cfm?keywordsearch1=pok%C3%A9mon"
+      ]
+    }
+  }
+}

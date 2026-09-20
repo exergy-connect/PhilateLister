@@ -39,7 +39,7 @@ export function load_catalog_crosswalk(catalog, country) {
 /** Add external catalog identifiers to stamps without replacing StampWorld ids. */
 export function apply_catalog_crosswalk(periods, catalog, crosswalk) {
   const catalogId = String(catalog ?? "").trim().toLowerCase();
-  const mappings = crosswalk?.mappings;
+  const mappings = crosswalk?.mappings ?? {};
   if (!catalogId || !mappings || typeof mappings !== "object" || Array.isArray(mappings)) {
     return periods;
   }
@@ -48,6 +48,13 @@ export function apply_catalog_crosswalk(periods, catalog, crosswalk) {
     for (const set of period?.sets ?? []) {
       const category = String(set.category ?? "").trim();
       const setRef = String(set.ref ?? "").trim();
+      // A Scott sheet number describes the entire issue, not each component
+      // stamp. Keep these references on the set rather than inventing suffixes.
+      const sheet = crosswalk?.set_mappings?.[`${category}::${setRef}`];
+      if (sheet?.number != null) {
+        set.catalogs = { ...set.catalogs, [catalogId]: [String(sheet.number)] };
+        set.catalog_details = { ...set.catalog_details, [catalogId]: { ...sheet } };
+      }
       for (const stamp of set.stamps ?? []) {
         const stampworldId = String(stamp.no ?? "").trim();
         if (!stampworldId) continue;

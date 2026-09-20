@@ -137,7 +137,7 @@ export function parseStampsInGroup(groupHtml, imgByType = new Map()) {
   return stamps;
 }
 
-function parsePage(html, pageUrl) {
+export function parsePage(html, pageUrl) {
   const imgByType = new Map();
   for (const m of html.matchAll(
     /src="(\/media\/catalogue\/[^"]+?\/([A-Za-z0-9]+)-s\.jpg)"[^>]*alt="([^"]*)"/gi,
@@ -166,12 +166,14 @@ function parsePage(html, pageUrl) {
     const pHtml = (body.match(/<p>([\s\S]*?)<\/p>/i) || [])[1] || "";
     const meta = parseSetMeta(pHtml);
     const stamps = parseStampsInGroup(body, imgByType);
+    const sheetImage = body.match(/src="(\/media\/catalogue\/[^"<>]+\/\d+-b\.jpg)"/i)?.[1];
     if (stamps.length === 0) continue;
     sets.push({
       id,
       ref,
       year,
       title,
+      ...(sheetImage ? { sheet_image: absUrl(sheetImage, BASE) } : {}),
       ...meta,
       page,
       stamps,

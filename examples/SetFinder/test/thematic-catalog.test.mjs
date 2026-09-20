@@ -27,3 +27,19 @@ test('viewer index exposes the new countries and a complete Pokemon collection',
   assert.equal(pokemon.sets.reduce((n, s) => n + s.stamps.length, 0), 143);
   assert.equal(new Set(pokemon.sets.map(s => s.id)).size, pokemon.sets.length);
 });
+
+test('Albumview renders a sheet once and keeps its component records', async () => {
+  const vm = await import('node:vm');
+  const source = fs.readFileSync(new URL('../../AlbumView/templates/application/album.xpt', import.meta.url), 'utf8');
+  const fn = source.slice(source.indexOf('function stampsForSet('), source.indexOf('function packLeaves('));
+  const stampsForSet = vm.runInNewContext(`(${fn.trim()})`);
+  const sheet = { sheet_image: 'https://example.com/sheet.jpg', catalogs: { scott: ['3571'] }, stamps: Array.from({length: 6}, (_,i) => ({no: String(6639+i)})) };
+  const mounts = stampsForSet(sheet);
+  assert.equal(mounts.length, 1);
+  assert.equal(mounts[0].image, sheet.sheet_image);
+  assert.deepEqual(mounts[0].catalogs.scott, ['3571']);
+  assert.equal(sheet.stamps.length, 6);
+  assert.equal(stampsForSet({stamps: sheet.stamps}).length, 6);
+  const exported = to_finder_sets([{...sheet, year:2000, ref:'g6639'}])[0];
+  assert.equal(exported.sheet_image, sheet.sheet_image);
+});

@@ -245,7 +245,7 @@ export function to_finder_sets(input) {
     const category = String(
       set.category ?? collection?.category ?? categoryFromSource(collection?.source) ?? "",
     ).trim();
-    const thumb = set.thumbnail || set.image || PLACEHOLDER_IMAGE;
+    const thumb = set.sheet_image || set.thumbnail || set.image || PLACEHOLDER_IMAGE;
     const full =
       (collection
         ? stampImageUrl(collection, lowestDenomStamp(set.stamps), set)
@@ -273,6 +273,7 @@ export function to_finder_sets(input) {
     const perforation = String(set.perforation ?? "").trim();
     return {
       id,
+      ...(set.sheet_image ? { sheet_image: set.sheet_image } : {}),
       name: String(set.title ?? set.name ?? set.ref ?? set.id ?? ""),
       ...(set.country ? { country: set.country, country_name: set.country_name } : {}),
       ...(set.catalogs ? { catalogs: set.catalogs } : {}),

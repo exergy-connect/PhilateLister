@@ -31,3 +31,13 @@ test("issued volumes expand mill and decimal mill suffixes", () => {
   assert.equal(parseStampsInGroup(row("(9 mill)"))[0].issued_count, 9_000_000);
   assert.equal(parseStampsInGroup(row("(7.5 mill)"))[0].issued_count, 7_500_000);
 });
+
+test("sheet image remains on the set rather than duplicated onto six stamps", async () => {
+  const { parsePage } = await import('../filters/scrape.js');
+  const rows = Array.from({ length: 6 }, (_, i) => `<tr data-stamp-group-id="7" data-stamp-type="A${i}"><th><a id="a_s_${6639+i}">${6639+i}</a></th><td>A${i}</td><td>100$</td></tr>`).join('');
+  const html = `<div class="container-fluid content_table" id="group_box_7"><a href="/stamps/Guyana/Postage-stamps/g6639//">2000 Pokemon</a><p>30. October</p><img src="/media/catalogue/Guyana/Postage-stamps/6639-b.jpg">${rows}`;
+  const set = parsePage(html, 'https://www.stampworld.com/stamps/Guyana/Postage-stamps/g6639//').sets[0];
+  assert.equal(set.sheet_image, 'https://www.stampworld.com/media/catalogue/Guyana/Postage-stamps/6639-b.jpg');
+  assert.equal(set.stamps.length, 6);
+  assert.ok(set.stamps.every(s => s.imagePath === null));
+});

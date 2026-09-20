@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html data-built="2026-09-20T03:31:31Z" lang="en">
+<html data-built="2026-09-20T03:36:31Z" lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -1740,10 +1740,31 @@ body::before {
         </div>
       </section>`;
     }).join("");
+<<<<<<< HEAD
     return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${escapeHtml(countryName)} want list</title><style>
       :root { color-scheme: light; } * { box-sizing: border-box; } body { margin: 0; color: #1a1814; background: #e8e2d6; font: 14px/1.4 Arial, sans-serif; } main { width: min(980px, calc(100% - 2rem)); margin: 2rem auto; background: #fffdf8; padding: 2rem; box-shadow: 0 8px 30px #0002; } header { border-bottom: 3px solid #2d4a3e; padding-bottom: 1rem; margin-bottom: 1.5rem; } h1, h2 { font-family: Georgia, serif; } h1 { margin: 0; font-size: 2rem; } .summary { margin: .35rem 0 0; color: #5c574f; } .print { position: fixed; right: 1rem; top: 1rem; border: 0; border-radius: 4px; padding: .65rem 1rem; background: #2d4a3e; color: #fff; font: inherit; font-weight: 700; cursor: pointer; } .set { display: grid; grid-template-columns: 13.5rem minmax(0, 1fr); gap: 1.5rem; padding: 1.2rem 0; border-bottom: 1px solid #d4cfc4; break-inside: avoid; } .image { min-height: 9rem; display: grid; place-items: start center; } .image img { display: block; max-width: 13rem; max-height: 11rem; object-fit: contain; } .no-image { color: #777; font-size: .82rem; } h2 { margin: 0; font-size: 1.15rem; } .facts { margin: .2rem 0 .65rem; color: #5c574f; } table { width: 100%; border-collapse: collapse; } th, td { padding: .35rem .45rem; text-align: left; border-top: 1px solid #e5dfd4; } th { color: #5c574f; font-size: .78rem; text-transform: uppercase; letter-spacing: .03em; } .check { width: 2rem; font-size: 1.05rem; } @page { margin: .55in; } @media (max-width: 620px) { main { width: 100%; margin: 0; padding: 1rem; box-shadow: none; } .set { grid-template-columns: 1fr; } .image { min-height: 0; } } @media print { body { background: #fff; } main { width: auto; margin: 0; padding: 0; box-shadow: none; } .print { display: none; } .set { grid-template-columns: 10.5rem minmax(0, 1fr); } }
+=======
+    return `<!doctype html><html data-built="2026-09-20T03:36:31Z" lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${escapeHtml(countryName)} want list</title><style>
+      :root { color-scheme: light; } * { box-sizing: border-box; } body { margin: 0; color: #1a1814; background: #e8e2d6; font: 14px/1.4 Arial, sans-serif; } main { width: min(980px, calc(100% - 2rem)); margin: 2rem auto; background: #fffdf8; padding: 2rem; box-shadow: 0 8px 30px #0002; } header { border-bottom: 3px solid #2d4a3e; padding-bottom: 1rem; margin-bottom: 1.5rem; } h1, h2 { font-family: Georgia, serif; } h1 { margin: 0; font-size: 2rem; } .summary { margin: .35rem 0 0; color: #5c574f; } .print { position: fixed; right: 1rem; top: 1rem; border: 0; border-radius: 4px; padding: .65rem 1rem; background: #2d4a3e; color: #fff; font: inherit; font-weight: 700; cursor: pointer; } .set { display: grid; grid-template-columns: 10rem minmax(0, 1fr); gap: 1.25rem; padding: 1.2rem 0; border-bottom: 1px solid #d4cfc4; break-inside: avoid; } .image { min-height: 7rem; display: grid; place-items: start center; } .image img { display: block; max-width: 10rem; max-height: 9rem; object-fit: contain; } .no-image { color: #777; font-size: .82rem; } h2 { margin: 0; font-size: 1.15rem; } .facts { margin: .2rem 0 .65rem; color: #5c574f; } table { width: 100%; border-collapse: collapse; } th, td { padding: .35rem .45rem; text-align: left; border-top: 1px solid #e5dfd4; } th { color: #5c574f; font-size: .78rem; text-transform: uppercase; letter-spacing: .03em; } .check { width: 2rem; font-size: 1.05rem; } @page { margin: .55in; } @media (max-width: 620px) { main { width: 100%; margin: 0; padding: 1rem; box-shadow: none; } .set { grid-template-columns: 1fr; } .image { min-height: 0; } } @media print { body { background: #fff; } main { width: auto; margin: 0; padding: 0; box-shadow: none; } .print { display: none; } .set { grid-template-columns: 8rem minmax(0, 1fr); } }
+>>>>>>> 7538df11ce417c7f121cba64167b1e19dac9de2a
     </style></head><body><button class="print" onclick="window.print()">Save as PDF</button><main><header><h1>${escapeHtml(countryName)} want list</h1><p class="summary">${escapeHtml(selectedCategory)} · ${escapeHtml(selectedDecade)} · ${sets.length.toLocaleString()} sets · ${stampTotal.toLocaleString()} stamps</p></header>${sections}</main><script>window.addEventListener("load", () => window.setTimeout(() => window.print(), 150));<\/script></body></html>`;
   }
+
+  saveWantList.addEventListener("click", () => {
+    const sets = selectedSets();
+    if (!sets.length) {
+      setStatus("There are no stamps in the current selection.", "error");
+      return;
+    }
+    const wantList = window.open("", "_blank");
+    if (!wantList) {
+      setStatus("Allow pop-ups to open the printable want list.", "error");
+      return;
+    }
+    wantList.document.open();
+    wantList.document.write(renderWantList(sets));
+    wantList.document.close();
+  });
 
   function fillDecades(sets) {
     const years = sets.map((s) => Number(s.year)).filter(Number.isFinite);
@@ -1844,22 +1865,6 @@ body::before {
     if (collectorMode.checked) {
       setStatus("Collector mode: catalog images are greyscale — right-click a stamp to upload yours.");
     }
-  });
-
-  saveWantList.addEventListener("click", () => {
-    const sets = selectedSets();
-    if (!sets.length) {
-      setStatus("There are no stamps in the current selection.", "error");
-      return;
-    }
-    const wantList = window.open("", "_blank");
-    if (!wantList) {
-      setStatus("Allow pop-ups to open the printable want list.", "error");
-      return;
-    }
-    wantList.document.open();
-    wantList.document.write(renderWantList(sets));
-    wantList.document.close();
   });
 
   function openStampZoom(frame) {

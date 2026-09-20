@@ -121,6 +121,21 @@ html:
       outline-offset: 1px;
     }
 
+    .controls button {
+      min-height: 2.15rem;
+      border: 1px solid color-mix(in srgb, var(--jade) 55%, var(--ink));
+      background: var(--jade);
+      color: #fff;
+      padding: 0.3rem 0.7rem;
+      border-radius: 2px;
+      font: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .controls button:hover { background: color-mix(in srgb, var(--jade) 86%, #000); }
+
     .controls .toggle {
       cursor: pointer;
       user-select: none;
@@ -1032,6 +1047,7 @@ html:
           <input type="checkbox" id="collector-mode" />
           Collector mode
         </label>
+        <button type="button" id="save-want-list">Save as PDF</button>
       </div>
 
       <p class="status" id="catalog-status" role="status">Loading catalogue…</p>
@@ -1121,6 +1137,7 @@ html:
       const prevBtn = document.getElementById("prev-page");
       const nextBtn = document.getElementById("next-page");
       const pageLabel = document.getElementById("page-label");
+      const saveWantList = document.getElementById("save-want-list");
 
       const ROW_SIZE = {
         1: { height: 0.42, maxRem: 13 },
@@ -1654,21 +1671,7 @@ html:
           return;
         }
 
-        const category = categorySelect.value;
-        let sets = Array.isArray(catalog.sets) ? catalog.sets.slice() : [];
-        if (category && category !== "*") {
-          sets = sets.filter((s) => String(s.category || s.era || "") === category);
-        }
-        sets.sort(compareSets);
-
-        const decade = decadeSelect.value;
-        if (decade) {
-          const start = Number(decade);
-          sets = sets.filter((s) => {
-            const y = Number(s.year);
-            return Number.isFinite(y) && y >= start && y < start + 10;
-          });
-        }
+        const sets = selectedSets();
 
         leaves = packLeaves(sets);
         pageIndex = 0;
@@ -1678,6 +1681,75 @@ html:
         );
         paintBook(pageIndex);
       }
+
+      function selectedSets() {
+        if (!catalog) return [];
+        const category = categorySelect.value;
+        let sets = Array.isArray(catalog.sets) ? catalog.sets.slice() : [];
+        if (category && category !== "*") {
+          sets = sets.filter((s) => String(s.category || s.era || "") === category);
+        }
+        const decade = decadeSelect.value;
+        if (decade) {
+          const start = Number(decade);
+          sets = sets.filter((s) => {
+            const y = Number(s.year);
+            return Number.isFinite(y) && y >= start && y < start + 10;
+          });
+        }
+        return sets.sort(compareSets);
+      }
+
+      function wantListStamps(set) {
+        if (Array.isArray(set.stamps) && set.stamps.length) return set.stamps;
+        return [{ no: set.catalog || "", denom: "", prices: null }];
+      }
+
+      function renderWantList(sets) {
+        const includeValues = showCv.checked;
+        const selectedCategory = categorySelect.selectedOptions[0]?.textContent || "All categories";
+        const selectedDecade = decadeSelect.selectedOptions[0]?.textContent || "All years";
+        const stampTotal = sets.reduce((total, set) => total + wantListStamps(set).length, 0);
+        const valueHeader = includeValues ? "<th>Catalog value</th>" : "";
+        const sections = sets.map((set) => {
+          const image = set.sheet_image || set.image_full || set.image || set.stamps?.find((stamp) => stamp.image)?.image || "";
+          const imageHtml = image
+            ? `<img src="${escapeHtml(image)}" alt="" />`
+            : `<div class="no-image">No image</div>`;
+          const rows = wantListStamps(set).map((stamp) => {
+            const value = stampPrice(stamp);
+            const valueCell = includeValues ? `<td>${escapeHtml(value == null ? "—" : formatCv(value))}</td>` : "";
+            return `<tr><td class="check">□</td><td>${escapeHtml(stamp.no || "—")}</td><td>${escapeHtml(stamp.denom || "—")}</td>${valueCell}</tr>`;
+          }).join("");
+          return `<section class="set">
+            <div class="image">${imageHtml}</div>
+            <div class="details">
+              <h2>${escapeHtml(set.name || "Untitled")}</h2>
+              <p class="facts">${escapeHtml(issueLine(set))}</p>
+              <table><thead><tr><th></th><th>Catalog no.</th><th>Denomination</th>${valueHeader}</tr></thead><tbody>${rows}</tbody></table>
+            </div>
+          </section>`;
+        }).join("");
+        return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${escapeHtml(countryName)} want list</title><style>
+          :root { color-scheme: light; } * { box-sizing: border-box; } body { margin: 0; color: #1a1814; background: #e8e2d6; font: 14px/1.4 Arial, sans-serif; } main { width: min(980px, calc(100% - 2rem)); margin: 2rem auto; background: #fffdf8; padding: 2rem; box-shadow: 0 8px 30px #0002; } header { border-bottom: 3px solid #2d4a3e; padding-bottom: 1rem; margin-bottom: 1.5rem; } h1, h2 { font-family: Georgia, serif; } h1 { margin: 0; font-size: 2rem; } .summary { margin: .35rem 0 0; color: #5c574f; } .print { position: fixed; right: 1rem; top: 1rem; border: 0; border-radius: 4px; padding: .65rem 1rem; background: #2d4a3e; color: #fff; font: inherit; font-weight: 700; cursor: pointer; } .set { display: grid; grid-template-columns: 10rem minmax(0, 1fr); gap: 1.25rem; padding: 1.2rem 0; border-bottom: 1px solid #d4cfc4; break-inside: avoid; } .image { min-height: 7rem; display: grid; place-items: start center; } .image img { display: block; max-width: 10rem; max-height: 9rem; object-fit: contain; } .no-image { color: #777; font-size: .82rem; } h2 { margin: 0; font-size: 1.15rem; } .facts { margin: .2rem 0 .65rem; color: #5c574f; } table { width: 100%; border-collapse: collapse; } th, td { padding: .35rem .45rem; text-align: left; border-top: 1px solid #e5dfd4; } th { color: #5c574f; font-size: .78rem; text-transform: uppercase; letter-spacing: .03em; } .check { width: 2rem; font-size: 1.05rem; } @page { margin: .55in; } @media (max-width: 620px) { main { width: 100%; margin: 0; padding: 1rem; box-shadow: none; } .set { grid-template-columns: 1fr; } .image { min-height: 0; } } @media print { body { background: #fff; } main { width: auto; margin: 0; padding: 0; box-shadow: none; } .print { display: none; } .set { grid-template-columns: 8rem minmax(0, 1fr); } }
+        </style></head><body><button class="print" onclick="window.print()">Save as PDF</button><main><header><h1>${escapeHtml(countryName)} want list</h1><p class="summary">${escapeHtml(selectedCategory)} · ${escapeHtml(selectedDecade)} · ${sets.length.toLocaleString()} sets · ${stampTotal.toLocaleString()} stamps</p></header>${sections}</main><script>window.addEventListener("load", () => window.setTimeout(() => window.print(), 150));<\/script></body></html>`;
+      }
+
+      saveWantList.addEventListener("click", () => {
+        const sets = selectedSets();
+        if (!sets.length) {
+          setStatus("There are no stamps in the current selection.", "error");
+          return;
+        }
+        const wantList = window.open("", "_blank");
+        if (!wantList) {
+          setStatus("Allow pop-ups to open the printable want list.", "error");
+          return;
+        }
+        wantList.document.open();
+        wantList.document.write(renderWantList(sets));
+        wantList.document.close();
+      });
 
       function fillDecades(sets) {
         const years = sets.map((s) => Number(s.year)).filter(Number.isFinite);

@@ -390,16 +390,12 @@ body::before {
 
 .mount.is-sheet .mount-frame img {
   max-width: min(22rem, 100%);
-  /* Two sheet sets can share a leaf. Reserve vertical room for both
-     headings instead of letting their large images crowd them out. */
-  max-height: min(14rem, 22cqh);
+  max-height: 38cqh;
 }
 
-/* Keep the set heading at the top of a sheet leaf if its image needs
-   more vertical space than the page can provide. */
-.leaf-face:has(.mount.is-sheet) .leaf-fit,
-.leaf-face:has(.mount.is-sheet) .leaf-body {
-  justify-content: flex-start;
+/* A shared leaf must leave room for both set headings and sheets. */
+.leaf-face[data-blocks="2"] .mount.is-sheet .mount-frame img {
+  max-height: min(16rem, 25cqh);
 }
 
 .mount-frame .placeholder {
@@ -1460,9 +1456,15 @@ body::before {
 
   function renderBlock(block, showValues) {
     const { set, stamps, continued, part, parts } = block;
+    // A displayed sheet stands in for all of its component stamps.
+    // Use the components for its set value even though they are not
+    // rendered as individual mounts.
+    const valueStamps = set.sheet_image && Array.isArray(set.stamps)
+      ? set.stamps
+      : stamps;
     let sum = 0;
     let priced = 0;
-    for (const stamp of stamps) {
+    for (const stamp of valueStamps) {
       const p = stampPrice(stamp);
       if (p != null) { sum += p; priced += 1; }
     }
@@ -1480,7 +1482,7 @@ body::before {
     for (const rowSize of rowSizes) {
       const rowWidth = `${(rowSize / cols) * 100}%`;
       rows.push(`<div class="mount-row cols-${rowSize}" style="--row-width:${rowWidth}">
-        ${stamps.slice(offset, offset + rowSize).map((s, j) => renderMount(s, showValues, set, offset + j)).join("")}
+        ${stamps.slice(offset, offset + rowSize).map((s, j) => renderMount(s, showValues && !set.sheet_image, set, offset + j)).join("")}
       </div>`);
       offset += rowSize;
     }
@@ -1515,7 +1517,7 @@ body::before {
       (n, block) => n + mountRowSizes(block.stamps?.length || 0).length,
       0
     );
-    return `<div class="leaf-face" data-stamps="${stampTotal}" data-rows="${rowTotal}">
+    return `<div class="leaf-face" data-stamps="${stampTotal}" data-rows="${rowTotal}" data-blocks="${leaf.blocks.length}">
       <header class="leaf-header">
         <div class="country">${escapeHtml(countryName || "Album")}</div>
         <div class="meta">Page ${index + 1} of ${total} · ${escapeHtml(yearLabel)}</div>

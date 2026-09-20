@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html data-built="2026-09-20T00:50:37Z" lang="en">
+<html data-built="2026-09-20T02:38:24Z" lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -385,13 +385,13 @@ body::before {
   box-shadow:
     0 0 0 0.14rem var(--mount),
     0 0 0 calc(0.14rem + 1px) color-mix(in srgb, #fff 8%, transparent);
-      pointer-events: none;
-    }
+  pointer-events: none;
+}
 
-    .mount.is-sheet .mount-frame img {
-      max-width: min(22rem, 100%);
-      max-height: 38cqh;
-    }
+.mount.is-sheet .mount-frame img {
+  max-width: min(22rem, 100%);
+  max-height: 38cqh;
+}
 
 .mount-frame .placeholder {
   width: 3.4rem;
@@ -1298,12 +1298,12 @@ body::before {
     return parts.filter(Boolean).join(" · ");
   }
 
-      function stampsForSet(set) {
-        if (set.sheet_image) {
-          return [{ no: set.catalog || "", denom: "", image: set.sheet_image,
-            catalogs: set.catalogs || {} }];
-        }
-        if (Array.isArray(set.stamps) && set.stamps.length) {
+  function stampsForSet(set) {
+    if (set.sheet_image) {
+      return [{ no: set.catalog || "", denom: "", image: set.sheet_image,
+        catalogs: set.catalogs || {} }];
+    }
+    if (Array.isArray(set.stamps) && set.stamps.length) {
       // Drop unnamed shells with no image (common StampWorld perf variants).
       return set.stamps.filter((stamp) => {
         const no = String(stamp?.no ?? "").trim();
@@ -1353,9 +1353,9 @@ body::before {
 
       const n = stamps.length;
       const alone = n >= LARGE_SET;
-          const next = sets[i + 1];
-          const nextN = next ? stampsForSet(next).length : 0;
-          const canPair = !alone
+      const next = sets[i + 1];
+      const nextN = next ? stampsForSet(next).length : 0;
+      const canPair = !alone
         && next
         && nextN <= SMALL_SET
         && n <= SMALL_SET
@@ -1403,9 +1403,9 @@ body::before {
       : `<div class="placeholder">No image</div>`;
     const setName = String(set?.name || "").trim();
     const tips = ["Click to zoom"];
-        if (collectorMode.checked) tips.push("Right-click to upload your stamp");
-        return `<figure class="mount${set.sheet_image ? " is-sheet" : ""}">
-          <div class="mount-frame"
+    if (collectorMode.checked) tips.push("Right-click to upload your stamp");
+    return `<figure class="mount${set.sheet_image ? " is-sheet" : ""}">
+      <div class="mount-frame"
         data-stamp-key="${escapeHtml(key)}"
         data-zoom-src="${escapeHtml(hasImage ? src : "")}"
         data-zoom-own="${own ? "1" : ""}"

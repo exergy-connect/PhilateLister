@@ -19,13 +19,17 @@ test('thematic export preserves country identity, sheet numbers and image origin
 test('viewer index exposes the new countries and a complete Pokemon collection', () => {
   const read = name => JSON.parse(fs.readFileSync(new URL(`../catalogs/${name}.json`, import.meta.url)));
   const index = read('countries');
-  for (const id of ['gm', 'gd', 'thematic-pokemon', 'thematic-ships']) {
+  for (const id of ['gm', 'gd', 'thematic-pokemon', 'thematic-ships', 'thematic-cats']) {
     assert.ok(index.countries.some(c => c.id === id), id);
   }
   const pokemon = read('thematic-pokemon');
   assert.equal(pokemon.kind, 'thematic');
   assert.equal(pokemon.sets.reduce((n, s) => n + s.stamps.length, 0), 143);
   assert.equal(new Set(pokemon.sets.map(s => s.id)).size, pokemon.sets.length);
+  const cats = read('thematic-cats');
+  assert.equal(cats.kind, 'thematic');
+  assert.equal(cats.sets.reduce((n, s) => n + s.stamps.length, 0), 49);
+  assert.equal(new Set(cats.sets.map(s => s.id)).size, cats.sets.length);
 });
 
 test('Albumview renders a sheet once and keeps its component records', async () => {

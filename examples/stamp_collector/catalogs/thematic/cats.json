@@ -1,0 +1,367 @@
+{
+  "id": "cats",
+  "kind": "thematic",
+  "title": "Cats",
+  "description": "A researched selection of cat postage stamps — domestic cats, cat characters and issues titled for felids — from six collected issuing territories.",
+  "notes": [
+    "This is not an exhaustive worldwide checklist. Entries are limited to already-collected country data. Gambia and Grenada coverage is Postage stamps, 2000–2002 only; earlier Gambia and Grenada cat issues are omitted. Sweden’s collected range ends in 1929 and Denmark’s in 1945, so later pedigree-cat issues from those countries are omitted. China’s 2013 pedigree-cat set (China Post 2013-17) is omitted because 2013 postage stamps are not in the collected China pack.",
+    "Mixed dog-and-cat and mixed domestic-animal sets include only the stamps identified as cats. Taiwan Def.124 Pets I–IV keep the Felis domesticus values and omit the dogs. Iceland 1982 Domestic Animals keeps only Felis catus (g0581 / 0583).",
+    "Iceland 1990 Christmas 25 kr (g0737 / 0737) and 2008 Christmas 90 kr (g1205 / 1206) are included from the Cat Stamps topical checklist; StampWorld titles those sets only as Christmas stamps. Netherlands 1998 Pets keeps only 1677 (kittens), identified the same way.",
+    "The Netherlands 2015 Top 40 stamp naming the band The Cats is excluded. Personalized, meter and incidental cats-in-art stamps are excluded. Taiwan 2025–2026 Cute Pets definitives are excluded until individual designs are identified as cats. Non-postal stickers and unverified issues are excluded.",
+    "Scott numbers are not asserted for these cat issues. Existing country crosswalks may still attach inferred numbers during consolidation; those are not treated as verified sheet references."
+  ],
+  "sources": [
+    {
+      "url": "https://www.catstamps.org/checklists/Countries/C/CN_D.html",
+      "purpose": "China domestic-cat checklist; 2013 pedigree cats noted as uncollected"
+    },
+    {
+      "url": "https://www.catstamps.org/checklists/Countries/G/GM_D.html",
+      "purpose": "Gambia 2000 Stamp Show cats"
+    },
+    {
+      "url": "https://www.catstamps.org/checklists/Countries/G/GD_D.html",
+      "purpose": "Grenada 2000 cats"
+    },
+    {
+      "url": "https://www.catstamps.org/checklists/Countries/I/IS_D.html",
+      "purpose": "Iceland domestic animals and Christmas Cat identifications"
+    },
+    {
+      "url": "https://www.catstamps.org/checklists/Countries/N/NL_D.html",
+      "purpose": "Netherlands Pets 1998 kitten stamp"
+    },
+    {
+      "url": "https://www.catstamps.org/checklists/Countries/T/TW_D.html",
+      "purpose": "Taiwan Hello Kitty and Pets cat identifications"
+    },
+    {
+      "url": "https://www.post.gov.tw/post/internet/W_stamphouse/index_en.jsp?ID=2807&file_name=D468",
+      "purpose": "Taiwan 2004 Hello Kitty souvenir sheets"
+    },
+    {
+      "url": "https://www.post.gov.tw/post/internet/W_stamphouse/index_en.jsp?ID=2807&file_name=A124",
+      "purpose": "Taiwan Pets I; Himalayan and Scottish Fold"
+    },
+    {
+      "url": "https://www.post.gov.tw/post/internet/W_stamphouse/index_en.jsp?ID=2807&file_name=A124II",
+      "purpose": "Taiwan Pets II; Siamese and Persian"
+    },
+    {
+      "url": "https://www.post.gov.tw/post/internet/W_stamphouse/index_en.jsp?ID=2807&file_name=A124III",
+      "purpose": "Taiwan Pets III; Abyssinian and Norwegian Forest Cat"
+    },
+    {
+      "url": "https://www.post.gov.tw/post/internet/W_stamphouse/index_en.jsp?ID=2807&file_name=A124IV",
+      "purpose": "Taiwan Pets IV; American Shorthair and Maine Coon"
+    },
+    {
+      "url": "https://www.post.gov.tw/post/internet/W_stamphouse/index_en.jsp?ID=2807&file_name=D719",
+      "purpose": "Taiwan 2022 leopard cat"
+    },
+    {
+      "url": "https://www.stampworld.com/stamps/Netherlands/Postage-stamps/g4328/",
+      "purpose": "Netherlands 2024 Typically Dutch — Cats"
+    },
+    {
+      "url": "https://www.stampworld.com/stamps/China,-Peoples-Rep./Postage-stamps/g2332/",
+      "purpose": "China 1990 snow leopard"
+    }
+  ],
+  "entries": [
+    {
+      "country": "china",
+      "category": "Postage stamps",
+      "set_ref": "g2332",
+      "no": "2332"
+    },
+    {
+      "country": "china",
+      "category": "Postage stamps",
+      "set_ref": "g2332",
+      "no": "2333"
+    },
+    {
+      "country": "iceland",
+      "category": "Postage stamps",
+      "set_ref": "g0581",
+      "no": "0583"
+    },
+    {
+      "country": "iceland",
+      "category": "Postage stamps",
+      "set_ref": "g0737",
+      "no": "0737"
+    },
+    {
+      "country": "iceland",
+      "category": "Postage stamps",
+      "set_ref": "g0901",
+      "no": "0901"
+    },
+    {
+      "country": "iceland",
+      "category": "Postage stamps",
+      "set_ref": "g1205",
+      "no": "1206"
+    },
+    {
+      "country": "taiwan",
+      "category": "Postage stamps",
+      "set_ref": "g2964",
+      "no": "2964"
+    },
+    {
+      "country": "taiwan",
+      "category": "Postage stamps",
+      "set_ref": "g2964",
+      "no": "2965"
+    },
+    {
+      "country": "taiwan",
+      "category": "Postage stamps",
+      "set_ref": "g2966",
+      "no": "2966"
+    },
+    {
+      "country": "taiwan",
+      "category": "Postage stamps",
+      "set_ref": "g2966",
+      "no": "2967"
+    },
+    {
+      "country": "taiwan",
+      "category": "Postage stamps",
+      "set_ref": "g3081",
+      "no": "3083"
+    },
+    {
+      "country": "taiwan",
+      "category": "Postage stamps",
+      "set_ref": "g3081",
+      "no": "3084"
+    },
+    {
+      "country": "taiwan",
+      "category": "Postage stamps",
+      "set_ref": "g3092",
+      "no": "3094"
+    },
+    {
+      "country": "taiwan",
+      "category": "Postage stamps",
+      "set_ref": "g3092",
+      "no": "3095"
+    },
+    {
+      "country": "taiwan",
+      "category": "Postage stamps",
+      "set_ref": "g3158",
+      "no": "3160"
+    },
+    {
+      "country": "taiwan",
+      "category": "Postage stamps",
+      "set_ref": "g3158",
+      "no": "3161"
+    },
+    {
+      "country": "taiwan",
+      "category": "Postage stamps",
+      "set_ref": "g3188",
+      "no": "3190"
+    },
+    {
+      "country": "taiwan",
+      "category": "Postage stamps",
+      "set_ref": "g3188",
+      "no": "3191"
+    },
+    {
+      "country": "taiwan",
+      "category": "Postage stamps",
+      "set_ref": "g4500",
+      "no": "4500"
+    },
+    {
+      "country": "taiwan",
+      "category": "Postage stamps",
+      "set_ref": "g4500",
+      "no": "4501"
+    },
+    {
+      "country": "gambia",
+      "category": "Postage stamps",
+      "set_ref": "g3789",
+      "no": "3789"
+    },
+    {
+      "country": "gambia",
+      "category": "Postage stamps",
+      "set_ref": "g3789",
+      "no": "3790"
+    },
+    {
+      "country": "gambia",
+      "category": "Postage stamps",
+      "set_ref": "g3789",
+      "no": "3791"
+    },
+    {
+      "country": "gambia",
+      "category": "Postage stamps",
+      "set_ref": "g3789",
+      "no": "3792"
+    },
+    {
+      "country": "gambia",
+      "category": "Postage stamps",
+      "set_ref": "g3789",
+      "no": "3793"
+    },
+    {
+      "country": "gambia",
+      "category": "Postage stamps",
+      "set_ref": "g3789",
+      "no": "3794"
+    },
+    {
+      "country": "gambia",
+      "category": "Postage stamps",
+      "set_ref": "g3789",
+      "no": "3795"
+    },
+    {
+      "country": "gambia",
+      "category": "Postage stamps",
+      "set_ref": "g3789",
+      "no": "3796"
+    },
+    {
+      "country": "gambia",
+      "category": "Postage stamps",
+      "set_ref": "g3797",
+      "no": "3797"
+    },
+    {
+      "country": "gambia",
+      "category": "Postage stamps",
+      "set_ref": "g3797",
+      "no": "3798"
+    },
+    {
+      "country": "gambia",
+      "category": "Postage stamps",
+      "set_ref": "g3797",
+      "no": "3799"
+    },
+    {
+      "country": "gambia",
+      "category": "Postage stamps",
+      "set_ref": "g3797",
+      "no": "3800"
+    },
+    {
+      "country": "gambia",
+      "category": "Postage stamps",
+      "set_ref": "g3797",
+      "no": "3801"
+    },
+    {
+      "country": "gambia",
+      "category": "Postage stamps",
+      "set_ref": "g3797",
+      "no": "3802"
+    },
+    {
+      "country": "gambia",
+      "category": "Postage stamps",
+      "set_ref": "g3797",
+      "no": "3803"
+    },
+    {
+      "country": "gambia",
+      "category": "Postage stamps",
+      "set_ref": "g3797",
+      "no": "3804"
+    },
+    {
+      "country": "gambia",
+      "category": "Postage stamps",
+      "set_ref": "g3805",
+      "no": "3805"
+    },
+    {
+      "country": "gambia",
+      "category": "Postage stamps",
+      "set_ref": "g3806",
+      "no": "3806"
+    },
+    {
+      "country": "grenada",
+      "category": "Postage stamps",
+      "set_ref": "g4277",
+      "no": "4277"
+    },
+    {
+      "country": "grenada",
+      "category": "Postage stamps",
+      "set_ref": "g4277",
+      "no": "4278"
+    },
+    {
+      "country": "grenada",
+      "category": "Postage stamps",
+      "set_ref": "g4279",
+      "no": "4279"
+    },
+    {
+      "country": "grenada",
+      "category": "Postage stamps",
+      "set_ref": "g4279",
+      "no": "4280"
+    },
+    {
+      "country": "grenada",
+      "category": "Postage stamps",
+      "set_ref": "g4279",
+      "no": "4281"
+    },
+    {
+      "country": "grenada",
+      "category": "Postage stamps",
+      "set_ref": "g4279",
+      "no": "4282"
+    },
+    {
+      "country": "grenada",
+      "category": "Postage stamps",
+      "set_ref": "g4279",
+      "no": "4283"
+    },
+    {
+      "country": "grenada",
+      "category": "Postage stamps",
+      "set_ref": "g4279",
+      "no": "4284"
+    },
+    {
+      "country": "grenada",
+      "category": "Postage stamps",
+      "set_ref": "g4285",
+      "no": "4285"
+    },
+    {
+      "country": "netherlands",
+      "category": "Postage stamps",
+      "set_ref": "g1675",
+      "no": "1677"
+    },
+    {
+      "country": "netherlands",
+      "category": "Postage stamps",
+      "set_ref": "g4328",
+      "no": "4328"
+    }
+  ]
+}

@@ -104,3 +104,28 @@ These local ids do not claim Scott or StampWorld identities.
 Coverage is not exhaustive. The notes identify the Guyana date discrepancy,
 unresolved Dominica overprint variants, and the forthcoming Taiwan issue
 (scheduled for November 20, 2026, so excluded from issued stamps as of this research).
+
+## Cats collection
+
+Build the bundled collection offline:
+
+```sh
+node scripts/build_thematic_catalog.mjs cats
+```
+
+`catalogs/thematic/cats.json` selects 49 records from 6 issuing territories.
+The result is `output/thematic/cats/collection.xp`.
+
+| Country / territory | Included issues | Notes |
+| --- | --- | --- |
+| China | 1990 snow leopard | 2013 pedigree cats not in the collected pack |
+| Iceland | 1982 Felis catus; 1990 and 2008 Christmas Cat; 1998 Yule Cat | Mixed domestic-animal and Christmas sets keep only the cat stamp |
+| Taiwan | 2004 Hello Kitty; 2005–2006 Pets cat values; 2022 leopard cat | Dog values from Pets I–IV omitted |
+| Gambia | 2000 Stamp Show, London — cats | Collected coverage is 2000–2002 only |
+| Grenada | 2000 cats | Collected coverage is 2000–2002 only |
+| Netherlands | 1998 Pets kittens; 2024 Typically Dutch — Cats | The 2015 Top 40 stamp for the band The Cats is excluded |
+
+Scott numbers are not asserted. Mixed sets include only stamps identified as cats
+from StampWorld descriptions or the [Cat Stamps](https://www.catstamps.org/)
+topical checklists. Chunghwa Post pages document Hello Kitty, the Pets series
+and the leopard-cat issue.

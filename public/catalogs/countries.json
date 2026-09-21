@@ -2,6 +2,12 @@
   "default": "cn",
   "countries": [
     {
+      "id": "thematic-cats",
+      "name": "Cats",
+      "catalog": "thematic-cats.json",
+      "kind": "thematic"
+    },
+    {
       "id": "cn",
       "name": "China",
       "catalog": "cn.json"

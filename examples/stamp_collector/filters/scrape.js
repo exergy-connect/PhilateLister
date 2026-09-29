@@ -157,7 +157,7 @@ export function parsePage(html, pageUrl) {
     const id = gm[1];
     const body = gm[2];
     const header = body.match(
-      /<a href="([^"]+\/(g\d+)\/\/)"[^>]*>\s*(\d{4})\s+([\s\S]*?)\s*<\/a>/i,
+      /<a href="([^"]+\/(g\d+[a-z]*)\/\/)"[^>]*>\s*(\d{4})\s+([\s\S]*?)\s*<\/a>/i,
     );
     if (!header) continue;
     const ref = header[2];

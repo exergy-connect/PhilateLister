@@ -1,6 +1,21 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { parseStampsInGroup } from "../filters/scrape.js";
+import { parsePage, parseStampsInGroup } from "../filters/scrape.js";
+
+test("US issue references retain uppercase and lowercase suffixes", () => {
+  for (const ref of ["g0060A", "g5815i"]) {
+    const html = `<div class="container-fluid content_table" id="group_box_1">
+      <a href="/stamps/United-States/Postage-stamps/${ref}//">2019 Healing PTSD</a>
+      <p>2. December</p>
+      <tr data-stamp-group-id="1" data-stamp-type="A">
+        <th><a id="a_s_5815i">5815i</a></th><td>A</td><td>65C</td>
+      </tr></div>`;
+    const { sets } = parsePage(html, "https://www.stampworld.com/");
+    assert.equal(sets.length, 1);
+    assert.equal(sets[0].ref, ref);
+    assert.equal(sets[0].stamps[0].no, "5815i");
+  }
+});
 
 test("stamp rows retain variant suffix, issued volume, and condition prices", () => {
   const cells = [

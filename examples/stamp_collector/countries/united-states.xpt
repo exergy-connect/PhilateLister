@@ -1,0 +1,51 @@
+---
+# United States — StampWorld catalogue country.
+# ./collect.sh united-states; ./consolidate.sh united-states
+# Source: https://www.stampworld.com/en/stamps/United-States/
+# These are the categories exposed by StampWorld as of 2026-09-29.
+# A date range requests source records; it does not assert complete Scott coverage.
+code: us
+stampworld: United-States
+denominations:
+  special:
+    - FOREVER
+    - GLOBAL
+    - NONPROFIT
+    - Three Ounce
+categories:
+  - "Postage stamps"
+  - "Airmail stamps"
+  - "Airmail delivery stamps"
+  - "Special delivery stamps"
+  - "Registration stamp"
+  - "Certified mail stamp"
+  - "Postage-due stamps"
+  - "Official stamps"
+  - "Official postal savings stamps"
+  - "Official Penalty Mail"
+  - "Parcel post stamps"
+  - "Parcel post postage due stamps"
+  - "Special handling stamps"
+  - "Postal Note stamps"
+  - "Department of agriculture duck stamps"
+  - "Department of the interior duck stamps"
+periods:
+  - "1847-1859"
+  - "1860-1869"
+  - "1870-1879"
+  - "1880-1889"
+  - "1890-1899"
+  - "1900-1909"
+  - "1910-1919"
+  - "1920-1929"
+  - "1930-1939"
+  - "1940-1949"
+  - "1950-1959"
+  - "1960-1969"
+  - "1970-1979"
+  - "1980-1989"
+  - "1990-1999"
+  - "2000-2009"
+  - "2010-2019"
+  - "2020-2026"
+---

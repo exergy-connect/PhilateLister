@@ -4,6 +4,49 @@ Country packs in `countries/` drive `./collect.sh <country>` and
 `./consolidate.sh <country>`. Scott crosswalks in `catalogs/scott/` enrich
 country stamps during consolidation.
 
+## United States Scott crosswalk
+
+Use `./collect.sh united-states` and `./consolidate.sh united-states` for the
+US country pack. It requests 1847–2026 postage and all 15 back-of-book categories
+exposed by StampWorld. The pack uses country id `united-states` and code `us`.
+
+[`catalogs/scott/united-states.json`](catalogs/scott/united-states.json) contains
+1,489 individual mappings and 291 issue/sheet references, researched on
+2026-09-29. **This is a partial crosswalk, not all Scott numbers to date.**
+Its `coverage` object records the gaps and latest source set year per category
+(some sets span multiple issue years).
+For example, StampWorld's interior duck-stamp listings stop at 2016; requesting
+2026 does not supply the missing later issues. Categories not offered by the
+source, such as newspaper stamps, are not represented by fabricated source ids.
+
+Mappings use `category::set_ref::stamp_number`, preserving leading zeros and
+case-sensitive suffixes. Sources are recorded on every assertion. The assertions
+are marked `inferred`: they compare published issue details from StampWorld,
+Bardo Stamps, Stamp Smarter, and the other cited references, rather than a
+complete Scott export. Where catalogue details conflict, an issue match is not
+a guarantee of every specialized variety. Missing mappings stay unset.
+
+`set_mappings` distinguish whole sheets (`relation: sheet`) from issue ranges
+(`relation: set`, e.g. `6046-6049`). Both stay on the set. An issue range does
+not assign its numbers to individual stamps; neither range order nor component
+suffixes are inferred. Semipostals B1–B7 are in the source's `Postage stamps`
+category. Back-of-book mappings include C, CE, E, F, FA, J, JQ, O, PN, Q, QE,
+and RW prefixes.
+
+The dated key inventory in
+[`catalogs/scott/coverage/united-states.json`](catalogs/scott/coverage/united-states.json)
+contains all 7,675 observed source records, including unmapped ones. Validate
+coverage or print the exact keys requiring further research:
+
+```sh
+node scripts/check_scott_us.mjs
+node scripts/check_scott_us.mjs --unmapped
+```
+
+Finishing the requested coverage requires additional verified Scott/StampWorld
+correspondences and source records for missing Scott issues. A complete numeric
+range cannot substitute for those correspondences.
+
 ## Thematic catalogs
 
 A thematic catalog selects stamps from multiple countries using the already

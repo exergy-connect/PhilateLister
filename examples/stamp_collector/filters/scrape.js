@@ -166,7 +166,7 @@ export function parsePage(html, pageUrl) {
     const pHtml = (body.match(/<p>([\s\S]*?)<\/p>/i) || [])[1] || "";
     const meta = parseSetMeta(pHtml);
     const stamps = parseStampsInGroup(body, imgByType);
-    const sheetImage = body.match(/src="(\/media\/catalogue\/[^"<>]+\/\d+-b\.jpg)"/i)?.[1];
+    const sheetImage = body.match(/src="(\/media\/catalogue\/[^"<>]+\/\d+[A-Za-z]*-b\.jpg)"/i)?.[1];
     if (stamps.length === 0) continue;
     sets.push({
       id,

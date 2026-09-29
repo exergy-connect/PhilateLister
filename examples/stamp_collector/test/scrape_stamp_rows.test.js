@@ -56,3 +56,10 @@ test("sheet image remains on the set rather than duplicated onto six stamps", as
   assert.equal(set.stamps.length, 6);
   assert.ok(set.stamps.every(s => s.imagePath === null));
 });
+
+test("sheet image filenames may include a catalog suffix", async () => {
+  const { parsePage } = await import('../filters/scrape.js');
+  const html = `<div class="container-fluid content_table" id="group_box_1"><a href="/stamps/United-States/Postage-stamps/g6312i//">2022 Flag</a><p>1. January</p><img src="/media/catalogue/United-States/Postage-stamps/6312i-b.jpg"><tr data-stamp-group-id="1" data-stamp-type="A"><th><a id="a_s_6312i">6312i</a></th><td>A</td><td>Forever</td></tr></div>`;
+  const set = parsePage(html, 'https://www.stampworld.com/stamps/United-States/Postage-stamps/g6312i//').sets[0];
+  assert.equal(set.sheet_image, 'https://www.stampworld.com/media/catalogue/United-States/Postage-stamps/6312i-b.jpg');
+});

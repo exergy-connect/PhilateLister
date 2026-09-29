@@ -34,6 +34,10 @@ test('viewer index exposes the new countries and a complete Pokemon collection',
   assert.equal(space.kind, 'thematic');
   assert.equal(space.sets.reduce((n, s) => n + s.stamps.length, 0), 223);
   assert.equal(new Set(space.sets.map(s => s.id)).size, space.sets.length);
+  const syzygy = space.sets.find((set) => set.catalog === '4398–4403');
+  assert.equal(syzygy.sheet_image, 'https://www.stampworld.com/media/catalogue/Taiwan/Postage-stamps/4398-b.jpg');
+  assert.equal(syzygy.image, syzygy.sheet_image);
+  assert.ok(syzygy.stamps.every((stamp) => !stamp.image));
 });
 
 test('Albumview renders a sheet once and keeps its component records', async () => {

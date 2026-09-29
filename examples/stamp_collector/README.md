@@ -104,7 +104,7 @@ Build the bundled collection offline:
 node scripts/build_thematic_catalog.mjs pokemon
 ```
 
-`catalogs/thematic/pokemon.json` selects 143 records from 12 issuing territories.
+`catalogs/thematic/pokemon.json` selects 139 records from 12 issuing territories.
 The result is `output/thematic/pokemon/collection.xp`.
 
 | Country / territory | Included issues | Scott sheet / souvenir-sheet references |
@@ -120,7 +120,7 @@ The result is `output/thematic/pokemon/collection.xp`.
 | Micronesia | 2001 | 414–415 |
 | Sierra Leone | 2002 | 2557–2558 |
 | Japan | 2005; 2021 greetings and Stamp Box | Not asserted |
-| France | 2024 Pikachu, booklet, four-stamp collector | Not asserted |
+| France | 2024 | Not asserted |
 
 Country packs and Scott crosswalks are included for Gambia and Grenada.
 Their bundled country data covers **Postage stamps, 2000–2002** (1,456 and
@@ -139,10 +139,8 @@ and stamp references. Counts describe selected stamp records, not whole sheets.
 
 Every selected set includes a `source_url`. Catalog-level `sources` and `notes`
 are retained in the generated collection. The Japan 2021 supplement follows
-[Japan Post's issue announcement](https://www.post.japanpost.jp/kitte/collection/archive/2021/0707_01/0235.pdf);
-France's supplementary collector follows
-[La Poste's announcement](https://www.lecarredencre.fr/timbre/pokemon/).
-These local ids do not claim Scott or StampWorld identities.
+[Japan Post's issue announcement](https://www.post.japanpost.jp/kitte/collection/archive/2021/0707_01/0235.pdf).
+Those local ids do not claim Scott or StampWorld identities.
 
 Coverage is not exhaustive. The notes identify the Guyana date discrepancy,
 unresolved Dominica overprint variants, and the forthcoming Taiwan issue

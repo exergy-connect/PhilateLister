@@ -24,7 +24,7 @@ test('viewer index exposes the new countries and a complete Pokemon collection',
   }
   const pokemon = read('thematic-pokemon');
   assert.equal(pokemon.kind, 'thematic');
-  assert.equal(pokemon.sets.reduce((n, s) => n + s.stamps.length, 0), 143);
+  assert.equal(pokemon.sets.reduce((n, s) => n + s.stamps.length, 0), 139);
   assert.equal(new Set(pokemon.sets.map(s => s.id)).size, pokemon.sets.length);
   const cats = read('thematic-cats');
   assert.equal(cats.kind, 'thematic');

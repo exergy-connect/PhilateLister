@@ -7,7 +7,7 @@
     "Scott sheet numbers are stored on sets, not repeated as individual stamp numbers. Individual Scott suffixes have not been inferred.",
     "Guyana date conflict: StampWorld dates g6639/g6645 to 30 October 2000; IGPC dates Scott 3571–3572 to 13 February 2001. Source dates are retained.",
     "Liberia entries are listed by StampWorld and IGPC; no Scott number is asserted.",
-    "Japan 2021 and the France four-stamp collector use explicitly local identifiers sourced from postal authorities, because no StampWorld number was verified.",
+    "Japan 2021 uses explicitly local identifiers sourced from the postal authority, because no StampWorld number was verified.",
     "This is not an exhaustive worldwide checklist. Dominica overprint variants are not separately resolved. Non-postal stickers and unverified issues are excluded.",
     "Chunghwa Post schedules a Pokémon souvenir sheet for 20 November 2026. It is not included as an issued stamp as of 19 September 2026."
   ],
@@ -26,11 +26,7 @@
     },
     {
       "url": "https://www.lecarredencre.fr/timbre/pokemon/",
-      "purpose": "France 2024 Pikachu and collector"
-    },
-    {
-      "url": "https://www.lecarredencre.fr/timbre/pokemon-2/",
-      "purpose": "France 2024 booklet"
+      "purpose": "France 2024 Pokémon"
     },
     {
       "url": "https://subservices.post.gov.tw/post/internet/U_english2/index.jsp?ID=35170204",
@@ -871,30 +867,6 @@
       "category": "Postage stamps",
       "set_ref": "jp-2021-box",
       "no": "jp-2021-box-10"
-    },
-    {
-      "country": "france",
-      "category": "Postage stamps",
-      "set_ref": "fr-2024-pokemon-collector",
-      "no": "fr-2024-pokemon-collector-01"
-    },
-    {
-      "country": "france",
-      "category": "Postage stamps",
-      "set_ref": "fr-2024-pokemon-collector",
-      "no": "fr-2024-pokemon-collector-02"
-    },
-    {
-      "country": "france",
-      "category": "Postage stamps",
-      "set_ref": "fr-2024-pokemon-collector",
-      "no": "fr-2024-pokemon-collector-03"
-    },
-    {
-      "country": "france",
-      "category": "Postage stamps",
-      "set_ref": "fr-2024-pokemon-collector",
-      "no": "fr-2024-pokemon-collector-04"
     }
   ]
 }

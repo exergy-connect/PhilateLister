@@ -10,7 +10,7 @@ test("bundled Pokémon collection resolves offline with verified sheet reference
   const collection = consolidate_thematic_catalog(definition, output);
   const sets = Object.values(collection.periods).flatMap((p) => p.sets);
   assert.equal(collection.summary.stampCount, definition.entries.length);
-  assert.equal(collection.summary.stampCount, 143);
+  assert.equal(collection.summary.stampCount, 139);
   assert.equal(collection.countries.length, 12);
   const numbers = (country) => sets.filter((s) => s.country === country).flatMap((s) => s.catalogs?.scott ?? []);
   assert.deepEqual(numbers("gambia").sort(), ["2393", "2394"]);
@@ -21,7 +21,12 @@ test("bundled Pokémon collection resolves offline with verified sheet reference
   const souvenir = sets.find((s) => s.country === "gambia" && s.ref === "g4233");
   assert.deepEqual(souvenir.stamps[0].catalogs.scott, ["2394"]);
   assert.equal(sets.filter((s) => s.country === "japan" && s.year === 2021).flatMap((s) => s.stamps).length, 30);
-  assert.equal(sets.filter((s) => s.country === "france").flatMap((s) => s.stamps).length, 17);
+  const france = sets.filter((s) => s.country === "france");
+  assert.deepEqual(france.map((s) => s.ref), ["g8291", "g8365"]);
+  assert.deepEqual(france[0].stamps.map((s) => s.no), ["8291"]);
+  assert.deepEqual(france[1].stamps.map((s) => s.no), [
+    "8365", "8366", "8367", "8368", "8369", "8370", "8371", "8372", "8373", "8374", "8375", "8376",
+  ]);
   const japanBox = sets.find((s) => s.ref === "jp-2021-box");
   assert.equal(japanBox.base, "https://www.post.japanpost.jp");
   assert.ok(japanBox.stamps.every((s) => s.numbering_system === "local" && !s.catalogs?.stampworld));

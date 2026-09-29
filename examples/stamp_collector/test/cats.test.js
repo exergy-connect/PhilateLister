@@ -23,7 +23,7 @@ test("bundled cats collection resolves offline and keeps only identified cat sta
   assert.ok(!stamps("iceland").some((s) => ["0581", "0582", "0902", "1205"].includes(s.no)));
   assert.deepEqual(stamps("taiwan").filter((s) => ["3083", "3084", "3094", "3095"].includes(s.no)).map((s) => s.no).sort(), ["3083", "3084", "3094", "3095"]);
   assert.ok(!sets.some((s) => /Top 40|The Cats \(One Way Wind\)/i.test(s.title) || s.stamps.some((st) => /The Cats/i.test(st.description ?? ""))));
-  assert.equal(stamps("netherlands").length, 2);
+  assert.deepEqual(stamps("netherlands").map((s) => s.no).sort(), ["1675", "4328"]);
   assert.ok(sets.find((s) => s.country === "netherlands" && s.ref === "g4328"));
   assert.equal(stamps("china").length, 2);
   assert.ok(sets.every((s) => (s.source_url || s.base)?.startsWith("https://")));

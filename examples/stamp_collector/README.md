@@ -166,7 +166,7 @@ The result is `output/thematic/cats/collection.xp`.
 | Taiwan | 2004 Hello Kitty; 2005–2006 Pets cat values; 2022 leopard cat | Dog values from Pets I–IV omitted |
 | Gambia | 2000 Stamp Show, London — cats | Collected coverage is 2000–2002 only |
 | Grenada | 2000 cats | Collected coverage is 2000–2002 only |
-| Netherlands | 1998 Pets kittens; 2024 Typically Dutch — Cats | The 2015 Top 40 stamp for the band The Cats is excluded |
+| Netherlands | 1998 Pets kittens (1675); 2024 Typically Dutch — Cats | 1676 is a dog and 1677 is a rabbit. The 2015 Top 40 stamp for the band The Cats is excluded |
 
 Scott numbers are not asserted. Mixed sets include only stamps identified as cats
 from StampWorld descriptions or the [Cat Stamps](https://www.catstamps.org/)

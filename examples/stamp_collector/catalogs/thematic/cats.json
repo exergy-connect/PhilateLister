@@ -6,7 +6,7 @@
   "notes": [
     "This is not an exhaustive worldwide checklist. Entries are limited to already-collected country data. Gambia and Grenada coverage is Postage stamps, 2000–2002 only; earlier Gambia and Grenada cat issues are omitted. Sweden’s collected range ends in 1929 and Denmark’s in 1945, so later pedigree-cat issues from those countries are omitted. China’s 2013 pedigree-cat set (China Post 2013-17) is omitted because 2013 postage stamps are not in the collected China pack.",
     "Mixed dog-and-cat and mixed domestic-animal sets include only the stamps identified as cats. Taiwan Def.124 Pets I–IV keep the Felis domesticus values and omit the dogs. Iceland 1982 Domestic Animals keeps only Felis catus (g0581 / 0583).",
-    "Iceland 1990 Christmas 25 kr (g0737 / 0737) and 2008 Christmas 90 kr (g1205 / 1206) are included from the Cat Stamps topical checklist; StampWorld titles those sets only as Christmas stamps. Netherlands 1998 Pets keeps only 1677 (kittens), identified the same way.",
+    "Iceland 1990 Christmas 25 kr (g0737 / 0737) and 2008 Christmas 90 kr (g1205 / 1206) are included from the Cat Stamps topical checklist; StampWorld titles those sets only as Christmas stamps. Netherlands 1998 Pets keeps only 1675 (kittens); 1676 is a dog and 1677 is a rabbit.",
     "The Netherlands 2015 Top 40 stamp naming the band The Cats is excluded. Personalized, meter and incidental cats-in-art stamps are excluded. Taiwan 2025–2026 Cute Pets definitives are excluded until individual designs are identified as cats. Non-postal stickers and unverified issues are excluded.",
     "Scott numbers are not asserted for these cat issues. Existing country crosswalks may still attach inferred numbers during consolidation; those are not treated as verified sheet references."
   ],
@@ -29,7 +29,7 @@
     },
     {
       "url": "https://www.catstamps.org/checklists/Countries/N/NL_D.html",
-      "purpose": "Netherlands Pets 1998 kitten stamp"
+      "purpose": "Netherlands Pets 1998; StampWorld 1675 is the kittens"
     },
     {
       "url": "https://www.catstamps.org/checklists/Countries/T/TW_D.html",
@@ -355,7 +355,7 @@
       "country": "netherlands",
       "category": "Postage stamps",
       "set_ref": "g1675",
-      "no": "1677"
+      "no": "1675"
     },
     {
       "country": "netherlands",

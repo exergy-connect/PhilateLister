@@ -27,6 +27,7 @@ const COUNTRY_META = {
   netherlands: { id: "nl", name: "Netherlands" },
   sweden: { id: "se", name: "Sweden" },
   taiwan: { id: "tw", name: "Taiwan" },
+  "united-states": { id: "us", name: "United States" },
 };
 
 function metaFor(folder) {

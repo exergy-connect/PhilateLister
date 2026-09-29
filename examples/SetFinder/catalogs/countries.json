@@ -60,6 +60,11 @@
       "catalog": "tw.json"
     },
     {
+      "id": "us",
+      "name": "United States",
+      "catalog": "us.json"
+    },
+    {
       "id": "cn-demo",
       "name": "China (demo)",
       "catalog": "demo.json"

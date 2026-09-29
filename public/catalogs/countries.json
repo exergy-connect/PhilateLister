@@ -2,6 +2,11 @@
   "default": "cn",
   "countries": [
     {
+      "id": "am",
+      "name": "Armenia",
+      "catalog": "am.json"
+    },
+    {
       "id": "thematic-cats",
       "name": "Cats",
       "catalog": "thematic-cats.json",
@@ -47,6 +52,12 @@
       "id": "thematic-ships",
       "name": "Ships and boats",
       "catalog": "thematic-ships.json",
+      "kind": "thematic"
+    },
+    {
+      "id": "thematic-space",
+      "name": "Space",
+      "catalog": "thematic-space.json",
       "kind": "thematic"
     },
     {

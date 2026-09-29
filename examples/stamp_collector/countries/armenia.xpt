@@ -1,0 +1,17 @@
+---
+# Armenia — StampWorld catalogue country.
+# ./collect.sh armenia; ./consolidate.sh armenia
+# Source: https://www.stampworld.com/en/stamps/Armenia/
+# StampWorld exposes Postage stamps only (1919–1923 and 1992–2026).
+code: am
+stampworld: Armenia
+categories:
+  - "Postage stamps"
+periods:
+  - "1919-1919"
+  - "1920-1929"
+  - "1990-1999"
+  - "2000-2009"
+  - "2010-2019"
+  - "2020-2026"
+---

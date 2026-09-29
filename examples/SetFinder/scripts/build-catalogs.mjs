@@ -19,6 +19,7 @@ const COLLECTOR_OUT = path.join(ROOT, "../stamp_collector/output");
 
 /** Prefer short ISO-style ids for known countries; otherwise use folder name. */
 const COUNTRY_META = {
+  armenia: { id: "am", name: "Armenia" },
   gambia: { id: "gm", name: "Gambia" },
   grenada: { id: "gd", name: "Grenada" },
   china: { id: "cn", name: "China" },

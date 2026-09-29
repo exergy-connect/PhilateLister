@@ -172,3 +172,30 @@ Scott numbers are not asserted. Mixed sets include only stamps identified as cat
 from StampWorld descriptions or the [Cat Stamps](https://www.catstamps.org/)
 topical checklists. Chunghwa Post pages document Hello Kitty, the Pets series
 and the leopard-cat issue.
+
+## Space collection
+
+Build the bundled collection offline:
+
+```sh
+node scripts/build_thematic_catalog.mjs space
+```
+
+`catalogs/thematic/space.json` selects 223 records from 8 issuing territories.
+The result is `output/thematic/space/collection.xp`.
+
+| Country / territory | Included issues | Notes |
+| --- | --- | --- |
+| Armenia | 2002 cosmic research; 2007 Year of the Moon; 2009 Europa astronomy; 2011 first manned flight | |
+| China | 1958 Sputnik; 1959–1960 lunar rockets; 1962 astronomer Ku Shou-chin; 1982 UN outer space; 1986 space research and Halley’s comet; 2020 first satellite | Scientists set keeps only the astronomer |
+| Gambia | 2000 Apollo–Soyuz; Expo 2000 space satellites | Collected coverage is 2000–2002 only |
+| Grenada | 2000 Apollo–Soyuz; Expo 2000 spacecraft; seventeenth-century astronomy | Telescope, Saturn, Mars, and Jupiter’s moons only |
+| Iceland | 1991 Europa space research; 2009 Europa astronomy | Geothermal “space heating” and Year of Planet Earth omitted |
+| Netherlands | Satellite station, Moon landing, zodiac constellations, Europa astronomy, seen from space, journey to the Moon, space explorers | Zodiac set is included as constellations |
+| Taiwan | Satellite stations, first man on the Moon, Schall von Bell, astronomy, syzygy paintings | Moon-shaped fans and Sun Moon Lake omitted |
+| United States | Observatory, Goddard, Apollo, probes, shuttle, Hubble, planets, Webb telescope, and six Celebrate the Century stamps | Mixed century sheets keep only the space subjects |
+
+Denmark and Sweden’s collected issues have no spaceflight or astronomy subjects.
+Scott numbers are not asserted. Celebrate the Century picks follow the published
+sheet order (Explorer I, the Moon landing, Star Trek, Pioneer 10, the Space Shuttle,
+and John Glenn’s return). Star Trek is included; E.T. is not.
